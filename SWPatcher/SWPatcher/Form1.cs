@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Soul_Patcher_BETA
+namespace SWPatcher
 {
     public partial class Form1 : Form
     {
@@ -43,37 +43,6 @@ namespace Soul_Patcher_BETA
 
         private void BWorker_LoadEverything_DoWork(object sender, DoWorkEventArgs e)
         {
-            // Checking updates for the patcher...
-            string TheRequest = HTTP_DoSimpleRequest("http://www.google.com/"); // I don't know the url so .... please fix me .....
-            if (string.IsNullOrWhiteSpace(TheRequest) == false) // just to make sure the request success
-                using (System.IO.StringReader TheStringReader = new System.IO.StringReader(TheRequest)) // Sorry if i make unnecessary stream ....
-                using (LeayalFun.Ini.IniFile TheIniFile = new LeayalFun.Ini.IniFile(TheRequest)) // Reading stream or from file .... ?
-                {
-                    System.Version TheVersionObj;
-                    if (System.Version.TryParse(TheIniFile.GetValue("patcher", "version", "1.0.0.0"), out TheVersionObj) == false)
-                        TheVersionObj = new System.Version("1.0.0.0");
-                    System.Version CurrentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                    // I don't know how i should compare ...
-                    int compareResult = TheVersionObj.CompareTo(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
-                    if (compareResult > 0)
-                    {
-                        // Ask user to update or skip. I think i should make a Update Changes box for this .... ?
-                        if (MessageBoxInvokeShow("Latest version: " + TheVersionObj.ToString() + "\nCurrent version: " + CurrentVersion.ToString() + "\nDo you want to update the patcher ?", "Notice", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                        {
-                            MessageBoxInvokeShow("Let's do the update", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                            MessageBoxInvokeShow("*Insert the skip song*", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else if (compareResult > 0)
-                        MessageBoxInvokeShow("Jaja, Latest", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    TheVersionObj = null; // i know this is not necessary, but i think it attract the GC.;
-                    
-                    
-                }
-            else
-                Console.WriteLine(Debugging_GenerateString("Failed to check for patcher updates: Something went wrong, 404 not found or user internet problem."));
-
             /* Now head to the English Patch checking .... and remind the user when
              * it has newer version
              * OR
@@ -91,6 +60,52 @@ namespace Soul_Patcher_BETA
             {
 
             }
+        }
+
+        private DownloadCode[] HTTPDownloadList(string[] sUrlList, string sFolderDestination, string sUserAgent = "", bool bUseProgressBar = true)
+        {
+            System.Collections.Generic.List<DownloadCode> result = new List<DownloadCode>();
+            using (System.Net.WebClient theWebClient = new System.Net.WebClient())
+            {
+                theWebClient.Proxy = null;
+                if (string.IsNullOrWhiteSpace(sUserAgent) == false)
+                    theWebClient.Headers.Add(System.Net.HttpRequestHeader.UserAgent, sUserAgent);
+                long ByteProcessed = 0;
+                byte[] BufferedByte = new byte[1025];
+                string tmpStringPath = string.Empty;
+                int bytesRead;
+                for (short i = 0; i < sUrlList.Length; i++)
+                {
+                    try
+                    {
+                        tmpStringPath = sFolderDestination + "\\" + System.IO.Path.GetFileName(sUrlList[i]);
+                        using (System.IO.Stream theWebClientStream = theWebClient.OpenRead(sUrlList[i]))
+                        using (System.IO.FileStream localStream = new System.IO.FileStream(tmpStringPath + ".dtmp", System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read))
+                        {
+                            bytesRead = theWebClientStream.Read(BufferedByte, 0, 1024);
+                            while (bytesRead > 0)
+                            {
+                                localStream.Write(BufferedByte, 0, bytesRead);
+                                ByteProcessed += bytesRead;
+                                bytesRead = theWebClientStream.Read(BufferedByte, 0, 1024);
+                                if (bUseProgressBar == true)
+                                    ProgressBarSetValue(progressBar1, Convert.ToInt32(ByteProcessed));
+                            }
+                        }
+                        if (System.IO.File.Exists(tmpStringPath) == true)
+                            System.IO.File.Delete(tmpStringPath);
+                        System.IO.File.Move(tmpStringPath + ".dtmp", tmpStringPath);
+                        result.Add(DownloadCode.Success);
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Add(DownloadCode.Failed);
+                    }
+                }
+                tmpStringPath = null;
+                BufferedByte = null;
+            }
+            return result.ToArray();
         }
 
         private DownloadCode HTTPDownloadFile(string sUrlString, string sDestination, string sUserAgent = "Mozilla/4.0", int iTimeOut = 5000, bool bUseProgressBar = true)
@@ -232,8 +247,11 @@ namespace Soul_Patcher_BETA
             }
         }
 
+        
 
-        private string HTTP_DoSimpleRequest(string sUrlString, string sUserAgent = "Mozilla/4.0", int iTimeOut = 5000)
+
+
+        private string HTTPDoSimpleRequest(string sUrlString, string sUserAgent = "Mozilla/4.0", int iTimeOut = 5000)
         {
             string result = string.Empty;
             for (short i = 1; i <= 3; i++)

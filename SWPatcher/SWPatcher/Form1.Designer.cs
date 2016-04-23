@@ -1,4 +1,4 @@
-﻿namespace Soul_Patcher_BETA
+﻿namespace SWPatcher
 {
     partial class Form1
     {

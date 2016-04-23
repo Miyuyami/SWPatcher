@@ -8,8 +8,8 @@
     <ProjectGuid>{5B0FF0A7-1C9C-4092-8B46-D930861713DC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Soul_Patcher_BETA</RootNamespace>
-    <AssemblyName>Soul Patcher BETA</AssemblyName>
+    <RootNamespace>SWPatcher</RootNamespace>
+    <AssemblyName>SWPatcher</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -35,8 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IniReader">
-      <HintPath>..\..\..\..\IniReader\IniReader\bin\Release\IniReader.dll</HintPath>
+    <Reference Include="IniReader, Version=1.0.0.0, Culture=neutral, PublicKeyToken=234465686a21ae70, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\All Content\VB_Project\IniReader\IniReader\bin\Release\IniReader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -55,7 +55,7 @@ namespace Soul_Patcher_BETA
                     System.Version CurrentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                     // I don't know how i should compare ...
                     int compareResult = TheVersionObj.CompareTo(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
-                    if (true)
+                    if (compareResult > 0)
                     {
                         // Ask user to update or skip. I think i should make a Update Changes box for this .... ?
                         if (MessageBoxInvokeShow("Latest version: " + TheVersionObj.ToString() + "\nCurrent version: " + CurrentVersion.ToString() + "\nDo you want to update the patcher ?", "Notice", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
@@ -65,9 +65,11 @@ namespace Soul_Patcher_BETA
                         else
                             MessageBoxInvokeShow("*Insert the skip song*", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
+                    else if (compareResult > 0)
                         MessageBoxInvokeShow("Jaja, Latest", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     TheVersionObj = null; // i know this is not necessary, but i think it attract the GC.;
+                    
+                    
                 }
             else
                 Console.WriteLine(Debugging_GenerateString("Failed to check for patcher updates: Something went wrong, 404 not found or user internet problem."));

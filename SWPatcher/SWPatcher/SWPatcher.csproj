@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>swhq_icon_bec_icon.ico</ApplicationIcon>
+    <ApplicationIcon>patcher.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -100,7 +100,7 @@
     <None Include="Resources\Sedurin patcher about image.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="swhq_icon_bec_icon.ico" />
+    <Content Include="patcher.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

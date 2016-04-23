@@ -47,7 +47,7 @@ namespace Soul_Patcher_BETA
             string TheRequest = HTTP_DoSimpleRequest("http://www.google.com/"); // I don't know the url so .... please fix me .....
             if (string.IsNullOrWhiteSpace(TheRequest) == false) // just to make sure the request success
                 using (System.IO.StringReader TheStringReader = new System.IO.StringReader(TheRequest)) // Sorry if i make unnecessary stream ....
-                using (LeayalFun.Ini.IniFile TheIniFile = new LeayalFun.Ini.IniFile(TheRequest)) // Reading stream or from file .... ?
+                using (SWPatcher.ExIniFile TheIniFile = new SWPatcher.ExIniFile(TheStringReader, false)) // Reading stream or from file .... ?
                 {
                     System.Version TheVersionObj;
                     if (System.Version.TryParse(TheIniFile.GetValue("patcher", "version", "1.0.0.0"), out TheVersionObj) == false)
@@ -55,7 +55,7 @@ namespace Soul_Patcher_BETA
                     System.Version CurrentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
                     // I don't know how i should compare ...
                     int compareResult = TheVersionObj.CompareTo(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
-                    if (true)
+                    if (compareResult > 0)
                     {
                         // Ask user to update or skip. I think i should make a Update Changes box for this .... ?
                         if (MessageBoxInvokeShow("Latest version: " + TheVersionObj.ToString() + "\nCurrent version: " + CurrentVersion.ToString() + "\nDo you want to update the patcher ?", "Notice", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)

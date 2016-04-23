@@ -64,7 +64,7 @@ namespace SWPatcher
                                         string defaultBrowser = GetDefaultBrowserPath();
                                         if (string.IsNullOrWhiteSpace(defaultBrowser) == false)
                                         {
-                                            System.Diagnostics.Process.Start(defaultBrowser, "http://soulworkerhq.com/Discussion-Official-Soul-Worker-HQ-Translation-Patcher");
+                                            System.Diagnostics.Process.Start(defaultBrowser, responseArray[1]);
                                             Application.Exit();
                                         }
                                         else

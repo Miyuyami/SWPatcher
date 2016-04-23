@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWPatcher", "SWPatcher\SWPatcher.csproj", "{5B0FF0A7-1C9C-4092-8B46-D930861713DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soul Patcher BETA", "Soul Patcher BETA\Soul Patcher BETA.csproj", "{5B0FF0A7-1C9C-4092-8B46-D930861713DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

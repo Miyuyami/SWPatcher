@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.buttonPatch = new System.Windows.Forms.Button();
-            this.openSWDialog = new System.Windows.Forms.OpenFileDialog();
             this.buttonLastest = new System.Windows.Forms.Button();
             this.comboBoxLanguages = new System.Windows.Forms.ComboBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -62,12 +61,6 @@
             this.buttonPatch.TabIndex = 0;
             this.buttonPatch.Text = "Ready To Play!";
             this.buttonPatch.UseVisualStyleBackColor = true;
-            // 
-            // openSWDialog
-            // 
-            this.openSWDialog.FileName = "SoulWorker100";
-            this.openSWDialog.Filter = "Client|SoulWorker100.exe";
-            this.openSWDialog.RestoreDirectory = true;
             // 
             // buttonLastest
             // 
@@ -227,6 +220,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -242,7 +236,6 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
         private System.Windows.Forms.Button buttonPatch;
-        private System.Windows.Forms.OpenFileDialog openSWDialog;
         private System.Windows.Forms.Button buttonLastest;
         private System.Windows.Forms.ComboBox comboBoxLanguages;
         private System.Windows.Forms.NotifyIcon notifyIcon1;

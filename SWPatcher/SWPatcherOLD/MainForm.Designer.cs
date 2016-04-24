@@ -39,12 +39,12 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.progressbarText = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.buttonExit = new System.Windows.Forms.Button();
             this.buttonOpenBackupFolder = new System.Windows.Forms.Button();
             this.buttonResetSWFolder = new System.Windows.Forms.Button();
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.progressbarText = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -62,6 +62,7 @@
             this.buttonPatch.TabIndex = 0;
             this.buttonPatch.Text = "Ready To Play!";
             this.buttonPatch.UseVisualStyleBackColor = true;
+            this.buttonPatch.Click += new System.EventHandler(this.buttonPatch_Click);
             // 
             // buttonLastest
             // 
@@ -133,6 +134,13 @@
             // 
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
+            // progressbarText
+            // 
+            this.progressbarText.ActiveLinkColor = System.Drawing.Color.Red;
+            this.progressbarText.Name = "progressbarText";
+            this.progressbarText.Size = new System.Drawing.Size(39, 17);
+            this.progressbarText.Text = "Ready";
             // 
             // tableLayoutPanel
             // 
@@ -209,13 +217,6 @@
             this.pictureBox.Size = new System.Drawing.Size(350, 116);
             this.pictureBox.TabIndex = 7;
             this.pictureBox.TabStop = false;
-            // 
-            // progressbarText
-            // 
-            this.progressbarText.ActiveLinkColor = System.Drawing.Color.Red;
-            this.progressbarText.Name = "progressbarText";
-            this.progressbarText.Size = new System.Drawing.Size(39, 17);
-            this.progressbarText.Text = "Ready";
             // 
             // MainForm
             // 

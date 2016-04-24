@@ -276,5 +276,23 @@ namespace SWPatcher
 
         #endregion
 
+        private void buttonPatch_Click(object sender, EventArgs e)
+        {
+            //Check if the patch is build AND is it compatible with the client .... ? (also checked if the client was latest or not)
+
+            //Check the client version
+            using (System.Net.WebClient theWebClient = new System.Net.WebClient())
+            {
+                //just clone the headers, i was just .... well, for Hangame not doubt about exploiting....
+                theWebClient.BaseAddress = "http://down.hangame.co.jp/jp/purple/plii/j_sw/";
+                theWebClient.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
+                theWebClient.Headers.Add(System.Net.HttpRequestHeader.UserAgent, "purple");
+                //ServerVer.ini.zip
+                
+            }
+        }
+
+
+
     }
 }

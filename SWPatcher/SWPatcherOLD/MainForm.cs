@@ -16,6 +16,7 @@ namespace SWPatcher
             InitializeComponent();
         }
 
+        const string progressStep = "Ready your soul"; //um....i don't know .....
         string _SourceFolder = string.Empty;
         IniFile PatcherSetting = null;
 
@@ -90,6 +91,7 @@ namespace SWPatcher
                     lastchosenLanguage = null;
                 }
             }
+            progressbarText.Text = progressStep;
             theWebClient.Dispose(); // just in case (i'll always leave this at the end of method)
         }
 
@@ -260,6 +262,7 @@ namespace SWPatcher
 
         private void BWorkerCheckAndInstallEnglishPatch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            progressbarText.Text = progressStep;
             if (e.Error != null)
                 MessageBox.Show(e.Error.Message, "Error",   MessageBoxButtons.OK,  MessageBoxIcon.Error);
                 //Perform cleanup if leftover ... ?

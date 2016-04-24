@@ -17,13 +17,14 @@ namespace SWPatcher
         private static string mutexId = string.Format("Global\\{{{0}}}", appGuid);
         private static Mutex mutex = null;
 
+        /*
         private static bool IsUserAdministrator()
         {
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
             WindowsPrincipal principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
-
+        */
         private static bool IsAppAlreadyRunning()
         {
             bool createdNew;
@@ -85,11 +86,13 @@ namespace SWPatcher
         [STAThread]
         static void Main()
         {
+            /*
             if (!IsUserAdministrator())
             {
                 MessageBox.Show("You must run this application as administrator.", "Administrator rights", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
                 return;
             }
+            */
             if (IsAppAlreadyRunning())
                 return;
             if (NewPatcherUpdateAvailable())

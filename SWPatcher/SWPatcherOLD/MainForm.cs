@@ -15,5 +15,10 @@ namespace SWPatcher
         {
             InitializeComponent();
         }
+
+        private void buttonResetSWFolder_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

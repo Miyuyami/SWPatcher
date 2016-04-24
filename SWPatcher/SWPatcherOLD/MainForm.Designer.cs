@@ -199,6 +199,7 @@
             this.buttonResetSWFolder.TabIndex = 5;
             this.buttonResetSWFolder.Text = "Reset SW Folder";
             this.buttonResetSWFolder.UseVisualStyleBackColor = true;
+            this.buttonResetSWFolder.Click += new System.EventHandler(this.buttonResetSWFolder_Click);
             // 
             // pictureBox
             // 

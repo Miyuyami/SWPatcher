@@ -19,15 +19,19 @@ namespace SWPatcher
         string _SourceFolder = string.Empty;
         IniFile PatcherSetting = null;
 
-        private void MainForm_Shown(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             //because user may change windows user, so i think we shouldn't use %appdata% ....
             this._SourceFolder = System.IO.Directory.GetParent(Application.ExecutablePath).FullName;
 
             //i think we shouldn't keep OpenDialog in memory while user not using it much.
             PatcherSetting = new IniFile(_SourceFolder + "\\Settings.ini");
+        }
 
-            if (string.IsNullOrWhiteSpace(PatcherSetting.IniReadValue("sw", "folder")))
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+
+            if (string.IsNullOrWhiteSpace(PatcherSetting.IniReadValue("patcher", "folder")))
             {
                 using (OpenFileDialog Opener = new OpenFileDialog())
                 {
@@ -39,7 +43,7 @@ namespace SWPatcher
                     Opener.Filter = "soulworker100.exe|soulworker100.exe"; // hard coded or *.exe ?
                     Opener.DefaultExt = "exe";
                     if (Opener.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-                        PatcherSetting.IniWriteValue("sw", "folder", System.IO.Directory.GetParent(Opener.FileName).FullName);
+                        PatcherSetting.IniWriteValue("patcher", "folder", System.IO.Directory.GetParent(Opener.FileName).FullName);
                     else
                     {
                         //How should we act when people click cancel this ............ ? Exit or warn them and re-open the OpenFileDialog ... ?
@@ -47,6 +51,15 @@ namespace SWPatcher
                         Application.Exit();
                     }
                 }
+            }
+            if (comboBoxLanguages.Items.Count > 0)
+            {
+                string lastchosenLanguage = PatcherSetting.IniReadValue("patcher", "s_translationlanguage");
+                if (string.IsNullOrEmpty(lastchosenLanguage))
+                    comboBoxLanguages.SelectedIndex = 0;
+                else
+                    comboBoxLanguages.SelectedItem = lastchosenLanguage;
+                lastchosenLanguage = null;
             }
         }
 
@@ -62,7 +75,38 @@ namespace SWPatcher
                 Opener.Filter = "soulworker100.exe|soulworker100.exe";
                 Opener.DefaultExt = "exe";
                 if (Opener.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-                    PatcherSetting.IniWriteValue("sw", "folder", System.IO.Directory.GetParent(Opener.FileName).FullName);
+                    PatcherSetting.IniWriteValue("patcher", "folder", System.IO.Directory.GetParent(Opener.FileName).FullName);
+            }
+        }
+
+        private int isInProgress()
+        {
+
+            return 0;
+        }
+
+        private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PatcherSetting.IniWriteValue("patcher", "s_translationlanguage", (string)comboBoxLanguages.SelectedItem);
+        }
+
+        private void buttonExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void MainForm_Closing(object sender, FormClosingEventArgs e)
+        {
+            int progressID = isInProgress();
+            if (progressID > 0)
+            {
+                // Promt user when doing progress
+                if (MessageBox.Show("Are you sure you want to exit ?\n*Patcher is in progress*", "NOTICE", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    // Stop progress and clean up according to progress's ID ... ?
+                }
+                else
+                    e.Cancel = true;
             }
         }
     }

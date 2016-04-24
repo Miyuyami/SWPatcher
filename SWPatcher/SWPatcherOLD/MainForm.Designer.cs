@@ -44,6 +44,7 @@
             this.buttonOpenBackupFolder = new System.Windows.Forms.Button();
             this.buttonResetSWFolder = new System.Windows.Forms.Button();
             this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.progressbarText = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -72,6 +73,7 @@
             this.buttonLastest.TabIndex = 2;
             this.buttonLastest.Text = "Get Latest Translations && Patch";
             this.buttonLastest.UseVisualStyleBackColor = true;
+            this.buttonLastest.Click += new System.EventHandler(this.buttonLastest_Click);
             // 
             // comboBoxLanguages
             // 
@@ -111,7 +113,8 @@
             this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
-            this.statusLabel});
+            this.statusLabel,
+            this.progressbarText});
             this.statusStrip.Location = new System.Drawing.Point(0, 349);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -207,6 +210,13 @@
             this.pictureBox.TabIndex = 7;
             this.pictureBox.TabStop = false;
             // 
+            // progressbarText
+            // 
+            this.progressbarText.ActiveLinkColor = System.Drawing.Color.Red;
+            this.progressbarText.Name = "progressbarText";
+            this.progressbarText.Size = new System.Drawing.Size(39, 17);
+            this.progressbarText.Text = "Ready";
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonPatch;
@@ -222,6 +232,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.Text = "Soul Worker Patcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_Closing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
@@ -252,6 +263,7 @@
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.ToolStripStatusLabel progressbarText;
     }
 }
 

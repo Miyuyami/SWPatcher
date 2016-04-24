@@ -19,6 +19,8 @@ namespace SWPatcher
         string _SourceFolder = string.Empty;
         IniFile PatcherSetting = null;
 
+        BackgroundWorker BWorkerCheckAndInstallEnglishPatch;
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             //because user may change windows user, so i think we shouldn't use %appdata% ....
@@ -26,6 +28,9 @@ namespace SWPatcher
 
             //i think we shouldn't keep OpenDialog in memory while user not using it much.
             PatcherSetting = new IniFile(_SourceFolder + "\\Settings.ini");
+
+            SettingThingUp();
+
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -56,7 +61,7 @@ namespace SWPatcher
             theWebClient.BaseAddress = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";
             theWebClient.Proxy = null;
             string tmpResult = string.Empty;
-            for (short i = 0; i < 2; i++)
+            for (short i = 0; i <= 2; i++)
             {
                 try
                 {
@@ -73,8 +78,7 @@ namespace SWPatcher
 
             if (string.IsNullOrEmpty(tmpResult) == false) // Double Check
             {
-                string[] tbl_SupportLanguage = tmpResult.Split('\n');
-                foreach (string supportLanguage in tbl_SupportLanguage)
+                foreach (string supportLanguage in tmpResult.Split('\n'))
                     comboBoxLanguages.Items.Add(supportLanguage);
                 if (comboBoxLanguages.Items.Count > 0)
                 {
@@ -105,12 +109,6 @@ namespace SWPatcher
             }
         }
 
-        private int isInProgress()
-        {
-
-            return 0;
-        }
-
         private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
         {
             PatcherSetting.IniWriteValue("patcher", "s_translationlanguage", (string)comboBoxLanguages.SelectedItem);
@@ -135,5 +133,145 @@ namespace SWPatcher
                     e.Cancel = true;
             }
         }
+
+        private void buttonLastest_Click(object sender, EventArgs e)
+        {
+            int progressID = isInProgress();
+            if (progressID == 0)
+            {
+                // Promt user when doing progress
+                if (MessageBox.Show("Patcher will get latest translation and build patch for you.\nThis will take several minutes.\nDo you want to continue ?", "NOTICE", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    this.BWorkerCheckAndInstallEnglishPatch.RunWorkerAsync(comboBoxLanguages.SelectedItem);
+                }
+            }
+            else if (progressID == 1)
+                MessageBox.Show("Patcher already in progress...", "Notice",  MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("Patcher is doing something", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        #region "Background Workers"
+
+        private int isInProgress()
+        {
+            if (this.BWorkerCheckAndInstallEnglishPatch.IsBusy)
+                return 1;
+            return 0;
+        }
+
+        private void SettingThingUp()
+        {
+            this.BWorkerCheckAndInstallEnglishPatch = new BackgroundWorker();
+            this.BWorkerCheckAndInstallEnglishPatch.WorkerReportsProgress = true;
+            this.BWorkerCheckAndInstallEnglishPatch.WorkerSupportsCancellation = true;
+            this.BWorkerCheckAndInstallEnglishPatch.DoWork += new DoWorkEventHandler(BWorkerCheckAndInstallEnglishPatch_DoWork);
+            this.BWorkerCheckAndInstallEnglishPatch.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BWorkerCheckAndInstallEnglishPatch_RunWorkerCompleted);
+            this.BWorkerCheckAndInstallEnglishPatch.ProgressChanged += new ProgressChangedEventHandler(BWorkerCheckAndInstallEnglishPatch_ProgressChanged);
+
+            
+
+        }
+
+        private void BWorkerCheckAndInstallEnglishPatch_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker currentBWorker = (BackgroundWorker)sender;
+            string selectedLanguage = (string)e.Argument;
+            currentBWorker.ReportProgress(2, "Initializing");
+            using (System.Net.WebClient theWebClient = new System.Net.WebClient())
+            {
+                //Get Data list
+                string patcherDataString = string.Empty;
+                string bufferedLine = null;
+                PatchData currentNode = null;
+                string[] tmpSplit = null;
+                System.Collections.Generic.List<PatchData> PatchDataList = new System.Collections.Generic.List<PatchData>();
+                theWebClient.Proxy = null;
+                theWebClient.BaseAddress = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";                
+                for (short i = 0; i <= 2; i++)
+                {
+                    try
+                    {
+                        patcherDataString = theWebClient.DownloadString("PatcherData");
+                        if (string.IsNullOrEmpty(patcherDataString) == false)
+                        {
+                            using (System.IO.StringReader theStringReader = new System.IO.StringReader(patcherDataString))
+                                while (theStringReader.Peek() > 0)
+                                {
+                                    bufferedLine = theStringReader.ReadLine();
+                                    if (bufferedLine.IndexOf(" ") > -1)
+                                    {
+                                        tmpSplit = bufferedLine.Split(' ');
+                                        if (tmpSplit[0].EndsWith(".txt") || tmpSplit[0].EndsWith(".html"))
+                                        {
+                                            currentNode = new PatchData(tmpSplit[0], tmpSplit[1]);
+                                            PatchDataList.Add(currentNode);
+                                        }
+                                        else
+                                            currentNode.Param = bufferedLine;
+                                    }
+                                }
+                        }
+                        break;
+                    }
+                    catch (System.Net.WebException webEx)
+                    {
+                        if (((System.Net.HttpWebResponse)webEx.Response).StatusCode == System.Net.HttpStatusCode.NotFound)
+                            break;
+                    }
+                }
+                tmpSplit = null;
+                currentNode = null;
+                bufferedLine = null;
+                patcherDataString = null;
+
+                //Now we *may* have a full list of required thing, get work
+                if (PatchDataList.Count > 0) //just to make sure we got the list .....
+                {
+                    currentBWorker.ReportProgress(2, "Get patch data");
+                    //reuse currentNode above
+                    currentBWorker.ReportProgress(0, PatchDataList.Count - 1);
+                    for (int i = 0; i < PatchDataList.Count; i++)
+                    {
+                        currentNode = PatchDataList[i];
+                        //Download files
+                        if (System.IO.Directory.Exists(_SourceFolder + "\\" + selectedLanguage + "\\" + currentNode.TargetData) == false)
+                            System.IO.Directory.CreateDirectory(_SourceFolder + "\\" + selectedLanguage + "\\" + currentNode.TargetData);
+                        theWebClient.DownloadFile(selectedLanguage + "/" + currentNode.TargetData + "/" + currentNode.FileName, _SourceFolder + "\\" + selectedLanguage + "\\" + currentNode.TargetData + "\\" + currentNode.FileName);
+                        currentBWorker.ReportProgress(1, i);
+                    }
+                }
+                else
+                    throw new Exception("Failed to get patch data.");
+
+                //Now we build the patch.....but......i don't know how so ................ sorry ;w;
+            }
+        }
+
+        private void BWorkerCheckAndInstallEnglishPatch_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage == 0)
+                toolStripProgressBar1.Maximum = (int)e.UserState;
+            else if (e.ProgressPercentage == 1)
+                toolStripProgressBar1.Value = (int)e.UserState;
+            else if (e.ProgressPercentage == 2)
+                progressbarText.Text = (string)e.UserState;
+        }
+
+        private void BWorkerCheckAndInstallEnglishPatch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+                MessageBox.Show(e.Error.Message, "Error",   MessageBoxButtons.OK,  MessageBoxIcon.Error);
+                //Perform cleanup if leftover ... ?
+            else if (e.Cancelled)
+                MessageBox.Show("Clean things up", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); //this is just a placeholder
+            else
+            {
+
+            }
+        }
+
+        #endregion
+
     }
 }

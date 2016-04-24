@@ -42,7 +42,7 @@ namespace SWPatcher
             {
                 webClient.BaseAddress = new Uri("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/").AbsoluteUri;
                 webClient.Proxy = null; //this will skip IE Proxy Setting
-                for (short i = 0; i < 2; i++)
+                for (short i = 0; i <= 2; i++)
                 {
                     try
                     {

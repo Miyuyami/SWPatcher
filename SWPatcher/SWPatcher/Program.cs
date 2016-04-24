@@ -45,7 +45,7 @@ namespace SWPatcher
             string[] lines = patcherVersionFile.Split('\n');
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Version readVersion = new Version(lines[0]);
-            if (currentVersion.CompareTo(readVersion) <= 0)
+            if (currentVersion.CompareTo(readVersion) < 0)
             {
                 DialogResult newVersionDialog = MsgBox.Question("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore");
                 if (newVersionDialog == DialogResult.Yes)

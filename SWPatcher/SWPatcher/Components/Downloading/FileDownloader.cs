@@ -9,7 +9,7 @@ using SWPatcher.Helpers;
 
 namespace SWPatcher.Components.Downloading
 {
-    public class FileDownloader : Component
+    public class FileDownloader
     {
         private readonly WebClient _webClient;
         private readonly BackgroundWorker _worker;
@@ -17,27 +17,6 @@ namespace SWPatcher.Components.Downloading
         public FileDownloader()
         {
             _webClient = new WebClient();
-        }
-
-        public string AsString(string absoluteUri)
-        {
-            String stringData = null;
-            try
-            {
-
-                stringData = _webClient.DownloadString(absoluteUri);
-            }
-            catch (WebException)
-            {
-                DialogResult error = MsgBox.ErrorRetry("Could not connect to download server.\nTry again later.");
-                if (error == DialogResult.Retry)
-                    stringData = AsString(absoluteUri);
-                else
-                {
-
-                }
-            }
-            return stringData;
         }
     }
 }

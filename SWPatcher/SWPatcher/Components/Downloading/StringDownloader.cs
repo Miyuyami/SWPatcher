@@ -16,19 +16,22 @@ namespace SWPatcher.Components.Downloading
         public static string DownloadString(Uri uri)
         {
             string result = null;
-            try
+            using (WebClient webClient = new WebClient())
             {
-                result = _webClient.DownloadString(uri);
-            }
-            catch (WebException)
-            {
-                DialogResult error = MsgBox.ErrorRetry("Could not connect to download server.\nTry again later.");
-                if (error == DialogResult.Retry)
-                    result = DownloadString(uri);
-                else
+                try
                 {
-                    MsgBox.Error("It was impossible to connect to the server.\nThe application will now close.");
-                    return null;
+                    result = _webClient.DownloadString(uri);
+                }
+                catch (WebException)
+                {
+                    DialogResult error = MsgBox.ErrorRetry("Could not connect to download server.\nTry again later.");
+                    if (error == DialogResult.Retry)
+                        result = DownloadString(uri);
+                    else
+                    {
+                        MsgBox.Error("It was impossible to connect to the server.\nThe application will now close.");
+                        return null;
+                    }
                 }
             }
             return result;

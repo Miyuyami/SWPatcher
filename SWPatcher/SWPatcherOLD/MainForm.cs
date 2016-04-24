@@ -52,15 +52,41 @@ namespace SWPatcher
                     }
                 }
             }
-            if (comboBoxLanguages.Items.Count > 0)
+            System.Net.WebClient theWebClient = new System.Net.WebClient();
+            theWebClient.BaseAddress = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";
+            theWebClient.Proxy = null;
+            string tmpResult = string.Empty;
+            for (short i = 0; i < 2; i++)
             {
-                string lastchosenLanguage = PatcherSetting.IniReadValue("patcher", "s_translationlanguage");
-                if (string.IsNullOrEmpty(lastchosenLanguage))
-                    comboBoxLanguages.SelectedIndex = 0;
-                else
-                    comboBoxLanguages.SelectedItem = lastchosenLanguage;
-                lastchosenLanguage = null;
+                try
+                {
+                    tmpResult = theWebClient.DownloadString("Languages");
+                }
+                catch (System.Net.WebException webEx)
+                {
+                    if (((System.Net.HttpWebResponse)webEx.Response).StatusCode == System.Net.HttpStatusCode.NotFound)
+                        break;
+                }
+                if (string.IsNullOrEmpty(tmpResult) == false)
+                    break;
             }
+
+            if (string.IsNullOrEmpty(tmpResult) == false) // Double Check
+            {
+                string[] tbl_SupportLanguage = tmpResult.Split('\n');
+                foreach (string supportLanguage in tbl_SupportLanguage)
+                    comboBoxLanguages.Items.Add(supportLanguage);
+                if (comboBoxLanguages.Items.Count > 0)
+                {
+                    string lastchosenLanguage = PatcherSetting.IniReadValue("patcher", "s_translationlanguage");
+                    if (string.IsNullOrEmpty(lastchosenLanguage))
+                        comboBoxLanguages.SelectedIndex = 0;
+                    else
+                        comboBoxLanguages.SelectedItem = lastchosenLanguage;
+                    lastchosenLanguage = null;
+                }
+            }
+            theWebClient.Dispose(); // just in case (i'll always leave this at the end of method)
         }
 
         private void buttonResetSWFolder_Click(object sender, EventArgs e)

@@ -41,9 +41,18 @@ namespace SWPatcher
             using (WebClient webClient = new WebClient())
             {
                 webClient.BaseAddress = new Uri("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/").AbsoluteUri;
+                webClient.Proxy = null; //this will skip IE Proxy Setting
                 for (short i = 0; i < 2; i++)
                 {
-                    result = webClient.DownloadString("version");
+                    try
+                    {
+                        result = webClient.DownloadString("version");
+                    }
+                    catch (WebException webEx)
+                    {
+                        if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
+                            break;
+                    }
                     if (string.IsNullOrEmpty(result) == false)
                         break;
                 }

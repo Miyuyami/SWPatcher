@@ -8,6 +8,9 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Net;
 using System.Diagnostics;
+using System.IO;
+using SWPatcher.Helpers;
+using SWPatcher.Components.Downloading;
 
 namespace SWPatcher
 {
@@ -36,17 +39,15 @@ namespace SWPatcher
 
         private static bool NewPatcherUpdateAvailable()
         {
-            Uri patcherGitHubHome = new Uri("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/");
-            string patcherVersionFilePath = "version";
-            WebClient webClient = new WebClient();
-            webClient.BaseAddress = patcherGitHubHome.AbsoluteUri;
-            string patcherVersionFile = webClient.DownloadString(patcherVersionFilePath);
+            string patcherVersionFile = StringDownloader.DownloadString(new Uri(Uris.PatcherGitHubHome, Strings.FileNames.PatcherVersion));
+            if (String.IsNullOrEmpty(patcherVersionFile))
+                return true;
             string[] lines = patcherVersionFile.Split('\n');
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
             Version readVersion = new Version(lines[0]);
-            if (currentVersion.CompareTo(readVersion) < 0)
+            if (currentVersion.CompareTo(readVersion) <= 0)
             {
-                DialogResult newVersionDialog = MessageBox.Show("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore", "New Patcher Version Available!", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
+                DialogResult newVersionDialog = MsgBox.Question("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore");
                 if (newVersionDialog == DialogResult.Yes)
                 {
                     Process.Start(lines[1]);
@@ -54,7 +55,7 @@ namespace SWPatcher
                 }
                 else
                 {
-                    DialogResult newVersionDialog2 = MessageBox.Show("Are you sure you want to ignore the update?\nIt might cause unknown problems!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
+                    DialogResult newVersionDialog2 = MsgBox.Question("Are you sure you want to ignore the update?\nIt might cause unknown problems!");
                     if (newVersionDialog2 == DialogResult.No)
                     {
                         Process.Start(lines[1]);
@@ -70,13 +71,14 @@ namespace SWPatcher
         {
             if (!IsUserAdministrator())
             {
-                MessageBox.Show("You must run this application as administrator.", "Administrator rights", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
+                MsgBox.Default("You must run this application as administrator.", "Administrator rights", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (IsAppAlreadyRunning())
                 return;
             if (NewPatcherUpdateAvailable())
                 return;
+            Directory.SetCurrentDirectory(SWPatcher.Helpers.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());

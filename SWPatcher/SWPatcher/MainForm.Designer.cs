@@ -38,13 +38,13 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripSeparator = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.buttonExit = new System.Windows.Forms.Button();
-            this.buttonOpenBackupFolder = new System.Windows.Forms.Button();
-            this.buttonResetSWFolder = new System.Windows.Forms.Button();
             this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.buttonExit = new System.Windows.Forms.Button();
+            this.buttonManage = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -56,12 +56,12 @@
             this.buttonPatch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.tableLayoutPanel.SetColumnSpan(this.buttonPatch, 2);
             this.buttonPatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonPatch.Location = new System.Drawing.Point(115, 234);
+            this.buttonPatch.Location = new System.Drawing.Point(117, 235);
             this.buttonPatch.Name = "buttonPatch";
-            this.buttonPatch.Size = new System.Drawing.Size(133, 28);
-            this.buttonPatch.TabIndex = 0;
-            this.buttonPatch.Text = "Ready To Play!";
+            this.buttonPatch.Size = new System.Drawing.Size(130, 26);
+            this.buttonPatch.TabIndex = 3;
             this.buttonPatch.UseVisualStyleBackColor = true;
+            this.buttonPatch.Click += new System.EventHandler(this.buttonPatch_Click);
             // 
             // openSWDialog
             // 
@@ -73,12 +73,12 @@
             // 
             this.buttonLastest.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.tableLayoutPanel.SetColumnSpan(this.buttonLastest, 2);
-            this.buttonLastest.Location = new System.Drawing.Point(97, 191);
+            this.buttonLastest.Location = new System.Drawing.Point(107, 202);
             this.buttonLastest.Name = "buttonLastest";
-            this.buttonLastest.Size = new System.Drawing.Size(170, 28);
+            this.buttonLastest.Size = new System.Drawing.Size(150, 26);
             this.buttonLastest.TabIndex = 2;
-            this.buttonLastest.Text = "Get Latest Translations && Patch";
             this.buttonLastest.UseVisualStyleBackColor = true;
+            this.buttonLastest.Click += new System.EventHandler(this.buttonLastest_Click);
             // 
             // comboBoxLanguages
             // 
@@ -86,10 +86,10 @@
             this.tableLayoutPanel.SetColumnSpan(this.comboBoxLanguages, 2);
             this.comboBoxLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLanguages.FormattingEnabled = true;
-            this.comboBoxLanguages.Location = new System.Drawing.Point(103, 159);
+            this.comboBoxLanguages.Location = new System.Drawing.Point(112, 130);
             this.comboBoxLanguages.Name = "comboBoxLanguages";
-            this.comboBoxLanguages.Size = new System.Drawing.Size(157, 21);
-            this.comboBoxLanguages.TabIndex = 3;
+            this.comboBoxLanguages.Size = new System.Drawing.Size(140, 21);
+            this.comboBoxLanguages.TabIndex = 0;
             // 
             // notifyIcon1
             // 
@@ -98,6 +98,7 @@
             // 
             // menuStrip
             // 
+            this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -111,97 +112,75 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
             this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
+            this.statusStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripProgressBar1,
-            this.statusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 349);
+            this.toolStripProgressBar,
+            this.toolStripSeparator,
+            this.toolStripStatusLabel});
+            this.statusStrip.Location = new System.Drawing.Point(0, 339);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.statusStrip.Size = new System.Drawing.Size(364, 22);
             this.statusStrip.SizingGrip = false;
             this.statusStrip.TabIndex = 5;
             // 
-            // toolStripProgressBar1
+            // toolStripProgressBar
             // 
-            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar.Name = "toolStripProgressBar";
+            this.toolStripProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.toolStripProgressBar.Size = new System.Drawing.Size(160, 16);
+            this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             // 
-            // statusLabel
+            // toolStripSeparator
             // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 17);
+            this.toolStripSeparator.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripSeparator.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.toolStripSeparator.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.toolStripSeparator.Name = "toolStripSeparator";
+            this.toolStripSeparator.Size = new System.Drawing.Size(4, 22);
+            // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // tableLayoutPanel
             // 
+            this.tableLayoutPanel.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.tableLayoutPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.tableLayoutPanel.ColumnCount = 2;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.89606F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.10394F));
-            this.tableLayoutPanel.Controls.Add(this.buttonExit, 0, 5);
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel.Controls.Add(this.buttonPatch, 0, 4);
             this.tableLayoutPanel.Controls.Add(this.buttonLastest, 0, 3);
-            this.tableLayoutPanel.Controls.Add(this.comboBoxLanguages, 0, 2);
-            this.tableLayoutPanel.Controls.Add(this.buttonOpenBackupFolder, 0, 1);
-            this.tableLayoutPanel.Controls.Add(this.buttonResetSWFolder, 1, 1);
+            this.tableLayoutPanel.Controls.Add(this.comboBoxLanguages, 0, 1);
             this.tableLayoutPanel.Controls.Add(this.pictureBox, 0, 0);
+            this.tableLayoutPanel.Controls.Add(this.buttonExit, 0, 5);
+            this.tableLayoutPanel.Controls.Add(this.buttonManage, 0, 2);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
             this.tableLayoutPanel.Padding = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel.RowCount = 6;
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 122F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.5F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.5F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(364, 325);
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24F));
+            this.tableLayoutPanel.Size = new System.Drawing.Size(364, 315);
             this.tableLayoutPanel.TabIndex = 0;
-            // 
-            // buttonExit
-            // 
-            this.buttonExit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tableLayoutPanel.SetColumnSpan(this.buttonExit, 2);
-            this.buttonExit.Location = new System.Drawing.Point(132, 290);
-            this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(100, 28);
-            this.buttonExit.TabIndex = 6;
-            this.buttonExit.Text = "Exit";
-            this.buttonExit.UseVisualStyleBackColor = true;
-            // 
-            // buttonOpenBackupFolder
-            // 
-            this.buttonOpenBackupFolder.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonOpenBackupFolder.Location = new System.Drawing.Point(34, 130);
-            this.buttonOpenBackupFolder.Name = "buttonOpenBackupFolder";
-            this.buttonOpenBackupFolder.Size = new System.Drawing.Size(120, 21);
-            this.buttonOpenBackupFolder.TabIndex = 4;
-            this.buttonOpenBackupFolder.Text = "Open Backup Folder";
-            this.buttonOpenBackupFolder.UseVisualStyleBackColor = true;
-            // 
-            // buttonResetSWFolder
-            // 
-            this.buttonResetSWFolder.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonResetSWFolder.Location = new System.Drawing.Point(212, 130);
-            this.buttonResetSWFolder.Name = "buttonResetSWFolder";
-            this.buttonResetSWFolder.Size = new System.Drawing.Size(120, 21);
-            this.buttonResetSWFolder.TabIndex = 5;
-            this.buttonResetSWFolder.Text = "Reset SW Folder";
-            this.buttonResetSWFolder.UseVisualStyleBackColor = true;
             // 
             // pictureBox
             // 
+            this.pictureBox.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.tableLayoutPanel.SetColumnSpan(this.pictureBox, 2);
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox.Image = global::SWPatcher.Properties.Resources.logo;
@@ -211,13 +190,37 @@
             this.pictureBox.TabIndex = 7;
             this.pictureBox.TabStop = false;
             // 
+            // buttonExit
+            // 
+            this.buttonExit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tableLayoutPanel.SetColumnSpan(this.buttonExit, 2);
+            this.buttonExit.Location = new System.Drawing.Point(132, 280);
+            this.buttonExit.Name = "buttonExit";
+            this.buttonExit.Size = new System.Drawing.Size(100, 28);
+            this.buttonExit.TabIndex = 4;
+            this.buttonExit.Text = "Exit";
+            this.buttonExit.UseVisualStyleBackColor = true;
+            this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
+            // 
+            // buttonManage
+            // 
+            this.buttonManage.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tableLayoutPanel.SetColumnSpan(this.buttonManage, 2);
+            this.buttonManage.Location = new System.Drawing.Point(107, 164);
+            this.buttonManage.Name = "buttonManage";
+            this.buttonManage.Size = new System.Drawing.Size(150, 26);
+            this.buttonManage.TabIndex = 1;
+            this.buttonManage.Text = "Manage Additional Mods";
+            this.buttonManage.UseVisualStyleBackColor = true;
+            this.buttonManage.Click += new System.EventHandler(this.buttonManage_Click);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonPatch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
-            this.ClientSize = new System.Drawing.Size(364, 371);
+            this.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.ClientSize = new System.Drawing.Size(364, 361);
             this.Controls.Add(this.tableLayoutPanel);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
@@ -226,6 +229,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -248,12 +252,12 @@
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
-        private System.Windows.Forms.Button buttonOpenBackupFolder;
-        private System.Windows.Forms.Button buttonResetSWFolder;
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.PictureBox pictureBox;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripSeparator;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.Button buttonManage;
     }
 }
 

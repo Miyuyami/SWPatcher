@@ -9,6 +9,7 @@ namespace SWPatcher.Helpers
     {
         public static Uri SWHQWebsite { get { return new Uri("http://soulworkerhq.com/"); } }
         public static Uri PatcherGitHubHome { get { return new Uri("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/"); } }
+        public static Uri TranslationGitHubHome { get { return new Uri("https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/"); } }
         public static Uri SoulWorkerSettingsHome { get { return new Uri("http://down.hangame.co.jp/jp/purple/plii/j_sw/"); } }
     }
 }

@@ -10,7 +10,8 @@ using System.Net;
 using System.Diagnostics;
 using System.IO;
 using SWPatcher.Helpers;
-using SWPatcher.Components.Downloading;
+using SWPatcher.Downloading;
+using System.Globalization;
 
 namespace SWPatcher
 {
@@ -37,9 +38,9 @@ namespace SWPatcher
             return !mutex.WaitOne(TimeSpan.Zero, true);
         }
 
-        private static bool NewPatcherUpdateAvailable()
+        private static bool IsPatcherUpdateAvailable()
         {
-            string patcherVersionFile = StringDownloader.DownloadString(new Uri(Uris.PatcherGitHubHome, Strings.FileNames.PatcherVersion));
+            string patcherVersionFile = StringDownloader.DownloadString(new Uri(Uris.PatcherGitHubHome, Strings.FileName.PatcherVersion));
             if (String.IsNullOrEmpty(patcherVersionFile))
                 return true;
             string[] lines = patcherVersionFile.Split('\n');
@@ -69,15 +70,22 @@ namespace SWPatcher
         [STAThread]
         static void Main()
         {
+            /*IniReader r = new IniReader(@"C:\Users\Miyu\Documents\GitHub\SWHQPatcher\TranslationPackData.ini");
+            foreach (var v in r.GetSectionNames())
+            {
+                r.Section = v.ToString();
+                MessageBox.Show(Path.Combine(r.ReadString("path"), r.ReadString("format")) + v);
+            }
+            DateTime dt = DateTime.ParseExact("22/Apr/2016 7:00 PM", "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
+            MessageBox.Show(dt.ToString("dd MMMM yyyy h:mm tt"));*/
+            //return;
+            if (IsAppAlreadyRunning())
+                return;
             if (!IsUserAdministrator())
             {
                 MsgBox.Default("You must run this application as administrator.", "Administrator rights", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (IsAppAlreadyRunning())
-                return;
-            if (NewPatcherUpdateAvailable())
-                return;
             Directory.SetCurrentDirectory(SWPatcher.Helpers.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

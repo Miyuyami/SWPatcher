@@ -7,7 +7,7 @@ using System.Net;
 using System.Windows.Forms;
 using SWPatcher.Helpers;
 
-namespace SWPatcher.Components.Downloading
+namespace SWPatcher.Downloading
 {
     public class FileDownloader
     {

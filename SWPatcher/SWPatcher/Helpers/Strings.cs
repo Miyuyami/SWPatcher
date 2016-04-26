@@ -7,38 +7,73 @@ namespace SWPatcher.Helpers
 {
     public static class Strings
     {
-        public static class FileExtentionNames
+        public static class FileExtentionName
         {
-            public static string V { get { return ".v"; } }
-            public static string Txt { get { return ".txt"; } }
-            public static string Res { get { return ".res"; } }
-            public static string Exe { get { return ".exe"; } }
-            public static string Ini { get { return ".ini"; } }
-            public static string Zip { get { return ".zip"; } }
+            public const string V = ".v";
+            public const string Txt = ".txt";
+            public const string Res = ".res";
+            public const string Exe = ".exe";
+            public const string Ini = ".ini";
+            public const string Zip = ".zip";
         }
 
-        public static class FileNames
+        public static class FileName
         {
-            public static string GameExe { get { return "SoulWorker100" + FileExtentionNames.Exe; } }
-            public static string ServerVer { get { return "ServerVer" + FileExtentionNames.Ini; } }
-            public static string ClientVer { get { return "Ver" + FileExtentionNames.Ini; } }
-            public static string TranslationVer { get { return "TranslationVer" + FileExtentionNames.Ini; } }
-            public static string PatcherData { get { return "PatcherData"; } }
-            public static string Languages { get { return "Languages"; } }
-            public static string PatcherVersion { get { return "version"; } }
+            public const string PatcherVersion = "version.ini";
+            public const string GameExe = "SoulWorker100.exe";
+            public const string ServerVer = "ServerVer.ini";
+            public const string ClientVer = "Ver.ini";
+            public const string TranslationVer = "TranslationVer.ini";
+            public const string LanguagePack = "LanguagePacks.ini";
+            public const string TranslationPackData = "TranslationPackData.ini";
+            public const string OtherTranslationPackData = "OtherTranslationPackData.ini";
         }
 
-        public static class FolderNames
+        public static class FolderName
         {
-            public static string Patcher { get { return "SWPatcher"; } }
-            public static string Datas { get { return "datas"; } }
-            public static string Back { get { return "backup"; } }
+            public const string Patcher = "SWPatcher";
+            public const string Data = "datas";
+            public const string Backup = "backup";
         }
 
-        public static class IniNames
+        public static class IniName
         {
-            public static string Section { get { return "Client"; } }
-            public static string Key { get { return "ver"; } }
+            public static class Ver
+            {
+                public const string Section = "Client";
+                public const string Key = "ver";
+            }
+
+            public static class Patcher
+            {
+                public const string Section = "Patcher";
+                public const string KeyVer = "ver";
+                public const string KeyAddress = "address";
+            }
+
+            public static class Pack
+            {
+                public const string KeyDate = "date";
+                public const string KeyName = "name";
+                public const string KeyPathA = "path_a";
+                public const string KeyPath = "path";
+                public const string KeyFormat = "format";
+            }
+        }
+
+        public static class FormText
+        {
+            public const string Download = "Download Translations";
+            public const string Patch = "Ready To Play!";
+            public const string Cancel = "Cancel";
+
+            public static class Status
+            {
+                public const string Idle = "Ready";
+                public const string Check = "Checking version...";
+                public const string Download = "Downloading...";
+                public const string Patch = "Patching...";
+            }
         }
     }
 }

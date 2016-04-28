@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVars;
+using System.Net;
+using SWPatcher.General;
+using System.Diagnostics;
 
 namespace SWPatcher
 {
@@ -20,8 +24,7 @@ namespace SWPatcher
             Patching
         }
 
-        private readonly ModsManagerForm managerForm;
-        
+        private readonly BackgroundWorker Worker;
         private States _state;
 
         public States State
@@ -84,9 +87,8 @@ namespace SWPatcher
 
         public MainForm()
         {
-            managerForm = new ModsManagerForm();
             InitializeComponent();
-            Text = AssemblyAccessor.AssemblyTitle;
+            Text = AssemblyAccessor.Title;
             buttonLastest.Text = Strings.FormText.Download;
             buttonPatch.Text = Strings.FormText.Patch;
             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
@@ -100,22 +102,55 @@ namespace SWPatcher
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            CheckForProgramUpdate();
+            PopulateList();
+        }
 
+        private void CheckForProgramUpdate()
+        {
+            using (var client = new WebClient())
+            using (var file = new TempFile())
+            {
+                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.PatcherVersion, file.Path);
+                IniReader ini = new IniReader(file.Path);
+                Version current = new Version(AssemblyAccessor.Version);
+                Version read = new Version(ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer));
+                if (current.CompareTo(read) <= 0)
+                {
+                    string address = ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyAddress);
+                    DialogResult newVersionDialog = MsgBox.Question("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore");
+                    if (newVersionDialog == DialogResult.Yes)
+                    {
+                        Process.Start(address);
+                        this.Close();
+                    }
+                    else
+                    {
+                        DialogResult newVersionDialog2 = MsgBox.Question("Are you sure you want to ignore the update?\nIt might cause unknown problems!");
+                        if (newVersionDialog2 == DialogResult.No)
+                        {
+                            Process.Start(address);
+                        this.Close();
+                        }
+                    }
+                }
+            }
         }
 
         private void buttonManage_Click(object sender, EventArgs e)
         {
-        
+            ModsManagerForm modsManagerForm = new ModsManagerForm();
+            modsManagerForm.ShowDialog();
         }
 
         private void buttonLastest_Click(object sender, EventArgs e)
         {
-        
+            
         }
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
-        
+            
         }
 
         private void buttonExit_Click(object sender, EventArgs e)

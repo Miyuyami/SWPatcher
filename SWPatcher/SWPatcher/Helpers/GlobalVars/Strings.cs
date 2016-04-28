@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SWPatcher.Helpers
+﻿
+namespace SWPatcher.Helpers.GlobalVars
 {
     public static class Strings
     {
@@ -19,14 +15,7 @@ namespace SWPatcher.Helpers
 
         public static class FileName
         {
-            public const string PatcherVersion = "version.ini";
             public const string GameExe = "SoulWorker100.exe";
-            public const string ServerVer = "ServerVer.ini";
-            public const string ClientVer = "Ver.ini";
-            public const string TranslationVer = "TranslationVer.ini";
-            public const string LanguagePack = "LanguagePacks.ini";
-            public const string TranslationPackData = "TranslationPackData.ini";
-            public const string OtherTranslationPackData = "OtherTranslationPackData.ini";
         }
 
         public static class FolderName
@@ -38,6 +27,13 @@ namespace SWPatcher.Helpers
 
         public static class IniName
         {
+            public const string PatcherVersion = "version.ini";
+            public const string ServerVer = "ServerVer.ini";
+            public const string ClientVer = "Ver.ini";
+            public const string TranslationVer = "TranslationVer.ini";
+            public const string LanguagePack = "LanguagePacks.ini";
+            public const string TranslationPackData = "TranslationPackData.ini";
+            public const string OtherTranslationPackData = "OtherTranslationPackData.ini";
             public static class Ver
             {
                 public const string Section = "Client";

@@ -14,17 +14,17 @@ namespace SWPatcher
         public AboutBox()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyAccessor.AssemblyTitle);
-            this.labelProductName.Text = AssemblyAccessor.AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyAccessor.AssemblyVersion);
-            this.textBoxDescription.Text = AssemblyAccessor.AssemblyDescription;
-            this.linkLabelWebsite.Links.Add(0, 17, Helpers.Uris.SWHQWebsite.AbsoluteUri);
+            this.Text = String.Format("About {0}", AssemblyAccessor.Title);
+            this.labelProductName.Text = AssemblyAccessor.Product;
+            this.labelVersion.Text = String.Format("Version {0}", AssemblyAccessor.Version);
+            this.textBoxDescription.Text = AssemblyAccessor.Description;
+            this.linkLabelWebsite.Links.Add(0, 17, Helpers.Uris.SWHQWebsite);
         }
 
         private void linkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             linkLabelWebsite.LinkVisited = true;
-            System.Diagnostics.Process.Start(Helpers.Uris.SWHQWebsite.AbsoluteUri);
+            System.Diagnostics.Process.Start(Helpers.Uris.SWHQWebsite);
         }
     }
 }

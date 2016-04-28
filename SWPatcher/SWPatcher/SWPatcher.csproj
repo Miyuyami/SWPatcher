@@ -81,19 +81,17 @@
     <Compile Include="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\Downloading\TranslationDownloader.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Downloading\FileDownloader.cs" />
-    <Compile Include="Downloading\StringDownloader.cs" />
+    <Compile Include="Downloading\Downloader.cs" />
     <Compile Include="General\File.cs" />
-    <Compile Include="General\InsideFile.cs" />
+    <Compile Include="General\ArchiveFile.cs" />
     <Compile Include="General\Table.cs" />
-    <Compile Include="Helpers\AssemblyAccessor.cs" />
-    <Compile Include="Helpers\Strings.cs" />
+    <Compile Include="General\TempFile.cs" />
+    <Compile Include="Helpers\GlobalData.cs" />
+    <Compile Include="Helpers\GlobalVars\Assembly.cs" />
+    <Compile Include="Helpers\GlobalVars\Strings.cs" />
     <Compile Include="Helpers\MsgBox.cs" />
-    <Compile Include="Helpers\Paths.cs" />
-    <Compile Include="Helpers\Uris.cs" />
+    <Compile Include="Helpers\GlobalVars\Paths.cs" />
+    <Compile Include="Helpers\GlobalVars\Uris.cs" />
     <Compile Include="IniReader.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -186,7 +184,8 @@
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\Patching\" />
+    <Folder Include="Helpers\GlobalData\" />
+    <Folder Include="Patching\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -6,8 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVars;
 
-namespace SWPatcher
+namespace SWPatcher.Forms
 {
     partial class AboutBox : Form
     {
@@ -18,13 +19,13 @@ namespace SWPatcher
             this.labelProductName.Text = AssemblyAccessor.Product;
             this.labelVersion.Text = String.Format("Version {0}", AssemblyAccessor.Version);
             this.textBoxDescription.Text = AssemblyAccessor.Description;
-            this.linkLabelWebsite.Links.Add(0, 17, Helpers.Uris.SWHQWebsite);
+            this.linkLabelWebsite.Links.Add(0, 17, Uris.SWHQWebsite);
         }
 
         private void linkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             linkLabelWebsite.LinkVisited = true;
-            System.Diagnostics.Process.Start(Helpers.Uris.SWHQWebsite);
+            System.Diagnostics.Process.Start(Uris.SWHQWebsite);
         }
     }
 }

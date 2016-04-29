@@ -51,7 +51,7 @@ namespace SWPatcher.Helpers.GlobalVars
             {
                 public const string KeyDate = "date";
                 public const string KeyName = "name";
-                public const string KeyPathA = "path_a";
+                public const string KeyPathToArchive = "path_a";
                 public const string KeyPath = "path";
                 public const string KeyFormat = "format";
             }

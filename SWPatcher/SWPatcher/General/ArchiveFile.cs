@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SWPatcher.General
 {
-    public class ArchiveFile : File
+    public class ArchiveFile : SWFile
     {
         public string PathInArchive { get; private set; }
 

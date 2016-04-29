@@ -6,6 +6,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
+using SWPatcher.Forms;
 
 namespace SWPatcher
 {
@@ -47,13 +48,13 @@ namespace SWPatcher
                 return;
             if (!IsUserAdministrator())
             {
-                SWPatcher.Helpers.MsgBox.Default("You must run this application as administrator.", "Administrator rights", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SWPatcher.Helpers.MsgBox.Error("You must run this application as administrator.");
                 return;
             }
             Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVars.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new Main());
             mutex.ReleaseMutex();
         }
     }

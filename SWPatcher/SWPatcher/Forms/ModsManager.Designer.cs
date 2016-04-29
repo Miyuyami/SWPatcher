@@ -1,6 +1,6 @@
-﻿namespace SWPatcher
+﻿namespace SWPatcher.Forms
 {
-    partial class ModsManagerForm
+    partial class ModsManager
     {
         /// <summary>
         /// Required designer variable.
@@ -28,23 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // ModsManagerForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.ClientSize = new System.Drawing.Size(333, 284);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "ModsManagerForm";
-            this.ResumeLayout(false);
-
+            this.Text = "ModsManagerForm";
         }
 
         #endregion
-
     }
 }
-

@@ -1,6 +1,6 @@
-﻿namespace SWPatcher
+﻿namespace SWPatcher.Forms
 {
-    partial class MainForm
+    partial class Main
     {
         /// <summary>
         /// Required designer variable.
@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.buttonPatch = new System.Windows.Forms.Button();
-            this.openSWDialog = new System.Windows.Forms.OpenFileDialog();
             this.buttonLastest = new System.Windows.Forms.Button();
             this.comboBoxLanguages = new System.Windows.Forms.ComboBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -63,12 +63,6 @@
             this.buttonPatch.UseVisualStyleBackColor = true;
             this.buttonPatch.Click += new System.EventHandler(this.buttonPatch_Click);
             // 
-            // openSWDialog
-            // 
-            this.openSWDialog.FileName = "SoulWorker100";
-            this.openSWDialog.Filter = "Client|SoulWorker100.exe";
-            this.openSWDialog.RestoreDirectory = true;
-            // 
             // buttonLastest
             // 
             this.buttonLastest.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -93,19 +87,26 @@
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "SW Patcher";
             // 
             // menuStrip
             // 
             this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(364, 24);
             this.menuStrip.TabIndex = 4;
             this.menuStrip.Text = "menuStrip1";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -245,7 +246,6 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
         private System.Windows.Forms.Button buttonPatch;
-        private System.Windows.Forms.OpenFileDialog openSWDialog;
         private System.Windows.Forms.Button buttonLastest;
         private System.Windows.Forms.ComboBox comboBoxLanguages;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
@@ -258,6 +258,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripSeparator;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.Button buttonManage;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
     }
 }
 

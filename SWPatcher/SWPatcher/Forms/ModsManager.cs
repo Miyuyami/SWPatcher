@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SWPatcher
+namespace SWPatcher.Forms
 {
-    public partial class ModsManagerForm : Form
+    public partial class ModsManager : Form
     {
-        public ModsManagerForm()
+        public ModsManager()
         {
             InitializeComponent();
         }

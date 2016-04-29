@@ -1,4 +1,4 @@
-﻿namespace SWPatcher
+﻿namespace SWPatcher.Forms
 {
     partial class AboutBox
     {

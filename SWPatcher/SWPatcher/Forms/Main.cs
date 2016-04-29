@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Net;
 using System.Windows.Forms;
+using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVars;
-using System.Net;
-using SWPatcher.General;
-using System.Diagnostics;
+using System.IO;
+using System.Collections.Generic;
 
-namespace SWPatcher
+namespace SWPatcher.Forms
 {
-    public partial class MainForm : Form
+    public partial class Main : Form
     {
         public enum States
         {
@@ -24,6 +21,7 @@ namespace SWPatcher
             Patching
         }
 
+        private List<SWFile> FileList;
         private readonly BackgroundWorker Worker;
         private States _state;
 
@@ -85,7 +83,7 @@ namespace SWPatcher
             }
         }
 
-        public MainForm()
+        public Main()
         {
             InitializeComponent();
             Text = AssemblyAccessor.Title;
@@ -94,68 +92,52 @@ namespace SWPatcher
             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
         }
 
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            settings.ShowDialog(this);
+        }
+
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutBox aboutBox = new AboutBox();
-            aboutBox.ShowDialog();
+            aboutBox.ShowDialog(this);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            CheckForProgramUpdate();
-            PopulateList();
-        }
-
-        private void CheckForProgramUpdate()
-        {
-            using (var client = new WebClient())
-            using (var file = new TempFile())
-            {
-                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.PatcherVersion, file.Path);
-                IniReader ini = new IniReader(file.Path);
-                Version current = new Version(AssemblyAccessor.Version);
-                Version read = new Version(ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer));
-                if (current.CompareTo(read) <= 0)
-                {
-                    string address = ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyAddress);
-                    DialogResult newVersionDialog = MsgBox.Question("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore");
-                    if (newVersionDialog == DialogResult.Yes)
-                    {
-                        Process.Start(address);
-                        this.Close();
-                    }
-                    else
-                    {
-                        DialogResult newVersionDialog2 = MsgBox.Question("Are you sure you want to ignore the update?\nIt might cause unknown problems!");
-                        if (newVersionDialog2 == DialogResult.No)
-                        {
-                            Process.Start(address);
-                        this.Close();
-                        }
-                    }
-                }
-            }
+            RestoreBackup();
+            if (CheckForProgramUpdate())
+                return;
+            if (CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)))
+                return;
+            if (CheckForSWPath())
+                return;
+            if (CheckForGameClientUpdate())
+                return;
+            if (PopulateList())
+                return;
         }
 
         private void buttonManage_Click(object sender, EventArgs e)
         {
-            ModsManagerForm modsManagerForm = new ModsManagerForm();
-            modsManagerForm.ShowDialog();
+            ModsManager modsManager = new ModsManager();
+            modsManager.ShowDialog(this);
         }
 
         private void buttonLastest_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
         {
-            Close();
+            this.Close();
         }
     }
 }

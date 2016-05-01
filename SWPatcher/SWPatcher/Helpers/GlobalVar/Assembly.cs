@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace SWPatcher.Helpers.GlobalVars
+namespace SWPatcher.Helpers.GlobalVar
 {
     public static class AssemblyAccessor
     {

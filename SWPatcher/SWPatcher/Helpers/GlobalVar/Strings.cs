@@ -1,5 +1,5 @@
 ﻿
-namespace SWPatcher.Helpers.GlobalVars
+namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
     {
@@ -20,7 +20,6 @@ namespace SWPatcher.Helpers.GlobalVars
 
         public static class FolderName
         {
-            public const string Patcher = "SWPatcher";
             public const string Data = "datas";
             public const string Backup = "backup";
         }

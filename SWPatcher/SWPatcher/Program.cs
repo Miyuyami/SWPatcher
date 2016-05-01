@@ -36,14 +36,6 @@ namespace SWPatcher
         [STAThread]
         static void Main()
         {
-            /*IniReader r = new IniReader(@"C:\Users\Miyu\Documents\GitHub\SWHQPatcher\TranslationPackData.ini");
-            foreach (var v in r.GetSectionNames())
-            {
-                r.Section = v.ToString();
-                MessageBox.Show(Path.Combine(r.ReadString("path"), r.ReadString("format")) + v);
-            }
-            DateTime dt = DateTime.ParseExact("22/Apr/2016 7:00 PM", "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
-            MessageBox.Show(dt.ToString("dd MMMM yyyy h:mm tt"));*/
             if (IsAppAlreadyRunning())
                 return;
             if (!IsUserAdministrator())
@@ -51,7 +43,7 @@ namespace SWPatcher
                 SWPatcher.Helpers.MsgBox.Error("You must run this application as administrator.");
                 return;
             }
-            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVars.Paths.PatcherRoot);
+            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());

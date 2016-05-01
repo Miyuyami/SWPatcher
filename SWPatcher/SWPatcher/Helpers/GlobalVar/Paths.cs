@@ -1,6 +1,6 @@
 ﻿using SWPatcher.Properties;
 
-namespace SWPatcher.Helpers.GlobalVars
+namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Paths
     {

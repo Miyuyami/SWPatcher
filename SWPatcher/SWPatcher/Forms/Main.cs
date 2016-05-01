@@ -5,9 +5,12 @@ using System.Net;
 using System.Windows.Forms;
 using SWPatcher.General;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVars;
+using SWPatcher.Helpers.GlobalVar;
 using System.IO;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SWPatcher.Forms
 {
@@ -21,7 +24,7 @@ namespace SWPatcher.Forms
             Patching
         }
 
-        private List<SWFile> FileList;
+        private readonly List<SWFile> SWFiles;
         private readonly BackgroundWorker Worker;
         private States _state;
 
@@ -39,7 +42,6 @@ namespace SWPatcher.Forms
                     {
                         case States.Idle:
                             comboBoxLanguages.Enabled = true;
-                            buttonManage.Enabled = true;
                             buttonLastest.Enabled = true;
                             buttonLastest.Text = Strings.FormText.Download;
                             buttonPatch.Enabled = true;
@@ -49,7 +51,6 @@ namespace SWPatcher.Forms
                             break;
                         case States.CheckingVersion:
                             comboBoxLanguages.Enabled = false;
-                            buttonManage.Enabled = false;
                             buttonLastest.Enabled = false;
                             buttonLastest.Text = Strings.FormText.Download;
                             buttonPatch.Enabled = false;
@@ -59,7 +60,6 @@ namespace SWPatcher.Forms
                             break;
                         case States.Downloading:
                             comboBoxLanguages.Enabled = false;
-                            buttonManage.Enabled = false;
                             buttonLastest.Enabled = true;
                             buttonLastest.Text = Strings.FormText.Cancel;
                             buttonPatch.Enabled = false;
@@ -69,7 +69,6 @@ namespace SWPatcher.Forms
                             break;
                         case States.Patching:
                             comboBoxLanguages.Enabled = false;
-                            buttonManage.Enabled = false;
                             buttonLastest.Enabled = false;
                             buttonLastest.Text = Strings.FormText.Download;
                             buttonPatch.Enabled = true;
@@ -85,17 +84,12 @@ namespace SWPatcher.Forms
 
         public Main()
         {
+            SWFiles = new List<SWFile>();
             InitializeComponent();
-            Text = AssemblyAccessor.Title;
+            Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
             buttonLastest.Text = Strings.FormText.Download;
             buttonPatch.Text = Strings.FormText.Patch;
             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
-        }
-
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings settings = new Settings();
-            settings.ShowDialog(this);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -107,27 +101,17 @@ namespace SWPatcher.Forms
         private void MainForm_Load(object sender, EventArgs e)
         {
             RestoreBackup();
-            if (CheckForProgramUpdate())
+            if (CheckForProgramUpdate() || CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)) || CheckForSWPath() || CheckForGameClientUpdate() || (comboBoxLanguages.DataSource = GetAllAvailableLanguages()) == null)
                 return;
-            if (CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)))
-                return;
-            if (CheckForSWPath())
-                return;
-            if (CheckForGameClientUpdate())
-                return;
-            if (PopulateList())
-                return;
-        }
-
-        private void buttonManage_Click(object sender, EventArgs e)
-        {
-            ModsManager modsManager = new ModsManager();
-            modsManager.ShowDialog(this);
         }
 
         private void buttonLastest_Click(object sender, EventArgs e)
         {
-
+            //Updater.run()
+            if (IsNewerTranslationVersion(this.comboBoxLanguages.SelectedItem.ToString()))
+            {
+                
+            }
         }
 
         private void buttonPatch_Click(object sender, EventArgs e)

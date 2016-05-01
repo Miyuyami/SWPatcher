@@ -4,10 +4,12 @@ using System.Net;
 using System.Windows.Forms;
 using SWPatcher.General;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVars;
+using SWPatcher.Helpers.GlobalVar;
 using System.IO;
 using Ionic.Zip;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace SWPatcher.Forms
 {
@@ -28,8 +30,8 @@ namespace SWPatcher.Forms
                 {
                     MsgBox.Error("The program cannot run without an internet connection and will now close.");
                     this.Close();
+                    return true;
                 }
-                return true;
             }
         }
 
@@ -143,10 +145,8 @@ namespace SWPatcher.Forms
         {
             try
             {
-                Version serverVersion = GetServerVersion();
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
-                Version clientVersion = new Version(clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
-                return serverVersion > clientVersion;
+                return VersionCompare(GetServerVersion(), clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
             }
             catch (WebException)
             {
@@ -161,7 +161,14 @@ namespace SWPatcher.Forms
             }
         }
 
-        private Version GetServerVersion()
+        private static bool VersionCompare(string ver1, string ver2)
+        {
+            Version v1 = new Version(ver1);
+            Version v2 = new Version(ver2);
+            return v1 > v2;
+        }
+
+        private static string GetServerVersion()
         {
             using (var client = new WebClient())
             using (var zippedFile = new TempFile())
@@ -176,66 +183,101 @@ namespace SWPatcher.Forms
                         entry.Extract(Path.GetDirectoryName(file.Path), ExtractExistingFileAction.OverwriteSilently);
                     }
                     IniReader serverIni = new IniReader(file.Path);
-                    return new Version(serverIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
+                    return serverIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key);
                 }
             }
         }
 
-        private bool PopulateList()
+        private static bool IsSWPath(string path)
         {
-            this.FileList = new List<SWFile>();
+            return Directory.Exists(path) && Directory.Exists(Path.Combine(path, Strings.FolderName.Data)) && File.Exists(Path.Combine(path, Strings.FileName.GameExe)) && File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
+        }
+
+        private static void RestoreBackup()
+        {
+            if (Directory.Exists(Strings.FolderName.Backup))
+            {
+                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+                if (!string.IsNullOrEmpty(Paths.GameRoot) && IsSWPath(Paths.GameRoot))
+                    foreach (var s in filePaths)
+                    {
+                        string path = Path.Combine(Paths.GameRoot, s.Substring(Strings.FolderName.Backup.Length));
+                        if (File.Exists(path))
+                            File.Delete(path);
+                        File.Move(s, path);
+                    }
+                else
+                    foreach (var s in filePaths)
+                        File.Delete(s);
+            }
+            else
+                Directory.CreateDirectory(Strings.FolderName.Backup);
+        }
+
+        private bool IsNewerTranslationVersion(string lang)
+        {
+            string directoryPath = Path.Combine(Paths.PatcherRoot, lang);
+            if (!Directory.Exists(directoryPath))
+                return true;
+            string filePath = Path.Combine(directoryPath, Strings.IniName.TranslationVer);
+            if (!File.Exists(filePath))
+                return true;
+            IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, lang));
+            if (DateCompare(GetTranslationDate(lang), translationIni.ReadString(lang, Strings.IniName.Pack.KeyDate)))
+                return true;
+            return false;
+        }
+
+        private static bool DateCompare(string date1, string date2)
+        {
+            DateTime d1 = DateTime.ParseExact(date1, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
+            DateTime d2 = DateTime.ParseExact(date2, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
+            return d1 > d2;
+        }
+
+        private static string GetTranslationDate(string lang)
+        {
+            using (var client = new WebClient())
+            using (var file = new TempFile())
+            {
+                client.DownloadFile(Uris.PatcherGitHubHome + lang + Strings.IniName.TranslationVer, file.Path);
+                IniReader translationIni = new IniReader(file.Path);
+                return translationIni.ReadString(lang, Strings.IniName.Pack.KeyDate);
+            }
+        }
+
+        private Language[] GetAllAvailableLanguages()
+        {
             try
             {
-                bool flag1 = AddTranslationPackDataToList(this.FileList);
-                bool flag2 = AddOtherTranslationPackDataToList(this.FileList);
-                return flag1 || flag2;
+                return GetAvailableLanguages();
             }
             catch (WebException)
             {
                 DialogResult result = MsgBox.ErrorRetry("Could not connect to download server.\nTry again later.");
                 if (result == DialogResult.Retry)
-                    return PopulateList();
+                    return GetAllAvailableLanguages();
                 else
                 {
                     MsgBox.Error("The program cannot run without an internet connection and will now close.");
                     this.Close();
+                    return null;
                 }
-                return true;
             }
         }
 
-        private bool AddTranslationPackDataToList(List<SWFile> list)
+        private static Language[] GetAvailableLanguages()
         {
-            throw new NotImplementedException();
-        }
-
-        private bool AddOtherTranslationPackDataToList(List<SWFile> list)
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool IsSWPath(string path)
-        {
-            return Directory.Exists(path) && Directory.Exists(Path.Combine(path, Strings.FolderName.Data)) && File.Exists(Path.Combine(path, Strings.FileName.GameExe)) && File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
-        }
-
-        private void RestoreBackup()
-        {
-            DirectoryInfo backup = new DirectoryInfo(Strings.FolderName.Backup);
-            if (backup.Exists)
+            List<Language> langs = new List<Language>();
+            using (var client = new WebClient())
+            using (var file = new TempFile())
             {
-                FileInfo[] files = backup.GetFiles("*", SearchOption.AllDirectories);
-                if (string.IsNullOrEmpty(Paths.GameRoot) && IsSWPath(Paths.GameRoot))
-                    foreach (var s in files)
-                    {
-                        FileInfo 
-                    }
-                else
-                    foreach (var s in filePaths)
-                        File.Delete(s.FullName);
+                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
+                IniReader langIni = new IniReader(file.Path);
+                foreach (var s in langIni.GetSectionNames())
+                    langs.Add(new Language(s.ToString(), DateTime.ParseExact(langIni.ReadString(s.ToString(), Strings.IniName.Pack.KeyDate), "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture)));
             }
-            else
-                backup.Create();
+            return langs.ToArray();
         }
     }
 }

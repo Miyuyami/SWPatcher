@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVars;
+using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Forms
 {

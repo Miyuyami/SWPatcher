@@ -82,10 +82,11 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Downloading\Downloader.cs" />
+    <Compile Include="Forms\Main.BgwrkEvents.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="General\Language.cs" />
     <Compile Include="General\SWFile.cs" />
-    <Compile Include="General\ArchiveFile.cs" />
-    <Compile Include="General\Table.cs" />
     <Compile Include="General\TempFile.cs" />
     <Compile Include="Helpers\GlobalVar\Assembly.cs" />
     <Compile Include="Helpers\GlobalVar\Strings.cs" />
@@ -180,6 +181,7 @@
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Components\" />
     <Folder Include="Patching\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

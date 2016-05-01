@@ -49,9 +49,9 @@ namespace SWPatcher.Helpers.GlobalVar
             public static class Pack
             {
                 public const string KeyDate = "date";
-                public const string KeyName = "name";
-                public const string KeyPathToArchive = "path_a";
                 public const string KeyPath = "path";
+                public const string KeyPathInArchive = "path_a";
+                public const string KeyPathOfDownload = "path_d";
                 public const string KeyFormat = "format";
             }
         }

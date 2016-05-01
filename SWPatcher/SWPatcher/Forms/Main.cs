@@ -24,8 +24,9 @@ namespace SWPatcher.Forms
             Patching
         }
 
+        private readonly BackgroundWorker WorkerLatest;
+        private readonly BackgroundWorker WorkerPatch;
         private readonly List<SWFile> SWFiles;
-        private readonly BackgroundWorker Worker;
         private States _state;
 
         public States State
@@ -85,6 +86,22 @@ namespace SWPatcher.Forms
         public Main()
         {
             SWFiles = new List<SWFile>();
+            WorkerLatest = new BackgroundWorker
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+            WorkerLatest.DoWork += new DoWorkEventHandler(workerLatest_DoWork);
+            WorkerLatest.ProgressChanged += new ProgressChangedEventHandler(workerLatest_ProgressChanged);
+            WorkerLatest.RunWorkerCompleted += new RunWorkerCompletedEventHandler(workerLatest_RunWorkerCompleted);
+            WorkerPatch = new BackgroundWorker
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+            WorkerPatch.DoWork += new DoWorkEventHandler(workerPatch_DoWork);
+            WorkerPatch.ProgressChanged += new ProgressChangedEventHandler(workerPatch_ProgressChanged);
+            WorkerPatch.RunWorkerCompleted += new RunWorkerCompletedEventHandler(workerPatch_RunWorkerCompleted);
             InitializeComponent();
             Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
             buttonLastest.Text = Strings.FormText.Download;
@@ -107,16 +124,13 @@ namespace SWPatcher.Forms
 
         private void buttonLastest_Click(object sender, EventArgs e)
         {
-            //Updater.run()
-            if (IsNewerTranslationVersion(this.comboBoxLanguages.SelectedItem.ToString()))
-            {
-                
-            }
+            this.State = States.Downloading;
+            WorkerLatest.RunWorkerAsync(this.comboBoxLanguages.SelectedItem.ToString());
         }
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
-
+            WorkerPatch.RunWorkerAsync(this.comboBoxLanguages.SelectedItem.ToString());
         }
 
         private void buttonExit_Click(object sender, EventArgs e)

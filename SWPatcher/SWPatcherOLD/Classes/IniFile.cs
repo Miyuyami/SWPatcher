@@ -126,6 +126,11 @@ namespace SWPatcher.Ini
                 return new System.Collections.ObjectModel.ReadOnlyCollection<string>(this.o_Sections.Keys.ToList());
             }
         }
+
+        public int SectionCount
+        {
+            get { return this.o_Sections.Keys.Count; }
+        }
         #endregion
 
         #region "Private Methods"
@@ -145,22 +150,21 @@ namespace SWPatcher.Ini
             int pumBuffer;
             while ((pumBuffer = Stream.Read()) != -1)
             {
-                //pumBuffer = Stream.Read();
-                if (!string.IsNullOrWhiteSpace(lineBuffer) && ((char)pumBuffer == '\n'))
+                if (((char)pumBuffer == '\n'))
                 {
-                    //System.Windows.Forms.MessageBox.Show(lineBuffer);
-                    if (lineBuffer.StartsWith("[") && lineBuffer.EndsWith("]"))
-                    {
-                        sectionBuffer = new IniSection(false);
-                        this.o_Sections.Add(lineBuffer.Substring(1, lineBuffer.Length - 2), sectionBuffer);
-                        lineBuffer = string.Empty;
-                    }
-                    else if (lineBuffer.IndexOf("=") > -1)
-                    {
-                        splitBuffer = lineBuffer.Split('=');
-                        sectionBuffer.IniKeyValues.Add(splitBuffer[0].Trim(), new IniKeyValue(splitBuffer[1].Trim()));
-                        lineBuffer = string.Empty;
-                    }
+                    if (!string.IsNullOrWhiteSpace(lineBuffer)) // move this line here because no need to check for every read char
+                        if (lineBuffer.StartsWith("[") && lineBuffer.EndsWith("]"))
+                        {
+                            sectionBuffer = new IniSection(false);
+                            this.o_Sections.Add(lineBuffer.Substring(1, lineBuffer.Length - 2), sectionBuffer);
+                            lineBuffer = string.Empty;
+                        }
+                        else if (lineBuffer.IndexOf("=") > -1)
+                        {
+                            splitBuffer = lineBuffer.Split('=');
+                            sectionBuffer.IniKeyValues.Add(splitBuffer[0].Trim(), new IniKeyValue(splitBuffer[1].Trim()));
+                            lineBuffer = string.Empty;
+                        }
                 }
                 else if ((char)pumBuffer == '\r')
                 { }

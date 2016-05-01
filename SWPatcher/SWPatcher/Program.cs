@@ -1,17 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using System.ComponentModel;
-using System.Net;
-using System.Diagnostics;
-using System.IO;
-using SWPatcher.Helpers;
-using SWPatcher.Downloading;
-using System.Globalization;
+using SWPatcher.Forms;
 
 namespace SWPatcher
 {
@@ -38,35 +33,6 @@ namespace SWPatcher
             return !mutex.WaitOne(TimeSpan.Zero, true);
         }
 
-        private static bool IsPatcherUpdateAvailable()
-        {
-            string patcherVersionFile = StringDownloader.DownloadString(new Uri(Uris.PatcherGitHubHome, Strings.FileName.PatcherVersion));
-            if (String.IsNullOrEmpty(patcherVersionFile))
-                return true;
-            string[] lines = patcherVersionFile.Split('\n');
-            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            Version readVersion = new Version(lines[0]);
-            if (currentVersion.CompareTo(readVersion) < 0)
-            {
-                DialogResult newVersionDialog = MsgBox.Question("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore");
-                if (newVersionDialog == DialogResult.Yes)
-                {
-                    Process.Start(lines[1]);
-                    return true;
-                }
-                else
-                {
-                    DialogResult newVersionDialog2 = MsgBox.Question("Are you sure you want to ignore the update?\nIt might cause unknown problems!");
-                    if (newVersionDialog2 == DialogResult.No)
-                    {
-                        Process.Start(lines[1]);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         [STAThread]
         static void Main()
         {
@@ -78,18 +44,17 @@ namespace SWPatcher
             }
             DateTime dt = DateTime.ParseExact("22/Apr/2016 7:00 PM", "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
             MessageBox.Show(dt.ToString("dd MMMM yyyy h:mm tt"));*/
-            //return;
             if (IsAppAlreadyRunning())
                 return;
             if (!IsUserAdministrator())
             {
-                MsgBox.Default("You must run this application as administrator.", "Administrator rights", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SWPatcher.Helpers.MsgBox.Error("You must run this application as administrator.");
                 return;
             }
-            Directory.SetCurrentDirectory(SWPatcher.Helpers.Paths.PatcherRoot);
+            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVars.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            Application.Run(new Main());
             mutex.ReleaseMutex();
         }
     }

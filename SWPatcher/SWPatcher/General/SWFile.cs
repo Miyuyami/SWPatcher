@@ -5,15 +5,15 @@ using System.Text;
 
 namespace SWPatcher.General
 {
-    public class File
+    public class SWFile
     {
         public string Name { get; private set; }
-        public string FilePath { get; private set; }
+        public string Path { get; private set; }
 
-        public File(string name, string filePath)
+        public SWFile(string name, string path)
         {
             this.Name = name;
-            this.FilePath = filePath;
+            this.Path = path;
         }
     }
 }

@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Net;
 using System.Windows.Forms;
+using SWPatcher.General;
 using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVars;
+using System.IO;
+using System.Collections.Generic;
 
-namespace SWPatcher
+namespace SWPatcher.Forms
 {
-    public partial class MainForm : Form
+    public partial class Main : Form
     {
         public enum States
         {
@@ -20,8 +21,8 @@ namespace SWPatcher
             Patching
         }
 
-        private readonly ModsManagerForm managerForm;
-        
+        private List<SWFile> FileList;
+        private readonly BackgroundWorker Worker;
         private States _state;
 
         public States State
@@ -82,45 +83,61 @@ namespace SWPatcher
             }
         }
 
-        public MainForm()
+        public Main()
         {
-            managerForm = new ModsManagerForm();
             InitializeComponent();
-            Text = AssemblyAccessor.AssemblyTitle;
+            Text = AssemblyAccessor.Title;
             buttonLastest.Text = Strings.FormText.Download;
             buttonPatch.Text = Strings.FormText.Patch;
             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
         }
 
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            settings.ShowDialog(this);
+        }
+
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutBox aboutBox = new AboutBox();
-            aboutBox.ShowDialog();
+            aboutBox.ShowDialog(this);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            RestoreBackup();
+            if (CheckForProgramUpdate())
+                return;
+            if (CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)))
+                return;
+            if (CheckForSWPath())
+                return;
+            if (CheckForGameClientUpdate())
+                return;
+            if (PopulateList())
+                return;
         }
 
         private void buttonManage_Click(object sender, EventArgs e)
         {
-        
+            ModsManager modsManager = new ModsManager();
+            modsManager.ShowDialog(this);
         }
 
         private void buttonLastest_Click(object sender, EventArgs e)
         {
-        
+
         }
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
-        
+
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
         {
-            Close();
+            this.Close();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SWPatcher.General
 {
-    public class Table : InsideFile
+    public class Table : ArchiveFile
     {
         public string Format { get; private set; }
 

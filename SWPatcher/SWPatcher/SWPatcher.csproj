@@ -75,48 +75,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox.cs">
+    <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutBox.Designer.cs">
+    <Compile Include="Forms\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\Downloading\TranslationDownloader.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Downloading\Downloader.cs" />
+    <Compile Include="Forms\ModsManager.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Downloading\FileDownloader.cs" />
-    <Compile Include="Downloading\StringDownloader.cs" />
-    <Compile Include="General\File.cs" />
-    <Compile Include="General\InsideFile.cs" />
+    <Compile Include="Forms\ModsManager.Designer.cs">
+      <DependentUpon>ModsManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="General\SWFile.cs" />
+    <Compile Include="General\ArchiveFile.cs" />
     <Compile Include="General\Table.cs" />
-    <Compile Include="Helpers\AssemblyAccessor.cs" />
-    <Compile Include="Helpers\Strings.cs" />
+    <Compile Include="General\TempFile.cs" />
+    <Compile Include="Helpers\GlobalVars\Assembly.cs" />
+    <Compile Include="Helpers\GlobalVars\Strings.cs" />
     <Compile Include="Helpers\MsgBox.cs" />
-    <Compile Include="Helpers\Paths.cs" />
-    <Compile Include="Helpers\Uris.cs" />
+    <Compile Include="Helpers\GlobalVars\Paths.cs" />
+    <Compile Include="Helpers\GlobalVars\Uris.cs" />
     <Compile Include="IniReader.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="Forms\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="ModsManagerForm.cs">
+    <Compile Include="Forms\Main.Methods.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ModsManagerForm.Designer.cs">
-      <DependentUpon>ModsManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AboutBox.resx">
+    <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ModsManagerForm.resx">
-      <DependentUpon>ModsManagerForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -186,7 +189,7 @@
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\Patching\" />
+    <Folder Include="Patching\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

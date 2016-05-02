@@ -214,38 +214,6 @@ namespace SWPatcher.Forms
                 Directory.CreateDirectory(Strings.FolderName.Backup);
         }
 
-        private bool IsNewerTranslationVersion(string lang)
-        {
-            string directoryPath = Path.Combine(Paths.PatcherRoot, lang);
-            if (!Directory.Exists(directoryPath))
-                return true;
-            string filePath = Path.Combine(directoryPath, Strings.IniName.TranslationVer);
-            if (!File.Exists(filePath))
-                return true;
-            IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, lang));
-            if (DateCompare(GetTranslationDate(lang), translationIni.ReadString(lang, Strings.IniName.Pack.KeyDate)))
-                return true;
-            return false;
-        }
-
-        private static bool DateCompare(string date1, string date2)
-        {
-            DateTime d1 = DateTime.ParseExact(date1, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
-            DateTime d2 = DateTime.ParseExact(date2, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
-            return d1 > d2;
-        }
-
-        private static string GetTranslationDate(string lang)
-        {
-            using (var client = new WebClient())
-            using (var file = new TempFile())
-            {
-                client.DownloadFile(Uris.PatcherGitHubHome + lang + Strings.IniName.TranslationVer, file.Path);
-                IniReader translationIni = new IniReader(file.Path);
-                return translationIni.ReadString(lang, Strings.IniName.Pack.KeyDate);
-            }
-        }
-
         private Language[] GetAllAvailableLanguages()
         {
             try

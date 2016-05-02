@@ -97,7 +97,7 @@ namespace SWPatcher.Downloading
                 return;
             if (e.Result != null)
                 this.DownloadList = (e.Result as List<SWFile>).Select(f => Uris.TranslationGitHubHome + (this.Language) + '/' + f.PathD).ToList<string>();
-
+            //Client.DownloadFileAsync(); send downloadList via userToken
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -107,7 +107,7 @@ namespace SWPatcher.Downloading
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();//send SWList with event back to main
         }
 
         protected virtual void OnDownloaderComplete(object sender, AsyncCompletedEventArgs e)

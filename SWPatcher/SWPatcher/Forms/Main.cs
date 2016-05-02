@@ -27,8 +27,8 @@ namespace SWPatcher.Forms
         }
 
         private readonly BackgroundWorker WorkerPatch;
-        private readonly List<SWFile> SWFiles;
-        private States _state;
+        public List<SWFile> SWFiles { get; private set; }
+        public States _state;
         public Downloader Downloader { get; private set; }
 
         public States State
@@ -96,6 +96,7 @@ namespace SWPatcher.Forms
             this.WorkerPatch.DoWork += new DoWorkEventHandler(workerPatch_DoWork);
             this.WorkerPatch.ProgressChanged += new ProgressChangedEventHandler(workerPatch_ProgressChanged);
             this.WorkerPatch.RunWorkerCompleted += new RunWorkerCompletedEventHandler(workerPatch_RunWorkerCompleted);
+            this.Downloader = Downloader.Instance;  
             this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(Downloader_DownloaderProgressChanged);
             this.Downloader.DownloaderCompleted += new DownloaderCompletedEventHandler(Downloader_DownloaderCompleted);
             InitializeComponent();

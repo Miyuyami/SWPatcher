@@ -21,8 +21,16 @@
          * 15 = tb_tooltip_string
          * 16 = tb_ui_string
          */
+        public enum OutputType : short
+        {
+            None = 0,
+            Short,
+            Full
+        }
         bool[] privateValue;
-        string[] privateHeader = { "Achievement", "Booster", "Broach", "Buff", "Cinema", "Item", "Monster", "NPC", "Quest", "Shop", "Skill", "SoulMetry", "Speech", "SystemMail", "Title", "Tooltip", "UI" };
+        string[] privateHeader = { "Achievement", "Booster", "Brooch", "Buff", "Cinema", "Item", "Monster", "NPC", "Quest", "Shop", "Skill", "SoulMetry", "Speech", "SystemMail", "Title", "Tooltip", "UI" };
+        string[] privateFilename = { "tb_achievement_script","tb_booster_script","tb_broach_set", "tb_buff_script", "tb_cinema_string","tb_item_script","tb_monster_script",
+            "tb_npc_script","tb_quest_script","tb_shop_string","tb_skill_script","tb_soul_metry_string","tb_speech_string","tb_systemmail","tb_title_string","tb_tooltip_string","tb_ui_string"};
         System.Text.StringBuilder theStringBuild;
 
         public TranslationOption(bool tb_achievement_script, bool tb_booster_script, bool tb_broach_set, bool tb_buff_script, bool tb_cinema_string, bool tb_item_script,
@@ -56,30 +64,57 @@
                 for (short cou = parsedValue; cou < privateValue.Length; cou++)
                     this.privateValue[cou] = true;
             }
+            else
+                for (short cou = 0; cou < privateValue.Length; cou++)
+                    this.privateValue[cou] = true;
+            this.theStringBuild = new System.Text.StringBuilder();
+        }
+
+        public void SetValueIndex(short Index, bool value)
+        {
+            this.privateValue[Index] = value;
         }
 
         public override string ToString()
         {
-            return this.ToString(false);
+            return this.ToString(OutputType.None);
         }
 
-        public string ToString(bool DetailInfo)
+        public string ToString(OutputType DetailInfo)
         {
             this.theStringBuild.Clear();
-            if (DetailInfo == false)
+            if (DetailInfo == OutputType.None)
             {
                 this.theStringBuild.Append(privateValue[0].ToString());
                 for (short cou = 1; cou < this.privateValue.Length; cou++)
                     this.theStringBuild.Append("," + privateValue[cou].ToString());
                 return theStringBuild.ToString();
             }
-            else
+            else if (DetailInfo == OutputType.Short)
             {
                 this.theStringBuild.Append(privateHeader[0] + "=" + privateValue[0].ToString());
                 for (short cou = 1; cou < this.privateValue.Length; cou++)
                     this.theStringBuild.Append("," + privateHeader[cou] + "=" + privateValue[cou].ToString());
                 return theStringBuild.ToString();
             }
+            else
+            {
+                this.theStringBuild.Append(privateHeader[0] + "=" + privateValue[0].ToString());
+                for (short cou = 1; cou < this.privateValue.Length; cou++)
+                    this.theStringBuild.Append("," + privateFilename[cou] + "=" + privateValue[cou].ToString());
+                return theStringBuild.ToString();
+            }
+        }
+
+        public bool GetValueDictionary(string sFilename)
+        {
+            bool result = true;
+            if (sFilename.EndsWith(".txt"))
+                sFilename = System.IO.Path.GetFileNameWithoutExtension(sFilename);
+            for (short cou = 0; cou < privateFilename.Length; cou++)
+                if (privateFilename[cou] == sFilename)
+                    return privateValue[cou];
+            return result;
         }
 
         public bool Achievement

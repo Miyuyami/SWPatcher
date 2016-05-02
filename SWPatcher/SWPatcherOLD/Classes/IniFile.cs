@@ -148,6 +148,7 @@ namespace SWPatcher.Ini
             string[] splitBuffer = null;
             IniSection sectionBuffer = null;
             int pumBuffer;
+            char[] spli = new char[] { '=' }; //weird ..... but we don't need to new char[] for each read buffer
             while ((pumBuffer = Stream.Read()) != -1)
             {
                 if (((char)pumBuffer == '\n'))
@@ -161,7 +162,7 @@ namespace SWPatcher.Ini
                         }
                         else if (lineBuffer.IndexOf("=") > -1)
                         {
-                            splitBuffer = lineBuffer.Split('=');
+                            splitBuffer = lineBuffer.Split(spli, 2); // make sure it split just one time
                             sectionBuffer.IniKeyValues.Add(splitBuffer[0].Trim(), new IniKeyValue(splitBuffer[1].Trim()));
                             lineBuffer = string.Empty;
                         }
@@ -188,6 +189,7 @@ namespace SWPatcher.Ini
                     lineBuffer = string.Empty;
                 }
             }
+            spli = null;
             sectionBuffer = null;
             lineBuffer = null;
             splitBuffer = null;

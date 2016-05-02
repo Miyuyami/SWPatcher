@@ -46,7 +46,7 @@ namespace SWPatcher
                 {
                     try
                     {
-                        result = webClient.DownloadString("version");
+                        result = webClient.DownloadString("version.ini");
                     }
                     catch (WebException webEx)
                     {
@@ -68,24 +68,32 @@ namespace SWPatcher
                 MessageBox.Show("Failed to get latest version.");
                 return false;
             }
-            string[] lines = patcherVersionFile.Split('\n');
-            Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            Version readVersion = new Version(lines[0]);
-            if (currentVersion.CompareTo(readVersion) < 0)
+            else
             {
-                DialogResult newVersionDialog = MessageBox.Show("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore", "New Patcher Version Available!", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
-                if (newVersionDialog == DialogResult.Yes)
+                Version readVersion;
+                string theUrl;
+                using (System.IO.StringReader theTextReader = new System.IO.StringReader(patcherVersionFile))
                 {
-                    Process.Start(lines[1]);
-                    return true;
+                    Ini.IniFile theIniFile = new Ini.IniFile(theTextReader, false);
+                    readVersion = new Version(theIniFile.GetValue("Patcher", "ver", "0.0.0.0"));
+                    theUrl = theIniFile.GetValue("Patcher", "address", "http://soulworkerhq.com/Discussion-Official-Soul-Worker-HQ-Translation-Patcher");
+                    theIniFile.Close();
                 }
-                else
+                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                if (currentVersion.CompareTo(readVersion) < 0)
                 {
-                    DialogResult newVersionDialog2 = MessageBox.Show("Are you sure you want to ignore the update?\nIt might cause unknown problems!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
-                    if (newVersionDialog2 == DialogResult.No)
+                    if (MessageBox.Show("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore", "New Patcher Version Available!", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000) == DialogResult.Yes)
                     {
-                        Process.Start(lines[1]);
+                        Process.Start(theUrl);
                         return true;
+                    }
+                    else
+                    {
+                        if (MessageBox.Show("Are you sure you want to ignore the update?\nIt might cause unknown problems!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000) == DialogResult.No)
+                        {
+                            Process.Start(theUrl);
+                            return true;
+                        }
                     }
                 }
             }
@@ -110,6 +118,7 @@ namespace SWPatcher
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
             mutex.ReleaseMutex();
+            mutex.Dispose();
         }
     }
 }

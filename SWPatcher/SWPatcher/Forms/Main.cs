@@ -115,8 +115,13 @@ namespace SWPatcher.Forms
 
         private void Downloader_DownloaderCompleted(object sender, DownloaderDownloadCompletedEventArgs e)
         {
-            if (e.Date != null)
-                MsgBox.Success(e.Date);
+            if (e.IsSame)
+                MsgBox.Success(string.Format("You already have the latest({0} JST) translation files for this language!", Strings.DateToString(e.Language.LastUpdate)));
+            else
+            {
+                IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
+                translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
+            }
             this.State = States.Idle;
         }
 
@@ -142,7 +147,6 @@ namespace SWPatcher.Forms
                 return;
             }
             this.State = States.Downloading;
-            this.SWFiles.Clear();
             this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
         }
 

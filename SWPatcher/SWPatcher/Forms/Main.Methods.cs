@@ -243,7 +243,7 @@ namespace SWPatcher.Forms
                 client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
                 IniReader langIni = new IniReader(file.Path);
                 foreach (var s in langIni.GetSectionNames())
-                    langs.Add(new Language(s.ToString(), DateTime.ParseExact(langIni.ReadString(s.ToString(), Strings.IniName.Pack.KeyDate), "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture)));
+                    langs.Add(new Language(s.ToString(), Strings.ParseExact(langIni.ReadString(s.ToString(), Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue)))));
             }
             return langs.ToArray();
         }

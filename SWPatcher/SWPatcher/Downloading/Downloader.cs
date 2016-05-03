@@ -48,15 +48,15 @@ namespace SWPatcher.Downloading
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             bool flag = false;
-            e.Result = GetLastTranslationDate(this.Language.Lang);
             DirectoryInfo directory = new DirectoryInfo(Path.Combine(Paths.PatcherRoot, this.Language.Lang));
             if (directory.Exists)
             {
                 string filePath = Path.Combine(directory.FullName, Strings.IniName.Translation);
                 if (File.Exists(filePath))
                 {
-                    IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, this.Language.Lang));
-                    if (DateCompare(e.Result as string, translationIni.ReadString(this.Language.Lang, Strings.IniName.Pack.KeyDate)))
+                    IniReader translationIni = new IniReader(filePath);
+                    string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
+                    if (this.Language.LastUpdate > Strings.ParseExact(date))
                         flag = true;
                 }
                 else
@@ -67,6 +67,7 @@ namespace SWPatcher.Downloading
                 directory.Create();
                 flag = true;
             }
+            this.SWFiles.Clear();
             if (flag)
             {
                 using (var client = new WebClient())
@@ -92,34 +93,42 @@ namespace SWPatcher.Downloading
                     }
                 }
             }
+            else
+                e.Result = true;
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Cancelled)
-                return;
-            if (e.Error != null)
-            {
-                string errorMessage = "Message:\n" + e.Error.Message;
-                if (!string.IsNullOrEmpty(e.Error.StackTrace))
-                    errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
-                if (e.Error.InnerException != null)
-                {
-                    errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
-                    if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
-                        errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
-                }
-                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                MsgBox.Error(errorMessage);
-            }
+            bool flag = e.Result != null;
+            if (flag)
+                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, flag));
             else
             {
-                this.DownloadIndex = 0;
-                if (SWFiles.Count > DownloadIndex)
-                    DownloadNext();
+                if (e.Cancelled)
+                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
                 else
-                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(e.Result as string));
-            }// create .ini with date somewhere here...........
+                {
+                    if (e.Error != null)
+                    {
+                        string errorMessage = "Message:\n" + e.Error.Message;
+                        if (!string.IsNullOrEmpty(e.Error.StackTrace))
+                            errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
+                        if (e.Error.InnerException != null)
+                        {
+                            errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
+                            if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
+                                errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
+                        }
+                        OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
+                        MsgBox.Error(errorMessage);
+                    }
+                    else
+                    {
+                        this.DownloadIndex = 0;
+                        DownloadNext();
+                    }
+                }
+            }
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -130,31 +139,31 @@ namespace SWPatcher.Downloading
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled)
-            {
                 OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                return;
-            }
-            if (e.Error != null)
-            {
-                string errorMessage = "Message:\n" + e.Error.Message;
-                if (!string.IsNullOrEmpty(e.Error.StackTrace))
-                    errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
-                if (e.Error.InnerException != null)
-                {
-                    errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
-                    if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
-                        errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
-                }
-                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                MsgBox.Error(errorMessage);
-            }
             else
             {
-                this.DownloadIndex++;
-                if (SWFiles.Count > DownloadIndex)
-                    DownloadNext();
-                else
+                if (e.Error != null)
+                {
+                    string errorMessage = "Message:\n" + e.Error.Message;
+                    if (!string.IsNullOrEmpty(e.Error.StackTrace))
+                        errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
+                    if (e.Error.InnerException != null)
+                    {
+                        errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
+                        if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
+                            errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
+                    }
                     OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
+                    MsgBox.Error(errorMessage);
+                }
+                else
+                {
+                    this.DownloadIndex++;
+                    if (SWFiles.Count > DownloadIndex)
+                        DownloadNext();
+                    else
+                        OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language));
+                }
             }
         }
 
@@ -178,24 +187,6 @@ namespace SWPatcher.Downloading
                 folderDestination.Create();
             string fileDestination = Path.Combine(folderDestination.FullName, Path.GetFileName(SWFiles[DownloadIndex].PathD));
             Client.DownloadFileAsync(uri, fileDestination);
-        }
-
-        private static bool DateCompare(string date1, string date2)
-        {
-            DateTime d1 = DateTime.ParseExact(date1, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
-            DateTime d2 = DateTime.ParseExact(date2, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
-            return d1 > d2;
-        }
-
-        private static string GetLastTranslationDate(string lang)
-        {
-            using (var client = new WebClient())
-            using (var file = new TempFile())
-            {
-                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
-                IniReader translationIni = new IniReader(file.Path);
-                return translationIni.ReadString(lang, Strings.IniName.Pack.KeyDate);
-            }
         }
 
         public void Cancel()

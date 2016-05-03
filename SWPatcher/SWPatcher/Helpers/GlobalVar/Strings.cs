@@ -1,4 +1,6 @@
 ﻿
+using System;
+using System.Globalization;
 namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
@@ -69,6 +71,16 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string Download = "Downloading...";
                 public const string Patch = "Patching...";
             }
+        }
+
+        public static DateTime ParseExact(string date)
+        {
+            return DateTime.ParseExact(date, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
+        }
+
+        public static string DateToString(DateTime date)
+        {
+            return date.ToString("dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
         }
     }
 }

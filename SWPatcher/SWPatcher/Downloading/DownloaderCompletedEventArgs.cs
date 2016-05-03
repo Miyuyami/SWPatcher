@@ -2,16 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SWPatcher.General;
+using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Downloading
 {
     public class DownloaderDownloadCompletedEventArgs : EventArgs
     {
-        public string Date { get; private set; }
+        public Language Language { get; private set; }
+        public bool IsSame { get; private set; }
 
-        public DownloaderDownloadCompletedEventArgs(string date)
+        public DownloaderDownloadCompletedEventArgs(Language language)
         {
-            this.Date = date;
+            this.Language = language;
+            this.IsSame = false;
+        }
+
+        public DownloaderDownloadCompletedEventArgs(Language language, bool isSame)
+        {
+            this.Language = language;
+            this.IsSame = isSame;
         }
     }
 }

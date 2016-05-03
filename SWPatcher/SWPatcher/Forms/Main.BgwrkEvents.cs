@@ -11,7 +11,7 @@ using SWPatcher.Downloading;
 
 namespace SWPatcher.Forms
 {
-    partial class Main
+    partial class MainForm
     {
         private void workerCheck_DoWork(object sender, DoWorkEventArgs e)
         {

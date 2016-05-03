@@ -46,7 +46,7 @@ namespace SWPatcher
             Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            Application.Run(new MainForm());
             mutex.ReleaseMutex();
         }
     }

@@ -13,7 +13,7 @@ using System.Globalization;
 
 namespace SWPatcher.Forms
 {
-    partial class Main
+    partial class MainForm
     {
         private bool CheckForProgramUpdate()
         {
@@ -246,6 +246,12 @@ namespace SWPatcher.Forms
                     langs.Add(new Language(s.ToString(), Strings.ParseExact(langIni.ReadString(s.ToString(), Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue)))));
             }
             return langs.ToArray();
+        }
+
+        private bool OfferPatchNow()
+        {
+            return false;
+            //DialogResult result = MsgBox.Question("Do you want patch ");
         }
     }
 }

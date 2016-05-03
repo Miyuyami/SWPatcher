@@ -16,7 +16,7 @@ using SWPatcher.Downloading;
 
 namespace SWPatcher.Forms
 {
-    public partial class Main : Form
+    public partial class MainForm : Form
     {
         public enum States
         {
@@ -52,15 +52,6 @@ namespace SWPatcher.Forms
                             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
-                        case States.CheckingVersion:
-                            comboBoxLanguages.Enabled = false;
-                            buttonLastest.Enabled = false;
-                            buttonLastest.Text = Strings.FormText.Download;
-                            buttonPatch.Enabled = false;
-                            buttonPatch.Text = Strings.FormText.Patch;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Check;
-                            toolStripProgressBar.Value = toolStripProgressBar.Minimum;
-                            break;
                         case States.Downloading:
                             comboBoxLanguages.Enabled = false;
                             buttonLastest.Enabled = true;
@@ -85,7 +76,7 @@ namespace SWPatcher.Forms
             }
         }
 
-        public Main()
+        public MainForm()
         {
             this.SWFiles = new List<SWFile>();
             this.WorkerPatch = new BackgroundWorker
@@ -122,6 +113,7 @@ namespace SWPatcher.Forms
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
             }
+            OfferPatchNow();
             this.State = States.Idle;
         }
 

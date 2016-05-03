@@ -6,5 +6,5 @@ using System.ComponentModel;
 
 namespace SWPatcher.Downloading
 {
-    public delegate void DownloaderCompletedEventHandler(object sender, AsyncCompletedEventArgs e);
+    public delegate void DownloaderCompletedEventHandler(object sender, DownloaderDownloadCompletedEventArgs e);
 }

@@ -7,5 +7,5 @@ using System.ComponentModel;
 
 namespace SWPatcher.Downloading
 {
-    public delegate void DownloaderProgressChangedEventHandler(object sender, DownloadProgressChangedEventArgs e);
+    public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
 }

@@ -26,10 +26,10 @@ namespace SWPatcher.Forms
             Patching
         }
 
+        private readonly List<SWFile> SWFiles;
         private readonly BackgroundWorker WorkerPatch;
-        public List<SWFile> SWFiles { get; private set; }
+        private readonly Downloader Downloader;
         public States _state;
-        public Downloader Downloader { get; private set; }
 
         public States State
         {
@@ -87,7 +87,7 @@ namespace SWPatcher.Forms
 
         public Main()
         {
-            SWFiles = new List<SWFile>();
+            this.SWFiles = new List<SWFile>();
             this.WorkerPatch = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
@@ -96,7 +96,7 @@ namespace SWPatcher.Forms
             this.WorkerPatch.DoWork += new DoWorkEventHandler(workerPatch_DoWork);
             this.WorkerPatch.ProgressChanged += new ProgressChangedEventHandler(workerPatch_ProgressChanged);
             this.WorkerPatch.RunWorkerCompleted += new RunWorkerCompletedEventHandler(workerPatch_RunWorkerCompleted);
-            this.Downloader = Downloader.Instance;  
+            this.Downloader = Downloader.GetInstance(SWFiles);
             this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(Downloader_DownloaderProgressChanged);
             this.Downloader.DownloaderCompleted += new DownloaderCompletedEventHandler(Downloader_DownloaderCompleted);
             InitializeComponent();
@@ -106,14 +106,18 @@ namespace SWPatcher.Forms
             this.toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
         }
 
-        private void Downloader_DownloaderProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            this.toolStripStatusLabel.Text = Strings.FormText.Status.Download;
+            this.toolStripStatusLabel.Text = string.Format(" ({0}/{1}) {2}", e.FileNumber, e.TotalFileCount, e.FileName);
+            this.toolStripProgressBar.Value = e.ProgressPercentage;
         }
 
-        private void Downloader_DownloaderCompleted(object sender, AsyncCompletedEventArgs e)
+        private void Downloader_DownloaderCompleted(object sender, DownloaderDownloadCompletedEventArgs e)
         {
-            
+            if (e.Date != null)
+                MsgBox.Success(e.Date);
+            this.State = States.Idle;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -131,24 +135,21 @@ namespace SWPatcher.Forms
 
         private void buttonLastest_Click(object sender, EventArgs e)
         {
-            this.Downloader = Downloader.Instance;
             if (this.State == States.Downloading)
             {
                 Downloader.Cancel();
                 this.State = States.Idle;
                 return;
             }
-            SWFiles.Clear();
-            this.Downloader.DownloadList.Clear();
             this.State = States.Downloading;
-            if (Downloader.DownloadList.Count > 0)
-                Downloader.Run(this.comboBoxLanguages.SelectedItem.ToString());
+            this.SWFiles.Clear();
+            this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
         }
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
             this.State = States.Patching;
-            WorkerPatch.RunWorkerAsync(this.comboBoxLanguages.SelectedItem.ToString());
+            WorkerPatch.RunWorkerAsync(this.comboBoxLanguages.SelectedItem);
         }
 
         private void buttonExit_Click(object sender, EventArgs e)

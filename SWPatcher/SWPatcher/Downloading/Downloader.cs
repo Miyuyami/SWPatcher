@@ -17,21 +17,20 @@ namespace SWPatcher.Downloading
         private static Downloader _instance;
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
-        private string Language;
-        private bool disposed = false;
-        public List<string> DownloadList { get; private set; }
+        private readonly List<SWFile> SWFiles;
+        private Language Language;
+        private int DownloadIndex;
 
-        public static Downloader Instance
+        public static Downloader GetInstance(List<SWFile> swFiles)
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new Downloader();
-                return _instance;
-            }
+            if (_instance == null)
+                _instance = new Downloader(swFiles);
+            return _instance;
         }
-        private Downloader()
+
+        private Downloader(List<SWFile> swFiles)
         {
+            this.SWFiles = swFiles;
             this.Worker = new BackgroundWorker
             {
                 WorkerSupportsCancellation = true
@@ -41,7 +40,6 @@ namespace SWPatcher.Downloading
             this.Client = new WebClient();
             this.Client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Client_DownloadProgressChanged);
             this.Client.DownloadFileCompleted += new AsyncCompletedEventHandler(Client_DownloadFileCompleted);
-            this.DownloadList = new List<string>();
         }
 
         public event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
@@ -49,22 +47,32 @@ namespace SWPatcher.Downloading
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (IsNewerTranslationVersion(this.Language))
+            bool flag = false;
+            e.Result = GetLastTranslationDate(this.Language.Lang);
+            DirectoryInfo directory = new DirectoryInfo(Path.Combine(Paths.PatcherRoot, this.Language.Lang));
+            if (directory.Exists)
             {
-                List<SWFile> SWFiles = new List<SWFile>();
+                string filePath = Path.Combine(directory.FullName, Strings.IniName.Translation);
+                if (File.Exists(filePath))
+                {
+                    IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, this.Language.Lang));
+                    if (DateCompare(e.Result as string, translationIni.ReadString(this.Language.Lang, Strings.IniName.Pack.KeyDate)))
+                        flag = true;
+                }
+                else
+                    flag = true;
+            }
+            else
+            {
+                directory.Create();
+                flag = true;
+            }
+            if (flag)
+            {
                 using (var client = new WebClient())
                 using (var file = new TempFile())
                 {
-                    try
-                    {
-                        client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                    }
-                    catch (WebException)
-                    {
-                        e.Cancel = true;
-                        e.Result = null;
-                        MsgBox.Error("Could not connect to download server.\nTry again later.");
-                    }
+                    client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
                     IniReader dataIni = new IniReader(file.Path);
                     var array = dataIni.GetSectionNames();
                     foreach (var fileName in array)
@@ -75,7 +83,7 @@ namespace SWPatcher.Downloading
                         string pathA = dataIni.ReadString(Strings.IniName.Pack.KeyPathInArchive);
                         string pathD = dataIni.ReadString(Strings.IniName.Pack.KeyPathOfDownload);
                         string format = dataIni.ReadString(Strings.IniName.Pack.KeyFormat);
-                        SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
+                        this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
                         if (Worker.CancellationPending)
                         {
                             e.Cancel = true;
@@ -83,51 +91,93 @@ namespace SWPatcher.Downloading
                         }
                     }
                 }
-                e.Result = SWFiles;
             }
-            else
-                e.Result = null;
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Error != null)
-                MsgBox.Error(e.Error.Message + "\n\n" + e.Error.StackTrace);
             if (e.Cancelled)
                 return;
-            if (e.Result != null)
-                this.DownloadList = (e.Result as List<SWFile>).Select(f => Uris.TranslationGitHubHome + (this.Language) + '/' + f.PathD).ToList<string>();
-            //Client.DownloadFileAsync(); send downloadList via userToken
+            if (e.Error != null)
+            {
+                string errorMessage = "Message:\n" + e.Error.Message;
+                if (!string.IsNullOrEmpty(e.Error.StackTrace))
+                    errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
+                if (e.Error.InnerException != null)
+                {
+                    errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
+                    if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
+                        errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
+                }
+                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
+                MsgBox.Error(errorMessage);
+            }
+            else
+            {
+                this.DownloadIndex = 0;
+                if (SWFiles.Count > DownloadIndex)
+                    DownloadNext();
+                else
+                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(e.Result as string));
+            }// create .ini with date somewhere here...........
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            OnDownloaderProgressChanged(sender, new DownloaderProgressChangedEventArgs(DownloadIndex + 1, SWFiles.Count, Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Name), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            throw new NotImplementedException();//send SWList with event back to main
+            if (e.Cancelled)
+            {
+                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
+                return;
+            }
+            if (e.Error != null)
+            {
+                string errorMessage = "Message:\n" + e.Error.Message;
+                if (!string.IsNullOrEmpty(e.Error.StackTrace))
+                    errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
+                if (e.Error.InnerException != null)
+                {
+                    errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
+                    if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
+                        errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
+                }
+                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
+                MsgBox.Error(errorMessage);
+            }
+            else
+            {
+                this.DownloadIndex++;
+                if (SWFiles.Count > DownloadIndex)
+                    DownloadNext();
+                else
+                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
+            }
         }
 
-        protected virtual void OnDownloaderComplete(object sender, AsyncCompletedEventArgs e)
+        protected virtual void OnDownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
+        {
+            if (this.DownloaderProgressChanged != null)
+                this.DownloaderProgressChanged(sender, e);
+        }
+
+        protected virtual void OnDownloaderComplete(object sender, DownloaderDownloadCompletedEventArgs e)
         {
             if (this.DownloaderCompleted != null)
                 this.DownloaderCompleted(sender, e);
         }
 
-        private bool IsNewerTranslationVersion(string lang)
+        private void DownloadNext()
         {
-            string directoryPath = Path.Combine(Paths.PatcherRoot, lang);
-            if (!Directory.Exists(directoryPath))
-                return true;
-            string filePath = Path.Combine(directoryPath, Strings.IniName.TranslationVer);
-            if (!File.Exists(filePath))
-                return true;
-            IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, lang));
-            if (DateCompare(GetTranslationDate(lang), translationIni.ReadString(lang, Strings.IniName.Pack.KeyDate)))
-                return true;
-            return false;
+            Uri uri = new Uri(Uris.TranslationGitHubHome + this.Language.Lang + '/' + SWFiles[DownloadIndex].PathD);
+            DirectoryInfo folderDestination = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, SWFiles[DownloadIndex].Path)), Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Path)));
+            if (!folderDestination.Exists)
+                folderDestination.Create();
+            string fileDestination = Path.Combine(folderDestination.FullName, Path.GetFileName(SWFiles[DownloadIndex].PathD));
+            Client.DownloadFileAsync(uri, fileDestination);
         }
 
         private static bool DateCompare(string date1, string date2)
@@ -137,12 +187,12 @@ namespace SWPatcher.Downloading
             return d1 > d2;
         }
 
-        private static string GetTranslationDate(string lang)
+        private static string GetLastTranslationDate(string lang)
         {
             using (var client = new WebClient())
             using (var file = new TempFile())
             {
-                client.DownloadFile(Uris.PatcherGitHubHome + lang + Strings.IniName.TranslationVer, file.Path);
+                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
                 IniReader translationIni = new IniReader(file.Path);
                 return translationIni.ReadString(lang, Strings.IniName.Pack.KeyDate);
             }
@@ -154,7 +204,7 @@ namespace SWPatcher.Downloading
             Client.CancelAsync();
         }
 
-        public void Run(string language)
+        public void Run(Language language)
         {
             this.Language = language;
             Worker.RunWorkerAsync();
@@ -168,18 +218,14 @@ namespace SWPatcher.Downloading
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposed)
-                return;
             if (disposing)
             {
+                _instance = null;
                 if (this.Worker != null)
                     this.Worker.Dispose();
                 if (this.Client != null)
                     this.Client.Dispose();
             }
-            _instance = null;
-            this.DownloadList = null;
-            this.disposed = true;
         }
 
         ~Downloader()

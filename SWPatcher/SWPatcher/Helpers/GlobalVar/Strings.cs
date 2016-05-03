@@ -29,7 +29,7 @@ namespace SWPatcher.Helpers.GlobalVar
             public const string PatcherVersion = "version.ini";
             public const string ServerVer = "ServerVer.ini";
             public const string ClientVer = "Ver.ini";
-            public const string TranslationVer = "TranslationVer.ini";
+            public const string Translation = "Translation.ini";
             public const string LanguagePack = "LanguagePacks.ini";
             public const string TranslationPackData = "TranslationPackData.ini";
             public const string OtherTranslationPackData = "OtherTranslationPackData.ini";

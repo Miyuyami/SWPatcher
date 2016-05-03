@@ -75,7 +75,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderDownloadCompletedEventHandler.cs" />
+    <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventHandler.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>

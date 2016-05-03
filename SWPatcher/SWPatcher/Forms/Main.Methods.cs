@@ -43,7 +43,7 @@ namespace SWPatcher.Forms
                 client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.PatcherVersion, file.Path);
                 IniReader ini = new IniReader(file.Path);
                 Version current = new Version(AssemblyAccessor.Version);
-                Version read = new Version(ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer));
+                Version read = new Version(ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, "0.0.0.0"));
                 if (current.CompareTo(read) < 0)
                 {
                     string address = ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyAddress);
@@ -146,7 +146,7 @@ namespace SWPatcher.Forms
             try
             {
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
-                return VersionCompare(GetServerVersion(), clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
+                return VersionCompare(GetServerVersion(), clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key, "0.0.0.0"));
             }
             catch (WebException)
             {

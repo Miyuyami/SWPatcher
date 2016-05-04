@@ -82,5 +82,19 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             return date.ToString("dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
         }
+
+        public static string ExeptionParser(Exception e)
+        {
+            string result = "Message:\n" + e.Message;
+            if (!string.IsNullOrEmpty(e.StackTrace))
+                result += "\nStackTrace:\n" + e.StackTrace;
+            if (e.InnerException != null)
+            {
+                result += "\nInnerMessage:\n" + e.InnerException.Message;
+                if (!string.IsNullOrEmpty(e.InnerException.StackTrace))
+                    result += "\nInnerStackTrace:\n" + e.InnerException.StackTrace;
+            }
+            return result;
+        }
     }
 }

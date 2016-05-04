@@ -1,18 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Net;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
+using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
-using System.IO;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Runtime.Serialization.Formatters.Binary;
-using SWPatcher.Downloading;
+using SWPatcher.Patching;
 
 namespace SWPatcher.Forms
 {
@@ -21,15 +16,14 @@ namespace SWPatcher.Forms
         public enum States
         {
             Idle = 0,
-            CheckingVersion,
             Downloading,
             Patching
         }
 
+        private States _state;
+        private Downloader Downloader;
+        private Patcher Patcher;
         private readonly List<SWFile> SWFiles;
-        private readonly BackgroundWorker WorkerPatch;
-        private readonly Downloader Downloader;
-        public States _state;
 
         public States State
         {
@@ -79,17 +73,11 @@ namespace SWPatcher.Forms
         public MainForm()
         {
             this.SWFiles = new List<SWFile>();
-            this.WorkerPatch = new BackgroundWorker
-            {
-                WorkerReportsProgress = true,
-                WorkerSupportsCancellation = true
-            };
-            this.WorkerPatch.DoWork += new DoWorkEventHandler(workerPatch_DoWork);
-            this.WorkerPatch.ProgressChanged += new ProgressChangedEventHandler(workerPatch_ProgressChanged);
-            this.WorkerPatch.RunWorkerCompleted += new RunWorkerCompletedEventHandler(workerPatch_RunWorkerCompleted);
-            this.Downloader = Downloader.GetInstance(SWFiles);
+            this.Downloader = new Downloader(SWFiles);
             this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(Downloader_DownloaderProgressChanged);
             this.Downloader.DownloaderCompleted += new DownloaderCompletedEventHandler(Downloader_DownloaderCompleted);
+            //this.Patcher.PatcherProgressChanged +=
+            //this.Patcher.PatcherCompleted +=
             InitializeComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
             this.buttonLastest.Text = Strings.FormText.Download;
@@ -99,8 +87,7 @@ namespace SWPatcher.Forms
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
-            this.toolStripStatusLabel.Text = Strings.FormText.Status.Download;
-            this.toolStripStatusLabel.Text = string.Format(" ({0}/{1}) {2}", e.FileNumber, e.TotalFileCount, e.FileName);
+            this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.TotalFileCount);
             this.toolStripProgressBar.Value = e.ProgressPercentage;
         }
 
@@ -113,8 +100,8 @@ namespace SWPatcher.Forms
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
             }
+            this.State = 0;
             OfferPatchNow();
-            this.State = States.Idle;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -134,18 +121,28 @@ namespace SWPatcher.Forms
         {
             if (this.State == States.Downloading)
             {
-                Downloader.Cancel();
-                this.State = States.Idle;
-                return;
+                this.Downloader.Cancel();
+                this.State = 0;
             }
-            this.State = States.Downloading;
-            this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
+            else if (this.State == 0)
+            {
+                this.State = States.Downloading;
+                this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
+            }
         }
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
-            this.State = States.Patching;
-            WorkerPatch.RunWorkerAsync(this.comboBoxLanguages.SelectedItem);
+            if (this.State == States.Patching)
+            {
+                this.Patcher.Cancel();
+                this.State = 0;
+            }
+            else if (this.State == 0)
+            {
+                this.State = States.Patching;
+                this.Patcher.Run(this.comboBoxLanguages.SelectedItem as Language);
+            }
         }
 
         private void buttonExit_Click(object sender, EventArgs e)

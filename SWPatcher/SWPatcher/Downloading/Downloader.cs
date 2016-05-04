@@ -12,23 +12,15 @@ using System.Globalization;
 
 namespace SWPatcher.Downloading
 {
-    public class Downloader : IDisposable
+    public class Downloader
     {
-        private static Downloader _instance;
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
-        private readonly List<SWFile> SWFiles;
+        private List<SWFile> SWFiles;
         private Language Language;
         private int DownloadIndex;
 
-        public static Downloader GetInstance(List<SWFile> swFiles)
-        {
-            if (_instance == null)
-                _instance = new Downloader(swFiles);
-            return _instance;
-        }
-
-        private Downloader(List<SWFile> swFiles)
+        public Downloader(List<SWFile> swFiles)
         {
             this.SWFiles = swFiles;
             this.Worker = new BackgroundWorker
@@ -47,29 +39,9 @@ namespace SWPatcher.Downloading
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            bool flag = false;
-            DirectoryInfo directory = new DirectoryInfo(Path.Combine(Paths.PatcherRoot, this.Language.Lang));
-            if (directory.Exists)
+            if (HasNewDownload())
             {
-                string filePath = Path.Combine(directory.FullName, Strings.IniName.Translation);
-                if (File.Exists(filePath))
-                {
-                    IniReader translationIni = new IniReader(filePath);
-                    string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
-                    if (this.Language.LastUpdate > Strings.ParseExact(date))
-                        flag = true;
-                }
-                else
-                    flag = true;
-            }
-            else
-            {
-                directory.Create();
-                flag = true;
-            }
-            this.SWFiles.Clear();
-            if (flag)
-            {
+                this.SWFiles.Clear();
                 using (var client = new WebClient())
                 using (var file = new TempFile())
                 {
@@ -110,17 +82,8 @@ namespace SWPatcher.Downloading
                 {
                     if (e.Error != null)
                     {
-                        string errorMessage = "Message:\n" + e.Error.Message;
-                        if (!string.IsNullOrEmpty(e.Error.StackTrace))
-                            errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
-                        if (e.Error.InnerException != null)
-                        {
-                            errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
-                            if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
-                                errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
-                        }
+                        MsgBox.Error(Strings.ExeptionParser(e.Error));
                         OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                        MsgBox.Error(errorMessage);
                     }
                     else
                     {
@@ -144,17 +107,8 @@ namespace SWPatcher.Downloading
             {
                 if (e.Error != null)
                 {
-                    string errorMessage = "Message:\n" + e.Error.Message;
-                    if (!string.IsNullOrEmpty(e.Error.StackTrace))
-                        errorMessage += "\nStackTrace:\n" + e.Error.StackTrace;
-                    if (e.Error.InnerException != null)
-                    {
-                        errorMessage += "\nInnerMessage:\n" + e.Error.InnerException.Message;
-                        if (!string.IsNullOrEmpty(e.Error.InnerException.StackTrace))
-                            errorMessage += "\nInnerStackTrace:\n" + e.Error.InnerException.StackTrace;
-                    }
+                    MsgBox.Error(Strings.ExeptionParser(e.Error));
                     OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                    MsgBox.Error(errorMessage);
                 }
                 else
                 {
@@ -167,13 +121,13 @@ namespace SWPatcher.Downloading
             }
         }
 
-        protected virtual void OnDownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
+        private void OnDownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
             if (this.DownloaderProgressChanged != null)
                 this.DownloaderProgressChanged(sender, e);
         }
 
-        protected virtual void OnDownloaderComplete(object sender, DownloaderDownloadCompletedEventArgs e)
+        private void OnDownloaderComplete(object sender, DownloaderDownloadCompletedEventArgs e)
         {
             if (this.DownloaderCompleted != null)
                 this.DownloaderCompleted(sender, e);
@@ -189,6 +143,30 @@ namespace SWPatcher.Downloading
             Client.DownloadFileAsync(uri, fileDestination);
         }
 
+        private bool HasNewDownload()
+        {
+            DirectoryInfo directory = new DirectoryInfo(Path.Combine(Paths.PatcherRoot, this.Language.Lang));
+            if (directory.Exists)
+            {
+                string filePath = Path.Combine(directory.FullName, Strings.IniName.Translation);
+                if (File.Exists(filePath))
+                {
+                    IniReader translationIni = new IniReader(filePath);
+                    string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
+                    if (this.Language.LastUpdate > Strings.ParseExact(date))
+                        return true;
+                }
+                else
+                    return true;
+            }
+            else
+            {
+                directory.Create();
+                return true;
+            }
+            return false;
+        }
+
         public void Cancel()
         {
             Worker.CancelAsync();
@@ -199,29 +177,6 @@ namespace SWPatcher.Downloading
         {
             this.Language = language;
             Worker.RunWorkerAsync();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _instance = null;
-                if (this.Worker != null)
-                    this.Worker.Dispose();
-                if (this.Client != null)
-                    this.Client.Dispose();
-            }
-        }
-
-        ~Downloader()
-        {
-            Dispose(false);
         }
     }
 }

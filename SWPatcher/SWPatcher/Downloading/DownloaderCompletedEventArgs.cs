@@ -11,8 +11,10 @@ namespace SWPatcher.Downloading
     {
         public Language Language { get; private set; }
         public bool IsSame { get; private set; }
+        public bool Cancelled { get; private set; }
+        public Exception Error { get; private set; }
 
-        public DownloaderDownloadCompletedEventArgs(Language language)
+        /*public DownloaderDownloadCompletedEventArgs(Language language)
         {
             this.Language = language;
             this.IsSame = false;
@@ -22,6 +24,14 @@ namespace SWPatcher.Downloading
         {
             this.Language = language;
             this.IsSame = isSame;
+        }*/
+
+        public DownloaderDownloadCompletedEventArgs(Language language, bool isSame, bool cancelled, Exception error)
+        {
+            this.Language = language;
+            this.IsSame = isSame;
+            this.Cancelled = cancelled;
+            this.Error = error;
         }
     }
 }

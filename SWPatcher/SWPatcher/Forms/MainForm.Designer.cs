@@ -58,6 +58,7 @@
             this.buttonPatch.Name = "buttonPatch";
             this.buttonPatch.Size = new System.Drawing.Size(130, 26);
             this.buttonPatch.TabIndex = 3;
+            this.buttonPatch.Text = "Ready To Play!";
             this.buttonPatch.UseVisualStyleBackColor = true;
             this.buttonPatch.Click += new System.EventHandler(this.buttonPatch_Click);
             // 
@@ -69,6 +70,7 @@
             this.buttonLastest.Name = "buttonLastest";
             this.buttonLastest.Size = new System.Drawing.Size(140, 26);
             this.buttonLastest.TabIndex = 2;
+            this.buttonLastest.Text = "Download Translations";
             this.buttonLastest.UseVisualStyleBackColor = true;
             this.buttonLastest.Click += new System.EventHandler(this.buttonLastest_Click);
             // 
@@ -124,6 +126,7 @@
             // toolStripProgressBar
             // 
             this.toolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar.Maximum = 2147483647;
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.toolStripProgressBar.Size = new System.Drawing.Size(160, 16);
@@ -141,7 +144,8 @@
             // 
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(18, 17);
+            this.toolStripStatusLabel.Text = SWPatcher.Helpers.GlobalVar.Strings.FormText.Status.Idle;
             // 
             // tableLayoutPanel
             // 
@@ -192,7 +196,7 @@
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
             // 
-            // Main
+            // MainForm
             // 
             this.AcceptButton = this.buttonPatch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -206,7 +210,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.MaximizeBox = false;
-            this.Name = "Main";
+            this.Name = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

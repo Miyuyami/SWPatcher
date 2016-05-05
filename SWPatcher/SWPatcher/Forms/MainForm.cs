@@ -8,6 +8,7 @@ using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
+using System.Threading;
 
 namespace SWPatcher.Forms
 {
@@ -76,32 +77,36 @@ namespace SWPatcher.Forms
             this.Downloader = new Downloader(SWFiles);
             this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(Downloader_DownloaderProgressChanged);
             this.Downloader.DownloaderCompleted += new DownloaderCompletedEventHandler(Downloader_DownloaderCompleted);
+            this.Patcher = new Patcher(SWFiles);
             //this.Patcher.PatcherProgressChanged +=
             //this.Patcher.PatcherCompleted +=
             InitializeComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
-            this.buttonLastest.Text = Strings.FormText.Download;
-            this.buttonPatch.Text = Strings.FormText.Patch;
-            this.toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
         }
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
             this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.TotalFileCount);
-            this.toolStripProgressBar.Value = e.ProgressPercentage;
+            this.toolStripProgressBar.Value = e.Progress;
         }
 
         private void Downloader_DownloaderCompleted(object sender, DownloaderDownloadCompletedEventArgs e)
         {
-            if (e.IsSame)
+            if (e.Cancelled)
+            {
+                this.State = 0;
+            }
+            else if (e.Error != null)
+                MsgBox.Error(Strings.ExeptionParser(e.Error));
+            else if (e.IsSame)
                 MsgBox.Success(string.Format("You already have the latest({0} JST) translation files for this language!", Strings.DateToString(e.Language.LastUpdate)));
             else
             {
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
+                //OfferPatchNow();
             }
             this.State = 0;
-            OfferPatchNow();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

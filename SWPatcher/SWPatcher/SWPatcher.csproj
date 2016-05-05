@@ -86,9 +86,6 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Downloading\Downloader.cs" />
-    <Compile Include="Forms\Main.BgwrkEvents.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="General\Language.cs" />
     <Compile Include="General\SWFile.cs" />
     <Compile Include="General\TempFile.cs" />
@@ -177,12 +174,12 @@
   <ItemGroup>
     <PublishFile Include="patcher.ico">
       <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>False</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>False</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>

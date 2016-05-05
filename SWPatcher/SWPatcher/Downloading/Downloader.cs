@@ -16,7 +16,7 @@ namespace SWPatcher.Downloading
     {
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
-        private List<SWFile> SWFiles;
+        private readonly List<SWFile> SWFiles;
         private Language Language;
         private int DownloadIndex;
 
@@ -71,26 +71,13 @@ namespace SWPatcher.Downloading
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            bool flag = e.Result != null;
+            bool flag = e.Result != null || e.Cancelled || e.Error != null;
             if (flag)
-                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, flag));
+                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, e.Result != null, e.Cancelled, e.Error));
             else
             {
-                if (e.Cancelled)
-                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                else
-                {
-                    if (e.Error != null)
-                    {
-                        MsgBox.Error(Strings.ExeptionParser(e.Error));
-                        OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                    }
-                    else
-                    {
-                        this.DownloadIndex = 0;
-                        DownloadNext();
-                    }
-                }
+                this.DownloadIndex = 0;
+                DownloadNext();
             }
         }
 
@@ -101,23 +88,15 @@ namespace SWPatcher.Downloading
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (e.Cancelled)
-                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
+            bool flag = e.Cancelled || e.Error != null;
+            if (flag)
+                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
             else
             {
-                if (e.Error != null)
-                {
-                    MsgBox.Error(Strings.ExeptionParser(e.Error));
-                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(null));
-                }
+                if (SWFiles.Count > ++this.DownloadIndex)
+                    DownloadNext();
                 else
-                {
-                    this.DownloadIndex++;
-                    if (SWFiles.Count > DownloadIndex)
-                        DownloadNext();
-                    else
-                        OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language));
-                }
+                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
             }
         }
 

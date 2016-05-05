@@ -92,10 +92,7 @@ namespace SWPatcher.Forms
 
         private void Downloader_DownloaderCompleted(object sender, DownloaderDownloadCompletedEventArgs e)
         {
-            if (e.Cancelled)
-            {
-                this.State = 0;
-            }
+            if (e.Cancelled) { }
             else if (e.Error != null)
                 MsgBox.Error(Strings.ExeptionParser(e.Error));
             else if (e.IsSame)

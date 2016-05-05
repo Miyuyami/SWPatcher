@@ -117,7 +117,12 @@ namespace SWPatcher.Downloading
         private void DownloadNext()
         {
             Uri uri = new Uri(Uris.TranslationGitHubHome + this.Language.Lang + '/' + SWFiles[DownloadIndex].PathD);
-            DirectoryInfo folderDestination = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, SWFiles[DownloadIndex].Path)), Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Path)));
+            string path = "";
+            if (string.IsNullOrEmpty(SWFiles[DownloadIndex].Path))
+                path = Path.Combine(Paths.PatcherRoot, this.Language.Lang);
+            else
+                path = Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, SWFiles[DownloadIndex].Path)), Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Path));
+            DirectoryInfo folderDestination = new DirectoryInfo(path);
             if (!folderDestination.Exists)
                 folderDestination.Create();
             string fileDestination = Path.Combine(folderDestination.FullName, Path.GetFileName(SWFiles[DownloadIndex].PathD));

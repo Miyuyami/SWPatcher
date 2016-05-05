@@ -86,8 +86,11 @@ namespace SWPatcher.Forms
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
-            this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.TotalFileCount);
-            this.toolStripProgressBar.Value = e.Progress;
+            if (this.State == States.Downloading)
+            {
+                this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.TotalFileCount);
+                this.toolStripProgressBar.Value = e.Progress;
+            }
         }
 
         private void Downloader_DownloaderCompleted(object sender, DownloaderDownloadCompletedEventArgs e)

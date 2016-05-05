@@ -71,32 +71,34 @@ namespace SWPatcher.Downloading
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            bool flag = e.Result != null || e.Cancelled || e.Error != null;
-            if (flag)
-                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, e.Result != null, e.Cancelled, e.Error));
+            if (e.Cancelled || e.Error != null)
+                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(e.Cancelled, e.Error));
+            else if (e.Result != null)
+                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, e.Result != null, e.Cancelled, e.Error));
             else
             {
                 this.DownloadIndex = 0;
-                DownloadNext();
+                this.DownloadNext();
             }
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            OnDownloaderProgressChanged(sender, new DownloaderProgressChangedEventArgs(DownloadIndex + 1, SWFiles.Count, Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Name), e));
+            this.OnDownloaderProgressChanged(sender, new DownloaderProgressChangedEventArgs(DownloadIndex + 1, SWFiles.Count, Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Name), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            bool flag = e.Cancelled || e.Error != null;
-            if (flag)
-                OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
+            if (e.Cancelled)
+                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(e.Cancelled, e.Error));
+            else if (e.Error != null)
+                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
             else
             {
                 if (SWFiles.Count > ++this.DownloadIndex)
                     DownloadNext();
                 else
-                    OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
+                    this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
             }
         }
 
@@ -119,7 +121,7 @@ namespace SWPatcher.Downloading
             if (!folderDestination.Exists)
                 folderDestination.Create();
             string fileDestination = Path.Combine(folderDestination.FullName, Path.GetFileName(SWFiles[DownloadIndex].PathD));
-            Client.DownloadFileAsync(uri, fileDestination);
+            this.Client.DownloadFileAsync(uri, fileDestination);
         }
 
         private bool HasNewDownload()
@@ -148,14 +150,16 @@ namespace SWPatcher.Downloading
 
         public void Cancel()
         {
-            Worker.CancelAsync();
-            Client.CancelAsync();
+            this.Worker.CancelAsync();
+            this.Client.CancelAsync();
         }
 
         public void Run(Language language)
         {
+            if (this.Worker.IsBusy)
+                return;
             this.Language = language;
-            Worker.RunWorkerAsync();
+            this.Worker.RunWorkerAsync();
         }
     }
 }

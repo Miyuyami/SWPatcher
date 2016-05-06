@@ -26,9 +26,12 @@ namespace SWPatcher.Patching
             this.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
         }
 
+        public event PatcherProgressChangedEventHandler PatcherProgressChanged;
+        public event PatcherCompletedEventHandler PatcherCompleted;
+
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -41,6 +44,18 @@ namespace SWPatcher.Patching
             throw new NotImplementedException();
         }
 
+        private void OnPatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
+        {
+            if (this.PatcherProgressChanged != null)
+                this.PatcherProgressChanged(sender, e);
+        }
+
+        private void OnPatcherComplete(object sender, PatcherCompletedEventArgs e)
+        {
+            if (this.PatcherCompleted != null)
+                this.PatcherCompleted(sender, e);
+        }
+
         public void Cancel()
         {
             this.Worker.CancelAsync();
@@ -48,6 +63,8 @@ namespace SWPatcher.Patching
 
         public void Run(Language language)
         {
+            if (this.Worker.IsBusy)
+                return;
             this.Language = language;
             this.Worker.RunWorkerAsync();
         }

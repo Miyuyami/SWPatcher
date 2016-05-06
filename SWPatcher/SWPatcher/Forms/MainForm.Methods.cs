@@ -100,6 +100,19 @@ namespace SWPatcher.Forms
         {
             using (var folderDialog = new FolderBrowserDialog())
             {
+                using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\HanPurple\J_SW"))
+                {
+                    if (key != null)
+                        folderDialog.SelectedPath = Convert.ToString(key.GetValue("folder", ""));
+                    else
+                    {
+                        using (var key32 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
+                        {
+                            if (key32 != null)
+                                folderDialog.SelectedPath = Convert.ToString(key.GetValue("folder", ""));
+                        }
+                    }
+                }
                 folderDialog.ShowNewFolderButton = false;
                 folderDialog.Description = "Select your Soul Worker game client folder";
                 DialogResult result = folderDialog.ShowDialog();
@@ -195,23 +208,25 @@ namespace SWPatcher.Forms
 
         private static void RestoreBackup()
         {
-            if (Directory.Exists(Strings.FolderName.Backup))
+            DirectoryInfo directory = new DirectoryInfo(Strings.FolderName.Backup);
+            if (directory.Exists)
             {
-                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+                string[] filePaths = Directory.GetFiles(directory.FullName, "*", SearchOption.AllDirectories);
                 if (!string.IsNullOrEmpty(Paths.GameRoot) && IsSWPath(Paths.GameRoot))
                     foreach (var s in filePaths)
                     {
-                        string path = Path.Combine(Paths.GameRoot, s.Substring(Strings.FolderName.Backup.Length));
+                        string path = Path.Combine(Paths.GameRoot, s.Substring(directory.FullName.Length));
                         if (File.Exists(path))
-                            File.Delete(path);
-                        File.Move(s, path);
+                            File.Delete(s);
+                        else
+                            File.Move(s, path);
                     }
                 else
                     foreach (var s in filePaths)
                         File.Delete(s);
             }
             else
-                Directory.CreateDirectory(Strings.FolderName.Backup);
+                directory.Create();
         }
 
         private Language[] GetAllAvailableLanguages()
@@ -250,8 +265,13 @@ namespace SWPatcher.Forms
 
         private bool OfferPatchNow()
         {
+            DialogResult result = MsgBox.Question("Do you want patch those ");
             return false;
-            //DialogResult result = MsgBox.Question("Do you want patch ");
+        }
+
+        private bool OfferStartNow()
+        {
+            return false;
         }
     }
 }

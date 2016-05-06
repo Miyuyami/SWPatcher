@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
-    <Compile Include="Downloading\DownloaderDownloadCompletedEventHandler.cs" />
+    <Compile Include="Downloading\DownloaderCompletedEventHandler.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventHandler.cs" />
     <Compile Include="Forms\AboutBox.cs">
@@ -105,9 +105,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Patching\Patcher.cs" />
+    <Compile Include="Patching\PatcherCompletedEventArgs.cs" />
+    <Compile Include="Patching\PatcherCompletedEventHandler.cs" />
+    <Compile Include="Patching\PatcherProgressChangedEventArgs.cs" />
+    <Compile Include="Patching\PatcherProgressChangedEventHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
       <SubType>Designer</SubType>

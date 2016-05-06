@@ -78,8 +78,8 @@ namespace SWPatcher.Forms
             this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(Downloader_DownloaderProgressChanged);
             this.Downloader.DownloaderCompleted += new DownloaderCompletedEventHandler(Downloader_DownloaderCompleted);
             this.Patcher = new Patcher(SWFiles);
-            //this.Patcher.PatcherProgressChanged +=
-            //this.Patcher.PatcherCompleted +=
+            this.Patcher.PatcherProgressChanged += new PatcherProgressChangedEventHandler(Patcher_PatcherProgressChanged);
+            this.Patcher.PatcherCompleted += new PatcherCompletedEventHandler(Patcher_PatcherCompleted);
             InitializeComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
         }
@@ -93,7 +93,7 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void Downloader_DownloaderCompleted(object sender, DownloaderDownloadCompletedEventArgs e)
+        private void Downloader_DownloaderCompleted(object sender, DownloaderCompletedEventArgs e)
         {
             if (e.Cancelled) { }
             else if (e.Error != null)
@@ -104,7 +104,37 @@ namespace SWPatcher.Forms
             {
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
-                //OfferPatchNow();
+                if (OfferPatchNow())
+                {
+
+                }
+            }
+            this.State = 0;
+        }
+
+        private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
+        {
+            if (this.State == States.Patching)
+            {
+                this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.TotalFileCount);
+                this.toolStripProgressBar.Value = e.Progress;
+            }
+        }
+
+        private void Patcher_PatcherCompleted(object sender, PatcherCompletedEventArgs e)
+        {
+            if (e.Cancelled) { }
+            else if (e.Error != null)
+                MsgBox.Error(Strings.ExeptionParser(e.Error));
+            else
+            {
+                IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+                IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
+                translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
+                if (OfferStartNow())
+                {
+
+                }
             }
             this.State = 0;
         }
@@ -118,8 +148,8 @@ namespace SWPatcher.Forms
         private void MainForm_Load(object sender, EventArgs e)
         {
             RestoreBackup();
-            if (CheckForProgramUpdate() || CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)) || CheckForSWPath() || CheckForGameClientUpdate() || (comboBoxLanguages.DataSource = GetAllAvailableLanguages()) == null)
-                return;
+            //if (CheckForProgramUpdate() || CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)) || CheckForSWPath() || CheckForGameClientUpdate() || (comboBoxLanguages.DataSource = GetAllAvailableLanguages()) == null)
+              //  return;
         }
 
         private void buttonLastest_Click(object sender, EventArgs e)

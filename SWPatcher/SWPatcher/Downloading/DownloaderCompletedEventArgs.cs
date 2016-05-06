@@ -7,14 +7,14 @@ using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Downloading
 {
-    public class DownloaderDownloadCompletedEventArgs : EventArgs
+    public class DownloaderCompletedEventArgs : EventArgs
     {
         public Language Language { get; private set; }
         public bool IsSame { get; private set; }
         public bool Cancelled { get; private set; }
         public Exception Error { get; private set; }
 
-        public DownloaderDownloadCompletedEventArgs(bool cancelled, Exception error)
+        public DownloaderCompletedEventArgs(bool cancelled, Exception error)
         {
             this.Language = null;
             this.IsSame = false;
@@ -22,7 +22,7 @@ namespace SWPatcher.Downloading
             this.Error = error;
         }
 
-        public DownloaderDownloadCompletedEventArgs(Language language, bool isSame, bool cancelled, Exception error)
+        public DownloaderCompletedEventArgs(Language language, bool isSame, bool cancelled, Exception error)
         {
             this.Language = language;
             this.IsSame = isSame;

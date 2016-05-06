@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
+using System.IO;
 using System.Net;
-using SWPatcher.Helpers;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVar;
-using System.IO;
-using System.Globalization;
 
 namespace SWPatcher.Downloading
 {
@@ -72,9 +68,9 @@ namespace SWPatcher.Downloading
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(e.Cancelled, e.Error));
+                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
             else if (e.Result != null)
-                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, e.Result != null, e.Cancelled, e.Error));
+                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, e.Result != null, e.Cancelled, e.Error));
             else
             {
                 this.DownloadIndex = 0;
@@ -90,15 +86,15 @@ namespace SWPatcher.Downloading
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled)
-                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(e.Cancelled, e.Error));
+                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
             else if (e.Error != null)
-                this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
+                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
             else
             {
                 if (SWFiles.Count > ++this.DownloadIndex)
                     DownloadNext();
                 else
-                    this.OnDownloaderComplete(sender, new DownloaderDownloadCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
+                    this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
             }
         }
 
@@ -108,7 +104,7 @@ namespace SWPatcher.Downloading
                 this.DownloaderProgressChanged(sender, e);
         }
 
-        private void OnDownloaderComplete(object sender, DownloaderDownloadCompletedEventArgs e)
+        private void OnDownloaderComplete(object sender, DownloaderCompletedEventArgs e)
         {
             if (this.DownloaderCompleted != null)
                 this.DownloaderCompleted(sender, e);
@@ -122,10 +118,10 @@ namespace SWPatcher.Downloading
                 path = Path.Combine(Paths.PatcherRoot, this.Language.Lang);
             else
                 path = Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, SWFiles[DownloadIndex].Path)), Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Path));
-            DirectoryInfo folderDestination = new DirectoryInfo(path);
-            if (!folderDestination.Exists)
-                folderDestination.Create();
-            string fileDestination = Path.Combine(folderDestination.FullName, Path.GetFileName(SWFiles[DownloadIndex].PathD));
+            DirectoryInfo directoryDestination = new DirectoryInfo(path);
+            if (!directoryDestination.Exists)
+                directoryDestination.Create();
+            string fileDestination = Path.Combine(directoryDestination.FullName, Path.GetFileName(SWFiles[DownloadIndex].PathD));
             this.Client.DownloadFileAsync(uri, fileDestination);
         }
 

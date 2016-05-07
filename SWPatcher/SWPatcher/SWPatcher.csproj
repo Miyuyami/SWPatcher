@@ -89,6 +89,7 @@
     <Compile Include="General\Language.cs" />
     <Compile Include="General\SWFile.cs" />
     <Compile Include="General\TempFile.cs" />
+    <Compile Include="Helpers\Error.cs" />
     <Compile Include="Helpers\GlobalVar\Assembly.cs" />
     <Compile Include="Helpers\GlobalVar\Strings.cs" />
     <Compile Include="Helpers\MsgBox.cs" />

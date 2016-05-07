@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.ComponentModel;
-using SWPatcher.Helpers;
 
 namespace SWPatcher.Downloading
 {
@@ -15,7 +9,7 @@ namespace SWPatcher.Downloading
         public string FileName { get; private set; }
         public int Progress { get; private set; }
 
-        public DownloaderProgressChangedEventArgs(int fileNumber, int totalFileCount, string fileName, DownloadProgressChangedEventArgs e)
+        public DownloaderProgressChangedEventArgs(int fileNumber, int totalFileCount, string fileName, System.Net.DownloadProgressChangedEventArgs e)
         {
             this.FileNumber = fileNumber;
             this.TotalFileCount = totalFileCount;

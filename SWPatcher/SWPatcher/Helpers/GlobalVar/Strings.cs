@@ -1,6 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Globalization;
+
 namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
@@ -18,6 +18,7 @@ namespace SWPatcher.Helpers.GlobalVar
         public static class FileName
         {
             public const string GameExe = "SoulWorker100.exe";
+            public const string Log = "log.txt";
         }
 
         public static class FolderName
@@ -81,20 +82,6 @@ namespace SWPatcher.Helpers.GlobalVar
         public static string DateToString(DateTime date)
         {
             return date.ToString("dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
-        }
-
-        public static string ExeptionParser(Exception e)
-        {
-            string result = "Message:\n" + e.Message;
-            if (!string.IsNullOrEmpty(e.StackTrace))
-                result += "\nStackTrace:\n" + e.StackTrace;
-            if (e.InnerException != null)
-            {
-                result += "\nInnerMessage:\n" + e.InnerException.Message;
-                if (!string.IsNullOrEmpty(e.InnerException.StackTrace))
-                    result += "\nInnerStackTrace:\n" + e.InnerException.StackTrace;
-            }
-            return result;
         }
     }
 }

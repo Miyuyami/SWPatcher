@@ -62,15 +62,13 @@ namespace SWPatcher.Downloading
                 }
             }
             else
-                e.Result = true;
+                throw new Exception(string.Format("You already have the latest({0} JST) translation files for this language!", Strings.DateToString(this.Language.LastUpdate)));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
                 this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
-            else if (e.Result != null)
-                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, e.Result != null, e.Cancelled, e.Error));
             else
             {
                 this.DownloadIndex = 0;
@@ -85,16 +83,14 @@ namespace SWPatcher.Downloading
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (e.Cancelled)
+            if (e.Cancelled || e.Error != null)
                 this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
-            else if (e.Error != null)
-                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
             else
             {
                 if (SWFiles.Count > ++this.DownloadIndex)
                     DownloadNext();
                 else
-                    this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, false, e.Cancelled, e.Error));
+                    this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
             }
         }
 

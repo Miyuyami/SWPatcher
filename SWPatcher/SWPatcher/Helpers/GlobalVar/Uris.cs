@@ -1,5 +1,4 @@
-﻿
-namespace SWPatcher.Helpers.GlobalVar
+﻿namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Uris
     {

@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Forms

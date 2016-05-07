@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using SWPatcher.Downloading;
@@ -8,7 +7,6 @@ using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
-using System.Threading;
 
 namespace SWPatcher.Forms
 {
@@ -97,9 +95,10 @@ namespace SWPatcher.Forms
         {
             if (e.Cancelled) { }
             else if (e.Error != null)
-                MsgBox.Error(Strings.ExeptionParser(e.Error));
-            else if (e.IsSame)
-                MsgBox.Success(string.Format("You already have the latest({0} JST) translation files for this language!", Strings.DateToString(e.Language.LastUpdate)));
+            {
+                Error.Log(e.Error);
+                MsgBox.Error(Error.ExeptionParser(e.Error));
+            }
             else
             {
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
@@ -125,7 +124,10 @@ namespace SWPatcher.Forms
         {
             if (e.Cancelled) { }
             else if (e.Error != null)
-                MsgBox.Error(Strings.ExeptionParser(e.Error));
+            {
+                Error.Log(e.Error);
+                MsgBox.Error(Error.ExeptionParser(e.Error));
+            }
             else
             {
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
@@ -147,9 +149,22 @@ namespace SWPatcher.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            RestoreBackup();
             //if (CheckForProgramUpdate() || CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)) || CheckForSWPath() || CheckForGameClientUpdate() || (comboBoxLanguages.DataSource = GetAllAvailableLanguages()) == null)
-              //  return;
+            //    return;
+            try
+            {
+                RestoreBackup();
+                CheckForProgramUpdate();
+                CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot));
+                CheckForSWPath();
+                CheckForGameClientUpdate();
+                comboBoxLanguages.DataSource = GetAllAvailableLanguages();
+            }
+            catch (Exception ex)
+            {
+                Error.Log(ex);
+                this.Close();
+            }
         }
 
         private void buttonLastest_Click(object sender, EventArgs e)

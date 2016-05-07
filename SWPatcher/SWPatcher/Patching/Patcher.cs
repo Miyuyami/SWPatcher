@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
 using SWPatcher.General;
 
@@ -31,17 +29,17 @@ namespace SWPatcher.Patching
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            
+
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            //OnPatcherProgressChanged(sender, new PatcherProgressChangedEventArgs());
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            OnPatcherComplete(sender, new PatcherCompletedEventArgs(this.Language, e.Cancelled, e.Error));
         }
 
         private void OnPatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)

@@ -1,41 +1,42 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Windows.Forms;
+using Ionic.Zip;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
-using System.IO;
-using Ionic.Zip;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 
 namespace SWPatcher.Forms
 {
     partial class MainForm
     {
-        private bool CheckForProgramUpdate()
+        private void CheckForProgramUpdate()
         {
             try
             {
-                return CheckProgramUpdate();
+                CheckProgramUpdate();
             }
             catch (WebException)
             {
                 DialogResult result = MsgBox.ErrorRetry("Could not connect to download server.\nTry again later.");
                 if (result == DialogResult.Retry)
-                    return CheckForProgramUpdate();
+                    CheckForProgramUpdate();
                 else
                 {
                     MsgBox.Error("The program cannot run without an internet connection and will now close.");
-                    this.Close();
-                    return true;
+                    throw new Exception("0x0000001 - Connection to download server failed");
                 }
+            }
+            catch
+            {
+                throw;
             }
         }
 
-        private bool CheckProgramUpdate()
+        private void CheckProgramUpdate()
         {
             using (var client = new WebClient())
             using (var file = new TempFile())
@@ -51,8 +52,7 @@ namespace SWPatcher.Forms
                     if (newVersionDialog == DialogResult.Yes)
                     {
                         Process.Start(address);
-                        this.Close();
-                        return true;
+                        throw new Exception("0x0000000 - Closing app to update");
                     }
                     else
                     {
@@ -60,43 +60,38 @@ namespace SWPatcher.Forms
                         if (newVersionDialog2 == DialogResult.No)
                         {
                             Process.Start(address);
-                            this.Close();
-                            return true;
+                            throw new Exception("0x0000000 - Closing app to update");
                         }
                     }
                 }
             }
-            return false;
         }
 
-        private bool CheckForProgramFolderMalfunction(string path)
+        private void CheckForProgramFolderMalfunction(string path)
         {
             while (!string.IsNullOrEmpty(path))
             {
                 if (IsSWPath(path))
                 {
                     MsgBox.Error("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move it in another location.");
-                    this.Close();
-                    return true;
+                    throw new Exception("0x00000002 - Illegal patcher path");
                 }
                 path = Path.GetDirectoryName(path);
             }
-            return false;
         }
 
-        private bool CheckForSWPath()
+        private void CheckForSWPath()
         {
             if (string.IsNullOrEmpty(Paths.GameRoot))
-                return SetSWPath();
+                SetSWPath();
             if (!IsSWPath(Paths.GameRoot))
             {
                 MsgBox.Error("The saved Soul Worker game client folder is invalid.");
-                return SetSWPath();
+                SetSWPath();
             }
-            return false;
         }
 
-        private bool SetSWPath()
+        private void SetSWPath()
         {
             using (var folderDialog = new FolderBrowserDialog())
             {
@@ -106,52 +101,50 @@ namespace SWPatcher.Forms
                         folderDialog.SelectedPath = Convert.ToString(key.GetValue("folder", ""));
                     else
                     {
+                        Error.Log("0x0000010 - WOW6432Node - Key not found");
                         using (var key32 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
                         {
                             if (key32 != null)
                                 folderDialog.SelectedPath = Convert.ToString(key.GetValue("folder", ""));
+                            else
+                                Error.Log("0x0000020 - StandardNode - Key not found");
                         }
                     }
                 }
                 folderDialog.ShowNewFolderButton = false;
-                folderDialog.Description = "Select your Soul Worker game client folder";
+                folderDialog.Description = "Select your Soul Worker game client folder.";
                 DialogResult result = folderDialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
                     if (IsSWPath(folderDialog.SelectedPath))
-                    {
                         Paths.GameRoot = folderDialog.SelectedPath;
-                        return false;
-                    }
                     else
                     {
-                        MsgBox.Error("The selected folder is not a Soul Worker game client folder");
-                        return SetSWPath();
+                        MsgBox.Error("The selected folder is not a Soul Worker game client folder.");
+                        SetSWPath();
                     }
                 }
                 else
                 {
-                    MsgBox.Error("The patcher cannot run without a valid game client folder.");
-                    this.Close();
-                    return true;
+                    MsgBox.Error("You cannot run the patcher without selecting a valid game client folder.");
+                    throw new Exception("0x0000012 - No valid path selected");
                 }
             }
         }
 
-        private bool CheckForGameClientUpdate()
+        private void CheckForGameClientUpdate()
         {
             if (IsNewerGameClientVersion())
             {
                 DialogResult result = MsgBox.ErrorRetry("Your game client is not updated to the latest version.\nRun the game client launcher first and retry.");
-                if (result == DialogResult.Cancel)
+                if (result == DialogResult.Retry)
+                    CheckForGameClientUpdate();
+                else
                 {
                     MsgBox.Error("Patching old files will lead to certain data corruption.\nThe program will now close.");
-                    this.Close();
-                    return true;
+                    throw new Exception("0x0000003 - Old translation files");
                 }
-                return CheckForGameClientUpdate();
             }
-            return false;
         }
 
         private bool IsNewerGameClientVersion()
@@ -164,13 +157,13 @@ namespace SWPatcher.Forms
             catch (WebException)
             {
                 DialogResult result = MsgBox.ErrorRetry("Could not connect to Hangame server.\nTry again later.");
-                if (result == DialogResult.Cancel)
+                if (result == DialogResult.Retry)
+                    return IsNewerGameClientVersion();
+                else
                 {
                     MsgBox.Error("The program cannot run without an internet connection and will now close.");
-                    this.Close();
-                    return false;
+                    throw new Exception("0x0000011 - Connection to Hangame server failed");
                 }
-                return IsNewerGameClientVersion();
             }
         }
 
@@ -243,8 +236,7 @@ namespace SWPatcher.Forms
                 else
                 {
                     MsgBox.Error("The program cannot run without an internet connection and will now close.");
-                    this.Close();
-                    return null;
+                    throw new Exception("0x0000001 - Connection to download server failed");
                 }
             }
         }
@@ -265,7 +257,7 @@ namespace SWPatcher.Forms
 
         private bool OfferPatchNow()
         {
-            DialogResult result = MsgBox.Question("Do you want patch those ");
+            //DialogResult result = MsgBox.Question("Do you want patch those ");
             return false;
         }
 

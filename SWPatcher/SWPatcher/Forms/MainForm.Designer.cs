@@ -64,7 +64,7 @@
             this.buttonPlay.TabIndex = 3;
             this.buttonPlay.Text = "Ready To Play!";
             this.buttonPlay.UseVisualStyleBackColor = true;
-            this.buttonPlay.Click += new System.EventHandler(this.buttonPatch_Click);
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
             // buttonLastest
             // 

@@ -151,12 +151,12 @@ namespace SWPatcher.Downloading
             this.Client.CancelAsync();
         }
 
-        public void Run(Language language)
+        public void Run(Language language, bool isForced)
         {
             if (this.Worker.IsBusy)
                 return;
             this.Language = language;
-            this.Worker.RunWorkerAsync();
+            this.Worker.RunWorkerAsync(isForced);
         }
     }
 }

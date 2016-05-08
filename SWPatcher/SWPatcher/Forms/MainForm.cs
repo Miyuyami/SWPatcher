@@ -147,7 +147,8 @@ namespace SWPatcher.Forms
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
-                forceStripMenuItem_Click(null, null);
+                
+                // start patcher
             }
             this.State = 0;
         }
@@ -188,26 +189,26 @@ namespace SWPatcher.Forms
             else if (this.State == 0)
             {
                 this.State = States.Downloading;
-                this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
+                this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
             }
         }
 
-        private void buttonPatch_Click(object sender, EventArgs e)
+        private void buttonPlay_Click(object sender, EventArgs e)
         {
 
         }
 
         private void forceStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.State == States.Patching)
+            if (this.State == States.Downloading)
             {
-                this.Patcher.Cancel();
+                this.Downloader.Cancel();
                 this.State = 0;
             }
             else if (this.State == 0)
             {
-                this.State = States.Patching;
-                this.Patcher.Run(this.comboBoxLanguages.SelectedItem as Language);
+                this.State = States.Downloading;
+                this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, true);
             }
         }
 

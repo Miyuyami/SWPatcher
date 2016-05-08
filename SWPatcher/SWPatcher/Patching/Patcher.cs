@@ -7,6 +7,8 @@ using System.IO;
 using Ionic.Zip;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace SWPatcher.Patching
 {
@@ -47,8 +49,11 @@ namespace SWPatcher.Patching
                             string swFilePathOriginalRes = Path.Combine(Paths.PatcherRoot, Path.GetFileNameWithoutExtension(swFilePath)) + ".res";
                             string swFilePathRes = Path.ChangeExtension(swFilePath, ".res");
                             DoUnzipFile(archivePath, swFile.PathA, swFilePathOriginalRes);
-                            string[] formatArray = swFile.Format.Split(' ');
-                            PatchFile(swFilePath, swFilePathRes, swFilePathOriginalRes, formatArray);
+                            string[] fullFormatArray = swFile.Format.Split(' ');
+                            int idIndex = Convert.ToInt32(fullFormatArray[0]);
+                            string countFormat = fullFormatArray[1];
+                            string[] formatArray = fullFormatArray.Skip(2).ToArray(); // skip idIndex and countFormat
+                            PatchFile(swFilePath, swFilePathRes, swFilePathOriginalRes, idIndex, countFormat, formatArray);
                             File.Delete(swFilePathOriginalRes);
                             DoZipFile(archivePath, swFile.PathA, swFilePathRes);
                             File.Delete(swFilePathRes);
@@ -83,10 +88,181 @@ namespace SWPatcher.Patching
                 this.PatcherCompleted(sender, e);
         }
 
-        private void PatchFile(string inputFile, string outputFile, string originalFile, string[] formatArray)
+        private Dictionary<UInt64, List<string>> ReadInputFile(string path, int lineCount)
         {
-            using (var br = new BinaryReader(File.Open(originalFile, FileMode.Open, FileAccess.Read))
-            using (var bw = new BinaryWriter(File.Open(outputFile, FileMode.
+            int emptyLineCount = 1;
+            int idLineCount = 1;
+            return null;
+        }
+
+        private void PatchFile(string inputFile, string outputFile, string originalFile, int idIndex, string countFormat, string[] formatArray)
+        {
+            ulong dataCount = 0;
+            ulong dataSum = 0;
+            uint hashLength = 32;
+            byte[] hash = new byte[hashLength];
+            int lineCount = 0;
+
+            for (int i = 0; i < formatArray.Length; i++)
+                if (formatArray[i] == "len")
+                {
+                    lineCount++;
+                    i++;
+                }
+
+            var inputTable = ReadInputFile(inputFile, lineCount);
+
+            using (var br = new BinaryReader(File.Open(originalFile, FileMode.Open, FileAccess.Read)))
+            using (var bw = new BinaryWriter(File.Open(outputFile, FileMode.CreateNew, FileAccess.Write)))
+            {
+                switch (countFormat)
+                {
+                    case "1":
+                        dataCount = br.ReadByte();
+                        bw.Write(Convert.ToByte(dataCount));
+                        break;
+                    case "2":
+                        dataCount = br.ReadUInt16();
+                        bw.Write(Convert.ToUInt16(dataCount));
+                        break;
+                    case "4":
+                        dataCount = br.ReadUInt32();
+                        bw.Write(Convert.ToUInt32(dataCount));
+                        break;
+                    case "8":
+                        dataCount = br.ReadUInt64();
+                        bw.Write(Convert.ToUInt64(dataCount));
+                        break;
+                }
+
+                Dictionary<ulong, object[]> dataTable = new Dictionary<ulong, object[]>();
+                ulong value = 0;
+                for (ulong i = 0; i < dataCount; i++)
+                {
+                    object[] current = new object[formatArray.Length];
+                    dataTable.Add(i, current);
+                    #region Object Reading
+                    for (int j = 0; j < formatArray.Length; j++)
+                    {
+                        switch (formatArray[j])
+                        {
+                            case "1":
+                                current[j] = Convert.ToByte(br.ReadByte());
+                                break;
+                            case "2":
+                                current[j] = Convert.ToUInt16(br.ReadUInt16());
+                                break;
+                            case "4":
+                                current[j] = Convert.ToUInt32(br.ReadUInt32());
+                                break;
+                            case "8":
+                                current[j] = Convert.ToUInt64(br.ReadUInt64());
+                                break;
+                            case "len":
+                                switch (formatArray[++j])
+                                {
+                                    case "1":
+                                        value = br.ReadByte();
+                                        current[j] = Convert.ToByte(br.ReadByte());
+                                        break;
+                                    case "2":
+                                        value = br.ReadUInt16();
+                                        current[j] = Convert.ToUInt16(value);
+                                        break;
+                                    case "4":
+                                        value = br.ReadUInt32();
+                                        current[j] = Convert.ToUInt32(value);
+                                        break;
+                                    case "8":
+                                        value = br.ReadUInt64();
+                                        current[j] = Convert.ToUInt64(value);
+                                        break;
+                                }
+                                ulong strBytesLength = value * 2;
+                                byte[] strBytes = new byte[strBytesLength];
+                                current[j] = strBytes;
+                                for (ulong k = 0; k < strBytesLength; k++)
+                                    strBytes[k] = br.ReadByte();
+                                break;
+                        }
+                    }
+                    #endregion
+
+                    #region Object Writing
+                    for (int j = 0; j < formatArray.Length; j++)
+                    {
+                        switch (formatArray[j])
+                        {
+                            case "1":
+                                value = Convert.ToByte(current[j]);
+                                bw.Write(Convert.ToByte(value));
+                                break;
+                            case "2":
+                                value = Convert.ToUInt16(current[j]);
+                                bw.Write(Convert.ToUInt16(value));
+                                break;
+                            case "4":
+                                value = Convert.ToUInt32(current[j]);
+                                bw.Write(Convert.ToUInt32(value));
+                                break;
+                            case "8":
+                                value = Convert.ToUInt64(current[j]);
+                                bw.Write(Convert.ToUInt64(value));
+                                break;
+                            case "len":
+                                byte[] strBytes = null;
+                                if (inputTable.ContainsKey(Convert.ToUInt64(current[idIndex])))
+                                    strBytes = Encoding.Unicode.GetBytes(inputTable[Convert.ToUInt64(current[idIndex])][j + 1]);
+                                else
+                                    strBytes = current[j + 1] as byte[];
+                                value = Convert.ToUInt64(strBytes.Length / 2);
+
+                                switch (formatArray[++j])
+                                {
+                                    case "1":
+                                        bw.Write(Convert.ToByte(value));
+                                        break;
+                                    case "2":
+                                        bw.Write(Convert.ToUInt16(value));
+                                        break;
+                                    case "4":
+                                        bw.Write(Convert.ToUInt32(value));
+                                        break;
+                                    case "8":
+                                        bw.Write(Convert.ToUInt64(value));
+                                        break;
+                                }
+
+                                foreach (byte b in strBytes)
+                                {
+                                    dataSum += b;
+                                    bw.Write(b);
+                                }
+                                break;
+                        }
+                        dataSum += value;
+                    }
+                    #endregion
+                }
+                bw.Write(hashLength);
+                string hashString = GetMD5(Convert.ToString(dataSum));
+                for (int i = 0; i < hashLength; i++)
+                    hash[i] = Convert.ToByte(hashString[i]);
+                bw.Write(hash);
+            }
+        }
+
+        private static string GetMD5(string text)
+        {
+            var md5 = new MD5CryptoServiceProvider();
+            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
+            byte[] result = md5.Hash;
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < result.Length; i++)
+                sb.Append(result[i].ToString("x2"));
+
+            return sb.ToString();
         }
 
         private void Xor(string path, byte secretByte)
@@ -97,7 +273,7 @@ namespace SWPatcher.Patching
                 while ((b = stream.ReadByte()) != -1)
                 {
                     stream.Position--;
-                    stream.WriteByte((byte)b);
+                    stream.WriteByte(Convert.ToByte(b));
                 }
             }
         }

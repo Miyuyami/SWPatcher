@@ -210,7 +210,7 @@ namespace SWPatcher.Forms
                     {
                         string path = Path.Combine(Paths.GameRoot, s.Substring(directory.FullName.Length));
                         if (File.Exists(path))
-                            File.Delete(s);
+                            File.Delete(path);
                         else
                             File.Move(s, path);
                     }

@@ -83,6 +83,12 @@ namespace SWPatcher.Patching
                 this.PatcherCompleted(sender, e);
         }
 
+        private void PatchFile(string inputFile, string outputFile, string originalFile, string[] formatArray)
+        {
+            using (var br = new BinaryReader(File.Open(originalFile, FileMode.Open, FileAccess.Read))
+            using (var bw = new BinaryWriter(File.Open(outputFile, FileMode.
+        }
+
         private void Xor(string path, byte secretByte)
         {
             using (var stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite))

@@ -30,11 +30,15 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.buttonPatch = new System.Windows.Forms.Button();
+            this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonLastest = new System.Windows.Forms.Button();
             this.comboBoxLanguages = new System.Windows.Forms.ComboBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.forceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -49,18 +53,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // buttonPatch
+            // buttonPlay
             // 
-            this.buttonPatch.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tableLayoutPanel.SetColumnSpan(this.buttonPatch, 2);
-            this.buttonPatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonPatch.Location = new System.Drawing.Point(117, 210);
-            this.buttonPatch.Name = "buttonPatch";
-            this.buttonPatch.Size = new System.Drawing.Size(130, 26);
-            this.buttonPatch.TabIndex = 3;
-            this.buttonPatch.Text = "Ready To Play!";
-            this.buttonPatch.UseVisualStyleBackColor = true;
-            this.buttonPatch.Click += new System.EventHandler(this.buttonPatch_Click);
+            this.buttonPlay.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tableLayoutPanel.SetColumnSpan(this.buttonPlay, 2);
+            this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonPlay.Location = new System.Drawing.Point(117, 210);
+            this.buttonPlay.Name = "buttonPlay";
+            this.buttonPlay.Size = new System.Drawing.Size(130, 26);
+            this.buttonPlay.TabIndex = 3;
+            this.buttonPlay.Text = "Ready To Play!";
+            this.buttonPlay.UseVisualStyleBackColor = true;
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPatch_Click);
             // 
             // buttonLastest
             // 
@@ -93,12 +97,42 @@
             // 
             this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(364, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
+            // 
+            // menuToolStripMenuItem
+            // 
+            this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.forceStripMenuItem,
+            this.toolStripSeparator1,
+            this.exitStripMenuItem});
+            this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
+            this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.menuToolStripMenuItem.Text = "Menu";
+            // 
+            // forceStripMenuItem
+            // 
+            this.forceStripMenuItem.Name = "forceStripMenuItem";
+            this.forceStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.forceStripMenuItem.Text = "Force Patch";
+            this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // exitStripMenuItem
+            // 
+            this.exitStripMenuItem.Name = "exitStripMenuItem";
+            this.exitStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitStripMenuItem.Text = "Exit";
+            this.exitStripMenuItem.Click += new System.EventHandler(this.exit_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -144,8 +178,8 @@
             // 
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(18, 17);
-            this.toolStripStatusLabel.Text = SWPatcher.Helpers.GlobalVar.Strings.FormText.Status.Idle;
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(39, 17);
+            this.toolStripStatusLabel.Text = "Ready";
             // 
             // tableLayoutPanel
             // 
@@ -154,7 +188,7 @@
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel.Controls.Add(this.buttonPatch, 0, 3);
+            this.tableLayoutPanel.Controls.Add(this.buttonPlay, 0, 3);
             this.tableLayoutPanel.Controls.Add(this.buttonLastest, 0, 2);
             this.tableLayoutPanel.Controls.Add(this.comboBoxLanguages, 0, 1);
             this.tableLayoutPanel.Controls.Add(this.pictureBox, 0, 0);
@@ -194,11 +228,11 @@
             this.buttonExit.TabIndex = 4;
             this.buttonExit.Text = "Exit";
             this.buttonExit.UseVisualStyleBackColor = true;
-            this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
+            this.buttonExit.Click += new System.EventHandler(this.exit_Click);
             // 
             // MainForm
             // 
-            this.AcceptButton = this.buttonPatch;
+            this.AcceptButton = this.buttonPlay;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
@@ -226,7 +260,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-        private System.Windows.Forms.Button buttonPatch;
+        private System.Windows.Forms.Button buttonPlay;
         private System.Windows.Forms.Button buttonLastest;
         private System.Windows.Forms.ComboBox comboBoxLanguages;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
@@ -238,6 +272,10 @@
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel toolStripSeparator;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem forceStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem exitStripMenuItem;
     }
 }
 

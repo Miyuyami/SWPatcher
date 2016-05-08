@@ -36,6 +36,7 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Collections.Generic;
 
 namespace SWPatcher {
 	/// <summary>
@@ -356,12 +357,12 @@ namespace SWPatcher {
 		}
 		/// <summary>Retrieves a list of all available sections in the INI file.</summary>
 		/// <returns>Returns an ArrayList with all available sections.</returns>
-		public ArrayList GetSectionNames() {
+		public List<string> GetSectionNames() {
 			try {
 				byte[] buffer = new byte[MAX_ENTRY];
 				GetPrivateProfileSectionNames(buffer, MAX_ENTRY, Filename);
-				string [] parts = Encoding.ASCII.GetString(buffer).Trim('\0').Split('\0');
-				return new ArrayList(parts);
+				string[] parts = Encoding.ASCII.GetString(buffer).Trim('\0').Split('\0');
+				return new List<string>(parts);
 			} catch {}
 			return null;
     	}

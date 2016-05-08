@@ -14,7 +14,7 @@ namespace SWPatcher.Downloading
             this.FileNumber = fileNumber;
             this.TotalFileCount = totalFileCount;
             this.FileName = fileName;
-            this.Progress = e.BytesReceived == e.TotalBytesToReceive ? int.MaxValue : Convert.ToInt32(((double) e.BytesReceived / e.TotalBytesToReceive) * int.MaxValue);
+            this.Progress = e.BytesReceived == e.TotalBytesToReceive ? int.MaxValue : Convert.ToInt32(((double)e.BytesReceived / e.TotalBytesToReceive) * int.MaxValue);
         }
     }
 }

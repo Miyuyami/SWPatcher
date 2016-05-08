@@ -16,7 +16,8 @@ namespace SWPatcher.Forms
         {
             Idle = 0,
             Downloading,
-            Patching
+            Patching,
+            WaitingForGame
         }
 
         private States _state;
@@ -40,8 +41,10 @@ namespace SWPatcher.Forms
                             comboBoxLanguages.Enabled = true;
                             buttonLastest.Enabled = true;
                             buttonLastest.Text = Strings.FormText.Download;
-                            buttonPatch.Enabled = true;
-                            buttonPatch.Text = Strings.FormText.Patch;
+                            buttonPlay.Enabled = true;
+                            buttonPlay.Text = Strings.FormText.Play;
+                            forceStripMenuItem.Enabled = true;
+                            forceStripMenuItem.Text = Strings.FormText.ForcePatch;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
@@ -49,8 +52,10 @@ namespace SWPatcher.Forms
                             comboBoxLanguages.Enabled = false;
                             buttonLastest.Enabled = true;
                             buttonLastest.Text = Strings.FormText.Cancel;
-                            buttonPatch.Enabled = false;
-                            buttonPatch.Text = Strings.FormText.Patch;
+                            buttonPlay.Enabled = false;
+                            buttonPlay.Text = Strings.FormText.Play;
+                            forceStripMenuItem.Enabled = false;
+                            forceStripMenuItem.Text = Strings.FormText.ForcePatch;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Download;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
@@ -58,9 +63,22 @@ namespace SWPatcher.Forms
                             comboBoxLanguages.Enabled = false;
                             buttonLastest.Enabled = false;
                             buttonLastest.Text = Strings.FormText.Download;
-                            buttonPatch.Enabled = true;
-                            buttonPatch.Text = Strings.FormText.Cancel;
+                            buttonPlay.Enabled = false;
+                            buttonPlay.Text = Strings.FormText.Play;
+                            forceStripMenuItem.Enabled = true;
+                            forceStripMenuItem.Text = Strings.FormText.Cancel;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
+                            toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            break;
+                        case States.WaitingForGame:
+                            comboBoxLanguages.Enabled = false;
+                            buttonLastest.Enabled = false;
+                            buttonLastest.Text = Strings.FormText.Download;
+                            buttonPlay.Enabled = true;
+                            buttonPlay.Text = Strings.FormText.Cancel;
+                            forceStripMenuItem.Enabled = false;
+                            forceStripMenuItem.Text = Strings.FormText.ForcePatch;
+                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitingForGame;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
                     }
@@ -103,10 +121,6 @@ namespace SWPatcher.Forms
             {
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
-                if (OfferPatchNow())
-                {
-
-                }
             }
             this.State = 0;
         }
@@ -133,10 +147,7 @@ namespace SWPatcher.Forms
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
-                if (OfferStartNow())
-                {
-
-                }
+                forceStripMenuItem_Click(null, null);
             }
             this.State = 0;
         }
@@ -183,6 +194,11 @@ namespace SWPatcher.Forms
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void forceStripMenuItem_Click(object sender, EventArgs e)
+        {
             if (this.State == States.Patching)
             {
                 this.Patcher.Cancel();
@@ -195,7 +211,7 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void buttonExit_Click(object sender, EventArgs e)
+        private void exit_Click(object sender, EventArgs e)
         {
             this.Close();
         }

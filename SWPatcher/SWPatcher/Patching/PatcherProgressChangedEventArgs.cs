@@ -9,12 +9,20 @@ namespace SWPatcher.Patching
         public string FileName { get; private set; }
         public int Progress { get; private set; }
 
-        public PatcherProgressChangedEventArgs(int fileNumber, int totalFileCount, string fileName)//, ProgressChangedEventArgs e)
+        public PatcherProgressChangedEventArgs(int fileNumber, int totalFileCount, string fileName, int progress)
         {
             this.FileNumber = fileNumber;
             this.TotalFileCount = totalFileCount;
             this.FileName = fileName;
-            //this.Progress = e.BytesReceived == e.TotalBytesToReceive ? int.MaxValue : Convert.ToInt32(((double) e.BytesReceived / e.TotalBytesToReceive) * int.MaxValue);
+            this.Progress = progress;
+        }
+
+        public PatcherProgressChangedEventArgs(int fileNumber, int totalFileCount, string fileName, int currentLine, int lineCount)
+        {
+            this.FileNumber = fileNumber;
+            this.TotalFileCount = totalFileCount;
+            this.FileName = fileName;
+            this.Progress = currentLine == lineCount ? int.MaxValue : Convert.ToInt32(((double)currentLine/lineCount) * int.MaxValue);
         }
     }
 }

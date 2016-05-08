@@ -88,11 +88,37 @@ namespace SWPatcher.Patching
                 this.PatcherCompleted(sender, e);
         }
 
-        private Dictionary<UInt64, List<string>> ReadInputFile(string path, int lineCount)
+        private Dictionary<ulong, string[]> ReadInputFile(string path, int lineCount, int idIndex)
         {
+            int idTextLength = 3;
             int emptyLineCount = 1;
             int idLineCount = 1;
-            return null;
+            lineCount += emptyLineCount + idLineCount;
+            var result = new Dictionary<ulong, string[]>();
+
+            string[] fileLines = File.ReadAllLines(path, Encoding.UTF8);
+
+            for (int i = 0; i < fileLines.Length; i += lineCount)
+            {
+                var currentData = new string[lineCount];
+
+                for (int j = 0; j < lineCount; j++)
+                {
+                    if (i + j < fileLines.Length)
+                        currentData[j] = fileLines[i + j].Replace("\\n", "\n");
+                    else
+                        currentData[j] = "";
+                }
+
+                ulong id = Convert.ToUInt64(currentData[idIndex].Skip(idTextLength).ToString());
+                List<string> dataList = currentData.ToList();
+                dataList.RemoveAt(idIndex);
+                string[] data = dataList.ToArray();
+
+                result.Add(id, data);
+            }
+
+            return result;
         }
 
         private void PatchFile(string inputFile, string outputFile, string originalFile, int idIndex, string countFormat, string[] formatArray)
@@ -110,7 +136,7 @@ namespace SWPatcher.Patching
                     i++;
                 }
 
-            var inputTable = ReadInputFile(inputFile, lineCount);
+            var inputTable = ReadInputFile(inputFile, lineCount, idIndex);
 
             using (var br = new BinaryReader(File.Open(originalFile, FileMode.Open, FileAccess.Read)))
             using (var bw = new BinaryWriter(File.Open(outputFile, FileMode.CreateNew, FileAccess.Write)))

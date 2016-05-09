@@ -62,17 +62,15 @@ namespace SWPatcher.Helpers.GlobalVar
         public static class FormText
         {
             public const string Download = "Download Translations";
-            public const string ForcePatch = "Force Patch";
             public const string Play = "Ready To Play!";
             public const string Cancel = "Cancel";
 
             public static class Status
             {
-                public const string Idle = "Ready";
-                public const string Check = "Checking version...";
+                public const string Idle = "";
                 public const string Download = "Downloading...";
                 public const string Patch = "Patching...";
-                public const string WaitingForGame = "Waiting for game...";
+                public const string Play = "Waiting for game...";
             }
         }
 

@@ -17,7 +17,7 @@ namespace SWPatcher.Forms
             Idle = 0,
             Downloading,
             Patching,
-            WaitingForGame
+            Play
         }
 
         private States _state;
@@ -39,46 +39,46 @@ namespace SWPatcher.Forms
                     {
                         case States.Idle:
                             comboBoxLanguages.Enabled = true;
-                            buttonLastest.Enabled = true;
-                            buttonLastest.Text = Strings.FormText.Download;
+                            buttonDownload.Enabled = true;
+                            buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Play;
+                            buttonExit.Enabled = true;
                             forceStripMenuItem.Enabled = true;
-                            forceStripMenuItem.Text = Strings.FormText.ForcePatch;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
                         case States.Downloading:
                             comboBoxLanguages.Enabled = false;
-                            buttonLastest.Enabled = true;
-                            buttonLastest.Text = Strings.FormText.Cancel;
+                            buttonDownload.Enabled = true;
+                            buttonDownload.Text = Strings.FormText.Cancel;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
-                            forceStripMenuItem.Text = Strings.FormText.ForcePatch;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Download;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
                         case States.Patching:
                             comboBoxLanguages.Enabled = false;
-                            buttonLastest.Enabled = false;
-                            buttonLastest.Text = Strings.FormText.Download;
+                            buttonDownload.Enabled = true;
+                            buttonDownload.Text = Strings.FormText.Cancel;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
-                            forceStripMenuItem.Enabled = true;
-                            forceStripMenuItem.Text = Strings.FormText.Cancel;
+                            buttonExit.Enabled = false;
+                            forceStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
-                        case States.WaitingForGame:
+                        case States.Play:
                             comboBoxLanguages.Enabled = false;
-                            buttonLastest.Enabled = false;
-                            buttonLastest.Text = Strings.FormText.Download;
+                            buttonDownload.Enabled = false;
+                            buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Cancel;
+                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
-                            forceStripMenuItem.Text = Strings.FormText.ForcePatch;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitingForGame;
+                            toolStripStatusLabel.Text = Strings.FormText.Status.Play;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
                     }
@@ -121,8 +121,10 @@ namespace SWPatcher.Forms
             {
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
+
+                this.State = States.Patching;
+                this.Patcher.Run(e.Language);
             }
-            this.State = 0;
         }
 
         private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
@@ -147,8 +149,6 @@ namespace SWPatcher.Forms
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
-                
-                // start patcher
             }
             this.State = 0;
         }
@@ -161,8 +161,6 @@ namespace SWPatcher.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //if (CheckForProgramUpdate() || CheckForProgramFolderMalfunction(Path.GetDirectoryName(Paths.PatcherRoot)) || CheckForSWPath() || CheckForGameClientUpdate() || (comboBoxLanguages.DataSource = GetAllAvailableLanguages()) == null)
-            //    return;
             try
             {
                 RestoreBackup();
@@ -179,11 +177,16 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void buttonLastest_Click(object sender, EventArgs e)
+        private void buttonDownload_Click(object sender, EventArgs e)
         {
             if (this.State == States.Downloading)
             {
                 this.Downloader.Cancel();
+                this.State = 0;
+            }
+            else if (this.State == States.Patching)
+            {
+                this.Patcher.Cancel();
                 this.State = 0;
             }
             else if (this.State == 0)
@@ -200,21 +203,14 @@ namespace SWPatcher.Forms
 
         private void forceStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.State == States.Downloading)
-            {
-                this.Downloader.Cancel();
-                this.State = 0;
-            }
-            else if (this.State == 0)
-            {
-                this.State = States.Downloading;
-                this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, true);
-            }
+            this.State = States.Downloading;
+            this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, true);
         }
 
         private void exit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (this.State == 0)
+                this.Close();
         }
     }
 }

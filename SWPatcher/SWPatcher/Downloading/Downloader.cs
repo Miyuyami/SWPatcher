@@ -35,7 +35,7 @@ namespace SWPatcher.Downloading
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (HasNewDownload())
+            if (HasNewDownload() || Convert.ToBoolean(e.Argument))
             {
                 this.SWFiles.Clear();
                 using (var client = new WebClient())
@@ -87,9 +87,9 @@ namespace SWPatcher.Downloading
                 this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
             else
             {
-                if (SWFiles.Count > ++this.DownloadIndex)
-                    DownloadNext();
-                else
+                //if (SWFiles.Count > ++this.DownloadIndex)
+                //    DownloadNext();
+                //else
                     this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
             }
         }
@@ -153,7 +153,7 @@ namespace SWPatcher.Downloading
 
         public void Run(Language language, bool isForced)
         {
-            if (this.Worker.IsBusy)
+            if (this.Worker.IsBusy || this.Client.IsBusy)
                 return;
             this.Language = language;
             this.Worker.RunWorkerAsync(isForced);

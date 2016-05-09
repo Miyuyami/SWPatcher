@@ -31,14 +31,12 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.buttonPlay = new System.Windows.Forms.Button();
-            this.buttonLastest = new System.Windows.Forms.Button();
+            this.buttonDownload = new System.Windows.Forms.Button();
             this.comboBoxLanguages = new System.Windows.Forms.ComboBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.exitStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -66,17 +64,17 @@
             this.buttonPlay.UseVisualStyleBackColor = true;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
-            // buttonLastest
+            // buttonDownload
             // 
-            this.buttonLastest.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tableLayoutPanel.SetColumnSpan(this.buttonLastest, 2);
-            this.buttonLastest.Location = new System.Drawing.Point(112, 170);
-            this.buttonLastest.Name = "buttonLastest";
-            this.buttonLastest.Size = new System.Drawing.Size(140, 26);
-            this.buttonLastest.TabIndex = 2;
-            this.buttonLastest.Text = "Download Translations";
-            this.buttonLastest.UseVisualStyleBackColor = true;
-            this.buttonLastest.Click += new System.EventHandler(this.buttonLastest_Click);
+            this.buttonDownload.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tableLayoutPanel.SetColumnSpan(this.buttonDownload, 2);
+            this.buttonDownload.Location = new System.Drawing.Point(112, 170);
+            this.buttonDownload.Name = "buttonDownload";
+            this.buttonDownload.Size = new System.Drawing.Size(140, 26);
+            this.buttonDownload.TabIndex = 2;
+            this.buttonDownload.Text = "Download Translations";
+            this.buttonDownload.UseVisualStyleBackColor = true;
+            this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
             // 
             // comboBoxLanguages
             // 
@@ -108,9 +106,7 @@
             // menuToolStripMenuItem
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.forceStripMenuItem,
-            this.toolStripSeparator1,
-            this.exitStripMenuItem});
+            this.forceStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.menuToolStripMenuItem.Text = "Menu";
@@ -121,18 +117,6 @@
             this.forceStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.forceStripMenuItem.Text = "Force Patch";
             this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
-            // 
-            // exitStripMenuItem
-            // 
-            this.exitStripMenuItem.Name = "exitStripMenuItem";
-            this.exitStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exitStripMenuItem.Text = "Exit";
-            this.exitStripMenuItem.Click += new System.EventHandler(this.exit_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -189,7 +173,7 @@
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel.Controls.Add(this.buttonPlay, 0, 3);
-            this.tableLayoutPanel.Controls.Add(this.buttonLastest, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.buttonDownload, 0, 2);
             this.tableLayoutPanel.Controls.Add(this.comboBoxLanguages, 0, 1);
             this.tableLayoutPanel.Controls.Add(this.pictureBox, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.buttonExit, 0, 4);
@@ -261,7 +245,7 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
         private System.Windows.Forms.Button buttonPlay;
-        private System.Windows.Forms.Button buttonLastest;
+        private System.Windows.Forms.Button buttonDownload;
         private System.Windows.Forms.ComboBox comboBoxLanguages;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.MenuStrip menuStrip;
@@ -274,8 +258,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem forceStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem exitStripMenuItem;
     }
 }
 

@@ -87,9 +87,9 @@ namespace SWPatcher.Downloading
                 this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
             else
             {
-                //if (SWFiles.Count > ++this.DownloadIndex)
-                //    DownloadNext();
-                //else
+                if (SWFiles.Count > ++this.DownloadIndex)
+                    DownloadNext();
+                else
                     this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
             }
         }

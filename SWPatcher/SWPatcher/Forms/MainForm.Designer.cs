@@ -33,7 +33,7 @@
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonDownload = new System.Windows.Forms.Button();
             this.comboBoxLanguages = new System.Windows.Forms.ComboBox();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,9 +87,9 @@
             this.comboBoxLanguages.Size = new System.Drawing.Size(140, 21);
             this.comboBoxLanguages.TabIndex = 0;
             // 
-            // notifyIcon1
+            // notifyIcon
             // 
-            this.notifyIcon1.Text = "SW Patcher";
+            this.notifyIcon.Text = "SW Patcher";
             // 
             // menuStrip
             // 
@@ -114,7 +114,7 @@
             // forceStripMenuItem
             // 
             this.forceStripMenuItem.Name = "forceStripMenuItem";
-            this.forceStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.forceStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.forceStripMenuItem.Text = "Force Patch";
             this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
             // 
@@ -162,8 +162,7 @@
             // 
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(39, 17);
-            this.toolStripStatusLabel.Text = "Ready";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // tableLayoutPanel
             // 
@@ -247,7 +246,7 @@
         private System.Windows.Forms.Button buttonPlay;
         private System.Windows.Forms.Button buttonDownload;
         private System.Windows.Forms.ComboBox comboBoxLanguages;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip;

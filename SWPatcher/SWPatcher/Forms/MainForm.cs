@@ -130,10 +130,7 @@ namespace SWPatcher.Forms
         private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
         {
             if (this.State == States.Patching)
-            {
-                this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.TotalFileCount);
                 this.toolStripProgressBar.Value = e.Progress;
-            }
         }
 
         private void Patcher_PatcherCompleted(object sender, PatcherCompletedEventArgs e)
@@ -198,13 +195,24 @@ namespace SWPatcher.Forms
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-
+            /*if (this.State == States.Play)
+            {
+                this.Login.Cancel();
+                this.State = 0;
+            }
+            else
+            {
+                this.State = States.Play;
+                this.Login.ShowDialog();
+            }*/
         }
 
         private void forceStripMenuItem_Click(object sender, EventArgs e)
         {
+            Language language = this.comboBoxLanguages.SelectedItem as Language;
+            File.Delete(Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation));
             this.State = States.Downloading;
-            this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, true);
+            this.Downloader.Run(language, true);
         }
 
         private void exit_Click(object sender, EventArgs e)

@@ -69,7 +69,7 @@ namespace SWPatcher.Helpers.GlobalVar
             {
                 public const string Idle = "";
                 public const string Download = "Downloading...";
-                public const string Patch = "Patching...";
+                public const string Patch = "Working files...";
                 public const string Play = "Waiting for game...";
             }
         }

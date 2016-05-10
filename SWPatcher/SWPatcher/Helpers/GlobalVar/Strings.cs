@@ -36,6 +36,7 @@ namespace SWPatcher.Helpers.GlobalVar
             public const string LanguagePack = "LanguagePacks.ini";
             public const string TranslationPackData = "TranslationPackData.ini";
             public const string OtherTranslationPackData = "OtherTranslationPackData.ini";
+
             public static class Ver
             {
                 public const string Section = "Client";
@@ -70,7 +71,8 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string Idle = "";
                 public const string Download = "Downloading...";
                 public const string Patch = "Working files...";
-                public const string Play = "Waiting for game...";
+                public const string Prepare = "Preparing files...";
+                public const string Play = "Waiting for client...";
             }
         }
 

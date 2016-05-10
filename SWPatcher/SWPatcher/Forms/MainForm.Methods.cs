@@ -208,11 +208,10 @@ namespace SWPatcher.Forms
                 if (!string.IsNullOrEmpty(Paths.GameRoot) && IsSWPath(Paths.GameRoot))
                     foreach (var s in filePaths)
                     {
-                        string path = Path.Combine(Paths.GameRoot, s.Substring(directory.FullName.Length));
+                        string path = Path.Combine(Paths.GameRoot, s.Substring(directory.FullName.Length + 1));
                         if (File.Exists(path))
                             File.Delete(path);
-                        else
-                            File.Move(s, path);
+                        File.Move(s, path);
                     }
                 else
                     foreach (var s in filePaths)
@@ -220,6 +219,18 @@ namespace SWPatcher.Forms
             }
             else
                 directory.Create();
+        }
+
+        private static void RestoreBackup(Language language)
+        {
+            DirectoryInfo directory = new DirectoryInfo(Strings.FolderName.Backup);
+            string[] filePaths = Directory.GetFiles(directory.FullName, "*.v", SearchOption.AllDirectories);
+            foreach (var s in filePaths)
+            {
+                string path = Path.Combine(Paths.GameRoot, s.Substring(directory.FullName.Length + 1));
+                File.Move(path, Path.Combine(Paths.PatcherRoot, language.Lang, path.Substring(Paths.GameRoot.Length + 1)));
+                File.Move(s, path);
+            }
         }
 
         private Language[] GetAllAvailableLanguages()
@@ -255,15 +266,28 @@ namespace SWPatcher.Forms
             return langs.ToArray();
         }
 
-        private bool OfferPatchNow()
+        private bool IsTranslationOutdated(Language language)
         {
-            //DialogResult result = MsgBox.Question("Do you want patch those ");
+            string selectedTranslationPath = Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation);
+            if (!File.Exists(selectedTranslationPath))
+                return true;
+            IniReader translationIni = new IniReader(selectedTranslationPath);
+            string translationVer = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer);
+            IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+            string clientVer = clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key);
+            if (VersionCompare(clientVer, translationVer))
+                return true;
             return false;
         }
 
-        private bool OfferStartNow()
+        private Process GetProcess(string name)
         {
-            return false;
+            Process[] processesByName = Process.GetProcessesByName(name);
+            if (processesByName.Length == 0)
+                return null;
+            foreach (Process p in processesByName)
+                return p;
+            return null;
         }
     }
 }

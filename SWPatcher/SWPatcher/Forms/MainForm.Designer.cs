@@ -148,7 +148,6 @@
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.toolStripProgressBar.Size = new System.Drawing.Size(160, 16);
-            this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             // 
             // toolStripSeparator
             // 

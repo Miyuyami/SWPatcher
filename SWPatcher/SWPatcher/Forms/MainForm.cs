@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
+using Ionic.Zip;
 
 namespace SWPatcher.Forms
 {
@@ -16,9 +20,10 @@ namespace SWPatcher.Forms
         public enum States
         {
             Idle = 0,
-            Downloading,
-            Patching,
-            Playing
+            Downloading = 1,
+            Patching = 2,
+            Preparing = 3,
+            Playing = 4
         }
 
         private States _state;
@@ -49,6 +54,7 @@ namespace SWPatcher.Forms
                             forceStripMenuItem.Enabled = true;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case States.Downloading:
                             comboBoxLanguages.Enabled = false;
@@ -60,6 +66,7 @@ namespace SWPatcher.Forms
                             forceStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Download;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case States.Patching:
                             comboBoxLanguages.Enabled = false;
@@ -71,6 +78,19 @@ namespace SWPatcher.Forms
                             forceStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            toolStripProgressBar.Style = ProgressBarStyle.Blocks;
+                            break;
+                        case States.Preparing:
+                            comboBoxLanguages.Enabled = false;
+                            buttonDownload.Enabled = false;
+                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonPlay.Enabled = false;
+                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonExit.Enabled = false;
+                            forceStripMenuItem.Enabled = false;
+                            toolStripStatusLabel.Text = Strings.FormText.Status.Prepare;
+                            toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
                         case States.Playing:
                             comboBoxLanguages.Enabled = false;
@@ -82,6 +102,7 @@ namespace SWPatcher.Forms
                             forceStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Play;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                     }
                     _state = value;
@@ -104,6 +125,7 @@ namespace SWPatcher.Forms
                 WorkerSupportsCancellation = true
             };
             this.Worker.DoWork += new DoWorkEventHandler(Worker_DoWork);
+            this.Worker.ProgressChanged += new ProgressChangedEventHandler(Worker_ProgressChanged);
             this.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
             InitializeComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
@@ -164,34 +186,78 @@ namespace SWPatcher.Forms
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            //if (
-            if (this.SWFiles.Count == 0)
+            Language language = e.Argument as Language;
+            if (IsNewerGameClientVersion())
+                throw new Exception("Game client is not updated to the latest version.");
+
+            if (IsTranslationOutdated(language))
             {
-                this.SWFiles.Clear();
-                using (var client = new System.Net.WebClient())
-                using (var file = new TempFile())
+                e.Result = true; // force patch = true
+                return;
+            }
+
+            this.SWFiles.Clear();
+            using (var client = new System.Net.WebClient())
+            using (var file = new TempFile())
+            {
+                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
+                IniReader dataIni = new IniReader(file.Path);
+                var array = dataIni.GetSectionNames();
+                foreach (var fileName in array)
                 {
-                    client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                    IniReader dataIni = new IniReader(file.Path);
-                    var array = dataIni.GetSectionNames();
-                    foreach (var fileName in array)
-                    {
-                        string name = fileName as string;
-                        dataIni.Section = name;
-                        string path = dataIni.ReadString(Strings.IniName.Pack.KeyPath);
-                        string pathA = dataIni.ReadString(Strings.IniName.Pack.KeyPathInArchive);
-                        string pathD = dataIni.ReadString(Strings.IniName.Pack.KeyPathOfDownload);
-                        string format = dataIni.ReadString(Strings.IniName.Pack.KeyFormat);
-                        this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
-                        if (Worker.CancellationPending)
-                        {
-                            e.Cancel = true;
-                            return;
-                        }
-                    }
+                    string name = fileName as string;
+                    dataIni.Section = name;
+                    string path = dataIni.ReadString(Strings.IniName.Pack.KeyPath);
+                    string pathA = dataIni.ReadString(Strings.IniName.Pack.KeyPathInArchive);
+                    string pathD = dataIni.ReadString(Strings.IniName.Pack.KeyPathOfDownload);
+                    string format = dataIni.ReadString(Strings.IniName.Pack.KeyFormat);
+                    this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
                 }
             }
-            
+
+            this.Worker.ReportProgress(4); // States.Playing;
+            bool isClientClosed = true;
+            Process clientProcess = null;
+            while (isClientClosed)
+            {
+                if (this.Worker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                clientProcess = GetProcess(Path.GetFileNameWithoutExtension(Strings.FileName.GameExe));
+                Thread.Sleep(1000);
+                if (clientProcess != null)
+                    isClientClosed = false;
+            }
+
+            this.Worker.ReportProgress(3); // States.Preparing;
+            foreach (var archive in SWFiles.Select(f => f.Path).Distinct().Where(s => !string.IsNullOrEmpty(s))) // backup and place translated .v's
+            {
+                string archivePath = Path.Combine(Paths.GameRoot, archive);
+                string backupFilePath = Path.Combine(Paths.PatcherRoot, Strings.FolderName.Backup, archive);
+                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+                if (!Directory.Exists(backupFileDirectory))
+                    Directory.CreateDirectory(backupFileDirectory);
+                File.Move(archivePath, backupFilePath);
+                File.Move(Path.Combine(Paths.PatcherRoot, language.Lang, archive), archivePath);
+            }
+            foreach (var file in SWFiles.Where(f => string.IsNullOrEmpty(f.PathA))) // other files(.zip) that weren't patched
+            {
+                string filePath = Path.Combine(Paths.PatcherRoot, language.Lang, file.PathD);
+                string destination = Path.Combine(Paths.GameRoot, file.Path);
+                using (var zip = ZipFile.Read(filePath))
+                    zip.ExtractAll(destination, ExtractExistingFileAction.OverwriteSilently);
+            }
+
+            this.WindowState = FormWindowState.Minimized;
+            clientProcess.WaitForExit();
+        }
+
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.State = (States)e.ProgressPercentage;
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -202,6 +268,18 @@ namespace SWPatcher.Forms
                 Error.Log(e.Error);
                 MsgBox.Error(Error.ExeptionParser(e.Error));
             }
+            else if (e.Result != null && Convert.ToBoolean(e.Result))
+            {
+                MsgBox.Error("Your translation files are outdated, force patching will now commence.");
+                forceStripMenuItem_Click(null, null);
+                return;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Normal;
+            }
+            RestoreBackup(this.comboBoxLanguages.SelectedItem as Language);
+            this.State = 0;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -250,8 +328,8 @@ namespace SWPatcher.Forms
             }
             else
             {
-                this.State = States.Playing;
-                this.Worker.RunWorkerAsync();
+                this.State = States.Preparing;
+                this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
             }
         }
 

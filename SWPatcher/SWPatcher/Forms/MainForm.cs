@@ -23,7 +23,9 @@ namespace SWPatcher.Forms
             Downloading = 1,
             Patching = 2,
             Preparing = 3,
-            Playing = 4
+            WaitingClient = 4,
+            Applying = 5,
+            WaitingClose = 6
         }
 
         private States _state;
@@ -92,7 +94,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
-                        case States.Playing:
+                        case States.WaitingClient:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
                             buttonDownload.Text = Strings.FormText.Download;
@@ -100,9 +102,34 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Cancel;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Play;
+                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitClient;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
+                            break;
+                        case States.Applying:
+                            comboBoxLanguages.Enabled = false;
+                            buttonDownload.Enabled = false;
+                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonPlay.Enabled = false;
+                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonExit.Enabled = false;
+                            forceStripMenuItem.Enabled = false;
+                            toolStripStatusLabel.Text = Strings.FormText.Status.ApplyFiles;
+                            toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+                            break;
+                        case States.WaitingClose:
+                            comboBoxLanguages.Enabled = false;
+                            buttonDownload.Enabled = false;
+                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonPlay.Enabled = false;
+                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonExit.Enabled = false;
+                            forceStripMenuItem.Enabled = false;
+                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitClose;
+                            toolStripProgressBar.Value = toolStripProgressBar.Minimum;
+                            toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+                            WindowState = FormWindowState.Minimized;
                             break;
                     }
                     _state = value;
@@ -232,7 +259,7 @@ namespace SWPatcher.Forms
                     isClientClosed = false;
             }
 
-            this.Worker.ReportProgress(3); // States.Preparing;
+            this.Worker.ReportProgress(5); // States.Applying;
             foreach (var archive in SWFiles.Select(f => f.Path).Distinct().Where(s => !string.IsNullOrEmpty(s))) // backup and place translated .v's
             {
                 string archivePath = Path.Combine(Paths.GameRoot, archive);
@@ -251,7 +278,7 @@ namespace SWPatcher.Forms
                     zip.ExtractAll(destination, ExtractExistingFileAction.OverwriteSilently);
             }
 
-            this.WindowState = FormWindowState.Minimized;
+            this.Worker.ReportProgress(6); // States.WaitClose;
             clientProcess.WaitForExit();
         }
 
@@ -274,10 +301,8 @@ namespace SWPatcher.Forms
                 forceStripMenuItem_Click(null, null);
                 return;
             }
-            else
-            {
-                this.WindowState = FormWindowState.Normal;
-            }
+
+            notifyIcon_DoubleClick(null, null);
             RestoreBackup(this.comboBoxLanguages.SelectedItem as Language);
             this.State = 0;
         }
@@ -321,7 +346,7 @@ namespace SWPatcher.Forms
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            if (this.State == States.Playing)
+            if (this.State == States.WaitingClient)
             {
                 this.Worker.CancelAsync();
                 this.State = 0;
@@ -339,6 +364,25 @@ namespace SWPatcher.Forms
             File.Delete(Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation));
             this.State = States.Downloading;
             this.Downloader.Run(language, true);
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                notifyIcon.Visible = true;
+                notifyIcon.ShowBalloonTip(500);
+                this.ShowInTaskbar = false;
+                this.Hide();
+            }
+        }
+
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            this.ShowInTaskbar = true;
+            this.Show();
+            notifyIcon.Visible = false;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

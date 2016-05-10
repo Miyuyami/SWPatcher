@@ -89,7 +89,12 @@
             // 
             // notifyIcon
             // 
-            this.notifyIcon.Text = "SW Patcher";
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon.BalloonTipText = "Double click to restore...";
+            this.notifyIcon.BalloonTipTitle = "Patcher is hidden here";
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "Soul Worker Patcher";
+            this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
             // menuStrip
             // 
@@ -228,6 +233,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);

@@ -72,7 +72,9 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string Download = "Downloading...";
                 public const string Patch = "Working files...";
                 public const string Prepare = "Preparing files...";
-                public const string Play = "Waiting for client...";
+                public const string WaitClient = "Waiting for client...";
+                public const string ApplyFiles = "Applying files...";
+                public const string WaitClose = "Waiting for client termination...";
             }
         }
 

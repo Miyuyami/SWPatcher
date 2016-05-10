@@ -107,7 +107,7 @@
             this.labelAuthor.Name = "labelAuthor";
             this.labelAuthor.Size = new System.Drawing.Size(271, 17);
             this.labelAuthor.TabIndex = 21;
-            this.labelAuthor.Text = "Miyu";
+            this.labelAuthor.Text = "Miyu; Leayal";
             this.labelAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBoxDescription

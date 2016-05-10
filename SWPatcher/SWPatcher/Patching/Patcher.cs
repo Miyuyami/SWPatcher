@@ -19,6 +19,8 @@ namespace SWPatcher.Patching
         private readonly BackgroundWorker Worker;
         private readonly List<SWFile> SWFiles;
         private Language Language;
+        private int CurrentStep;
+        private int StepCount;
 
         public Patcher(List<SWFile> swFiles)
         {
@@ -38,9 +40,11 @@ namespace SWPatcher.Patching
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            StepCount = 3;
             var archives = SWFiles.Select(f => f.Path).Distinct().Where(s => !string.IsNullOrEmpty(s)).ToList();
             var archivedSWFiles = SWFiles.Where(f => !string.IsNullOrEmpty(f.PathA)).Select((value, i) => new { i, value }).ToList();
 
+            CurrentStep = 1;
             archives.ForEach(archive => // copy and Xor archives
             {
                 if (this.Worker.CancellationPending)
@@ -53,6 +57,7 @@ namespace SWPatcher.Patching
                 Xor(archivePath, 0x55);
             });
 
+            CurrentStep = 2;
             archivedSWFiles.ForEach(swFile =>
             {
                 Worker.ReportProgress((swFile.i + 1) == archivedSWFiles.Count ? int.MaxValue : Convert.ToInt32(((double)(swFile.i + 1) / archivedSWFiles.Count) * int.MaxValue));
@@ -262,6 +267,7 @@ namespace SWPatcher.Patching
                 }
             });
 
+            CurrentStep = 3;
             archives.ForEach(archive => // Xor archives
             {
                 if (this.Worker.CancellationPending)
@@ -277,7 +283,7 @@ namespace SWPatcher.Patching
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            OnPatcherProgressChanged(new PatcherProgressChangedEventArgs(e.ProgressPercentage));
+            OnPatcherProgressChanged(new PatcherProgressChangedEventArgs(CurrentStep, StepCount, e.ProgressPercentage));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -349,7 +355,11 @@ namespace SWPatcher.Patching
         {
             byte[] fileBytes = File.ReadAllBytes(path);
             for (int i = 0; i < fileBytes.Length; i++)
+            {
+                if (i % (fileBytes.Length / 8) == 0)
+                    Worker.ReportProgress(i == fileBytes.Length ? int.MaxValue : Convert.ToInt32(((double)i / fileBytes.Length) * int.MaxValue));
                 fileBytes[i] ^= secretByte;
+            }
             File.WriteAllBytes(path, fileBytes);
         }
 

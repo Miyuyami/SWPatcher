@@ -7,6 +7,7 @@ using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
+using System.ComponentModel;
 
 namespace SWPatcher.Forms
 {
@@ -17,12 +18,13 @@ namespace SWPatcher.Forms
             Idle = 0,
             Downloading,
             Patching,
-            Play
+            Playing
         }
 
         private States _state;
-        private Downloader Downloader;
-        private Patcher Patcher;
+        private readonly Downloader Downloader;
+        private readonly Patcher Patcher;
+        private readonly BackgroundWorker Worker;
         private readonly List<SWFile> SWFiles;
 
         public States State
@@ -70,7 +72,7 @@ namespace SWPatcher.Forms
                             toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             break;
-                        case States.Play:
+                        case States.Playing:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
                             buttonDownload.Text = Strings.FormText.Download;
@@ -96,6 +98,13 @@ namespace SWPatcher.Forms
             this.Patcher = new Patcher(SWFiles);
             this.Patcher.PatcherProgressChanged += new PatcherProgressChangedEventHandler(Patcher_PatcherProgressChanged);
             this.Patcher.PatcherCompleted += new PatcherCompletedEventHandler(Patcher_PatcherCompleted);
+            this.Worker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
+            };
+            this.Worker.DoWork += new DoWorkEventHandler(Worker_DoWork);
+            this.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
             InitializeComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
         }
@@ -104,7 +113,7 @@ namespace SWPatcher.Forms
         {
             if (this.State == States.Downloading)
             {
-                this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.TotalFileCount);
+                this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.FileCount);
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -130,7 +139,10 @@ namespace SWPatcher.Forms
         private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
         {
             if (this.State == States.Patching)
+            {
+                this.toolStripStatusLabel.Text = string.Format("{0} Step {1}/{2}", Strings.FormText.Status.Patch, e.FileNumber, e.FileCount);
                 this.toolStripProgressBar.Value = e.Progress;
+            }
         }
 
         private void Patcher_PatcherCompleted(object sender, PatcherCompletedEventArgs e)
@@ -150,10 +162,46 @@ namespace SWPatcher.Forms
             this.State = 0;
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            AboutBox aboutBox = new AboutBox();
-            aboutBox.ShowDialog(this);
+            //if (
+            if (this.SWFiles.Count == 0)
+            {
+                this.SWFiles.Clear();
+                using (var client = new System.Net.WebClient())
+                using (var file = new TempFile())
+                {
+                    client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
+                    IniReader dataIni = new IniReader(file.Path);
+                    var array = dataIni.GetSectionNames();
+                    foreach (var fileName in array)
+                    {
+                        string name = fileName as string;
+                        dataIni.Section = name;
+                        string path = dataIni.ReadString(Strings.IniName.Pack.KeyPath);
+                        string pathA = dataIni.ReadString(Strings.IniName.Pack.KeyPathInArchive);
+                        string pathD = dataIni.ReadString(Strings.IniName.Pack.KeyPathOfDownload);
+                        string format = dataIni.ReadString(Strings.IniName.Pack.KeyFormat);
+                        this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
+                        if (Worker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled) { }
+            else if (e.Error != null)
+            {
+                Error.Log(e.Error);
+                MsgBox.Error(Error.ExeptionParser(e.Error));
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -195,16 +243,16 @@ namespace SWPatcher.Forms
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            /*if (this.State == States.Play)
+            if (this.State == States.Playing)
             {
-                this.Login.Cancel();
+                this.Worker.CancelAsync();
                 this.State = 0;
             }
             else
             {
-                this.State = States.Play;
-                this.Login.ShowDialog();
-            }*/
+                this.State = States.Playing;
+                this.Worker.RunWorkerAsync();
+            }
         }
 
         private void forceStripMenuItem_Click(object sender, EventArgs e)
@@ -215,10 +263,15 @@ namespace SWPatcher.Forms
             this.Downloader.Run(language, true);
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox aboutBox = new AboutBox();
+            aboutBox.ShowDialog(this);
+        }
+
         private void exit_Click(object sender, EventArgs e)
         {
-            if (this.State == 0)
-                this.Close();
+            this.Close();
         }
     }
 }

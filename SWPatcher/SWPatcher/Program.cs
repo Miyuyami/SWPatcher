@@ -16,13 +16,6 @@ namespace SWPatcher
         private static string mutexId = string.Format("Global\\{{{0}}}", appGuid);
         private static Mutex mutex = null;
 
-        private static bool IsUserAdministrator()
-        {
-            WindowsIdentity identity = WindowsIdentity.GetCurrent();
-            WindowsPrincipal principal = new WindowsPrincipal(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
-        }
-
         private static bool IsAppAlreadyRunning()
         {
             bool createdNew;
@@ -38,11 +31,6 @@ namespace SWPatcher
         {
             if (IsAppAlreadyRunning())
                 return;
-            if (!IsUserAdministrator())
-            {
-                SWPatcher.Helpers.MsgBox.Error("You must run this application as administrator.");
-                return;
-            }
             Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

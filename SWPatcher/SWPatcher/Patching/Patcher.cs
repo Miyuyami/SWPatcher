@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using Ionic.Zip;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVar;
-using System.IO;
-using Ionic.Zip;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Text;
-using System.Security.Cryptography;
-using System.Diagnostics;
-using SWPatcher.Helpers;
 
 namespace SWPatcher.Patching
 {

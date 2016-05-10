@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using SWPatcher.General;
+using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Downloading
@@ -114,19 +115,19 @@ namespace SWPatcher.Downloading
                 path = Path.Combine(Paths.PatcherRoot, this.Language.Lang);
             else
                 path = Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, SWFiles[DownloadIndex].Path)), Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Path));
-            DirectoryInfo directoryDestination = new DirectoryInfo(path);
-            if (!directoryDestination.Exists)
-                directoryDestination.Create();
-            string fileDestination = Path.Combine(directoryDestination.FullName, Path.GetFileName(SWFiles[DownloadIndex].PathD));
+            string directoryDestionation = path;
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            string fileDestination = Path.Combine(directoryDestionation, Path.GetFileName(SWFiles[DownloadIndex].PathD));
             this.Client.DownloadFileAsync(uri, fileDestination);
         }
 
         private bool HasNewDownload()
         {
-            DirectoryInfo directory = new DirectoryInfo(Path.Combine(Paths.PatcherRoot, this.Language.Lang));
-            if (directory.Exists)
+            string directory = Path.Combine(Paths.PatcherRoot, this.Language.Lang);
+            if (Directory.Exists(directory))
             {
-                string filePath = Path.Combine(directory.FullName, Strings.IniName.Translation);
+                string filePath = Path.Combine(directory, Strings.IniName.Translation);
                 if (File.Exists(filePath))
                 {
                     IniReader translationIni = new IniReader(filePath);
@@ -139,7 +140,7 @@ namespace SWPatcher.Downloading
             }
             else
             {
-                directory.Create();
+                Directory.CreateDirectory(directory);
                 return true;
             }
             return false;

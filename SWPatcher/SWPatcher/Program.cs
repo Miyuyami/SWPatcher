@@ -31,12 +31,27 @@ namespace SWPatcher
         {
             if (IsAppAlreadyRunning())
                 return;
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
             Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.Run(new MainForm());
             mutex.ReleaseMutex();
+        }
+
+        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            byte[] bytes = null;
+            string resourceName = "SWPatcher.Ionic.Zip.dll";
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            using (var stream = currentAssembly.GetManifestResourceStream(resourceName))
+            {
+                bytes = new byte[(int)stream.Length];
+                stream.Read(bytes, 0, (int)stream.Length);
+            }
+
+            return Assembly.Load(bytes);
         }
     }
 }

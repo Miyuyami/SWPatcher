@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
 using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
+using Ionic.Zip;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Threading;
-using Ionic.Zip;
 
 namespace SWPatcher.Forms
 {
@@ -182,7 +182,9 @@ namespace SWPatcher.Forms
 
                 this.State = States.Patching;
                 this.Patcher.Run(e.Language);
+                return;
             }
+            this.State = 0;
         }
 
         private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)

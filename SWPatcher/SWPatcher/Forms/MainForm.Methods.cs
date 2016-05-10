@@ -201,14 +201,13 @@ namespace SWPatcher.Forms
 
         private static void RestoreBackup()
         {
-            DirectoryInfo directory = new DirectoryInfo(Strings.FolderName.Backup);
-            if (directory.Exists)
+            if (Directory.Exists(Strings.FolderName.Backup))
             {
-                string[] filePaths = Directory.GetFiles(directory.FullName, "*", SearchOption.AllDirectories);
+                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
                 if (!string.IsNullOrEmpty(Paths.GameRoot) && IsSWPath(Paths.GameRoot))
                     foreach (var s in filePaths)
                     {
-                        string path = Path.Combine(Paths.GameRoot, s.Substring(directory.FullName.Length + 1));
+                        string path = Path.Combine(Paths.GameRoot, s.Substring(Strings.FolderName.Backup.Length + 1));
                         if (File.Exists(path))
                             File.Delete(path);
                         File.Move(s, path);
@@ -218,16 +217,15 @@ namespace SWPatcher.Forms
                         File.Delete(s);
             }
             else
-                directory.Create();
+                Directory.CreateDirectory(Strings.FolderName.Backup);
         }
 
         private static void RestoreBackup(Language language)
         {
-            DirectoryInfo directory = new DirectoryInfo(Strings.FolderName.Backup);
-            string[] filePaths = Directory.GetFiles(directory.FullName, "*.v", SearchOption.AllDirectories);
+            string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*.v", SearchOption.AllDirectories);
             foreach (var s in filePaths)
             {
-                string path = Path.Combine(Paths.GameRoot, s.Substring(directory.FullName.Length + 1));
+                string path = Path.Combine(Paths.GameRoot, s.Substring(Strings.FolderName.Backup.Length + 1));
                 File.Move(path, Path.Combine(Paths.PatcherRoot, language.Lang, path.Substring(Paths.GameRoot.Length + 1)));
                 File.Move(s, path);
             }

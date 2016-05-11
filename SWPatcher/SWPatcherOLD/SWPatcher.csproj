@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,10 +24,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <TargetCulture>en</TargetCulture>
+    <ProductName>Soul Worker Patcher</ProductName>
+    <PublisherName>HQ</PublisherName>
+    <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -52,80 +58,74 @@
     <ApplicationIcon>patcher.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
+    <StartupObject>SWPatcher.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>Internet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip">
-      <HintPath>..\Ionic.Zip.dll</HintPath>
+      <HintPath>.\Ionic.Zip.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox.cs">
+    <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
+    <Compile Include="Downloading\DownloaderCompletedEventHandler.cs" />
+    <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
+    <Compile Include="Downloading\DownloaderProgressChangedEventHandler.cs" />
+    <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutBox.Designer.cs">
+    <Compile Include="Forms\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\LanguageList.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Classes\Network\SWWebClient.cs" />
-    <Compile Include="Classes\Patcher\Values.cs" />
-    <Compile Include="Classes\Patch\PatchBuilder.cs" />
-    <Compile Include="Classes\SplitButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Classes\TranslationOption.cs" />
-    <Compile Include="Classes\XORprocessor.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Downloading\Downloader.cs" />
+    <Compile Include="General\Language.cs" />
+    <Compile Include="General\SWFile.cs" />
+    <Compile Include="General\TempFile.cs" />
+    <Compile Include="Helpers\Error.cs" />
+    <Compile Include="Helpers\GlobalVar\Assembly.cs" />
+    <Compile Include="Helpers\GlobalVar\Strings.cs" />
+    <Compile Include="Helpers\MsgBox.cs" />
+    <Compile Include="Helpers\GlobalVar\Paths.cs" />
+    <Compile Include="Helpers\GlobalVar\Uris.cs" />
+    <Compile Include="Helpers\IniReader.cs" />
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\IniFile.cs" />
-    <Compile Include="Classes\Patch\PatchData.cs" />
-    <Compile Include="ModManagerForm.cs">
+    <Compile Include="Forms\MainForm.Methods.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ModManagerForm.Designer.cs">
-      <DependentUpon>ModManagerForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Module\Hangame.cs" />
-    <Compile Include="Module\InvokeMessageBox.cs" />
-    <Compile Include="Module\Process.cs" />
+    <Compile Include="Patching\Patcher.cs" />
+    <Compile Include="Patching\PatcherCompletedEventArgs.cs" />
+    <Compile Include="Patching\PatcherCompletedEventHandler.cs" />
+    <Compile Include="Patching\PatcherProgressChangedEventArgs.cs" />
+    <Compile Include="Patching\PatcherProgressChangedEventHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SWPatcherOptionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SWPatcherOptionForm.Designer.cs">
-      <DependentUpon>SWPatcherOptionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TranslationOptionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TranslationOptionForm.Designer.cs">
-      <DependentUpon>TranslationOptionForm.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="AboutBox.resx">
+    <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ModManagerForm.resx">
-      <DependentUpon>ModManagerForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -137,15 +137,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SWPatcherOptionForm.resx">
-      <DependentUpon>SWPatcherOptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TranslationOptionForm.resx">
-      <DependentUpon>TranslationOptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="app.manifest">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -166,6 +159,7 @@
     <None Include="Resources\Sedurin patcher about image.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Ionic.Zip.dll" />
     <Content Include="patcher.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +183,18 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="patcher.ico">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

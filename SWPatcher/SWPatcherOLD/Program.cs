@@ -1,13 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using System.ComponentModel;
-using System.Net;
-using System.Diagnostics;
+using SWPatcher.Forms;
 
 namespace SWPatcher
 {
@@ -17,14 +16,6 @@ namespace SWPatcher
         private static string mutexId = string.Format("Global\\{{{0}}}", appGuid);
         private static Mutex mutex = null;
 
-        /*
-        private static bool IsUserAdministrator()
-        {
-            WindowsIdentity identity = WindowsIdentity.GetCurrent();
-            WindowsPrincipal principal = new WindowsPrincipal(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
-        }
-        */
         private static bool IsAppAlreadyRunning()
         {
             bool createdNew;
@@ -35,90 +26,32 @@ namespace SWPatcher
             return !mutex.WaitOne(TimeSpan.Zero, true);
         }
 
-        private static string getLatestVersionFile()
-        {
-            string result = string.Empty;
-            using (WebClient webClient = new WebClient())
-            {
-                webClient.BaseAddress = new Uri("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/").AbsoluteUri;
-                webClient.Proxy = null; //this will skip IE Proxy Setting
-                for (short i = 0; i <= 2; i++)
-                {
-                    try
-                    {
-                        result = webClient.DownloadString("version.ini");
-                    }
-                    catch (WebException webEx)
-                    {
-                        if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
-                            break;
-                    }
-                    if (string.IsNullOrEmpty(result) == false)
-                        break;
-                }
-            }
-            return result;
-        }
-
-        private static bool NewPatcherUpdateAvailable()
-        {
-            string patcherVersionFile = getLatestVersionFile();
-            if (string.IsNullOrEmpty(patcherVersionFile) == true) // in case user disconnected (or reconnecting) or loss packet too much.
-            {
-                MessageBox.Show("Failed to get latest version.");
-                return false;
-            }
-            else
-            {
-                Version readVersion;
-                string theUrl;
-                using (System.IO.StringReader theTextReader = new System.IO.StringReader(patcherVersionFile))
-                {
-                    Ini.IniFile theIniFile = new Ini.IniFile(theTextReader, false);
-                    readVersion = new Version(theIniFile.GetValue("Patcher", "ver", "0.0.0.0"));
-                    theUrl = theIniFile.GetValue("Patcher", "address", "http://soulworkerhq.com/Discussion-Official-Soul-Worker-HQ-Translation-Patcher");
-                    theIniFile.Close();
-                }
-                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                if (currentVersion.CompareTo(readVersion) < 0)
-                {
-                    if (MessageBox.Show("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore", "New Patcher Version Available!", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000) == DialogResult.Yes)
-                    {
-                        Process.Start(theUrl);
-                        return true;
-                    }
-                    else
-                    {
-                        if (MessageBox.Show("Are you sure you want to ignore the update?\nIt might cause unknown problems!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000) == DialogResult.No)
-                        {
-                            Process.Start(theUrl);
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
         [STAThread]
         static void Main()
         {
-            /*
-            if (!IsUserAdministrator())
-            {
-                MessageBox.Show("You must run this application as administrator.", "Administrator rights", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
-                return;
-            }
-            */
             if (IsAppAlreadyRunning())
                 return;
-            if (NewPatcherUpdateAvailable())
-                return;
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.Run(new MainForm());
             mutex.ReleaseMutex();
-            mutex.Dispose();
+        }
+
+        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            byte[] bytes = null;
+            string resourceName = "SWPatcher.Ionic.Zip.dll";
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            using (var stream = currentAssembly.GetManifestResourceStream(resourceName))
+            {
+                bytes = new byte[(int)stream.Length];
+                stream.Read(bytes, 0, (int)stream.Length);
+            }
+
+            return Assembly.Load(bytes);
         }
     }
 }

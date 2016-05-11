@@ -116,8 +116,7 @@ namespace SWPatcher.Downloading
             else
                 path = Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, SWFiles[DownloadIndex].Path)), Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Path));
             string directoryDestionation = path;
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            Directory.CreateDirectory(path);
             string fileDestination = Path.Combine(directoryDestionation, Path.GetFileName(SWFiles[DownloadIndex].PathD));
             this.Client.DownloadFileAsync(uri, fileDestination);
         }

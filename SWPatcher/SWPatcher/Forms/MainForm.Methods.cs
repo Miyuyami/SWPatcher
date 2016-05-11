@@ -105,7 +105,7 @@ namespace SWPatcher.Forms
                         using (var key32 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
                         {
                             if (key32 != null)
-                                folderDialog.SelectedPath = Convert.ToString(key.GetValue("folder", ""));
+                                folderDialog.SelectedPath = Convert.ToString(key32.GetValue("folder", ""));
                             else
                                 Error.Log("0x0000020 - StandardNode - Key not found");
                         }
@@ -271,6 +271,9 @@ namespace SWPatcher.Forms
                 return true;
             IniReader translationIni = new IniReader(selectedTranslationPath);
             string translationVer = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer);
+            bool isEmpty = string.IsNullOrEmpty(translationVer);
+            if (isEmpty)
+                throw new Exception("0x0000004 - Error reading translation version: " + (isEmpty ? "try to force patch" : translationVer));
             IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
             string clientVer = clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key);
             if (VersionCompare(clientVer, translationVer))

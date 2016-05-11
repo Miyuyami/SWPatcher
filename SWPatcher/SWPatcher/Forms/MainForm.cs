@@ -397,5 +397,10 @@ namespace SWPatcher.Forms
         {
             this.Close();
         }
+
+        private void openSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("iexplore.exe", Uris.SoulWorkerHome);
+        }
     }
 }

@@ -45,6 +45,7 @@
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonExit = new System.Windows.Forms.Button();
+            this.openSWWebpageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -92,7 +93,7 @@
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.notifyIcon.BalloonTipText = "Double click to restore...";
             this.notifyIcon.BalloonTipTitle = "Patcher is hidden here";
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Soul Worker Patcher";
             this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
@@ -111,7 +112,8 @@
             // menuToolStripMenuItem
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.forceStripMenuItem});
+            this.forceStripMenuItem,
+            this.openSWWebpageToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.menuToolStripMenuItem.Text = "Menu";
@@ -119,7 +121,7 @@
             // forceStripMenuItem
             // 
             this.forceStripMenuItem.Name = "forceStripMenuItem";
-            this.forceStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.forceStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.forceStripMenuItem.Text = "Force Patch";
             this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
             // 
@@ -217,6 +219,13 @@
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.exit_Click);
             // 
+            // openSWWebpageToolStripMenuItem
+            // 
+            this.openSWWebpageToolStripMenuItem.Name = "openSWWebpageToolStripMenuItem";
+            this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.openSWWebpageToolStripMenuItem.Text = "Open SW Webpage";
+            this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.openSWWebpageToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonPlay;
@@ -262,6 +271,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem forceStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openSWWebpageToolStripMenuItem;
     }
 }
 

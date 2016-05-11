@@ -105,7 +105,7 @@ namespace SWPatcher.Forms
                 catch (Exception ex)
                 {
                     folderDialog.SelectedPath = System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    Error.Log("0x0000010 - J_SW - Key not found");
+                    Error.Log("0x0000010 - J_SW - Key not found:" + ex.Message);
                 }
                 folderDialog.ShowNewFolderButton = false;
                 folderDialog.Description = "Select your Soul Worker game client folder.";
@@ -165,9 +165,16 @@ namespace SWPatcher.Forms
 
         private static bool VersionCompare(string ver1, string ver2)
         {
-            Version v1 = new Version(ver1);
-            Version v2 = new Version(ver2);
-            return v1 > v2;
+            Version v1;
+            Version v2;
+            if (Version.TryParse(ver1, out v1))
+                if (Version.TryParse(ver2, out v2))
+                    return v1 > v2;
+                else
+                    Error.Log("1x0000001 - Invalid version string:" + ver2);
+            else
+                Error.Log("1x0000001 - Invalid version string:" + ver1);
+            return (ver1 != ver2);
         }
 
         private static string GetServerVersion()

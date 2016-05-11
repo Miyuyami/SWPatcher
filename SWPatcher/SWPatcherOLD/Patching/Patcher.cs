@@ -384,16 +384,13 @@ namespace SWPatcher.Patching
             using (var zip = ZipFile.Read(zipPath))
             using (var destinationZip = ZipFile.Read(destinationZipPath))
             {
-                var tempFileList = zip.Entries.Select(entry => new TempFile(Path.Combine(Path.GetTempPath(), Path.GetFileName(entry.FileName)))).ToList();
+                string tmpFileName = Path.Combine(Paths.ExclusiveTempFolder, Path.GetFileName(zipPath));
                 zip.FlattenFoldersOnExtract = true;
-
-                zip.ExtractAll(Path.GetTempPath(), ExtractExistingFileAction.OverwriteSilently);
-
-                destinationZip.RemoveEntries(zip.Entries.Select(e => Path.Combine(directoryInDestination, e.FileName)).ToList());
-                destinationZip.AddFiles(tempFileList.Select(tf => tf.Path), directoryInDestination);
+                zip.ExtractAll(tmpFileName, ExtractExistingFileAction.OverwriteSilently);
+                destinationZip.UpdateDirectory(tmpFileName, directoryInDestination);
                 destinationZip.Save();
-
-                tempFileList.ForEach(tf => tf.Dispose());
+                System.IO.Directory.Delete(tmpFileName, true);
+                tmpFileName = null;
             }
         }
 

@@ -17,5 +17,13 @@ namespace SWPatcher.Helpers.GlobalVar
                 Settings.Default.Save();
             }
         }
+
+        public static string ExclusiveTempFolder
+        {
+            get
+            {
+                return (System.IO.Path.GetTempPath() + "\\SWPatcher");
+            }
+        }
     }
 }

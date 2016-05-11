@@ -139,6 +139,8 @@ namespace SWPatcher.Forms
 
         public MainForm()
         {
+            System.IO.Directory.CreateDirectory(Paths.ExclusiveTempFolder);
+
             this.SWFiles = new List<SWFile>();
             this.Downloader = new Downloader(SWFiles);
             this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(Downloader_DownloaderProgressChanged);

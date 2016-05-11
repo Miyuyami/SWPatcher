@@ -22,7 +22,7 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return (System.IO.Path.GetTempPath() + "\\SWPatcher");
+                return (System.IO.Path.GetTempPath() + "SWPatcher\\" + ((System.Runtime.InteropServices.GuidAttribute)System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false).GetValue(0)).Value.ToString());
             }
         }
     }

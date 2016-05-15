@@ -209,6 +209,7 @@ namespace SWPatcher.Forms
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
                 IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
                 translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
+                this.labelNewTranslations.Text = string.Empty;
             }
             this.State = 0;
         }
@@ -364,8 +365,17 @@ namespace SWPatcher.Forms
         {
             Language language = this.comboBoxLanguages.SelectedItem as Language;
             File.Delete(Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation));
+            this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
             this.State = States.Downloading;
             this.Downloader.Run(language, true);
+        }
+
+        private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (HasNewTranslations(this.comboBoxLanguages.SelectedItem as Language))
+                this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
+            else
+                this.labelNewTranslations.Text = string.Empty;
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -393,14 +403,14 @@ namespace SWPatcher.Forms
             aboutBox.ShowDialog(this);
         }
 
-        private void exit_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void openSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("iexplore.exe", Uris.SoulWorkerHome);
+        }
+
+        private void exit_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

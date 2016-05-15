@@ -179,7 +179,7 @@ namespace SWPatcher.Forms
             using (var client = new WebClient())
             using (var zippedFile = new TempFile())
             {
-                client.DownloadFile(Uris.SoulWorkerSettingsHome + Strings.IniName.ServerVer + Strings.FileExtentionName.Zip, zippedFile.Path);
+                client.DownloadFile(Uris.SoulWorkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
                 using (var file = new TempFile())
                 {
                     using (ZipFile zip = ZipFile.Read(zippedFile.Path))
@@ -259,7 +259,7 @@ namespace SWPatcher.Forms
                 client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
                 IniReader langIni = new IniReader(file.Path);
                 foreach (var s in langIni.GetSectionNames())
-                    langs.Add(new Language(s.ToString(), Strings.ParseExact(langIni.ReadString(s.ToString(), Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue)))));
+                    langs.Add(new Language(s.ToString(), Strings.ParseDate(langIni.ReadString(s.ToString(), Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue)))));
             }
             return langs.ToArray();
         }
@@ -289,6 +289,27 @@ namespace SWPatcher.Forms
             foreach (Process p in processesByName)
                 return p;
             return null;
+        }
+
+        private static bool HasNewTranslations(Language language)
+        {
+            string directory = Path.Combine(Paths.PatcherRoot, language.Lang);
+            if (Directory.Exists(directory))
+            {
+                string filePath = Path.Combine(directory, Strings.IniName.Translation);
+                if (File.Exists(filePath))
+                {
+                    IniReader translationIni = new IniReader(filePath);
+                    string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
+                    if (language.LastUpdate > Strings.ParseDate(date))
+                        return true;
+                }
+                else
+                    return true;
+            }
+            else
+                return true;
+            return false;
         }
     }
 }

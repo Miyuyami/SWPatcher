@@ -132,7 +132,7 @@ namespace SWPatcher.Downloading
                 {
                     IniReader translationIni = new IniReader(filePath);
                     string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
-                    if (this.Language.LastUpdate > Strings.ParseExact(date))
+                    if (this.Language.LastUpdate > Strings.ParseDate(date))
                         return true;
                 }
                 else

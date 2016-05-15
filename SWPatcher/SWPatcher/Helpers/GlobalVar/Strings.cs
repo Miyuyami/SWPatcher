@@ -5,16 +5,6 @@ namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
     {
-        public static class FileExtentionName
-        {
-            public const string V = ".v";
-            public const string Txt = ".txt";
-            public const string Res = ".res";
-            public const string Exe = ".exe";
-            public const string Ini = ".ini";
-            public const string Zip = ".zip";
-        }
-
         public static class FileName
         {
             public const string GameExe = "SoulWorker100.exe";
@@ -62,6 +52,7 @@ namespace SWPatcher.Helpers.GlobalVar
 
         public static class FormText
         {
+            public const string NewTranslations = "There are new translations available for the selected language.";
             public const string Download = "Download Translations";
             public const string Play = "Ready To Play!";
             public const string Cancel = "Cancel";
@@ -78,7 +69,7 @@ namespace SWPatcher.Helpers.GlobalVar
             }
         }
 
-        public static DateTime ParseExact(string date)
+        public static DateTime ParseDate(string date)
         {
             return DateTime.ParseExact(date, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
         }

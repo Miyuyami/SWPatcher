@@ -152,7 +152,7 @@ namespace SWPatcher.Forms
             try
             {
                 IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
-                return VersionCompare(GetServerVersion(), clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key, "0.0.0.0"));
+                return VersionCompare(GetServerVersion(), clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
             }
             catch (WebException)
             {
@@ -165,12 +165,18 @@ namespace SWPatcher.Forms
                     throw new Exception("0x0000011 - Connection to Hangame server failed");
                 }
             }
+            catch (ArgumentException)
+            {
+                MsgBox.Error("Failed to read version.");
+                throw;
+            }
         }
 
         private static bool VersionCompare(string ver1, string ver2)
         {
             Version v1 = new Version(ver1);
             Version v2 = new Version(ver2);
+
             return v1 > v2;
         }
 

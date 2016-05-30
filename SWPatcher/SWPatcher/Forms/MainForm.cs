@@ -54,6 +54,7 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Play;
                             buttonExit.Enabled = true;
                             forceStripMenuItem.Enabled = true;
+                            refreshToolStripMenuItem.Enabled = true;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
@@ -66,6 +67,7 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Play;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
+                            refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Download;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
@@ -78,6 +80,7 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Play;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
+                            refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
@@ -90,6 +93,7 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Play;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
+                            refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Prepare;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
@@ -102,6 +106,7 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Cancel;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
+                            refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.WaitClient;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
@@ -114,6 +119,7 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Play;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
+                            refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.ApplyFiles;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
@@ -126,6 +132,7 @@ namespace SWPatcher.Forms
                             buttonPlay.Text = Strings.FormText.Play;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
+                            refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.WaitClose;
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
@@ -342,8 +349,18 @@ namespace SWPatcher.Forms
             }
             else if (this.State == 0)
             {
-                this.State = States.Downloading;
-                this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
+                try
+                {
+                    CheckForSWPath();
+                    CheckForGameClientUpdate();
+                    this.State = States.Downloading;
+                    this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
+                }
+                catch (Exception ex)
+                {
+                    Error.Log(ex);
+                    this.Close();
+                }
             }
         }
 
@@ -356,18 +373,19 @@ namespace SWPatcher.Forms
             }
             else
             {
-                this.State = States.Preparing;
-                this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
+                try
+                {
+                    CheckForSWPath();
+                    CheckForGameClientUpdate();
+                    this.State = States.Preparing;
+                    this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
+                }
+                catch (Exception ex)
+                {
+                    Error.Log(ex);
+                    this.Close();
+                }
             }
-        }
-
-        private void forceStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Language language = this.comboBoxLanguages.SelectedItem as Language;
-            File.Delete(Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation));
-            this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
-            this.State = States.Downloading;
-            this.Downloader.Run(language, true);
         }
 
         private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
@@ -397,15 +415,50 @@ namespace SWPatcher.Forms
             notifyIcon.Visible = false;
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void forceStripMenuItem_Click(object sender, EventArgs e)
         {
-            AboutBox aboutBox = new AboutBox();
-            aboutBox.ShowDialog(this);
+            try
+            {
+                CheckForSWPath();
+                CheckForGameClientUpdate();
+                Language language = this.comboBoxLanguages.SelectedItem as Language;
+                File.Delete(Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation));
+                this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
+                this.State = States.Downloading;
+                this.Downloader.Run(language, true);
+            }
+            catch (Exception ex)
+            {
+                Error.Log(ex);
+                this.Close();
+            }
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Language language = this.comboBoxLanguages.SelectedItem as Language;
+                comboBoxLanguages.DataSource = GetAllAvailableLanguages();
+                if (comboBoxLanguages.Items.Contains(language))
+                    comboBoxLanguages.SelectedItem = language;
+            }
+            catch (Exception ex)
+            {
+                Error.Log(ex);
+                this.Close();
+            }
         }
 
         private void openSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("iexplore.exe", Uris.SoulWorkerHome);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox aboutBox = new AboutBox();
+            aboutBox.ShowDialog(this);
         }
 
         private void exit_Click(object sender, EventArgs e)

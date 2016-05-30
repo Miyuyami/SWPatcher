@@ -6,7 +6,6 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using SWPatcher.Forms;
 
 namespace SWPatcher
 {
@@ -26,24 +25,12 @@ namespace SWPatcher
             return !mutex.WaitOne(TimeSpan.Zero, true);
         }
 
-        [STAThread]
-        static void Main()
-        {
-            if (IsAppAlreadyRunning())
-                return;
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
-            Application.Run(new MainForm());
-            mutex.ReleaseMutex();
-        }
-
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
+            if (args.Name.Split(',')[0] == "SWPatcher.resources")
+                return null;
             byte[] bytes = null;
-            string resourceName = "SWPatcher.Ionic.Zip.dll";
+            string resourceName = "SWPatcher.Ionic.Zip.Patched.dll";
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             using (var stream = currentAssembly.GetManifestResourceStream(resourceName))
             {
@@ -52,6 +39,24 @@ namespace SWPatcher
             }
 
             return Assembly.Load(bytes);
+        }
+
+        [STAThread]
+        static void Main()
+        {
+            if (IsAppAlreadyRunning())
+            {
+                SWPatcher.Helpers.MsgBox.Error("Multiple instances of the program are not allowed.\nMaybe it's hiding in your Windows's tray?");
+                SWPatcher.Helpers.Error.Log("Multiple instances of the program are not allowed");
+                return;
+            }
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+            Application.Run(new SWPatcher.Forms.MainForm());
+            mutex.ReleaseMutex();
         }
     }
 }

@@ -28,7 +28,8 @@ namespace SWPatcher.Helpers
 
         private static string StackTraceExceptionParser(Exception ex)
         {
-            string result = ex.Message;
+            return ex.ToString();
+            /*string result = ex.Message;
             if (!string.IsNullOrEmpty(ex.StackTrace))
                 result += "\nStackTrace:\n" + ex.StackTrace;
             if (ex.InnerException != null)
@@ -37,7 +38,7 @@ namespace SWPatcher.Helpers
                 if (!string.IsNullOrEmpty(ex.InnerException.StackTrace))
                     result += "\nInnerStackTrace:\n" + ex.InnerException.StackTrace;
             }
-            return result;
+            return result;*/
         }
     }
 }

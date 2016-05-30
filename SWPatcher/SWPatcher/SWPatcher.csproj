@@ -29,7 +29,7 @@
     <PublisherName>HQ</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.0.2.0</ApplicationVersion>
+    <ApplicationVersion>2.0.3.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -72,8 +72,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip">
-      <HintPath>.\Ionic.Zip.dll</HintPath>
+    <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <HintPath>.\Ionic.Zip.Patched.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -159,7 +160,7 @@
     <None Include="Resources\Sedurin patcher about image.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Ionic.Zip.dll" />
+    <EmbeddedResource Include="Ionic.Zip.Patched.dll" />
     <Content Include="patcher.ico" />
   </ItemGroup>
   <ItemGroup>

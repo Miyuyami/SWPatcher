@@ -12,7 +12,7 @@ namespace SWPatcher
     static class Program
     {
         private static string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
-        private static string mutexId = string.Format("Global\\{{{0}}}", appGuid);
+        private static string mutexId = String.Format("Global\\{{{0}}}", appGuid);
         private static Mutex mutex = null;
 
         private static bool IsAppAlreadyRunning()
@@ -27,10 +27,12 @@ namespace SWPatcher
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            if (args.Name.Split(',')[0] == "SWPatcher.resources")
+            string requestedAssemblyName = args.Name.Substring(0, args.Name.IndexOf(','));
+            if (requestedAssemblyName == "SWPatcher.resources")
                 return null;
+
             byte[] bytes = null;
-            string resourceName = "SWPatcher.Ionic.Zip.Patched.dll";
+            string resourceName = "SWPatcher." + requestedAssemblyName + ".dll";
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             using (var stream = currentAssembly.GetManifestResourceStream(resourceName))
             {

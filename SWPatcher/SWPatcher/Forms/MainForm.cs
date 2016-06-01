@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Ionic.Zip;
+using MadMilkman.Ini;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
@@ -169,7 +170,7 @@ namespace SWPatcher.Forms
         {
             if (this.State == States.Downloading)
             {
-                this.toolStripStatusLabel.Text = string.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.FileCount);
+                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.FileCount);
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -184,9 +185,15 @@ namespace SWPatcher.Forms
             }
             else
             {
-                IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
-                translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(e.Language.LastUpdate));
-
+                IniFile ini = new IniFile(new IniOptions { KeyDuplicate = IniDuplication.Ignored, SectionDuplicate = IniDuplication.Ignored });
+                string iniPath = Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation);
+                if (!File.Exists(iniPath))
+                    File.Create(iniPath).Dispose();
+                ini.Load(iniPath);
+                ini.Sections.Add(Strings.IniName.Patcher.Section);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Pack.KeyDate);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value = Strings.DateToString(e.Language.LastUpdate);
+                ini.Save(iniPath);
                 this.State = States.Patching;
                 this.Patcher.Run(e.Language);
                 return;
@@ -198,7 +205,7 @@ namespace SWPatcher.Forms
         {
             if (this.State == States.Patching)
             {
-                this.toolStripStatusLabel.Text = string.Format("{0} Step {1}/{2}", Strings.FormText.Status.Patch, e.FileNumber, e.FileCount);
+                this.toolStripStatusLabel.Text = String.Format("{0} Step {1}/{2}", Strings.FormText.Status.Patch, e.FileNumber, e.FileCount);
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -213,9 +220,18 @@ namespace SWPatcher.Forms
             }
             else
             {
-                IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
-                IniReader translationIni = new IniReader(Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation));
-                translationIni.Write(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
+                IniFile ini = new IniFile(new IniOptions { KeyDuplicate = IniDuplication.Ignored, SectionDuplicate = IniDuplication.Ignored });
+                ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+                string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
+                string iniPath = Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation);
+                if (!File.Exists(iniPath))
+                    File.Create(iniPath).Dispose();
+                ini.Sections.Clear();
+                ini.Load(iniPath);
+                ini.Sections.Add(Strings.IniName.Patcher.Section);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Patcher.KeyVer);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value = clientVer;
+                ini.Save(iniPath);
                 this.labelNewTranslations.Text = string.Empty;
             }
             this.State = 0;
@@ -238,16 +254,15 @@ namespace SWPatcher.Forms
             using (var file = new TempFile())
             {
                 client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                IniReader dataIni = new IniReader(file.Path);
-                var array = dataIni.GetSectionNames();
-                foreach (var fileName in array)
+                IniFile ini = new IniFile();
+                ini.Load(file.Path);
+                foreach (var section in ini.Sections)
                 {
-                    string name = fileName as string;
-                    dataIni.Section = name;
-                    string path = dataIni.ReadString(Strings.IniName.Pack.KeyPath);
-                    string pathA = dataIni.ReadString(Strings.IniName.Pack.KeyPathInArchive);
-                    string pathD = dataIni.ReadString(Strings.IniName.Pack.KeyPathOfDownload);
-                    string format = dataIni.ReadString(Strings.IniName.Pack.KeyFormat);
+                    string name = section.Name;
+                    string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
+                    string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
+                    string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
+                    string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
                     this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
                 }
             }
@@ -422,7 +437,9 @@ namespace SWPatcher.Forms
                 CheckForSWPath();
                 CheckForGameClientUpdate();
                 Language language = this.comboBoxLanguages.SelectedItem as Language;
-                File.Delete(Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation));
+                string iniPath = Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation);
+                if (Directory.Exists(Path.GetDirectoryName(iniPath)))
+                    File.Delete(iniPath);
                 this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
                 this.State = States.Downloading;
                 this.Downloader.Run(language, true);

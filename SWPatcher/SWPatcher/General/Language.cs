@@ -23,13 +23,7 @@ namespace SWPatcher.General
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                int hash = (int) 2166136261;
-                hash *= 16777619 ^ Lang.GetHashCode();
-                hash *= 16777619 ^ LastUpdate.GetHashCode();
-                return hash;
-            }
+            return Lang.GetHashCode();
         }
 
         public override string ToString()

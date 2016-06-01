@@ -9,13 +9,13 @@ namespace SWPatcher.Helpers
         public static void Log(string message)
         {
             using (StreamWriter sw = new StreamWriter(Strings.FileName.Log, true))
-                sw.Write(string.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Strings.DateToString(DateTime.Now), message, System.Environment.NewLine));
+                sw.Write(String.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Strings.DateToString(DateTime.Now), message, System.Environment.NewLine));
         }
 
         public static void Log(Exception ex)
         {
             using (StreamWriter sw = new StreamWriter(Strings.FileName.Log, true))
-                sw.Write(string.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Strings.DateToString(DateTime.Now), StackTraceExceptionParser(ex), System.Environment.NewLine));
+                sw.Write(String.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Strings.DateToString(DateTime.Now), StackTraceExceptionParser(ex), System.Environment.NewLine));
         }
 
         public static string ExeptionParser(Exception ex)

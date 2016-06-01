@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using MadMilkman.Ini;
 using SWPatcher.General;
-using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Downloading
@@ -43,16 +43,15 @@ namespace SWPatcher.Downloading
                 using (var file = new TempFile())
                 {
                     client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                    IniReader dataIni = new IniReader(file.Path);
-                    var array = dataIni.GetSectionNames();
-                    foreach (var fileName in array)
+                    IniFile ini = new IniFile();
+                    ini.Load(file.Path);
+                    foreach (var section in ini.Sections)
                     {
-                        string name = fileName as string;
-                        dataIni.Section = name;
-                        string path = dataIni.ReadString(Strings.IniName.Pack.KeyPath);
-                        string pathA = dataIni.ReadString(Strings.IniName.Pack.KeyPathInArchive);
-                        string pathD = dataIni.ReadString(Strings.IniName.Pack.KeyPathOfDownload);
-                        string format = dataIni.ReadString(Strings.IniName.Pack.KeyFormat);
+                        string name = section.Name;
+                        string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
+                        string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
+                        string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
+                        string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
                         this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
                         if (Worker.CancellationPending)
                         {
@@ -63,7 +62,7 @@ namespace SWPatcher.Downloading
                 }
             }
             else
-                throw new Exception(string.Format("You already have the latest({0} JST) translation files for this language!", Strings.DateToString(this.Language.LastUpdate)));
+                throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Strings.DateToString(this.Language.LastUpdate)));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -130,8 +129,9 @@ namespace SWPatcher.Downloading
                 string filePath = Path.Combine(directory, Strings.IniName.Translation);
                 if (File.Exists(filePath))
                 {
-                    IniReader translationIni = new IniReader(filePath);
-                    string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
+                    IniFile ini = new IniFile();
+                    ini.Load(filePath);
+                    string date = ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value;
                     if (this.Language.LastUpdate > Strings.ParseDate(date))
                         return true;
                 }

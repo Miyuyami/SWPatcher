@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Windows.Forms;
 using Ionic.Zip;
+using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
@@ -42,12 +43,13 @@ namespace SWPatcher.Forms
             using (var file = new TempFile())
             {
                 client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.PatcherVersion, file.Path);
-                IniReader ini = new IniReader(file.Path);
+                IniFile ini = new IniFile();
+                ini.Load(file.Path);
                 Version current = new Version(AssemblyAccessor.Version);
-                Version read = new Version(ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer, "0.0.0.0"));
+                Version read = new Version(ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value);
                 if (current.CompareTo(read) < 0)
                 {
-                    string address = ini.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyAddress);
+                    string address = ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyAddress].Value;
                     DialogResult newVersionDialog = MsgBox.Question("There is a new patcher version available!\n\nYes - Application will close and redirect you to the patcher website.\nNo - Ignore");
                     if (newVersionDialog == DialogResult.Yes)
                     {
@@ -151,8 +153,9 @@ namespace SWPatcher.Forms
         {
             try
             {
-                IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
-                return VersionCompare(GetServerVersion(), clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key));
+                IniFile ini = new IniFile();
+                ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+                return VersionCompare(GetServerVersion(), ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
             }
             catch (WebException)
             {
@@ -164,11 +167,6 @@ namespace SWPatcher.Forms
                     MsgBox.Error("The program cannot run without an internet connection and will now close.");
                     throw new Exception("0x0000011 - Connection to Hangame server failed");
                 }
-            }
-            catch (ArgumentException)
-            {
-                MsgBox.Error("Failed to read version.");
-                throw;
             }
         }
 
@@ -194,8 +192,9 @@ namespace SWPatcher.Forms
                         entry.FileName = Path.GetFileName(file.Path);
                         entry.Extract(Path.GetDirectoryName(file.Path), ExtractExistingFileAction.OverwriteSilently);
                     }
-                    IniReader serverIni = new IniReader(file.Path);
-                    return serverIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key);
+                    IniFile ini = new IniFile(new IniOptions { Encoding = System.Text.Encoding.Unicode });
+                    ini.Load(file.Path);
+                    return ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
                 }
             }
         }
@@ -263,9 +262,10 @@ namespace SWPatcher.Forms
             using (var file = new TempFile())
             {
                 client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
-                IniReader langIni = new IniReader(file.Path);
-                foreach (var s in langIni.GetSectionNames())
-                    langs.Add(new Language(s.ToString(), Strings.ParseDate(langIni.ReadString(s.ToString(), Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue)))));
+                IniFile ini = new IniFile();
+                ini.Load(file.Path);
+                foreach (var section in ini.Sections)
+                    langs.Add(new Language(section.Name, Strings.ParseDate(section.Keys[Strings.IniName.Pack.KeyDate].Value)));
             }
             return langs.ToArray();
         }
@@ -275,13 +275,15 @@ namespace SWPatcher.Forms
             string selectedTranslationPath = Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation);
             if (!File.Exists(selectedTranslationPath))
                 return true;
-            IniReader translationIni = new IniReader(selectedTranslationPath);
-            string translationVer = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Patcher.KeyVer);
+            IniFile ini = new IniFile();
+            ini.Load(selectedTranslationPath);
+            string translationVer = ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value;
             bool isEmpty = string.IsNullOrEmpty(translationVer);
             if (isEmpty)
                 throw new Exception("0x0000004 - Error reading translation version: " + (isEmpty ? "try to force patch" : translationVer));
-            IniReader clientIni = new IniReader(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
-            string clientVer = clientIni.ReadString(Strings.IniName.Ver.Section, Strings.IniName.Ver.Key);
+            ini.Sections.Clear();
+            ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+            string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
             if (VersionCompare(clientVer, translationVer))
                 return true;
             return false;
@@ -305,8 +307,9 @@ namespace SWPatcher.Forms
                 string filePath = Path.Combine(directory, Strings.IniName.Translation);
                 if (File.Exists(filePath))
                 {
-                    IniReader translationIni = new IniReader(filePath);
-                    string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
+                    IniFile ini = new IniFile();
+                    ini.Load(filePath);
+                    string date = ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value;
                     if (language.LastUpdate > Strings.ParseDate(date))
                         return true;
                 }

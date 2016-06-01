@@ -84,9 +84,8 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+    <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>.\Ionic.Zip.Patched.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MadMilkman.Ini, Version=1.0.6.1, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
       <HintPath>.\MadMilkman.Ini.dll</HintPath>

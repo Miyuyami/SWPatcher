@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="SWPatcher.exe" version="2.0.4.0" publicKeyToken="57a59494e3651860" language="en" processorArchitecture="x86" type="win32" />
+  <description asmv2:iconFile="patcher.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="SWPatcher" version="2.0.4.0" language="neutral" processorArchitecture="x86" />
+    <commandLine file="SWPatcher.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="Internet" Description="Default rights given to Internet applications" ID="Custom" SameSite="site">
+          <IPermission version="1" class="System.Security.Permissions.FileDialogPermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Access="Open" />
+          <IPermission UserQuota="1024000" version="1" class="System.Security.Permissions.IsolatedStorageFilePermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Allowed="ApplicationIsolationByUser" />
+          <IPermission version="1" class="System.Security.Permissions.SecurityPermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Flags="Execution" />
+          <IPermission version="1" class="System.Security.Permissions.UIPermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Clipboard="OwnClipboard" Window="SafeTopLevelWindows" />
+          <IPermission version="1" class="System.Drawing.Printing.PrintingPermission, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Level="SafePrinting" />
+          <IPermission version="1" class="System.Security.Permissions.MediaPermission, WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Audio="SafeAudio" Image="SafeImage" Video="SafeVideo" />
+          <IPermission version="1" class="System.Security.Permissions.WebBrowserPermission, WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Level="Safe" />
+        </PermissionSet>
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the 
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward 
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SWPatcher.exe" size="846336">
+      <assemblyIdentity name="SWPatcher" version="2.0.4.0" language="neutral" processorArchitecture="x86" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>XrsJ2XgdIBHSDHhodi1O2GVPu40=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="patcher.ico" size="21822">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>i0KIfBfHIYdkIAwMw6nCXxM79gc=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="SWPatcher.exe.config" size="891">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>faL1lqmMOTIr3Cvm6N+L0d6np7U=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=Miyu-PC\Miyu" issuerKeyHash="9852565f155ae6e3779be0c24548311ee9f060fb" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>sEOrrmAThCfY20qtlO44CLjAz38=</DigestValue></Reference></SignedInfo><SignatureValue>ctc/5sr2wE2lRJ7Oy5kIn6klY35Vkv/qn+Fe5glp+bGt4FAnkdGm7wmionD00OWU6LKLA4SDxCVD5UrlA2aRmLEHl2eWDNik6Rs8ZLPgzLKues2fZSGe+CKu7A54gnywP4wIyhxDPtakMQV5kzMmxI6xwDUMxrYBzh4AciS64ik=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>umYypZXLFOgYbiKxI0B4EDFuQS7GWdCJpUsFArk2dKXuYpE55NSOpA39DPaB65U908T/h3q26fpmCmhY+FzYlWBHhHIvBFPFP0W6S7JpOBitfMQlOc58GQsC9Us4PEw1Yy2xCg+7sB3/Q3U/SbTyx7bm6FniAClV2WvNTvHmkqk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="7fcfc0b80838ee94ad4adbd827841360aeab43b0" Description="" Url=""><as:assemblyIdentity name="SWPatcher.exe" version="2.0.4.0" publicKeyToken="57a59494e3651860" language="en" processorArchitecture="x86" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=Miyu-PC\Miyu</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>aVa+nJgk7K6pMJ1sROp979E2D6E=</DigestValue></Reference></SignedInfo><SignatureValue>K8u1vWV6Chm9VYu/vRJExuF4fto/3FH/aT0LNAQelYbBtiFpFeDX6zX8v5VZmrjzQv82o62zRMCB10/6TenRu/KxZOSlfPUKSe1r1RQN2lYIsFygiqcyDhWHO5VSHNRsoSrHtzTtlRZTf0VBPe2WO7wFrhCjGsGbtgo+tOX5uqI=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>umYypZXLFOgYbiKxI0B4EDFuQS7GWdCJpUsFArk2dKXuYpE55NSOpA39DPaB65U908T/h3q26fpmCmhY+FzYlWBHhHIvBFPFP0W6S7JpOBitfMQlOc58GQsC9Us4PEw1Yy2xCg+7sB3/Q3U/SbTyx7bm6FniAClV2WvNTvHmkqk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIByTCCATKgAwIBAgIQWLPptb35saBAy2UE1ror5DANBgkqhkiG9w0BAQUFADAjMSEwHwYDVQQDHhgATQBpAHkAdQAtAFAAQwBcAE0AaQB5AHUwHhcNMTYwNjAxMDEzMTA2WhcNMTcwNjAxMDczMTA2WjAjMSEwHwYDVQQDHhgATQBpAHkAdQAtAFAAQwBcAE0AaQB5AHUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALpmMqWVyxToGG4isSNAeBAxbkEuxlnQiaVLBQK5NnSl7mKROeTUjqQN/Qz2geuVPdPE/4d6tun6ZgpoWPhc2JVgR4RyLwRTxT9FukuyaTgYrXzEJTnOfBkLAvVLODxMNWMtsQoPu7Ad/0N1P0m08se25uhZ4gApVdlrzU7x5pKpAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAPGGLC4A867n91WGTABZJPz8F/ffD8Yq7lvc69wWy7pSeHYUISAL8dTaj9PBgHnWi9ngq8DQYWmvGE9FdgONCCgCJnbYSKjCG7OUczRix+0ex3hN+hezzzvMlI6m93LStsNhYUOCHgjVh5EB+MJaUBdql5X1KIQFF/2p/5y6wIws=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

@@ -86,12 +86,12 @@
   <ItemGroup>
     <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <HintPath>.\Ionic.Zip.Patched.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MadMilkman.Ini, Version=1.0.6.1, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
       <HintPath>.\MadMilkman.Ini.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -175,8 +175,6 @@
     <None Include="Resources\Sedurin patcher about image.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Ionic.Zip.Patched.dll" />
-    <EmbeddedResource Include="MadMilkman.Ini.dll" />
     <Content Include="patcher.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -201,28 +199,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <PublishFile Include="Ionic.Zip.Patched">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="MadMilkman.Ini">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

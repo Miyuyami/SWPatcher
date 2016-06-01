@@ -25,24 +25,6 @@ namespace SWPatcher
             return !mutex.WaitOne(TimeSpan.Zero, true);
         }
 
-        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            string requestedAssemblyName = args.Name.Substring(0, args.Name.IndexOf(','));
-            if (requestedAssemblyName == "SWPatcher.resources")
-                return null;
-
-            byte[] bytes = null;
-            string resourceName = "SWPatcher." + requestedAssemblyName + ".dll";
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            using (var stream = currentAssembly.GetManifestResourceStream(resourceName))
-            {
-                bytes = new byte[(int)stream.Length];
-                stream.Read(bytes, 0, (int)stream.Length);
-            }
-
-            return Assembly.Load(bytes);
-        }
-
         [STAThread]
         static void Main()
         {
@@ -52,7 +34,6 @@ namespace SWPatcher
                 SWPatcher.Helpers.Error.Log("Multiple instances of the program are not allowed");
                 return;
             }
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
             Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

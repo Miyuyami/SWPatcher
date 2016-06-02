@@ -18,6 +18,13 @@ namespace SWPatcher.Patching
         private Language Language;
         private int CurrentStep;
         private int StepCount;
+        private bool IsBusy
+        {
+            get
+            {
+                return this.Worker.IsBusy;
+            }
+        }
 
         public Patcher(List<SWFile> swFiles)
         {
@@ -38,8 +45,9 @@ namespace SWPatcher.Patching
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             StepCount = 3;
-            var archives = SWFiles.Select(f => f.Path).Distinct().Where(s => !string.IsNullOrEmpty(s)).ToList();
-            var archivedSWFiles = SWFiles.Where(f => !string.IsNullOrEmpty(f.PathA)).Select((value, i) => new { i, value }).ToList();
+            var archiveable = SWFiles.Where(f => !string.IsNullOrEmpty(f.PathA));
+            var archives = archiveable.Select(f => f.Path).Distinct().ToList();
+            var archivedSWFiles = archiveable.Select((value, i) => new { i, value }).ToList();
 
             CurrentStep = 1;
             archives.ForEach(archive => // copy and Xor archives
@@ -410,12 +418,14 @@ namespace SWPatcher.Patching
         public void Cancel()
         {
             this.Worker.CancelAsync();
+            while (this.Worker.IsBusy) ;
         }
 
         public void Run(Language language)
         {
             if (this.Worker.IsBusy)
                 return;
+
             this.Language = language;
             this.Worker.RunWorkerAsync();
         }

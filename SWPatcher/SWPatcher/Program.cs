@@ -22,6 +22,7 @@ namespace SWPatcher
             var securitySettings = new MutexSecurity();
             securitySettings.AddAccessRule(allowEveryoneRule);
             mutex = new Mutex(false, mutexId, out createdNew, securitySettings);
+
             return !mutex.WaitOne(TimeSpan.Zero, true);
         }
 
@@ -32,13 +33,16 @@ namespace SWPatcher
             {
                 SWPatcher.Helpers.MsgBox.Error("Multiple instances of the program are not allowed.\nMaybe it's hiding in your Windows's tray?");
                 SWPatcher.Helpers.Error.Log("Multiple instances of the program are not allowed");
+
                 return;
             }
+
             Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.Run(new SWPatcher.Forms.MainForm());
+
             mutex.ReleaseMutex();
         }
     }

@@ -38,6 +38,7 @@
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSWWebpageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -105,6 +106,7 @@
             this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolStripMenuItem,
+            this.settingsToolStripMenuItem,
             this.refreshToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -135,6 +137,13 @@
             this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.openSWWebpageToolStripMenuItem.Text = "Open SW Webpage";
             this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.openSWWebpageToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
@@ -299,6 +308,7 @@
         private System.Windows.Forms.ToolStripMenuItem openSWWebpageToolStripMenuItem;
         private System.Windows.Forms.Label labelNewTranslations;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
     }
 }
 

@@ -261,11 +261,11 @@ namespace SWPatcher.Forms
             using (var client = new WebClient())
             using (var file = new TempFile())
             {
-                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
+                client.DownloadFile(new Uri(Uris.PatcherGitHubHome + Strings.IniName.LanguagePack), file.Path);
                 IniFile ini = new IniFile();
                 ini.Load(file.Path);
                 foreach (var section in ini.Sections)
-                    langs.Add(new Language(section.Name, Strings.ParseDate(section.Keys[Strings.IniName.Pack.KeyDate].Value)));
+                    langs.Add(new Language(section.Name, Methods.ParseDate(section.Keys[Strings.IniName.Pack.KeyDate].Value)));
             }
             return langs.ToArray();
         }
@@ -277,10 +277,9 @@ namespace SWPatcher.Forms
                 return true;
             IniFile ini = new IniFile();
             ini.Load(selectedTranslationPath);
+            if (!ini.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Patcher.KeyVer))
+                throw new Exception("0x0000004 - Error reading translation version try to force patch");
             string translationVer = ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value;
-            bool isEmpty = string.IsNullOrEmpty(translationVer);
-            if (isEmpty)
-                throw new Exception("0x0000004 - Error reading translation version: " + (isEmpty ? "try to force patch" : translationVer));
             ini.Sections.Clear();
             ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
             string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
@@ -297,28 +296,6 @@ namespace SWPatcher.Forms
             foreach (Process p in processesByName)
                 return p;
             return null;
-        }
-
-        private static bool HasNewTranslations(Language language)
-        {
-            string directory = Path.Combine(Paths.PatcherRoot, language.Lang);
-            if (Directory.Exists(directory))
-            {
-                string filePath = Path.Combine(directory, Strings.IniName.Translation);
-                if (File.Exists(filePath))
-                {
-                    IniFile ini = new IniFile();
-                    ini.Load(filePath);
-                    string date = ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value;
-                    if (language.LastUpdate > Strings.ParseDate(date))
-                        return true;
-                }
-                else
-                    return true;
-            }
-            else
-                return true;
-            return false;
         }
     }
 }

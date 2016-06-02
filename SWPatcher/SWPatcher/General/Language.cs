@@ -18,7 +18,7 @@ namespace SWPatcher.General
             if (obj == null || this.GetType() != obj.GetType())
                 return false;
             Language language = obj as Language;
-            return Lang == language.Lang && LastUpdate == language.LastUpdate;
+            return Lang == language.Lang;
         }
 
         public override int GetHashCode()

@@ -51,7 +51,10 @@ namespace SWPatcher.Forms
 
                 if (result == DialogResult.OK)
                     if (Methods.IsSwPath(folderDialog.SelectedPath))
-                        this.textBoxGameDirectory.Text = folderDialog.SelectedPath;
+                        if (Methods.IsValidSwPatcherPath(folderDialog.SelectedPath))
+                            this.textBoxGameDirectory.Text = folderDialog.SelectedPath;
+                        else
+                            MsgBox.Error("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move the patcher in another location.");
                     else
                         MsgBox.Error("The selected folder is not a Soul Worker game client folder.");
             }

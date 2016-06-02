@@ -17,7 +17,8 @@ namespace SWPatcher.Downloading
         private readonly List<SWFile> SWFiles;
         private Language Language;
         private int DownloadIndex;
-        private bool IsBusy
+
+        public bool IsBusy
         {
             get
             {
@@ -139,9 +140,6 @@ namespace SWPatcher.Downloading
         {
             this.Worker.CancelAsync();
             this.Client.CancelAsync();
-
-            while (this.IsBusy)
-                System.Threading.Thread.Sleep(100);
         }
 
         public void Run(Language language, bool isForced)

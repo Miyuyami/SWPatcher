@@ -14,7 +14,7 @@ namespace SWPatcher.Forms
 {
     partial class MainForm
     {
-        private void CheckForProgramUpdate()
+        /*private void CheckForProgramUpdate()
         {
             try
             {
@@ -69,22 +69,9 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void CheckForProgramFolderMalfunction(string path)
-        {
-            while (!string.IsNullOrEmpty(path))
-            {
-                if (IsSWPath(path))
-                {
-                    MsgBox.Error("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move it in another location.");
-                    throw new Exception("0x00000002 - Illegal patcher path");
-                }
-                path = Path.GetDirectoryName(path);
-            }
-        }
-
         private void CheckForSWPath()
         {
-            if (string.IsNullOrEmpty(Paths.GameRoot))
+            if (String.IsNullOrEmpty(Paths.GameRoot))
                 SetSWPath();
             if (!IsSWPath(Paths.GameRoot))
             {
@@ -103,13 +90,14 @@ namespace SWPatcher.Forms
                         folderDialog.SelectedPath = Convert.ToString(key.GetValue("folder", ""));
                     else
                     {
-                        Error.Log("0x0000010 - WOW6432Node - Key not found");
+                        Error.Log("0x0000010 - 64-bit - Key not found");
+
                         using (var key32 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
                         {
                             if (key32 != null)
                                 folderDialog.SelectedPath = Convert.ToString(key32.GetValue("folder", ""));
                             else
-                                Error.Log("0x0000020 - StandardNode - Key not found");
+                                Error.Log("0x0000020 - 32-bit - Key not found");
                         }
                     }
                 }
@@ -132,7 +120,7 @@ namespace SWPatcher.Forms
                     throw new Exception("0x0000012 - No valid path selected");
                 }
             }
-        }
+        }*/
 
         private void CheckForGameClientUpdate()
         {
@@ -202,27 +190,6 @@ namespace SWPatcher.Forms
         private static bool IsSWPath(string path)
         {
             return Directory.Exists(path) && Directory.Exists(Path.Combine(path, Strings.FolderName.Data)) && File.Exists(Path.Combine(path, Strings.FileName.GameExe)) && File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
-        }
-
-        private static void RestoreBackup()
-        {
-            if (Directory.Exists(Strings.FolderName.Backup))
-            {
-                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
-                if (!string.IsNullOrEmpty(Paths.GameRoot) && IsSWPath(Paths.GameRoot))
-                    foreach (var s in filePaths)
-                    {
-                        string path = Path.Combine(Paths.GameRoot, s.Substring(Strings.FolderName.Backup.Length + 1));
-                        if (File.Exists(path))
-                            File.Delete(path);
-                        File.Move(s, path);
-                    }
-                else
-                    foreach (var s in filePaths)
-                        File.Delete(s);
-            }
-            else
-                Directory.CreateDirectory(Strings.FolderName.Backup);
         }
 
         private static void RestoreBackup(Language language)

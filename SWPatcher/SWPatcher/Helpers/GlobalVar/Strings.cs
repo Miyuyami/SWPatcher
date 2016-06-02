@@ -53,6 +53,7 @@
             public const string Download = "Download Translations";
             public const string Play = "Ready To Play!";
             public const string Cancel = "Cancel";
+            public const string Cancelling = "Cancelling...";
 
             public static class Status
             {

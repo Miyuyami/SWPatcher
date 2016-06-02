@@ -18,7 +18,8 @@ namespace SWPatcher.Patching
         private Language Language;
         private int CurrentStep;
         private int StepCount;
-        private bool IsBusy
+
+        public bool IsBusy
         {
             get
             {
@@ -45,7 +46,7 @@ namespace SWPatcher.Patching
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             StepCount = 3;
-            var archiveable = SWFiles.Where(f => !string.IsNullOrEmpty(f.PathA));
+            var archiveable = SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA));
             var archives = archiveable.Select(f => f.Path).Distinct().ToList();
             var archivedSWFiles = archiveable.Select((value, i) => new { i, value }).ToList();
 
@@ -74,7 +75,7 @@ namespace SWPatcher.Patching
                 string archivePath = Path.Combine(Paths.PatcherRoot, this.Language.Lang, swFile.value.Path);
                 string swFilePath = GetSWFilePath(swFile.value);
 
-                if (!string.IsNullOrEmpty(swFile.value.Format)) // if file should be patched(.res)
+                if (!String.IsNullOrEmpty(swFile.value.Format)) // if file should be patched(.res)
                 {
                     using (var swFilePathRes = new TempFile(Path.ChangeExtension(swFilePath, ".res")))
                     {
@@ -408,7 +409,7 @@ namespace SWPatcher.Patching
         private string GetSWFilePath(SWFile swFile)
         {
             string path = "";
-            if (string.IsNullOrEmpty(swFile.Path))
+            if (String.IsNullOrEmpty(swFile.Path))
                 path = Path.Combine(Paths.PatcherRoot, this.Language.Lang);
             else
                 path = Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, swFile.Path)), Path.GetFileNameWithoutExtension(swFile.Path));
@@ -418,7 +419,6 @@ namespace SWPatcher.Patching
         public void Cancel()
         {
             this.Worker.CancelAsync();
-            while (this.Worker.IsBusy) ;
         }
 
         public void Run(Language language)

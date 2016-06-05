@@ -13,6 +13,8 @@ using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SWPatcher.Forms
 {
@@ -26,15 +28,13 @@ namespace SWPatcher.Forms
             Preparing = 3,
             WaitingClient = 4,
             Applying = 5,
-            WaitingClose = 6,
-            //Disabled = 7,
+            WaitingClose = 6
         }
 
         private States _state;
         private readonly Downloader Downloader;
         private readonly Patcher Patcher;
         private readonly BackgroundWorker Worker;
-        private readonly BackgroundWorker Checker;
         private readonly List<SWFile> SWFiles;
 
         public States State
@@ -141,21 +141,9 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             WindowState = FormWindowState.Minimized;
                             break;
-                        /*case States.Disabled:
-                            comboBoxLanguages.Enabled = false;
-                            buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
-                            buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
-                            buttonExit.Enabled = true;
-                            forceStripMenuItem.Enabled = false;
-                            refreshToolStripMenuItem.Enabled = true;
-                            settingsToolStripMenuItem.Enabled = true;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
-                            toolStripProgressBar.Value = toolStripProgressBar.Minimum;
-                            toolStripProgressBar.Style = ProgressBarStyle.Blocks;
-                            break;*/
                     }
+
+                    this.comboBoxLanguages_SelectedIndexChanged(null, null);
                     _state = value;
                 }
             }
@@ -201,26 +189,8 @@ namespace SWPatcher.Forms
             }
             else
             {
-                IniFile ini = new IniFile(new IniOptions
-                {
-                    KeyDuplicate = IniDuplication.Ignored,
-                    SectionDuplicate = IniDuplication.Ignored
-                });
-
-                string iniPath = Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation);
-                if (!File.Exists(iniPath))
-                    File.Create(iniPath).Dispose();
-
-                ini.Load(iniPath);
-                ini.Sections.Add(Strings.IniName.Patcher.Section);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Pack.KeyDate);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
-                ini.Save(iniPath);
-
-                this.State = 0;
-                this.comboBoxLanguages_SelectedIndexChanged(null, null);
-                //this.State = States.Patching;
-                //this.Patcher.Run(e.Language);
+                this.State = States.Patching;
+                this.Patcher.Run(e.Language);
 
                 return;
             }
@@ -244,53 +214,73 @@ namespace SWPatcher.Forms
             {
                 Error.Log(e.Error);
                 MsgBox.Error(Error.ExeptionParser(e.Error));
+                Methods.DeleteTmpFiles(e.Language);
             }
             else
             {
-                IniFile ini = new IniFile(new IniOptions { KeyDuplicate = IniDuplication.Ignored, SectionDuplicate = IniDuplication.Ignored });
+                IniFile ini = new IniFile(new IniOptions
+                {
+                    KeyDuplicate = IniDuplication.Ignored,
+                    SectionDuplicate = IniDuplication.Ignored
+                });
                 ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
                 string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
+
                 string iniPath = Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation);
                 if (!File.Exists(iniPath))
                     File.Create(iniPath).Dispose();
+
                 ini.Sections.Clear();
                 ini.Load(iniPath);
                 ini.Sections.Add(Strings.IniName.Patcher.Section);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Pack.KeyDate);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
                 ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Patcher.KeyVer);
                 ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value = clientVer;
                 ini.Save(iniPath);
-                this.labelNewTranslations.Text = String.Empty;
             }
+
             this.State = 0;
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             Language language = e.Argument as Language;
-            if (IsNewerGameClientVersion())
+
+            if (Methods.IsNewerGameClientVersion())
                 throw new Exception("Game client is not updated to the latest version.");
 
-            if (IsTranslationOutdated(language))
+            if (Methods.IsTranslationOutdated(language))
             {
                 e.Result = true; // force patch = true
                 return;
             }
 
-            this.SWFiles.Clear();
-            using (var client = new System.Net.WebClient())
-            using (var file = new TempFile())
+            if (this.SWFiles.Count == 0)
             {
-                client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                IniFile ini = new IniFile();
-                ini.Load(file.Path);
-                foreach (var section in ini.Sections)
+                this.SWFiles.Clear();
+                using (var client = new WebClient())
+                using (var file = new TempFile())
                 {
-                    string name = section.Name;
-                    string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
-                    string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
-                    string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
-                    string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
-                    this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
+                    client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
+                    IniFile ini = new IniFile();
+                    ini.Load(file.Path);
+
+                    foreach (var section in ini.Sections)
+                    {
+                        string name = section.Name;
+                        string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
+                        string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
+                        string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
+                        string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
+                        this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
+
+                        if (this.Worker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
                 }
             }
 
@@ -300,7 +290,7 @@ namespace SWPatcher.Forms
             this.Worker.ReportProgress((int)States.WaitingClient);
             while (isClientClosed)
             {
-                clientProcess = GetProcess(Path.GetFileNameWithoutExtension(Strings.FileName.GameExe));
+                clientProcess = Methods.GetProcess(Path.GetFileNameWithoutExtension(Strings.FileName.GameExe));
                 if (clientProcess != null)
                     isClientClosed = false;
 
@@ -312,22 +302,36 @@ namespace SWPatcher.Forms
             }
 
             this.Worker.ReportProgress((int)States.Applying);
-            foreach (var archive in SWFiles.Select(f => f.Path).Distinct().Where(s => !String.IsNullOrEmpty(s))) // backup and place translated .v's
+            var archives = this.SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
+
+            foreach (var archive in archives) // backup and place *.v fils
             {
                 string archivePath = Path.Combine(Paths.GameRoot, archive);
                 string backupFilePath = Path.Combine(Paths.PatcherRoot, Strings.FolderName.Backup, archive);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+
                 if (!Directory.Exists(backupFileDirectory))
                     Directory.CreateDirectory(backupFileDirectory);
+
                 File.Move(archivePath, backupFilePath);
                 File.Move(Path.Combine(Paths.PatcherRoot, language.Lang, archive), archivePath);
             }
-            foreach (var file in SWFiles.Where(f => String.IsNullOrEmpty(f.PathA))) // other files(.zip) that weren't patched
+
+            var swFiles = this.SWFiles.Where(f => String.IsNullOrEmpty(f.PathA));
+
+            foreach (var swFile in swFiles) // other files that weren't patched
             {
-                string filePath = Path.Combine(Paths.PatcherRoot, language.Lang, file.PathD);
-                string destination = Path.Combine(Paths.GameRoot, file.Path);
-                using (var zip = ZipFile.Read(filePath))
-                    zip.ExtractAll(destination, ExtractExistingFileAction.OverwriteSilently);
+                string swFileName = Path.Combine(swFile.Path, Path.GetFileName(swFile.PathD));
+                string swFilePath = Path.Combine(Paths.PatcherRoot, language.Lang, swFileName);
+                string filePath = Path.Combine(Paths.GameRoot, swFileName);
+                string backupFilePath = Path.Combine(Paths.PatcherRoot, Strings.FolderName.Backup, swFileName);
+                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+
+                if (!Directory.Exists(backupFileDirectory))
+                    Directory.CreateDirectory(backupFileDirectory);
+
+                File.Move(filePath, backupFilePath);
+                File.Move(swFilePath, filePath);
             }
 
             this.Worker.ReportProgress((int)States.WaitingClose);
@@ -351,32 +355,37 @@ namespace SWPatcher.Forms
             {
                 MsgBox.Error("Your translation files are outdated, force patching will now commence.");
                 forceStripMenuItem_Click(null, null);
+
                 return;
             }
+            else
+                notifyIcon_DoubleClick(null, null);
 
-            notifyIcon_DoubleClick(null, null);
-            RestoreBackup(this.comboBoxLanguages.SelectedItem as Language);
-            this.State = 0;
+            try
+            {
+                Methods.RestoreBackup(this.comboBoxLanguages.SelectedItem as Language);
+            }
+            finally
+            {
+                this.State = 0;
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            try
+            Methods.RestoreBackup();
+            this.comboBoxLanguages.DataSource = Methods.GetAvailableLanguages();
+            //this.comboBoxLanguages.DataSource = new Language[0];
+
+            if (String.IsNullOrEmpty(Paths.GameRoot))
+                Paths.GameRoot = Methods.GetSwPathFromRegistry();
+
+            if (!Methods.IsValidSwPatcherPath(Paths.PatcherRoot))
             {
-                Methods.RestoreBackup();
+                string error = "The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move the patcher in another location or continue at your own risk.";
 
-                if (String.IsNullOrEmpty(Paths.GameRoot))
-                    Paths.GameRoot = Methods.GetSwPathFromRegistry();
-
-                if (Methods.IsValidSwPatcherPath(Paths.PatcherRoot))
-                    MsgBox.Error("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move the patcher in another location.");
-
-                comboBoxLanguages.DataSource = GetAllAvailableLanguages();
-            }
-            catch (Exception ex)
-            {
-                Error.Log(ex);
-                throw;
+                Error.Log(error);
+                MsgBox.Error(error);
             }
         }
 
@@ -386,37 +395,18 @@ namespace SWPatcher.Forms
             {
                 this.buttonDownload.Enabled = false;
                 this.buttonDownload.Text = Strings.FormText.Cancelling;
-
                 this.Downloader.Cancel();
-                while (Downloader.IsBusy)
-                    Thread.Sleep(100);
-
-                this.State = 0;
             }
             else if (this.State == States.Patching)
             {
                 this.buttonDownload.Enabled = false;
                 this.buttonDownload.Text = Strings.FormText.Cancelling;
-
                 this.Patcher.Cancel();
-                while (Patcher.IsBusy)
-                    Thread.Sleep(100);
-
-                this.State = 0;
             }
-            else if (this.State == 0)
+            else if (this.State == States.Idle)
             {
-                try
-                {
-                    CheckForGameClientUpdate();
-                    this.State = States.Downloading;
-                    this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
-                }
-                catch (Exception ex)
-                {
-                    Error.Log(ex);
-                    this.Close();
-                }
+                this.State = States.Downloading;
+                this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
             }
         }
 
@@ -429,23 +419,16 @@ namespace SWPatcher.Forms
             }
             else
             {
-                try
-                {
-                    CheckForGameClientUpdate();
-                    this.State = States.Preparing;
-                    this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
-                }
-                catch (Exception ex)
-                {
-                    Error.Log(ex);
-                    this.Close();
-                }
+                this.State = States.Preparing;
+                this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
             }
         }
 
         private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Methods.HasNewTranslations(this.comboBoxLanguages.SelectedItem as Language))
+            Language language = this.comboBoxLanguages.SelectedItem as Language;
+
+            if (language != null && Methods.HasNewTranslations(language))
                 this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
             else
                 this.labelNewTranslations.Text = String.Empty;
@@ -474,21 +457,13 @@ namespace SWPatcher.Forms
 
         private void forceStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Language language = this.comboBoxLanguages.SelectedItem as Language;
-                string iniPath = Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation);
-                if (Directory.Exists(Path.GetDirectoryName(iniPath)))
-                    File.Delete(iniPath);
-                this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
-                this.State = States.Downloading;
-                this.Downloader.Run(language, true);
-            }
-            catch (Exception ex)
-            {
-                Error.Log(ex);
-                this.Close();
-            }
+            Language language = this.comboBoxLanguages.SelectedItem as Language;
+
+            Methods.DeleteTranslationIni(language);
+            this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
+
+            this.State = States.Downloading;
+            this.Downloader.Run(language, true);
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -499,24 +474,20 @@ namespace SWPatcher.Forms
 
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Language language = this.comboBoxLanguages.SelectedItem as Language;
-                comboBoxLanguages.DataSource = GetAllAvailableLanguages();
+            Language language = this.comboBoxLanguages.SelectedItem as Language;
+            Language[] languages = Methods.GetAvailableLanguages();
+            comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
+            if (language != null && comboBoxLanguages.DataSource != null)
+            {
                 int index = comboBoxLanguages.Items.IndexOf(language);
                 comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
-            }
-            catch (Exception ex)
-            {
-                Error.Log(ex);
-                this.Close();
             }
         }
 
         private void openSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("iexplore.exe", Uris.SoulWorkerHome);
+            Process.Start("iexplore.exe", Urls.SoulWorkerHome);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

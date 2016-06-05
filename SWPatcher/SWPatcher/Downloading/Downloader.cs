@@ -7,6 +7,7 @@ using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Helpers;
+using System.Threading;
 
 namespace SWPatcher.Downloading
 {
@@ -17,14 +18,6 @@ namespace SWPatcher.Downloading
         private readonly List<SWFile> SWFiles;
         private Language Language;
         private int DownloadIndex;
-
-        public bool IsBusy
-        {
-            get
-            {
-                return this.Worker.IsBusy || this.Client.IsBusy;
-            }
-        }
 
         public Downloader(List<SWFile> swFiles)
         {
@@ -45,14 +38,16 @@ namespace SWPatcher.Downloading
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Methods.HasNewTranslations(this.Language) || (bool)e.Argument)
+            if (!(bool)e.Argument && !Methods.HasNewTranslations(this.Language))
+                throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
+
+            if (this.SWFiles.Count == 0)
             {
                 this.SWFiles.Clear();
-
                 using (var client = new WebClient())
                 using (var file = new TempFile())
                 {
-                    client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
+                    client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
                     IniFile ini = new IniFile();
                     ini.Load(file.Path);
 
@@ -64,7 +59,7 @@ namespace SWPatcher.Downloading
                         string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
                         string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
                         this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
-                        
+
                         if (this.Worker.CancellationPending)
                         {
                             e.Cancel = true;
@@ -73,8 +68,6 @@ namespace SWPatcher.Downloading
                     }
                 }
             }
-            else
-                throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -120,7 +113,7 @@ namespace SWPatcher.Downloading
 
         private void DownloadNext()
         {
-            Uri uri = new Uri(Uris.TranslationGitHubHome + this.Language.Lang + '/' + this.SWFiles[this.DownloadIndex].PathD);
+            Uri uri = new Uri(Urls.TranslationGitHubHome + this.Language.Lang + '/' + this.SWFiles[this.DownloadIndex].PathD);
             string path = "";
 
             if (String.IsNullOrEmpty(this.SWFiles[this.DownloadIndex].PathA))
@@ -144,7 +137,7 @@ namespace SWPatcher.Downloading
 
         public void Run(Language language, bool isForced)
         {
-            if (this.IsBusy)
+            if (this.Worker.IsBusy || this.Client.IsBusy)
                 return;
 
             this.Language = language;

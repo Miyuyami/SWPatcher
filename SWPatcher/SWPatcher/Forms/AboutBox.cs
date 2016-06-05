@@ -13,13 +13,13 @@ namespace SWPatcher.Forms
             this.labelProductName.Text = AssemblyAccessor.Product;
             this.labelVersion.Text = String.Format("Version {0}", AssemblyAccessor.Version);
             this.textBoxDescription.Text = AssemblyAccessor.Description;
-            this.linkLabelWebsite.Links.Add(0, 17, Uris.SWHQWebsite);
+            this.linkLabelWebsite.Links.Add(0, 17, Urls.SWHQWebsite);
         }
 
         private void linkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             linkLabelWebsite.LinkVisited = true;
-            System.Diagnostics.Process.Start(Uris.SWHQWebsite);
+            System.Diagnostics.Process.Start(Urls.SWHQWebsite);
         }
     }
 }

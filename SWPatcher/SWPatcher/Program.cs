@@ -6,6 +6,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
+using SWPatcher.Helpers;
 
 namespace SWPatcher
 {
@@ -14,6 +15,24 @@ namespace SWPatcher
         private static string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
         private static string mutexId = String.Format("Global\\{{{0}}}", appGuid);
         private static Mutex mutex = null;
+
+        [STAThread]
+        private static void Main()
+        {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+            if (IsAppAlreadyRunning())
+                throw new Exception("Multiple instances of the program are not allowed.\nMaybe it's hiding in your Windows's tray?");
+
+            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.Run(new SWPatcher.Forms.MainForm());
+
+            mutex.ReleaseMutex();
+        }
 
         private static bool IsAppAlreadyRunning()
         {
@@ -26,24 +45,20 @@ namespace SWPatcher
             return !mutex.WaitOne(TimeSpan.Zero, true);
         }
 
-        [STAThread]
-        static void Main()
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (IsAppAlreadyRunning())
-            {
-                SWPatcher.Helpers.MsgBox.Error("Multiple instances of the program are not allowed.\nMaybe it's hiding in your Windows's tray?");
-                SWPatcher.Helpers.Error.Log("Multiple instances of the program are not allowed");
+            Error.Log(e.ExceptionObject as Exception);
+            MsgBox.Error(Error.ExeptionParser(e.ExceptionObject as Exception));
 
-                return;
-            }
+            Application.Exit();
+        }
 
-            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
-            Application.Run(new SWPatcher.Forms.MainForm());
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Error.Log(e.Exception);
+            MsgBox.Error(Error.ExeptionParser(e.Exception));
 
-            mutex.ReleaseMutex();
+            Application.Exit();
         }
     }
 }

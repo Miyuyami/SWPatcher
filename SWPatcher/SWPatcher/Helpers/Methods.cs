@@ -290,13 +290,10 @@ namespace SWPatcher.Helpers
 
         public static Process GetProcess(string name)
         {
-            Process[] processesByName = Process.GetProcessesByName(name);
+            Process[] processesByName = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(name));
 
-            if (processesByName.Length == 0)
-                return null;
-
-            foreach (Process p in processesByName)
-                return p;
+            if (processesByName.Length > 0)
+                return processesByName[0];
 
             return null;
         }

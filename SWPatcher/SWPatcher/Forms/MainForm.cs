@@ -284,21 +284,23 @@ namespace SWPatcher.Forms
                 }
             }
 
-            bool isClientClosed = true;
             Process clientProcess = null;
 
             this.Worker.ReportProgress((int)States.WaitingClient);
-            while (isClientClosed)
+            while(true)
             {
-                clientProcess = Methods.GetProcess(Path.GetFileNameWithoutExtension(Strings.FileName.GameExe));
-                if (clientProcess != null)
-                    isClientClosed = false;
-
                 if (this.Worker.CancellationPending)
                 {
                     e.Cancel = true;
                     return;
                 }
+
+                clientProcess = Methods.GetProcess(Strings.FileName.GameExe);
+
+                if (clientProcess == null)
+                    Thread.Sleep(1000);
+                else
+                    break;
             }
 
             this.Worker.ReportProgress((int)States.Applying);

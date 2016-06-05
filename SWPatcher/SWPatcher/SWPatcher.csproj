@@ -14,7 +14,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>publish\beta\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -24,14 +24,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcher/publish/beta/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcher/publish/beta/</UpdateUrl>
+    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcher/publish/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcher/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>SoulworkerHQ</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>7</ApplicationRevision>
-    <ApplicationVersion>2.0.4.7</ApplicationVersion>
+    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationVersion>2.0.4.8</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

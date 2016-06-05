@@ -20,13 +20,9 @@
             public const string ServerVer = "ServerVer.ini";
             public const string ClientVer = "Ver.ini";
             public const string Translation = "Translation.ini";
-
             public const string LanguagePack = "LanguagePacksBeta.ini";
             public const string TranslationPackData = "TranslationPackDataBeta.ini";
-            /*
-            public const string LanguagePack = "LanguagePacks.ini";
-            public const string TranslationPackData = "TranslationPackData.ini";
-            */
+
             public static class Ver
             {
                 public const string Section = "Client";

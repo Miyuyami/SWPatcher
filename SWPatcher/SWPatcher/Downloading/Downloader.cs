@@ -41,6 +41,9 @@ namespace SWPatcher.Downloading
             if (!(bool)e.Argument && !Methods.HasNewTranslations(this.Language))
                 throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
 
+            if (Methods.IsNewerGameClientVersion())
+                throw new Exception("Game client is not updated to the latest version.");
+
             if (this.SWFiles.Count == 0)
             {
                 this.SWFiles.Clear();

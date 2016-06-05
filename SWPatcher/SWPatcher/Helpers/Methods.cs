@@ -88,6 +88,9 @@ namespace SWPatcher.Helpers
 
         public static void RestoreBackup(Language language)
         {
+            if (!Directory.Exists(Strings.FolderName.Backup))
+                return;
+
             string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
 
             foreach (var file in filePaths)
@@ -111,7 +114,7 @@ namespace SWPatcher.Helpers
             return String.IsNullOrEmpty(path) || !Methods.IsSwPath(path) && Methods.IsValidSwPatcherPath(Path.GetDirectoryName(path));
         }
 
-        public static String GetSwPathFromRegistry()
+        public static string GetSwPathFromRegistry()
         {
             using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\HanPurple\J_SW"))
             {
@@ -128,7 +131,7 @@ namespace SWPatcher.Helpers
                         else
                         {
                             Error.Log("32-bit - Key not found");
-                            return String.Empty;
+                            throw new Exception("Soulworker installation not found.");
                         }
                     }
                 }

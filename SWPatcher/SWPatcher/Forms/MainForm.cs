@@ -414,8 +414,9 @@ namespace SWPatcher.Forms
         {
             if (this.State == States.WaitingClient)
             {
+                this.buttonPlay.Enabled = false;
+                this.buttonPlay.Text = Strings.FormText.Cancelling;
                 this.Worker.CancelAsync();
-                this.State = 0;
             }
             else
             {

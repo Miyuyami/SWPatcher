@@ -5,9 +5,8 @@ using System.IO;
 using System.Net;
 using MadMilkman.Ini;
 using SWPatcher.General;
-using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Helpers;
-using System.Threading;
+using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Downloading
 {

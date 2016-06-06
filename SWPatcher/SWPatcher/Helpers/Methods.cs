@@ -1,17 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVar;
-using System;
-using System.Globalization;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Net;
-using Ionic.Zip;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Diagnostics;
 
 namespace SWPatcher.Helpers
 {

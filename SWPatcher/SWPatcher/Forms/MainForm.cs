@@ -4,17 +4,15 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
-using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SWPatcher.Forms
 {
@@ -361,7 +359,7 @@ namespace SWPatcher.Forms
                 return;
             }
             else
-                notifyIcon_DoubleClick(null, null);
+                this.RestoreFromTray();
 
             try
             {
@@ -449,6 +447,11 @@ namespace SWPatcher.Forms
         }
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            this.RestoreFromTray();
+        }
+
+        public void RestoreFromTray()
         {
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;

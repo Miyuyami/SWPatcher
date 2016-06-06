@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using Ionic.Zip;
 using SWPatcher.General;
-using SWPatcher.Helpers.GlobalVar;
-using System.Threading;
 using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Patching
 {

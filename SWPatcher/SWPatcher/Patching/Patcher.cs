@@ -50,7 +50,7 @@ namespace SWPatcher.Patching
                     return;
                 }
 
-                string archivePath = Path.Combine(Paths.PatcherRoot, this.Language.Lang, archive);
+                string archivePath = Path.Combine(this.Language.Lang, archive);
                 File.Copy(Path.Combine(Paths.GameRoot, archive), archivePath, true);
                 this.Xor(archivePath, 0x55);
             }
@@ -66,16 +66,16 @@ namespace SWPatcher.Patching
                 }
                 this.Worker.ReportProgress(count++ == archivedSWFilesCount ? int.MaxValue : Convert.ToInt32(((double)count / archivedSWFilesCount) * int.MaxValue));
 
-                string archivePath = Path.Combine(Paths.PatcherRoot, this.Language.Lang, swFile.Path);
+                string archivePath = Path.Combine(this.Language.Lang, swFile.Path);
                 string swFilePath = Methods.GetArchivedSWFilePath(swFile, this.Language);
 
                 if (!String.IsNullOrEmpty(swFile.Format)) // if file should be patched(.res)
                 {
                     using (var swFilePathRes = new TempFile(Path.ChangeExtension(swFilePath, ".res")))
                     {
-                        Methods.DoUnzipFile(archivePath, swFile.PathA, Paths.PatcherRoot);
+                        Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory());
 
-                        using (var swFilePathOriginalRes = new TempFile(Path.Combine(Paths.PatcherRoot, Path.GetFileName(swFile.PathA))))
+                        using (var swFilePathOriginalRes = new TempFile(Path.GetFileName(swFile.PathA)))
                         {
                             string[] fullFormatArray = swFile.Format.Split(' ');
                             int idIndex = Convert.ToInt32(fullFormatArray[0]);
@@ -282,7 +282,7 @@ namespace SWPatcher.Patching
                     return;
                 }
 
-                string archivePath = Path.Combine(Paths.PatcherRoot, this.Language.Lang, archive);
+                string archivePath = Path.Combine(this.Language.Lang, archive);
                 this.Xor(archivePath, 0x55);
             }
 

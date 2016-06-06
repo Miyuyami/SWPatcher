@@ -119,9 +119,9 @@ namespace SWPatcher.Downloading
             string path = "";
 
             if (String.IsNullOrEmpty(this.SWFiles[this.DownloadIndex].PathA))
-                path = Path.Combine(Paths.PatcherRoot, this.Language.Lang, this.SWFiles[this.DownloadIndex].Path);
+                path = Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path);
             else
-                path = Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, this.SWFiles[this.DownloadIndex].Path)), Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Path));
+                path = Path.Combine(Path.GetDirectoryName(Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path)), Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Path));
 
             string directoryDestionation = path;
             if (!Directory.Exists(path))

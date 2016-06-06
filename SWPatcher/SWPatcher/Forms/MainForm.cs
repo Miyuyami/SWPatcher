@@ -224,7 +224,7 @@ namespace SWPatcher.Forms
                 ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
                 string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
 
-                string iniPath = Path.Combine(Paths.PatcherRoot, e.Language.Lang, Strings.IniName.Translation);
+                string iniPath = Path.Combine(e.Language.Lang, Strings.IniName.Translation);
                 if (!File.Exists(iniPath))
                     File.Create(iniPath).Dispose();
 
@@ -307,14 +307,14 @@ namespace SWPatcher.Forms
             foreach (var archive in archives) // backup and place *.v fils
             {
                 string archivePath = Path.Combine(Paths.GameRoot, archive);
-                string backupFilePath = Path.Combine(Paths.PatcherRoot, Strings.FolderName.Backup, archive);
+                string backupFilePath = Path.Combine(Strings.FolderName.Backup, archive);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
                 if (!Directory.Exists(backupFileDirectory))
                     Directory.CreateDirectory(backupFileDirectory);
 
                 File.Move(archivePath, backupFilePath);
-                File.Move(Path.Combine(Paths.PatcherRoot, language.Lang, archive), archivePath);
+                File.Move(Path.Combine(language.Lang, archive), archivePath);
             }
 
             var swFiles = this.SWFiles.Where(f => String.IsNullOrEmpty(f.PathA));
@@ -322,9 +322,9 @@ namespace SWPatcher.Forms
             foreach (var swFile in swFiles) // other files that weren't patched
             {
                 string swFileName = Path.Combine(swFile.Path, Path.GetFileName(swFile.PathD));
-                string swFilePath = Path.Combine(Paths.PatcherRoot, language.Lang, swFileName);
+                string swFilePath = Path.Combine(language.Lang, swFileName);
                 string filePath = Path.Combine(Paths.GameRoot, swFileName);
-                string backupFilePath = Path.Combine(Paths.PatcherRoot, Strings.FolderName.Backup, swFileName);
+                string backupFilePath = Path.Combine(Strings.FolderName.Backup, swFileName);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
                 if (!Directory.Exists(backupFileDirectory))
@@ -380,7 +380,7 @@ namespace SWPatcher.Forms
             if (String.IsNullOrEmpty(Paths.GameRoot))
                 Paths.GameRoot = Methods.GetSwPathFromRegistry();
 
-            if (!Methods.IsValidSwPatcherPath(Paths.PatcherRoot))
+            if (!Methods.IsValidSwPatcherPath(Directory.GetCurrentDirectory()))
             {
                 string error = "The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move the patcher in another location or continue at your own risk.";
 

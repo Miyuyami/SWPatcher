@@ -4,7 +4,7 @@ namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Paths
     {
-        public static string PatcherRoot { get { return System.AppDomain.CurrentDomain.BaseDirectory; } }
+        //public static string PatcherRoot { get { return AppDomain.CurrentDomain.BaseDirectory; } }
         public static string GameRoot
         {
             get

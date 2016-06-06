@@ -30,7 +30,7 @@ namespace SWPatcher.Helpers
 
         public static bool HasNewTranslations(Language language)
         {
-            string directory = Path.Combine(Paths.PatcherRoot, language.Lang);
+            string directory = language.Lang;
 
             if (!Directory.Exists(directory))
                 return true;
@@ -95,14 +95,14 @@ namespace SWPatcher.Helpers
             foreach (var file in filePaths)
             {
                 string path = Path.Combine(Paths.GameRoot, file.Substring(Strings.FolderName.Backup.Length + 1));
-                File.Move(path, Path.Combine(Paths.PatcherRoot, language.Lang, path.Substring(Paths.GameRoot.Length + 1)));
+                File.Move(path, Path.Combine(language.Lang, path.Substring(Paths.GameRoot.Length + 1)));
                 File.Move(file, path);
             }
         }
 
         public static void DeleteTmpFiles(Language language)
         {
-            string[] tmpFilePaths = Directory.GetFiles(Path.Combine(Paths.PatcherRoot, language.Lang), "*.tmp", SearchOption.AllDirectories);
+            string[] tmpFilePaths = Directory.GetFiles(language.Lang, "*.tmp", SearchOption.AllDirectories);
 
             foreach (var tmpFile in tmpFilePaths)
                 File.Delete(tmpFile);
@@ -157,14 +157,14 @@ namespace SWPatcher.Helpers
 
         public static void DeleteTranslationIni(Language language)
         {
-            string iniPath = Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation);
+            string iniPath = Path.Combine(language.Lang, Strings.IniName.Translation);
             if (Directory.Exists(Path.GetDirectoryName(iniPath)))
                 File.Delete(iniPath);
         }
 
         public static string GetArchivedSWFilePath(SWFile swFile, Language language)
         {
-            string directory = Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, language.Lang, swFile.Path));
+            string directory = Path.GetDirectoryName(Path.Combine(language.Lang, swFile.Path));
             string archiveName = Path.GetFileNameWithoutExtension(swFile.Path);
             string fileName = Path.GetFileName(swFile.PathD);
 
@@ -266,7 +266,7 @@ namespace SWPatcher.Helpers
 
         public static bool IsTranslationOutdated(Language language)
         {
-            string selectedTranslationPath = Path.Combine(Paths.PatcherRoot, language.Lang, Strings.IniName.Translation);
+            string selectedTranslationPath = Path.Combine(language.Lang, Strings.IniName.Translation);
             if (!File.Exists(selectedTranslationPath))
                 return true;
 

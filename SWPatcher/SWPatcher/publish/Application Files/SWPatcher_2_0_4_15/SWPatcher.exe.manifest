@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="SWPatcher.exe" version="2.0.4.15" publicKeyToken="57a59494e3651860" language="en" processorArchitecture="x86" type="win32" />
+  <description asmv2:iconFile="patcher.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="SWPatcher" version="2.0.4.15" language="neutral" processorArchitecture="x86" />
+    <commandLine file="SWPatcher.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="Internet" Description="Default rights given to Internet applications" Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!-- UAC Manifest Options
+            If you want to change the Windows User Account Control level replace the 
+            requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+            Specifying requestedExecutionLevel node will disable file and registry virtualization.
+            If you want to utilize File and Registry Virtualization for backward 
+            compatibility then delete the requestedExecutionLevel node.
+        -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Ionic.Zip.Patched.dll" size="462848">
+      <assemblyIdentity name="Ionic.Zip.Patched" version="1.9.1.9" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>3mYmuKShJQp84VV110euwIGkxr8=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MadMilkman.Ini.dll" size="40960">
+      <assemblyIdentity name="MadMilkman.Ini" version="1.0.6.1" publicKeyToken="4E0B5157A7FFBB74" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>s3ZFRjFYJybjxeG7fzoiugWDCr4=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SWPatcher.exe" size="337408">
+      <assemblyIdentity name="SWPatcher" version="2.0.4.15" language="neutral" processorArchitecture="x86" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>Kew38RVsL2MPmE3AVrhxAMA8bqs=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="patcher.ico" size="21822">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>i0KIfBfHIYdkIAwMw6nCXxM79gc=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="SWPatcher.exe.config" size="889">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>mTAihJss6XwUku2qrvx/HTituSc=</dsig:DigestValue>
+    </hash>
+  </file>
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- A list of all Windows versions that this application is designed to work with. Windows will automatically select the most compatible environment.-->
+      <!-- If your application is designed to work with Windows 7, uncomment the following supportedOS node-->
+      <!--<supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>-->
+    </application>
+  </compatibility>
+<publisherIdentity name="CN=Miyu-PC\Miyu" issuerKeyHash="9852565f155ae6e3779be0c24548311ee9f060fb" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>G3uGC0y5sFnFWuZZGcp9auvW43M=</DigestValue></Reference></SignedInfo><SignatureValue>MAt6MfTML4ktSa8WjDtYTDSr/ViwO+tgUBf1KBJpW2pWHhYOJ1xuNLSFw5FdsIN4SwbNC2SqV7hQ4ETH8j6DjgyDPzauBbBX5xTIfGYOioeLXlLPlM0Zssf9dsEH5rcNgLItMr33YJzRiSiGwbsf9bR/BKqAadnuVdsA4cLArtY=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>umYypZXLFOgYbiKxI0B4EDFuQS7GWdCJpUsFArk2dKXuYpE55NSOpA39DPaB65U908T/h3q26fpmCmhY+FzYlWBHhHIvBFPFP0W6S7JpOBitfMQlOc58GQsC9Us4PEw1Yy2xCg+7sB3/Q3U/SbTyx7bm6FniAClV2WvNTvHmkqk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="73e3d6eb6a7dca1959e65ac559b0b94c0b867b1b" Description="" Url=""><as:assemblyIdentity name="SWPatcher.exe" version="2.0.4.15" publicKeyToken="57a59494e3651860" language="en" processorArchitecture="x86" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=Miyu-PC\Miyu</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>jErY/d7N8X1asw9lobSBPgjl+Tw=</DigestValue></Reference></SignedInfo><SignatureValue>G/q9p8GLLSM/yLyPD0qjcuqo05RlgwOaST92WmOr1rtYS0215C7wHinjRcmjyhFhUGIkXqm3J3fMb5SaY/lGMjXPCdD16R82te5TZ+q6iI/jOIzA9u6aOYRQUv3fliAp/LB7eNOIxoueCUs/FEaPG0jxggjpswQBeqSW3lmb7Iw=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>umYypZXLFOgYbiKxI0B4EDFuQS7GWdCJpUsFArk2dKXuYpE55NSOpA39DPaB65U908T/h3q26fpmCmhY+FzYlWBHhHIvBFPFP0W6S7JpOBitfMQlOc58GQsC9Us4PEw1Yy2xCg+7sB3/Q3U/SbTyx7bm6FniAClV2WvNTvHmkqk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIByTCCATKgAwIBAgIQWLPptb35saBAy2UE1ror5DANBgkqhkiG9w0BAQUFADAjMSEwHwYDVQQDHhgATQBpAHkAdQAtAFAAQwBcAE0AaQB5AHUwHhcNMTYwNjAxMDEzMTA2WhcNMTcwNjAxMDczMTA2WjAjMSEwHwYDVQQDHhgATQBpAHkAdQAtAFAAQwBcAE0AaQB5AHUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALpmMqWVyxToGG4isSNAeBAxbkEuxlnQiaVLBQK5NnSl7mKROeTUjqQN/Qz2geuVPdPE/4d6tun6ZgpoWPhc2JVgR4RyLwRTxT9FukuyaTgYrXzEJTnOfBkLAvVLODxMNWMtsQoPu7Ad/0N1P0m08se25uhZ4gApVdlrzU7x5pKpAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAPGGLC4A867n91WGTABZJPz8F/ffD8Yq7lvc69wWy7pSeHYUISAL8dTaj9PBgHnWi9ngq8DQYWmvGE9FdgONCCgCJnbYSKjCG7OUczRix+0ex3hN+hezzzvMlI6m93LStsNhYUOCHgjVh5EB+MJaUBdql5X1KIQFF/2p/5y6wIws=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

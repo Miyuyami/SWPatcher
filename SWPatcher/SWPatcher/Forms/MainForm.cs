@@ -285,7 +285,7 @@ namespace SWPatcher.Forms
             Process clientProcess = null;
 
             this.Worker.ReportProgress((int)States.WaitingClient);
-            while(true)
+            while (true)
             {
                 if (this.Worker.CancellationPending)
                 {
@@ -374,11 +374,23 @@ namespace SWPatcher.Forms
         private void MainForm_Load(object sender, EventArgs e)
         {
             Methods.RestoreBackup();
-            this.comboBoxLanguages.DataSource = Methods.GetAvailableLanguages();
-            //this.comboBoxLanguages.DataSource = new Language[0];
+            Language[] languages = Methods.GetAvailableLanguages();
+            //Language[] languages = new Language[0];
+            this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
             if (String.IsNullOrEmpty(Paths.GameRoot))
                 Paths.GameRoot = Methods.GetSwPathFromRegistry();
+            else if (!Methods.IsSwPath(Paths.GameRoot))
+                Paths.GameRoot = null;
+
+            if (this.comboBoxLanguages.DataSource != null)
+                if (String.IsNullOrEmpty(Strings.LanguageName))
+                    Strings.LanguageName = (this.comboBoxLanguages.SelectedItem as Language).Lang;
+                else
+                {
+                    int index = this.comboBoxLanguages.Items.IndexOf(new Language(Strings.LanguageName, DateTime.Now));
+                    this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
+                }
 
             if (!Methods.IsValidSwPatcherPath(Directory.GetCurrentDirectory()))
             {
@@ -482,12 +494,12 @@ namespace SWPatcher.Forms
         {
             Language language = this.comboBoxLanguages.SelectedItem as Language;
             Language[] languages = Methods.GetAvailableLanguages();
-            comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
+            this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
-            if (language != null && comboBoxLanguages.DataSource != null)
+            if (language != null && this.comboBoxLanguages.DataSource != null)
             {
-                int index = comboBoxLanguages.Items.IndexOf(language);
-                comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
+                int index = this.comboBoxLanguages.Items.IndexOf(language);
+                this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
             }
         }
 
@@ -504,6 +516,7 @@ namespace SWPatcher.Forms
 
         private void exit_Click(object sender, EventArgs e)
         {
+            Strings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
             this.Close();
         }
     }

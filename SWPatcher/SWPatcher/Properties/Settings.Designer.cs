@@ -34,5 +34,17 @@ namespace SWPatcher.Properties {
                 this["SoulWorkerDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LanguageName {
+            get {
+                return ((string)(this["LanguageName"]));
+            }
+            set {
+                this["LanguageName"] = value;
+            }
+        }
     }
 }

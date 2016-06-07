@@ -1,7 +1,22 @@
-﻿namespace SWPatcher.Helpers.GlobalVar
+﻿using SWPatcher.Properties;
+
+namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
     {
+        public static string LanguageName
+        {
+            get
+            {
+                return Settings.Default.LanguageName;
+            }
+            set
+            {
+                Settings.Default.LanguageName = value;
+                Settings.Default.Save();
+            }
+        }
+
         public static class FileName
         {
             public const string GameExe = "SoulWorker100.exe";

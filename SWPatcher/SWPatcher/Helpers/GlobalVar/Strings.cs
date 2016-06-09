@@ -63,7 +63,7 @@ namespace SWPatcher.Helpers.GlobalVar
 
         public static class FormText
         {
-            public const string NewTranslations = "There are new translations available for the selected language.";
+            public const string NewTranslations = "New translations for selected language - ({0})";
             public const string Download = "Download Translations";
             public const string Play = "Ready To Play!";
             public const string Cancel = "Cancel";

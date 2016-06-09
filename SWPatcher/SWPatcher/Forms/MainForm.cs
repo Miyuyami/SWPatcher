@@ -442,7 +442,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             if (language != null && Methods.HasNewTranslations(language))
-                this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
+                this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, Methods.DateToString(language.LastUpdate));
             else
                 this.labelNewTranslations.Text = String.Empty;
         }
@@ -478,7 +478,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             Methods.DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = Strings.FormText.NewTranslations;
+            this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, Methods.DateToString(language.LastUpdate));
 
             this.State = States.Downloading;
             this.Downloader.Run(language, true);

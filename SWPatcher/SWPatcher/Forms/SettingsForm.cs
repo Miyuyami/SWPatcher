@@ -8,6 +8,7 @@ namespace SWPatcher.Forms
     public partial class SettingsForm : Form
     {
         private string GameClientDirectory;
+        private string PatcherWorkingDirectory;
 
         public SettingsForm()
         {
@@ -17,14 +18,19 @@ namespace SWPatcher.Forms
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             this.GameClientDirectory = Paths.GameRoot;
+            this.PatcherWorkingDirectory = Paths.PatcherRoot;
             this.textBoxGameDirectory.Text = this.GameClientDirectory;
+            this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory;
 
             if ((this.Owner as MainForm).State == MainForm.States.Idle)
+            {
                 this.textBoxGameDirectory.TextChanged += new EventHandler(EnableApplyButton);
+                this.textBoxPatcherDirectory.TextChanged += new EventHandler(EnableApplyButton);
+            }
             else
             {
-                this.textBoxGameDirectory.Enabled = false;
-                this.buttonChangeDirectory.Enabled = false;
+                this.buttonGameChangeDirectory.Enabled = false;
+                this.buttonPatcherChangeDirectory.Enabled = false;
             }
         }
 
@@ -38,7 +44,7 @@ namespace SWPatcher.Forms
             using (var folderDialog = new FolderBrowserDialog
             {
                 ShowNewFolderButton = false,
-                Description = "Select your Soul Worker game client folder."
+                Description = "Select your Soulworker game client folder."
             })
             {
                 DialogResult result = folderDialog.ShowDialog();
@@ -46,11 +52,38 @@ namespace SWPatcher.Forms
                 if (result == DialogResult.OK)
                     if (Methods.IsSwPath(folderDialog.SelectedPath))
                         if (Methods.IsValidSwPatcherPath(folderDialog.SelectedPath))
-                            this.textBoxGameDirectory.Text = folderDialog.SelectedPath;
+                            this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                         else
-                            MsgBox.Error("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move the patcher in another location.");
+                        {
+                            var dialogResult = MsgBox.Question("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nAre you sure you want to set to this folder?");
+
+                            if (dialogResult == DialogResult.Yes)
+                                this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
+                        }
                     else
                         MsgBox.Error("The selected folder is not a Soul Worker game client folder.");
+            }
+        }
+
+        private void buttonPatcherChangeDirectory_Click(object sender, EventArgs e)
+        {
+            using (var folderDialog = new FolderBrowserDialog
+            {
+                Description = "Select your new desired patcher folder."
+            })
+            {
+                DialogResult result = folderDialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                    if (Methods.IsValidSwPatcherPath(folderDialog.SelectedPath))
+                        this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
+                    else
+                    {
+                        var dialogResult = MsgBox.Question("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nAre you sure you want to set to this folder?");
+
+                        if (dialogResult == DialogResult.Yes)
+                            this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
+                    }
             }
         }
 
@@ -69,16 +102,10 @@ namespace SWPatcher.Forms
 
         private void ApplyChanges()
         {
-            if (Methods.IsSwPath(this.textBoxGameDirectory.Text))
-            {
-                Paths.GameRoot = this.textBoxGameDirectory.Text;
-                this.GameClientDirectory = this.textBoxGameDirectory.Text;
-            }
-            else
-            {
-                MsgBox.Error("The selected folder is not a Soul Worker game client folder.");
-                this.textBoxGameDirectory.Text = this.GameClientDirectory;
-            }
+            Paths.GameRoot = this.GameClientDirectory;
+
+            Methods.MoveOldPatcherFolder(Paths.PatcherRoot, this.PatcherWorkingDirectory);
+            Paths.PatcherRoot = this.PatcherWorkingDirectory;
 
             this.buttonApply.Enabled = false;
         }

@@ -11,6 +11,7 @@ using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Properties;
 
 namespace SWPatcher.Helpers
 {
@@ -50,10 +51,8 @@ namespace SWPatcher.Helpers
                 return true;
 
             string date = section.Keys[Strings.IniName.Pack.KeyDate].Value;
-            if (language.LastUpdate > Methods.ParseDate(date))
-                return true;
 
-            return false;
+            return language.LastUpdate > Methods.ParseDate(date);
         }
 
         public static bool IsSwPath(string path)
@@ -295,6 +294,29 @@ namespace SWPatcher.Helpers
                 return processesByName[0];
 
             return null;
+        }
+
+        public static void MoveOldPatcherFolder(string oldPath, string newPath)
+        {
+            string[] movingFolders = Methods.GetAvailableLanguages().Select(l => l.Lang).Where(s => Directory.Exists(s)).ToArray();
+            string backupDirectory = Path.Combine(oldPath, Strings.FolderName.Backup);
+            string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
+
+            foreach (var folder in movingFolders)
+            {
+                string folderPath = Path.Combine(oldPath, folder);
+                string destinationPath = Path.Combine(newPath, folder);
+
+                //if (!Directory.Exists(destinationPath))
+                  //  Directory.CreateDirectory(destinationPath);
+                Directory.Move(folderPath, destinationPath);
+            }
+
+            if (Directory.Exists(backupDirectory))
+                Directory.Move(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup));
+
+            if (File.Exists(logFilePath))
+                File.Move(logFilePath, Path.Combine(newPath, Strings.FileName.Log));
         }
     }
 }

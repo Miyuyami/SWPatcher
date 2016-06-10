@@ -102,10 +102,14 @@ namespace SWPatcher.Forms
 
         private void ApplyChanges()
         {
-            Paths.GameRoot = this.GameClientDirectory;
+            if (Paths.GameRoot != this.GameClientDirectory)
+                Paths.GameRoot = this.GameClientDirectory;
 
-            Methods.MoveOldPatcherFolder(Paths.PatcherRoot, this.PatcherWorkingDirectory);
-            Paths.PatcherRoot = this.PatcherWorkingDirectory;
+            if (Paths.PatcherRoot != this.PatcherWorkingDirectory)
+            {
+                Methods.MoveOldPatcherFolder(Paths.PatcherRoot, this.PatcherWorkingDirectory);
+                Paths.PatcherRoot = this.PatcherWorkingDirectory;
+            }
 
             this.buttonApply.Enabled = false;
         }

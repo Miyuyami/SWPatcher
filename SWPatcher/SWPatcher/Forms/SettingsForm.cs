@@ -51,7 +51,7 @@ namespace SWPatcher.Forms
 
                 if (result == DialogResult.OK)
                     if (Methods.IsSwPath(folderDialog.SelectedPath))
-                        if (Methods.IsValidSwPatcherPath(folderDialog.SelectedPath))
+                        if (Methods.IsValidSwPatcherPath(Paths.PatcherRoot))
                             this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                         else
                         {

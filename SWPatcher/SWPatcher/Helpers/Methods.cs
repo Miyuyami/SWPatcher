@@ -296,9 +296,9 @@ namespace SWPatcher.Helpers
             return null;
         }
 
-        public static void MoveOldPatcherFolder(string oldPath, string newPath)
+        public static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)
         {
-            string[] movingFolders = Methods.GetAvailableLanguages().Select(l => l.Lang).Where(s => Directory.Exists(s)).ToArray();
+            string[] movingFolders = translationFolders.Where(s => Directory.Exists(s)).ToArray();
             string backupDirectory = Path.Combine(oldPath, Strings.FolderName.Backup);
             string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
 
@@ -309,11 +309,27 @@ namespace SWPatcher.Helpers
 
                 //if (!Directory.Exists(destinationPath))
                   //  Directory.CreateDirectory(destinationPath);
-                Directory.Move(folderPath, destinationPath);
+                //Directory.Move(folderPath, destinationPath);
+                foreach (var dirPath in Directory.GetDirectories(folderPath, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(folderPath, destinationPath));
+
+                foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
+                    File.Move(filePath, filePath.Replace(folderPath, destinationPath));
+                
+                Directory.Delete(folder, true);
             }
 
             if (Directory.Exists(backupDirectory))
-                Directory.Move(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup));
+            {
+                //Directory.Move(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup));
+                foreach (var dirPath in Directory.GetDirectories(backupDirectory, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup)));
+
+                foreach (var filePath in Directory.GetFiles(backupDirectory, "*", SearchOption.AllDirectories))
+                    File.Move(filePath, filePath.Replace(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup)));
+
+                Directory.Delete(backupDirectory, true);
+            }
 
             if (File.Exists(logFilePath))
                 File.Move(logFilePath, Path.Combine(newPath, Strings.FileName.Log));

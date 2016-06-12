@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
+using System.IO;
 
 namespace SWPatcher.Forms
 {
@@ -107,7 +108,16 @@ namespace SWPatcher.Forms
 
             if (Paths.PatcherRoot != this.PatcherWorkingDirectory)
             {
-                Methods.MoveOldPatcherFolder(Paths.PatcherRoot, this.PatcherWorkingDirectory);
+                try
+                {
+                    Methods.MoveOldPatcherFolder(Paths.PatcherRoot, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
+                }
+                catch (IOException ex)
+                {
+                    Error.Log(ex);
+                    MsgBox.Error(Error.ExeptionParser(ex));
+                }
+
                 Paths.PatcherRoot = this.PatcherWorkingDirectory;
             }
 

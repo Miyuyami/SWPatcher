@@ -401,6 +401,11 @@ namespace SWPatcher.Forms
             }
         }
 
+        public IEnumerable<string> GetComboBoxStringItems()
+        {
+            return this.comboBoxLanguages.Items.Cast<Language>().Select(s => s.Lang);
+        }
+
         private void buttonDownload_Click(object sender, EventArgs e)
         {
             if (this.State == States.Downloading)

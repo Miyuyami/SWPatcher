@@ -312,6 +312,7 @@ namespace SWPatcher.Helpers
             string[] movingFolders = translationFolders.Where(s => Directory.Exists(s)).ToArray();
             string backupDirectory = Path.Combine(oldPath, Strings.FolderName.Backup);
             string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
+            string gameExePath = Path.Combine(oldPath, Strings.FileName.GameExe);
 
             foreach (var folder in movingFolders)
             {
@@ -344,6 +345,9 @@ namespace SWPatcher.Helpers
 
             if (File.Exists(logFilePath))
                 File.Move(logFilePath, Path.Combine(newPath, Strings.FileName.Log));
+
+            if (File.Exists(gameExePath))
+                File.Move(gameExePath, Path.Combine(newPath, Strings.FileName.GameExe));
         }
 
         public static void PatchExeFile(string gameExePath)

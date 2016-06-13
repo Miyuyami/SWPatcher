@@ -66,11 +66,11 @@ namespace SWPatcher.Helpers
             {
                 string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
 
-                if (!String.IsNullOrEmpty(Paths.GameRoot) && Methods.IsSwPath(Paths.GameRoot))
+                if (!String.IsNullOrEmpty(UserSettings.GamePath) && Methods.IsSwPath(UserSettings.GamePath))
                 {
                     foreach (var s in filePaths)
                     {
-                        string path = Path.Combine(Paths.GameRoot, s.Substring(Strings.FolderName.Backup.Length + 1));
+                        string path = Path.Combine(UserSettings.GamePath, s.Substring(Strings.FolderName.Backup.Length + 1));
 
                         if (Directory.Exists(Path.GetDirectoryName(path)) && !File.Exists(path))
                             File.Move(s, path);
@@ -89,12 +89,23 @@ namespace SWPatcher.Helpers
             if (!Directory.Exists(Strings.FolderName.Backup))
                 return;
 
+            string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
+            if (File.Exists(backupFilePath))
+            {
+                string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+
+                File.Move(gameExePath, gameExePatchedPath);
+                File.Move(backupFilePath, gameExePath);
+            }
+
             string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
 
             foreach (var file in filePaths)
             {
-                string path = Path.Combine(Paths.GameRoot, file.Substring(Strings.FolderName.Backup.Length + 1));
-                File.Move(path, Path.Combine(language.Lang, path.Substring(Paths.GameRoot.Length + 1)));
+                string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
+
+                File.Move(path, Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1)));
                 File.Move(file, path);
             }
         }
@@ -223,7 +234,7 @@ namespace SWPatcher.Helpers
         public static bool IsNewerGameClientVersion()
         {
             IniFile ini = new IniFile();
-            ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
 
             return VersionCompare(GetServerVersion(), ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
         }
@@ -277,7 +288,7 @@ namespace SWPatcher.Helpers
 
             string translationVer = ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value;
             ini.Sections.Clear();
-            ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
 
             string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
             if (VersionCompare(clientVer, translationVer))
@@ -308,14 +319,14 @@ namespace SWPatcher.Helpers
                 string destinationPath = Path.Combine(newPath, folder);
 
                 //if (!Directory.Exists(destinationPath))
-                  //  Directory.CreateDirectory(destinationPath);
+                //  Directory.CreateDirectory(destinationPath);
                 //Directory.Move(folderPath, destinationPath);
                 foreach (var dirPath in Directory.GetDirectories(folderPath, "*", SearchOption.AllDirectories))
                     Directory.CreateDirectory(dirPath.Replace(folderPath, destinationPath));
 
                 foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
                     File.Move(filePath, filePath.Replace(folderPath, destinationPath));
-                
+
                 Directory.Delete(folder, true);
             }
 
@@ -333,6 +344,36 @@ namespace SWPatcher.Helpers
 
             if (File.Exists(logFilePath))
                 File.Move(logFilePath, Path.Combine(newPath, Strings.FileName.Log));
+        }
+
+        public static void PatchExeFile(string gameExePath)
+        {
+            using (var client = new WebClient())
+            using (var file = new TempFile())
+            {
+                var exeBytes = File.ReadAllBytes(gameExePath);
+                string hexResult = BitConverter.ToString(exeBytes).Replace("-", "");
+
+                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.BytesToPatch, file.Path);
+                IniFile ini = new IniFile();
+                ini.Load(file.Path);
+
+                foreach (var section in ini.Sections)
+                {
+                    string original = section.Keys[Strings.IniName.PatchBytes.KeyOriginal].Value;
+                    string patch = section.Keys[Strings.IniName.PatchBytes.KeyPatch].Value;
+
+                    hexResult = hexResult.Replace(original, patch);
+                }
+
+                int charCount = hexResult.Length;
+                byte[] resultBytes = new byte[charCount / 2];
+
+                for (int i = 0; i < charCount; i += 2)
+                    resultBytes[i / 2] = Convert.ToByte(hexResult.Substring(i, 2), 16);
+
+                File.WriteAllBytes(gameExePath, resultBytes);
+            }
         }
     }
 }

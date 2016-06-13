@@ -10,6 +10,7 @@ namespace SWPatcher.Forms
     {
         private string GameClientDirectory;
         private string PatcherWorkingDirectory;
+        private bool WantToPatchSoulworkerExe;
 
         public SettingsForm()
         {
@@ -18,20 +19,21 @@ namespace SWPatcher.Forms
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            this.GameClientDirectory = Paths.GameRoot;
-            this.PatcherWorkingDirectory = Paths.PatcherRoot;
-            this.textBoxGameDirectory.Text = this.GameClientDirectory;
-            this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory;
+            this.textBoxGameDirectory.Text = this.GameClientDirectory = UserSettings.GamePath;
+            this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
+            this.checkBoxPatchExe.Checked = this.WantToPatchSoulworkerExe = UserSettings.WantToPatchExe;
 
             if ((this.Owner as MainForm).State == MainForm.States.Idle)
             {
                 this.textBoxGameDirectory.TextChanged += new EventHandler(EnableApplyButton);
                 this.textBoxPatcherDirectory.TextChanged += new EventHandler(EnableApplyButton);
+                this.checkBoxPatchExe.CheckedChanged += new EventHandler(EnableApplyButton);
             }
             else
             {
                 this.buttonGameChangeDirectory.Enabled = false;
                 this.buttonPatcherChangeDirectory.Enabled = false;
+                this.checkBoxPatchExe.Enabled = false;
             }
         }
 
@@ -52,7 +54,7 @@ namespace SWPatcher.Forms
 
                 if (result == DialogResult.OK)
                     if (Methods.IsSwPath(folderDialog.SelectedPath))
-                        if (Methods.IsValidSwPatcherPath(Paths.PatcherRoot))
+                        if (Methods.IsValidSwPatcherPath(UserSettings.PatcherPath))
                             this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                         else
                         {
@@ -88,6 +90,11 @@ namespace SWPatcher.Forms
             }
         }
 
+        private void checkBoxPatchExe_CheckedChanged(object sender, EventArgs e)
+        {
+            this.WantToPatchSoulworkerExe = this.checkBoxPatchExe.Checked;
+        }
+
         private void buttonOk_Click(object sender, EventArgs e)
         {
             if (this.buttonApply.Enabled)
@@ -103,14 +110,14 @@ namespace SWPatcher.Forms
 
         private void ApplyChanges()
         {
-            if (Paths.GameRoot != this.GameClientDirectory)
-                Paths.GameRoot = this.GameClientDirectory;
+            if (UserSettings.GamePath != this.GameClientDirectory)
+                UserSettings.GamePath = this.GameClientDirectory;
 
-            if (Paths.PatcherRoot != this.PatcherWorkingDirectory)
+            if (UserSettings.PatcherPath != this.PatcherWorkingDirectory)
             {
                 try
                 {
-                    Methods.MoveOldPatcherFolder(Paths.PatcherRoot, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
+                    Methods.MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
                 }
                 catch (IOException ex)
                 {
@@ -118,8 +125,11 @@ namespace SWPatcher.Forms
                     MsgBox.Error(Error.ExeptionParser(ex));
                 }
 
-                Paths.PatcherRoot = this.PatcherWorkingDirectory;
+                UserSettings.PatcherPath = this.PatcherWorkingDirectory;
             }
+
+            if (UserSettings.WantToPatchExe != this.WantToPatchSoulworkerExe)
+                UserSettings.WantToPatchExe = this.WantToPatchSoulworkerExe;
 
             this.buttonApply.Enabled = false;
         }

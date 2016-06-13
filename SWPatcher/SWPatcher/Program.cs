@@ -22,9 +22,9 @@ namespace SWPatcher
             if (IsAppAlreadyRunning())
                 throw new Exception("Multiple instances of the program are not allowed.\nMaybe it's hiding in your Windows's tray?");
             */
-            if (!Directory.Exists(Paths.PatcherRoot))
-                Paths.PatcherRoot = "";
-            Directory.SetCurrentDirectory(Paths.PatcherRoot);
+            if (!Directory.Exists(UserSettings.PatcherPath))
+                UserSettings.PatcherPath = "";
+            Directory.SetCurrentDirectory(UserSettings.PatcherPath);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

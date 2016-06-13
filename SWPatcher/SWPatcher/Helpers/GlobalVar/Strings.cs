@@ -4,6 +4,9 @@ namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
     {
+        public const string PasteBinDevKey = "2e5bee04f7455774443dd399934494bd";
+        public const string PasteBinUsername = "SWPatcher";
+        public const string PasteBinPassword = "pIIrwSL8lNJOjPhW";
         public static string LanguageName
         {
             get
@@ -35,8 +38,9 @@ namespace SWPatcher.Helpers.GlobalVar
             public const string ServerVer = "ServerVer.ini";
             public const string ClientVer = "Ver.ini";
             public const string Translation = "Translation.ini";
-            public const string LanguagePack = "LanguagePacksBeta.ini";
-            public const string TranslationPackData = "TranslationPackDataBeta.ini";
+            public const string LanguagePack = "LanguagePacks.ini";
+            public const string TranslationPackData = "TranslationPackData.ini";
+            public const string BytesToPatch = "Sw100BytesToPatch.ini";
 
             public static class Ver
             {
@@ -59,11 +63,17 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string KeyPathOfDownload = "path_d";
                 public const string KeyFormat = "format";
             }
+
+            public static class PatchBytes
+            {
+                public const string KeyOriginal = "original";
+                public const string KeyPatch = "patch";
+            }
         }
 
         public static class FormText
         {
-            public const string NewTranslations = "New translations for selected language - ({0})";
+            public const string NewTranslations = "New translations for {0} - ({1})";
             public const string Download = "Download Translations";
             public const string Play = "Ready To Play!";
             public const string Cancel = "Cancel";
@@ -78,6 +88,7 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string WaitClient = "Waiting for client...";
                 public const string ApplyFiles = "Applying files...";
                 public const string WaitClose = "Waiting for client termination...";
+                public const string PatchingExe = "Patching .exe...";
             }
         }
     }

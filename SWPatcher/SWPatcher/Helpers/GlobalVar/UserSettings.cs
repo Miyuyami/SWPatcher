@@ -5,13 +5,13 @@ using SWPatcher.Properties;
 
 namespace SWPatcher.Helpers.GlobalVar
 {
-    public static class Paths
+    public static class UserSettings
     {
-        public static string PatcherRoot
+        public static string PatcherPath
         {
             get
             {
-                return String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory) ? Paths.PatcherRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name) : Settings.Default.PatcherWorkingDirectory;
+                return String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory) ? UserSettings.PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name) : Settings.Default.PatcherWorkingDirectory;
             }
             set
             {
@@ -21,11 +21,12 @@ namespace SWPatcher.Helpers.GlobalVar
                         Directory.CreateDirectory(value);
                     Directory.SetCurrentDirectory(value);
                 }
+
                 Settings.Default.PatcherWorkingDirectory = value;
                 Settings.Default.Save();
             }
         }
-        public static string GameRoot
+        public static string GamePath
         {
             get
             {
@@ -34,6 +35,19 @@ namespace SWPatcher.Helpers.GlobalVar
             set
             {
                 Settings.Default.SoulworkerDirectory = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public static bool WantToPatchExe
+        {
+            get
+            {
+                return Settings.Default.WantToPatchSoulworkerExe;
+            }
+            set
+            {
+                Settings.Default.WantToPatchSoulworkerExe = value;
                 Settings.Default.Save();
             }
         }

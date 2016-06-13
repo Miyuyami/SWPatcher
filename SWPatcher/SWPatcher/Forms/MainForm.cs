@@ -200,8 +200,16 @@ namespace SWPatcher.Forms
         {
             if (this.State == States.Patching)
             {
-                this.toolStripStatusLabel.Text = String.Format("{0} Step {1}/{2}", Strings.FormText.Status.Patch, e.FileNumber, e.FileCount);
-                this.toolStripProgressBar.Value = e.Progress;
+                if (e.Progress == -1)
+                {
+                    this.toolStripStatusLabel.Text = Strings.FormText.Status.PatchingExe;
+                    this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+                }
+                else
+                {
+                    this.toolStripStatusLabel.Text = String.Format("{0} Step {1}/{2}", Strings.FormText.Status.Patch, e.FileNumber, e.FileCount);
+                    this.toolStripProgressBar.Value = e.Progress;
+                }
             }
         }
 
@@ -221,7 +229,7 @@ namespace SWPatcher.Forms
                     KeyDuplicate = IniDuplication.Ignored,
                     SectionDuplicate = IniDuplication.Ignored
                 });
-                ini.Load(Path.Combine(Paths.GameRoot, Strings.IniName.ClientVer));
+                ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
                 string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
 
                 string iniPath = Path.Combine(e.Language.Lang, Strings.IniName.Translation);
@@ -282,9 +290,30 @@ namespace SWPatcher.Forms
                 }
             }
 
-            Process clientProcess = null;
+            if (UserSettings.WantToPatchExe)
+            {
+                string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
+                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+
+                if (!File.Exists(gameExePatchedPath))
+                {
+                    File.Copy(gameExePath, gameExePatchedPath);
+                    Methods.PatchExeFile(gameExePatchedPath);
+
+                    GC.Collect();
+                }
+
+                if (!Directory.Exists(backupFileDirectory))
+                    Directory.CreateDirectory(backupFileDirectory);
+
+                File.Move(gameExePath, backupFilePath);
+                File.Move(gameExePatchedPath, gameExePath);
+            }
 
             this.Worker.ReportProgress((int)States.WaitingClient);
+            Process clientProcess = null;
             while (true)
             {
                 if (this.Worker.CancellationPending)
@@ -306,7 +335,7 @@ namespace SWPatcher.Forms
 
             foreach (var archive in archives) // backup and place *.v fils
             {
-                string archivePath = Path.Combine(Paths.GameRoot, archive);
+                string archivePath = Path.Combine(UserSettings.GamePath, archive);
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, archive);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
@@ -323,7 +352,7 @@ namespace SWPatcher.Forms
             {
                 string swFileName = Path.Combine(swFile.Path, Path.GetFileName(swFile.PathD));
                 string swFilePath = Path.Combine(language.Lang, swFileName);
-                string filePath = Path.Combine(Paths.GameRoot, swFileName);
+                string filePath = Path.Combine(UserSettings.GamePath, swFileName);
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, swFileName);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
@@ -378,17 +407,17 @@ namespace SWPatcher.Forms
             //Language[] languages = new Language[0];
             this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
-            if (String.IsNullOrEmpty(Paths.GameRoot))
-                Paths.GameRoot = Methods.GetSwPathFromRegistry();
-            else if (!Methods.IsSwPath(Paths.GameRoot))
-                Paths.GameRoot = null;
+            if (String.IsNullOrEmpty(UserSettings.GamePath))
+                UserSettings.GamePath = Methods.GetSwPathFromRegistry();
+            else if (!Methods.IsSwPath(UserSettings.GamePath))
+                UserSettings.GamePath = null;
 
             if (this.comboBoxLanguages.DataSource != null)
                 if (String.IsNullOrEmpty(Strings.LanguageName))
                     Strings.LanguageName = (this.comboBoxLanguages.SelectedItem as Language).Lang;
                 else
                 {
-                    int index = this.comboBoxLanguages.Items.IndexOf(new Language(Strings.LanguageName, DateTime.Now));
+                    int index = this.comboBoxLanguages.Items.IndexOf(new Language(Strings.LanguageName, DateTime.UtcNow));
                     this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
                 }
 
@@ -447,7 +476,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             if (language != null && Methods.HasNewTranslations(language))
-                this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, Methods.DateToString(language.LastUpdate));
+                this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
             else
                 this.labelNewTranslations.Text = String.Empty;
         }
@@ -483,7 +512,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             Methods.DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, Methods.DateToString(language.LastUpdate));
+            this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
 
             this.State = States.Downloading;
             this.Downloader.Run(language, true);
@@ -511,6 +540,54 @@ namespace SWPatcher.Forms
         private void openSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("iexplore.exe", Urls.SoulWorkerHome);
+        }
+
+        private void uploadLogToPastebinToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!File.Exists(Strings.FileName.Log))
+            {
+                MsgBox.Error("Log file does not exist.");
+
+                return;
+            }
+
+            string logText = File.ReadAllText(Strings.FileName.Log);
+            var client = new PasteBinClient(Strings.PasteBinDevKey);
+
+            try
+            {
+                client.Login(Strings.PasteBinUsername, Strings.PasteBinPassword);
+            }
+            catch (Exception ex)
+            {
+                Error.Log(ex);
+            }
+
+            var entry = new PasteBinEntry
+            {
+                Title = this.Text + " at " + Methods.DateToString(DateTime.UtcNow),
+                Text = logText,
+                Expiration = PasteBinExpiration.OneWeek,
+                Private = true,
+                Format = "csharp"
+            };
+
+            try
+            {
+                string pasteUrl = client.Paste(entry);
+
+                Clipboard.SetText(pasteUrl);
+                MsgBox.Success("Log file was uploaded to " + pasteUrl + "\nThe link was copied to clipboard.");
+            }
+            catch (Exception ex)
+            {
+                Error.Log(ex);
+                MsgBox.Error("Failed to upload log file.");
+            }
+            finally
+            {
+                client.Logout();
+            }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

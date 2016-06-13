@@ -51,7 +51,7 @@ namespace SWPatcher.Patching
                 }
 
                 string archivePath = Path.Combine(this.Language.Lang, archive);
-                File.Copy(Path.Combine(Paths.GameRoot, archive), archivePath, true);
+                File.Copy(Path.Combine(UserSettings.GamePath, archive), archivePath, true);
                 this.Xor(archivePath, 0x55);
             }
 
@@ -284,6 +284,17 @@ namespace SWPatcher.Patching
 
                 string archivePath = Path.Combine(this.Language.Lang, archive);
                 this.Xor(archivePath, 0x55);
+            }
+
+            if (UserSettings.WantToPatchExe)
+            {
+                this.CurrentStep = -1;
+                this.Worker.ReportProgress(-1);
+                string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+
+                File.Copy(gameExePath, gameExePatchedPath, true);
+                Methods.PatchExeFile(gameExePatchedPath);
             }
 
             GC.Collect();

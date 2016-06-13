@@ -38,6 +38,7 @@
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSWWebpageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uploadLogToPastebinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -119,7 +120,8 @@
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.forceStripMenuItem,
-            this.openSWWebpageToolStripMenuItem});
+            this.openSWWebpageToolStripMenuItem,
+            this.uploadLogToPastebinToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.menuToolStripMenuItem.Text = "Menu";
@@ -127,16 +129,23 @@
             // forceStripMenuItem
             // 
             this.forceStripMenuItem.Name = "forceStripMenuItem";
-            this.forceStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.forceStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.forceStripMenuItem.Text = "Force Patch";
             this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
             // 
             // openSWWebpageToolStripMenuItem
             // 
             this.openSWWebpageToolStripMenuItem.Name = "openSWWebpageToolStripMenuItem";
-            this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.openSWWebpageToolStripMenuItem.Text = "Open SW Webpage";
             this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.openSWWebpageToolStripMenuItem_Click);
+            // 
+            // uploadLogToPastebinToolStripMenuItem
+            // 
+            this.uploadLogToPastebinToolStripMenuItem.Name = "uploadLogToPastebinToolStripMenuItem";
+            this.uploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.uploadLogToPastebinToolStripMenuItem.Text = "Upload Log to PasteBin";
+            this.uploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.uploadLogToPastebinToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -177,6 +186,7 @@
             // toolStripProgressBar
             // 
             this.toolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar.MarqueeAnimationSpeed = 40;
             this.toolStripProgressBar.Maximum = 2147483647;
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -309,6 +319,7 @@
         private System.Windows.Forms.Label labelNewTranslations;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uploadLogToPastebinToolStripMenuItem;
     }
 }
 

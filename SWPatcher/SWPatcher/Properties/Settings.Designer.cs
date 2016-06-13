@@ -58,5 +58,17 @@ namespace SWPatcher.Properties {
                 this["PatcherWorkingDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool WantToPatchSoulworkerExe {
+            get {
+                return ((bool)(this["WantToPatchSoulworkerExe"]));
+            }
+            set {
+                this["WantToPatchSoulworkerExe"] = value;
+            }
+        }
     }
 }

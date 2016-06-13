@@ -45,7 +45,6 @@ namespace SWPatcher.Downloading
 
             if (this.SWFiles.Count == 0)
             {
-                this.SWFiles.Clear();
                 using (var client = new WebClient())
                 using (var file = new TempFile())
                 {

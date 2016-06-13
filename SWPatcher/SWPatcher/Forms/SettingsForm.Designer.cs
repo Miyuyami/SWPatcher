@@ -34,6 +34,8 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGame = new System.Windows.Forms.TabPage();
+            this.groupBoxPatchExe = new System.Windows.Forms.GroupBox();
+            this.checkBoxPatchExe = new System.Windows.Forms.CheckBox();
             this.groupBoxPatcherDirectory = new System.Windows.Forms.GroupBox();
             this.buttonPatcherChangeDirectory = new System.Windows.Forms.Button();
             this.textBoxPatcherDirectory = new System.Windows.Forms.TextBox();
@@ -43,6 +45,7 @@
             this.tableLayoutPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGame.SuspendLayout();
+            this.groupBoxPatchExe.SuspendLayout();
             this.groupBoxPatcherDirectory.SuspendLayout();
             this.groupBoxGameDirectory.SuspendLayout();
             this.SuspendLayout();
@@ -64,13 +67,13 @@
             this.tableLayoutPanel.RowCount = 2;
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(320, 191);
+            this.tableLayoutPanel.Size = new System.Drawing.Size(320, 252);
             this.tableLayoutPanel.TabIndex = 0;
             // 
             // buttonApply
             // 
             this.buttonApply.Enabled = false;
-            this.buttonApply.Location = new System.Drawing.Point(242, 163);
+            this.buttonApply.Location = new System.Drawing.Point(242, 224);
             this.buttonApply.Name = "buttonApply";
             this.buttonApply.Size = new System.Drawing.Size(75, 23);
             this.buttonApply.TabIndex = 0;
@@ -80,7 +83,7 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(161, 163);
+            this.buttonCancel.Location = new System.Drawing.Point(161, 224);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 1;
@@ -90,7 +93,7 @@
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(80, 163);
+            this.buttonOk.Location = new System.Drawing.Point(80, 224);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 2;
@@ -106,20 +109,44 @@
             this.tabControl.Location = new System.Drawing.Point(3, 3);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(314, 154);
+            this.tabControl.Size = new System.Drawing.Size(314, 215);
             this.tabControl.TabIndex = 3;
             // 
             // tabPageGame
             // 
+            this.tabPageGame.Controls.Add(this.groupBoxPatchExe);
             this.tabPageGame.Controls.Add(this.groupBoxPatcherDirectory);
             this.tabPageGame.Controls.Add(this.groupBoxGameDirectory);
             this.tabPageGame.Location = new System.Drawing.Point(4, 22);
             this.tabPageGame.Name = "tabPageGame";
             this.tabPageGame.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGame.Size = new System.Drawing.Size(306, 128);
+            this.tabPageGame.Size = new System.Drawing.Size(306, 189);
             this.tabPageGame.TabIndex = 0;
             this.tabPageGame.Text = "Soulworker";
             this.tabPageGame.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxPatchExe
+            // 
+            this.groupBoxPatchExe.AutoSize = true;
+            this.groupBoxPatchExe.Controls.Add(this.checkBoxPatchExe);
+            this.groupBoxPatchExe.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxPatchExe.Location = new System.Drawing.Point(3, 125);
+            this.groupBoxPatchExe.Name = "groupBoxPatchExe";
+            this.groupBoxPatchExe.Size = new System.Drawing.Size(300, 61);
+            this.groupBoxPatchExe.TabIndex = 2;
+            this.groupBoxPatchExe.TabStop = false;
+            this.groupBoxPatchExe.Text = "Patching .exe to support other unicode languages";
+            // 
+            // checkBoxPatchExe
+            // 
+            this.checkBoxPatchExe.AutoSize = true;
+            this.checkBoxPatchExe.Location = new System.Drawing.Point(6, 25);
+            this.checkBoxPatchExe.Name = "checkBoxPatchExe";
+            this.checkBoxPatchExe.Size = new System.Drawing.Size(253, 17);
+            this.checkBoxPatchExe.TabIndex = 2;
+            this.checkBoxPatchExe.Text = "Yes, I am aware of the risks and want to patch it";
+            this.checkBoxPatchExe.UseVisualStyleBackColor = true;
+            this.checkBoxPatchExe.CheckedChanged += new System.EventHandler(this.checkBoxPatchExe_CheckedChanged);
             // 
             // groupBoxPatcherDirectory
             // 
@@ -188,7 +215,7 @@
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(320, 191);
+            this.ClientSize = new System.Drawing.Size(320, 252);
             this.Controls.Add(this.tableLayoutPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -203,6 +230,8 @@
             this.tabControl.ResumeLayout(false);
             this.tabPageGame.ResumeLayout(false);
             this.tabPageGame.PerformLayout();
+            this.groupBoxPatchExe.ResumeLayout(false);
+            this.groupBoxPatchExe.PerformLayout();
             this.groupBoxPatcherDirectory.ResumeLayout(false);
             this.groupBoxPatcherDirectory.PerformLayout();
             this.groupBoxGameDirectory.ResumeLayout(false);
@@ -225,5 +254,7 @@
         private System.Windows.Forms.GroupBox groupBoxPatcherDirectory;
         private System.Windows.Forms.Button buttonPatcherChangeDirectory;
         private System.Windows.Forms.TextBox textBoxPatcherDirectory;
+        private System.Windows.Forms.GroupBox groupBoxPatchExe;
+        private System.Windows.Forms.CheckBox checkBoxPatchExe;
     }
 }

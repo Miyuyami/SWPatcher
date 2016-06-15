@@ -47,6 +47,10 @@ namespace SWPatcher.Helpers.GlobalVar
             }
             set
             {
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                if (File.Exists(gameExePatchedPath))
+                    File.Delete(gameExePatchedPath);
+
                 Settings.Default.WantToPatchSoulworkerExe = value;
                 Settings.Default.Save();
             }

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using SWPatcher.Properties;
+using System.Windows.Forms;
 
 namespace SWPatcher.Helpers.GlobalVar
 {
@@ -26,6 +27,7 @@ namespace SWPatcher.Helpers.GlobalVar
                 Settings.Default.Save();
             }
         }
+
         public static string GamePath
         {
             get
@@ -53,6 +55,30 @@ namespace SWPatcher.Helpers.GlobalVar
 
                 Settings.Default.WantToPatchSoulworkerExe = value;
                 Settings.Default.Save();
+            }
+        }
+
+        public static bool PatcherRunas
+        {
+            get
+            {
+                return Settings.Default.PatcherRunasAdmin;
+            }
+            set
+            {
+                Settings.Default.PatcherRunasAdmin = value;
+                Settings.Default.Save();
+
+                if (value)
+                {
+                    DialogResult result = MsgBox.Question("To apply some of the settings you must restart the patcher.\nDo you want to do this now?");
+                    if (result == DialogResult.Yes)
+                        Methods.RestartAsAdmin();
+                }
+                else
+                {
+                    MsgBox.Success("To apply some of the settings you must manually restart the patcher.");
+                }
             }
         }
     }

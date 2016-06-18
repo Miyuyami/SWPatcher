@@ -11,6 +11,7 @@ namespace SWPatcher.Forms
         private string GameClientDirectory;
         private string PatcherWorkingDirectory;
         private bool WantToPatchSoulworkerExe;
+        private bool PatcherRunasAdmin;
 
         public SettingsForm()
         {
@@ -22,18 +23,21 @@ namespace SWPatcher.Forms
             this.textBoxGameDirectory.Text = this.GameClientDirectory = UserSettings.GamePath;
             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
             this.checkBoxPatchExe.Checked = this.WantToPatchSoulworkerExe = UserSettings.WantToPatchExe;
+            this.checkBoxRunas.Checked = this.PatcherRunasAdmin = UserSettings.PatcherRunas;
 
             if ((this.Owner as MainForm).State == MainForm.States.Idle)
             {
                 this.textBoxGameDirectory.TextChanged += new EventHandler(EnableApplyButton);
                 this.textBoxPatcherDirectory.TextChanged += new EventHandler(EnableApplyButton);
                 this.checkBoxPatchExe.CheckedChanged += new EventHandler(EnableApplyButton);
+                this.checkBoxRunas.CheckedChanged += new EventHandler(EnableApplyButton);
             }
             else
             {
                 this.buttonGameChangeDirectory.Enabled = false;
                 this.buttonPatcherChangeDirectory.Enabled = false;
                 this.checkBoxPatchExe.Enabled = false;
+                this.checkBoxRunas.Enabled = false;
             }
         }
 
@@ -95,6 +99,11 @@ namespace SWPatcher.Forms
             this.WantToPatchSoulworkerExe = this.checkBoxPatchExe.Checked;
         }
 
+        private void checkBoxRunas_CheckedChanged(object sender, EventArgs e)
+        {
+            this.PatcherRunasAdmin = this.checkBoxRunas.Checked;
+        }
+
         private void buttonOk_Click(object sender, EventArgs e)
         {
             if (this.buttonApply.Enabled)
@@ -130,6 +139,9 @@ namespace SWPatcher.Forms
 
             if (UserSettings.WantToPatchExe != this.WantToPatchSoulworkerExe)
                 UserSettings.WantToPatchExe = this.WantToPatchSoulworkerExe;
+
+            if (UserSettings.PatcherRunas != this.PatcherRunasAdmin)
+                UserSettings.PatcherRunas = this.PatcherRunasAdmin;
 
             this.buttonApply.Enabled = false;
         }

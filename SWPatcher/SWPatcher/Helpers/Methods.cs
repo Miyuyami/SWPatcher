@@ -12,6 +12,8 @@ using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Properties;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace SWPatcher.Helpers
 {
@@ -378,6 +380,18 @@ namespace SWPatcher.Helpers
 
                 File.WriteAllBytes(gameExePath, resultBytes);
             }
+        }
+
+        public static void RestartAsAdmin()
+        {
+            var processInfo = new ProcessStartInfo(Assembly.GetExecutingAssembly().CodeBase)
+            {
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+            Process.Start(processInfo);
+
+            Environment.Exit(0);
         }
     }
 }

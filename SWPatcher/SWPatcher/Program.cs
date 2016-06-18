@@ -4,24 +4,17 @@ using System.Threading;
 using System.Windows.Forms;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
+using System.Security.Principal;
 
 namespace SWPatcher
 {
     static class Program
     {
-        /*
-        private static string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
-        private static string mutexId = String.Format("Global\\{{{0}}}", appGuid);
-        private static Mutex mutex = null;
-        */
         [STAThread]
         private static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            /*
-            if (IsAppAlreadyRunning())
-                throw new Exception("Multiple instances of the program are not allowed.\nMaybe it's hiding in your Windows's tray?");
-            */
+            
             if (!Directory.Exists(UserSettings.PatcherPath))
                 UserSettings.PatcherPath = "";
             Directory.SetCurrentDirectory(UserSettings.PatcherPath);
@@ -30,24 +23,22 @@ namespace SWPatcher
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            //Application.Run(new SWPatcher.Forms.MainForm());
+
+            if (!IsRunAsAdministrator() && UserSettings.PatcherRunas)
+                Methods.RestartAsAdmin();
+
             var controller = new SingleInstanceController();
             controller.Run(Environment.GetCommandLineArgs());
-
-            //mutex.ReleaseMutex();
         }
-        /*
-        private static bool IsAppAlreadyRunning()
+       
+        private static bool IsRunAsAdministrator()
         {
-            bool createdNew;
-            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-            var securitySettings = new MutexSecurity();
-            securitySettings.AddAccessRule(allowEveryoneRule);
-            mutex = new Mutex(false, mutexId, out createdNew, securitySettings);
+            var wi = WindowsIdentity.GetCurrent();
+            var wp = new WindowsPrincipal(wi);
 
-            return !mutex.WaitOne(TimeSpan.Zero, true);
+            return wp.IsInRole(WindowsBuiltInRole.Administrator);
         }
-        */
+
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Error.Log(e.ExceptionObject as Exception);

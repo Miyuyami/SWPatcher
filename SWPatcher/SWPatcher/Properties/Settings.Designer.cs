@@ -70,5 +70,17 @@ namespace SWPatcher.Properties {
                 this["WantToPatchSoulworkerExe"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PatcherRunasAdmin {
+            get {
+                return ((bool)(this["PatcherRunasAdmin"]));
+            }
+            set {
+                this["PatcherRunasAdmin"] = value;
+            }
+        }
     }
 }

@@ -381,17 +381,5 @@ namespace SWPatcher.Helpers
                 File.WriteAllBytes(gameExePath, resultBytes);
             }
         }
-
-        public static void RestartAsAdmin()
-        {
-            var processInfo = new ProcessStartInfo(Assembly.GetExecutingAssembly().CodeBase)
-            {
-                UseShellExecute = true,
-                Verb = "runas"
-            };
-            Process.Start(processInfo);
-
-            Environment.Exit(0);
-        }
     }
 }

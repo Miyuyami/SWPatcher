@@ -24,20 +24,9 @@ namespace SWPatcher
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
-            //if (!IsRunAsAdministrator())
-            //    Methods.RestartAsAdmin();
-
             var controller = new SingleInstanceController();
             controller.Run(Environment.GetCommandLineArgs());
         }
-       
-        /*private static bool IsRunAsAdministrator()
-        {
-            var wi = WindowsIdentity.GetCurrent();
-            var wp = new WindowsPrincipal(wi);
-
-            return wp.IsInRole(WindowsBuiltInRole.Administrator);
-        }*/
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {

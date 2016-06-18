@@ -57,29 +57,5 @@ namespace SWPatcher.Helpers.GlobalVar
                 Settings.Default.Save();
             }
         }
-
-        public static bool PatcherRunas
-        {
-            get
-            {
-                return Settings.Default.PatcherRunasAdmin;
-            }
-            set
-            {
-                Settings.Default.PatcherRunasAdmin = value;
-                Settings.Default.Save();
-
-                if (value)
-                {
-                    DialogResult result = MsgBox.Question("To apply some of the settings you must restart the patcher.\nDo you want to do this now?");
-                    if (result == DialogResult.Yes)
-                        Methods.RestartAsAdmin();
-                }
-                else
-                {
-                    MsgBox.Success("To apply some of the settings you must manually restart the patcher.");
-                }
-            }
-        }
     }
 }

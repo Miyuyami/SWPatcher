@@ -24,7 +24,7 @@ namespace SWPatcher
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
-            if (!IsRunAsAdministrator() && UserSettings.PatcherRunas)
+            if (!IsRunAsAdministrator())
                 Methods.RestartAsAdmin();
 
             var controller = new SingleInstanceController();

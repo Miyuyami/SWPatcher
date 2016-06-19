@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
@@ -36,25 +37,31 @@ namespace SWPatcher.Downloading
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (HasNewDownload() || Convert.ToBoolean(e.Argument))
+            if (!(bool)e.Argument && !Methods.HasNewTranslations(this.Language))
+                throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
+
+            if (Methods.IsNewerGameClientVersion())
+                throw new Exception("Game client is not updated to the latest version.");
+
+            if (this.SWFiles.Count == 0)
             {
-                this.SWFiles.Clear();
                 using (var client = new WebClient())
                 using (var file = new TempFile())
                 {
-                    client.DownloadFile(Uris.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                    IniReader dataIni = new IniReader(file.Path);
-                    var array = dataIni.GetSectionNames();
-                    foreach (var fileName in array)
+                    client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
+                    IniFile ini = new IniFile();
+                    ini.Load(file.Path);
+
+                    foreach (var section in ini.Sections)
                     {
-                        string name = fileName as string;
-                        dataIni.Section = name;
-                        string path = dataIni.ReadString(Strings.IniName.Pack.KeyPath);
-                        string pathA = dataIni.ReadString(Strings.IniName.Pack.KeyPathInArchive);
-                        string pathD = dataIni.ReadString(Strings.IniName.Pack.KeyPathOfDownload);
-                        string format = dataIni.ReadString(Strings.IniName.Pack.KeyFormat);
+                        string name = section.Name;
+                        string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
+                        string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
+                        string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
+                        string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
                         this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
-                        if (Worker.CancellationPending)
+
+                        if (this.Worker.CancellationPending)
                         {
                             e.Cancel = true;
                             return;
@@ -62,8 +69,6 @@ namespace SWPatcher.Downloading
                     }
                 }
             }
-            else
-                throw new Exception(string.Format("You already have the latest({0} JST) translation files for this language!", Strings.DateToString(this.Language.LastUpdate)));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -79,7 +84,7 @@ namespace SWPatcher.Downloading
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.OnDownloaderProgressChanged(sender, new DownloaderProgressChangedEventArgs(DownloadIndex + 1, SWFiles.Count, Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Name), e));
+            this.OnDownloaderProgressChanged(sender, new DownloaderProgressChangedEventArgs(this.DownloadIndex + 1, this.SWFiles.Count, Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Name), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
@@ -109,40 +114,20 @@ namespace SWPatcher.Downloading
 
         private void DownloadNext()
         {
-            Uri uri = new Uri(Uris.TranslationGitHubHome + this.Language.Lang + '/' + SWFiles[DownloadIndex].PathD);
+            Uri uri = new Uri(Urls.TranslationGitHubHome + this.Language.Lang + '/' + this.SWFiles[this.DownloadIndex].PathD);
             string path = "";
-            if (string.IsNullOrEmpty(SWFiles[DownloadIndex].Path))
-                path = Path.Combine(Paths.PatcherRoot, this.Language.Lang);
-            else
-                path = Path.Combine(Path.GetDirectoryName(Path.Combine(Paths.PatcherRoot, this.Language.Lang, SWFiles[DownloadIndex].Path)), Path.GetFileNameWithoutExtension(SWFiles[DownloadIndex].Path));
-            string directoryDestionation = path;
-            Directory.CreateDirectory(path);
-            string fileDestination = Path.Combine(directoryDestionation, Path.GetFileName(SWFiles[DownloadIndex].PathD));
-            this.Client.DownloadFileAsync(uri, fileDestination);
-        }
 
-        private bool HasNewDownload()
-        {
-            string directory = Path.Combine(Paths.PatcherRoot, this.Language.Lang);
-            if (Directory.Exists(directory))
-            {
-                string filePath = Path.Combine(directory, Strings.IniName.Translation);
-                if (File.Exists(filePath))
-                {
-                    IniReader translationIni = new IniReader(filePath);
-                    string date = translationIni.ReadString(Strings.IniName.Patcher.Section, Strings.IniName.Pack.KeyDate, Strings.DateToString(DateTime.MinValue));
-                    if (this.Language.LastUpdate > Strings.ParseExact(date))
-                        return true;
-                }
-                else
-                    return true;
-            }
+            if (String.IsNullOrEmpty(this.SWFiles[this.DownloadIndex].PathA))
+                path = Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path);
             else
-            {
-                Directory.CreateDirectory(directory);
-                return true;
-            }
-            return false;
+                path = Path.Combine(Path.GetDirectoryName(Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path)), Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Path));
+
+            string directoryDestionation = path;
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            string fileDestination = Path.Combine(directoryDestionation, Path.GetFileName(this.SWFiles[this.DownloadIndex].PathD));
+            this.Client.DownloadFileAsync(uri, fileDestination);
         }
 
         public void Cancel()
@@ -155,6 +140,7 @@ namespace SWPatcher.Downloading
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
                 return;
+
             this.Language = language;
             this.Worker.RunWorkerAsync(isForced);
         }

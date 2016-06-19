@@ -9,13 +9,13 @@ namespace SWPatcher.Helpers
         public static void Log(string message)
         {
             using (StreamWriter sw = new StreamWriter(Strings.FileName.Log, true))
-                sw.Write(string.Format("--------------------\n{0}\n--------------------\n{1}\n", Strings.DateToString(DateTime.Now), message));
+                sw.Write(String.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Methods.DateToString(DateTime.UtcNow), message, System.Environment.NewLine));
         }
 
         public static void Log(Exception ex)
         {
             using (StreamWriter sw = new StreamWriter(Strings.FileName.Log, true))
-                sw.Write(string.Format("--------------------\n{0}\n--------------------\n{1}\n", Strings.DateToString(DateTime.Now), StackTraceExceptionParser(ex)));
+                sw.Write(String.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Methods.DateToString(DateTime.UtcNow), StackTraceExceptionParser(ex), System.Environment.NewLine));
         }
 
         public static string ExeptionParser(Exception ex)
@@ -28,16 +28,7 @@ namespace SWPatcher.Helpers
 
         private static string StackTraceExceptionParser(Exception ex)
         {
-            string result = ex.Message;
-            if (!string.IsNullOrEmpty(ex.StackTrace))
-                result += "\nStackTrace:\n" + ex.StackTrace;
-            if (ex.InnerException != null)
-            {
-                result += "\n\n" + ex.InnerException.Message;
-                if (!string.IsNullOrEmpty(ex.InnerException.StackTrace))
-                    result += "\nInnerStackTrace:\n" + ex.InnerException.StackTrace;
-            }
-            return result;
+            return ex.ToString();
         }
     }
 }

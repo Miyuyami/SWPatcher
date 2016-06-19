@@ -37,6 +37,10 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openSWWebpageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uploadLogToPastebinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
@@ -45,6 +49,7 @@
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonExit = new System.Windows.Forms.Button();
+            this.labelNewTranslations = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -68,9 +73,9 @@
             // 
             this.buttonDownload.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.tableLayoutPanel.SetColumnSpan(this.buttonDownload, 2);
-            this.buttonDownload.Location = new System.Drawing.Point(112, 170);
+            this.buttonDownload.Location = new System.Drawing.Point(112, 171);
             this.buttonDownload.Name = "buttonDownload";
-            this.buttonDownload.Size = new System.Drawing.Size(140, 26);
+            this.buttonDownload.Size = new System.Drawing.Size(140, 24);
             this.buttonDownload.TabIndex = 2;
             this.buttonDownload.Text = "Download Translations";
             this.buttonDownload.UseVisualStyleBackColor = true;
@@ -86,13 +91,14 @@
             this.comboBoxLanguages.Name = "comboBoxLanguages";
             this.comboBoxLanguages.Size = new System.Drawing.Size(140, 21);
             this.comboBoxLanguages.TabIndex = 0;
+            this.comboBoxLanguages.SelectedIndexChanged += new System.EventHandler(this.comboBoxLanguages_SelectedIndexChanged);
             // 
             // notifyIcon
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.notifyIcon.BalloonTipText = "Double click to restore...";
             this.notifyIcon.BalloonTipTitle = "Patcher is hidden here";
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Soul Worker Patcher";
             this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
@@ -101,6 +107,8 @@
             this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolStripMenuItem,
+            this.settingsToolStripMenuItem,
+            this.refreshToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
@@ -111,7 +119,9 @@
             // menuToolStripMenuItem
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.forceStripMenuItem});
+            this.forceStripMenuItem,
+            this.openSWWebpageToolStripMenuItem,
+            this.uploadLogToPastebinToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.menuToolStripMenuItem.Text = "Menu";
@@ -119,13 +129,40 @@
             // forceStripMenuItem
             // 
             this.forceStripMenuItem.Name = "forceStripMenuItem";
-            this.forceStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.forceStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.forceStripMenuItem.Text = "Force Patch";
             this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
             // 
+            // openSWWebpageToolStripMenuItem
+            // 
+            this.openSWWebpageToolStripMenuItem.Name = "openSWWebpageToolStripMenuItem";
+            this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openSWWebpageToolStripMenuItem.Text = "Open SW Webpage";
+            this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.openSWWebpageToolStripMenuItem_Click);
+            // 
+            // uploadLogToPastebinToolStripMenuItem
+            // 
+            this.uploadLogToPastebinToolStripMenuItem.Name = "uploadLogToPastebinToolStripMenuItem";
+            this.uploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.uploadLogToPastebinToolStripMenuItem.Text = "Upload Log to PasteBin";
+            this.uploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.uploadLogToPastebinToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.ForeColor = System.Drawing.Color.Transparent;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.aboutToolStripMenuItem.Text = "About";
@@ -149,6 +186,7 @@
             // toolStripProgressBar
             // 
             this.toolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar.MarqueeAnimationSpeed = 40;
             this.toolStripProgressBar.Maximum = 2147483647;
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -175,18 +213,20 @@
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel.Controls.Add(this.buttonPlay, 0, 3);
-            this.tableLayoutPanel.Controls.Add(this.buttonDownload, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.buttonPlay, 0, 4);
+            this.tableLayoutPanel.Controls.Add(this.buttonDownload, 0, 3);
             this.tableLayoutPanel.Controls.Add(this.comboBoxLanguages, 0, 1);
             this.tableLayoutPanel.Controls.Add(this.pictureBox, 0, 0);
-            this.tableLayoutPanel.Controls.Add(this.buttonExit, 0, 4);
+            this.tableLayoutPanel.Controls.Add(this.buttonExit, 0, 5);
+            this.tableLayoutPanel.Controls.Add(this.labelNewTranslations, 0, 2);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
             this.tableLayoutPanel.Padding = new System.Windows.Forms.Padding(4);
-            this.tableLayoutPanel.RowCount = 5;
+            this.tableLayoutPanel.RowCount = 6;
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 122F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28F));
@@ -217,6 +257,18 @@
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.exit_Click);
             // 
+            // labelNewTranslations
+            // 
+            this.labelNewTranslations.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labelNewTranslations.AutoSize = true;
+            this.labelNewTranslations.BackColor = System.Drawing.Color.Transparent;
+            this.tableLayoutPanel.SetColumnSpan(this.labelNewTranslations, 2);
+            this.labelNewTranslations.ForeColor = System.Drawing.Color.Red;
+            this.labelNewTranslations.Location = new System.Drawing.Point(182, 151);
+            this.labelNewTranslations.Name = "labelNewTranslations";
+            this.labelNewTranslations.Size = new System.Drawing.Size(0, 13);
+            this.labelNewTranslations.TabIndex = 8;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonPlay;
@@ -239,6 +291,7 @@
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.tableLayoutPanel.ResumeLayout(false);
+            this.tableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -262,6 +315,11 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem forceStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openSWWebpageToolStripMenuItem;
+        private System.Windows.Forms.Label labelNewTranslations;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uploadLogToPastebinToolStripMenuItem;
     }
 }
 

@@ -1,0 +1,946 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MadMilkman.Ini</name>
+    </assembly>
+    <members>
+        <member name="T:MadMilkman.Ini.IniCommentStarter">
+            <summary>
+            Defines <see cref="T:MadMilkman.Ini.IniComment">comment's</see> starting character.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniCommentStarter.Semicolon">
+            <summary>
+            Use ';' as <see cref="T:MadMilkman.Ini.IniComment">comment's</see> starting character.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniCommentStarter.Hash">
+            <summary>
+            Use '#' as <see cref="T:MadMilkman.Ini.IniComment">comment's</see> starting character.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniDuplication">
+            <summary>
+            Defines a behaviour for duplicate <see cref="P:MadMilkman.Ini.IniItem.Name"/> occurences.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniDuplication.Allowed">
+            <summary>
+            Allow duplicate names in <see cref="T:MadMilkman.Ini.IniItemCollection`1"/>.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniDuplication.Disallowed">
+            <summary>
+            Disallow duplicate names in <see cref="T:MadMilkman.Ini.IniItemCollection`1"/>.
+            </summary>
+            <remarks>
+            <see cref="T:System.InvalidOperationException"/> is thrown on duplicate name occurence.
+            </remarks>
+        </member>
+        <member name="F:MadMilkman.Ini.IniDuplication.Ignored">
+            <summary>
+            Ignore duplicate names.
+            </summary>
+            <remarks>
+            Prevents adding or inserting an <see cref="T:MadMilkman.Ini.IniItem"/> if its name already exists in <see cref="T:MadMilkman.Ini.IniItemCollection`1"/>.
+            </remarks>
+        </member>
+        <member name="T:MadMilkman.Ini.IniKeyDelimiter">
+            <summary>
+            Defines <see cref="T:MadMilkman.Ini.IniKey">key's</see> name and value delimiter character.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniKeyDelimiter.Equal">
+            <summary>
+            Use '=' as <see cref="T:MadMilkman.Ini.IniKey">key's</see> name and value delimiter character.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniKeyDelimiter.Colon">
+            <summary>
+            Use ':' as <see cref="T:MadMilkman.Ini.IniKey">key's</see> name and value delimiter character.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniSectionWrapper">
+            <summary>
+            Defines <see cref="T:MadMilkman.Ini.IniSection">section's</see> wrapper characters around its name.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniSectionWrapper.SquareBrackets">
+            <summary>
+            Use '[' and ']' as <see cref="T:MadMilkman.Ini.IniSection">section's</see> wrapper characters.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniSectionWrapper.AngleBrackets">
+            <summary>
+            Use '&lt;' and '&gt;' as <see cref="T:MadMilkman.Ini.IniSection">section's</see> wrapper characters.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniSectionWrapper.CurlyBrackets">
+            <summary>
+            Use '{' and '}' as <see cref="T:MadMilkman.Ini.IniSection">section's</see> wrapper characters.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniSectionWrapper.Parentheses">
+            <summary>
+            Use '(' and ')' as <see cref="T:MadMilkman.Ini.IniSection">section's</see> wrapper characters.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniFile">
+            <summary>
+            In-memory representation of an INI file.
+            </summary>
+            <remarks>
+            <para><see cref="T:MadMilkman.Ini.IniFile"/> is a central class of MadMilkman.Ini component.</para>
+            <para>To define an INI file's format use <see cref="T:MadMilkman.Ini.IniOptions"/> object.</para>
+            <para>To load (read) an INI file from a file's path or a stream use <see cref="O:MadMilkman.Ini.IniFile.Load">IniFile.Load</see> methods.</para>
+            <para>To save (write) an INI file to a file's path or a stream use <see cref="O:MadMilkman.Ini.IniFile.Save">IniFile.Save</see> methods.</para>
+            <para>To view INI file's structure representation see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#diagram" target="_self">IniFile's Content Hierarchy Diagram</see>.</para>
+            </remarks>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm" target="_self">Overview</seealso>
+            <seealso href="http://en.wikipedia.org/wiki/INI_file">INI file format on Wikipedia.</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:MadMilkman.Ini.IniFile"/> class.
+            </summary>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.#ctor(MadMilkman.Ini.IniOptions)">
+            <summary>
+            Initializes a new instance of <see cref="T:MadMilkman.Ini.IniFile"/> class.
+            </summary>
+            <param name="options"><see cref="T:MadMilkman.Ini.IniOptions"/> object that defines INI file's format, settings for both <see cref="O:MadMilkman.Ini.IniFile.Load">Load</see> and <see cref="O:MadMilkman.Ini.IniFile.Save">Save</see> methods.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.Load(System.String)">
+            <summary>
+            Loads a file from a path.
+            </summary>
+            <param name="filePath">Path from which to load a file.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.Load(System.IO.Stream)">
+            <summary>
+            Loads a file from a stream.
+            </summary>
+            <param name="fileStream">Stream from which to load a file.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.Load(System.IO.TextReader)">
+            <summary>
+            Loads a file from a reader.
+            </summary>
+            <param name="fileReader">Reader from which to load a file.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.Save(System.String)">
+            <summary>
+            Saves a file to a path.
+            </summary>
+            <param name="filePath">Path to which to save a file.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.Save(System.IO.Stream)">
+            <summary>
+            Saves a file to a stream.
+            </summary>
+            <param name="fileStream">Stream to which to save a file.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniFile.Save(System.IO.TextWriter)">
+            <summary>
+            Saves a file to a writer.
+            </summary>
+            <param name="fileWriter">Writer to which to save a file.</param>
+        </member>
+        <member name="P:MadMilkman.Ini.IniFile.Sections">
+            <summary>
+            Gets file's sections.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniFile.ValueMappings">
+            <summary>
+            Gets the mappings of <see cref="P:MadMilkman.Ini.IniKey.Value"/>s and their results, used in <see cref="O:MadMilkman.Ini.IniKey.TryParseValue"/> methods.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniFile.ValueBinding">
+            <summary>
+            Gets the object that exposes binding operations, which are executed with <see cref="O:MadMilkman.Ini.IniValueBinding.Bind"/> methods.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniItemCollection`1">
+            <summary>
+            Represents a base generic class for INI content item collections, <see cref="T:MadMilkman.Ini.IniSectionCollection"/> and <see cref="T:MadMilkman.Ini.IniKeyCollection"/>.
+            </summary>
+            <typeparam name="T"><see cref="T:MadMilkman.Ini.IniItem"/> derived type.</typeparam>
+            <seealso cref="T:MadMilkman.Ini.IniItem"/>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.Add(`0)">
+            <summary>
+            Adds an item to the end of this collection.
+            </summary>
+            <param name="item">Item to add to this collection.</param>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not added</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.Clear">
+            <summary>
+            Removes all items from this collection.
+            </summary>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.Contains(`0)">
+            <summary>
+            Determines whether an item is in this collection.
+            </summary>
+            <param name="item">Item to locate in this collection.</param>
+            <returns><see langword="true"/> if the specified item is in the collection.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.Contains(System.String)">
+            <summary>
+            Determines whether an item is in this collection.
+            </summary>
+            <param name="name">Name of the item to locate in this collection.</param>
+            <returns><see langword="true"/> if the item with specified name is in the collection.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Shallow copies the items of this collection to an array.
+            </summary>
+            <param name="array">One-dimensional array that is the destination of the items copied from this collection.</param>
+            <param name="arrayIndex">Zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.IndexOf(`0)">
+            <summary>
+            Searches for the specified item and returns the zero-based index of the first occurrence within this collection.
+            </summary>
+            <param name="item">Item to locate in this collection.</param>
+            <returns>Index of the first occurrence of specified item in the collection.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.IndexOf(System.String)">
+            <summary>
+            Searches for the specified item and returns the zero-based index of the first occurrence within this collection.
+            </summary>
+            <param name="name">Name of the item to locate in this collection.</param>
+            <returns>Index of the first occurrence of the item with specified name in the collection.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts an item to this collection at the specified index.
+            </summary>
+            <param name="index">Zero-based index at which item should be inserted.</param>
+            <param name="item">Item to insert to this collection.</param>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not inserted</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.Remove(`0)">
+            <summary>
+            Removes the first occurrence of specific item from this collection.
+            </summary>
+            <param name="item">Item to remove from this collection.</param>
+            <returns><see langword="true"/> if the specified item is removed from the collection.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.Remove(System.String)">
+            <summary>
+            Removes the first occurrence of specific item from this collection.
+            </summary>
+            <param name="name">Name of the item to remove from this collection.</param>
+            <returns><see langword="true"/> if the item with specified name is removed from the collection.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes an item at the specified index from this collection.
+            </summary>
+            <param name="index">Zero-based index at which item should be inserted.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns><see cref="T:System.Collections.Generic.IEnumerator`1"/> object that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniItemCollection`1.System#Collections#IEnumerable#GetEnumerator">
+            <exclude/>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItemCollection`1.ParentFile">
+            <exclude/>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItemCollection`1.Count">
+            
+            <summary>
+            Gets the number of items in this collection.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItemCollection`1.Item(System.Int32)">
+            <summary>
+            Gets or sets the item at the specified index.
+            </summary>
+            <param name="index">Zero-based index of the item to get or set.</param>
+            <remarks>
+            If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and value is a duplicate item, has an existing name in this collection, then this value <b>is ignored</b>.
+            </remarks>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItemCollection`1.Item(System.String)">
+            <summary>
+            Gets the first item of the specified name.
+            </summary>
+            <param name="name">Name of the item to get.</param>
+            <remarks>If item with the specified name doesn't exist a <see langword="null"/> value is returned.</remarks>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItemCollection`1.Item(System.String[])">
+            <summary>
+            Gets the first items of the specified names.
+            </summary>
+            <param name="names">Names of the items to get.</param>
+            <remarks>If item with any specified name doesn't exist a <see langword="null"/> value is returned in its place.</remarks>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItemCollection`1.System#Collections#Generic#ICollection{T}#IsReadOnly">
+            <exclude/>
+        </member>
+        <member name="T:MadMilkman.Ini.IniKeyCollection">
+            <summary>
+            Represents a collection of <see cref="T:MadMilkman.Ini.IniKey"/> items.
+            </summary>
+            <seealso cref="T:MadMilkman.Ini.IniKey"/>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKeyCollection.Add(System.String)">
+            <summary>
+            Adds an item to the end of this collection.
+            </summary>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniKey"/> to add to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniKey"/> that was added to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not added</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKeyCollection.Add(System.Collections.Generic.KeyValuePair{System.String,System.String})">
+            <summary>
+            Adds an item to the end of this collection.
+            </summary>
+            <param name="nameValuePair">The key's data, pair of key's name and key's value, to add to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniKey"/> that was added to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not added</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKeyCollection.Add(System.String,System.String)">
+            <summary>
+            Adds an item to the end of this collection.
+            </summary>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniKey"/> to add to this collection.</param>
+            <param name="value">Value of the <see cref="T:MadMilkman.Ini.IniKey"/> to add to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniKey"/> that was added to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not added</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKeyCollection.Insert(System.Int32,System.String)">
+            <summary>
+            Inserts an item to this collection at the specified index.
+            </summary>
+            <param name="index">Zero-based index at which item should be inserted.</param>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniKey"/> to insert to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniKey"/> that was inserted to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not inserted</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKeyCollection.Insert(System.Int32,System.Collections.Generic.KeyValuePair{System.String,System.String})">
+            <summary>
+            Inserts an item to this collection at the specified index.
+            </summary>
+            <param name="index">Zero-based index at which item should be inserted.</param>
+            <param name="nameValuePair">The key's data, pair of key's name and key's value, to insert to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniKey"/> that was inserted to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not inserted</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKeyCollection.Insert(System.Int32,System.String,System.String)">
+            <summary>
+            Inserts an item to this collection at the specified index.
+            </summary>
+            <param name="index">Zero-based index at which item should be inserted.</param>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniKey"/> to insert to this collection.</param>
+            <param name="value">Value of the <see cref="T:MadMilkman.Ini.IniKey"/> to insert to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniKey"/> that was inserted to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not inserted</b>.</para>
+    </remarks>
+        </member>
+        <member name="T:MadMilkman.Ini.IniComment">
+            <summary>
+            Represents a comment object used by <see cref="T:MadMilkman.Ini.IniItem"/> objects, <see cref="T:MadMilkman.Ini.IniSection"/> and <see cref="T:MadMilkman.Ini.IniKey"/>.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniComment.EmptyLinesBefore">
+            <summary>
+            Gets or sets the amount of empty lines before this <see cref="P:MadMilkman.Ini.IniComment.Text">comment's text</see>.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniComment.LeftIndentation">
+            <summary>
+            Gets or sets the amount of whitespace characters before this <see cref="P:MadMilkman.Ini.IniComment.Text">comment's text</see>.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniComment.Text">
+            <summary>
+            Gets or sets a text of this <see cref="T:MadMilkman.Ini.IniComment"/> instance.
+            </summary>
+            <remarks>
+            <para>For <see cref="P:MadMilkman.Ini.IniItem.LeadingComment">LeadingComment</see> text should not contain new line characters.
+            If it does, they will be replaced with a space characters.</para>
+            </remarks>
+        </member>
+        <member name="T:MadMilkman.Ini.IniItem">
+            <summary>
+            Represents a base class for INI content items, <see cref="T:MadMilkman.Ini.IniSection"/> and <see cref="T:MadMilkman.Ini.IniKey"/>.
+            </summary>
+            <remarks>
+            <para>All INI items share the same content like <see cref="P:MadMilkman.Ini.IniItem.Name"/>, <see cref="P:MadMilkman.Ini.IniItem.LeadingComment"/> and <see cref="P:MadMilkman.Ini.IniItem.TrailingComment"/>.
+            These properties are defined on an <see cref="T:MadMilkman.Ini.IniItem"/> class, a base class for INI content items.</para>
+            </remarks>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItem.Name">
+            <summary>
+            Gets and sets the name of the current <see cref="T:MadMilkman.Ini.IniItem"/>.
+            </summary>
+            <remarks>
+            When setting <see cref="P:MadMilkman.Ini.IniItem.Name"/> the value is verified by the item's <see cref="T:MadMilkman.Ini.IniDuplication"/> rule.
+            </remarks>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItem.LeftIndentation">
+            <summary>
+            Gets or sets the amount of whitespace characters before this <see cref="P:MadMilkman.Ini.IniItem.Name">item's name</see>.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItem.LeadingComment">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniComment"/> object that represents a comment that follows this <see cref="T:MadMilkman.Ini.IniItem"/> on the same line.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItem.TrailingComment">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniComment"/> object that represents a comments that occur before this <see cref="T:MadMilkman.Ini.IniItem"/>.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniItem.ParentFile">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniFile"/> to which this <see cref="T:MadMilkman.Ini.IniItem"/> belongs to.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniKey">
+            <summary>
+            Represents a key item of the INI file with name and value content.
+            </summary>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.#ctor(MadMilkman.Ini.IniFile,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniKey"/> class.
+            </summary>
+            <param name="parentFile">The owner file.</param>
+            <param name="name">The key's name.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.#ctor(MadMilkman.Ini.IniFile,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniKey"/> class.
+            </summary>
+            <param name="parentFile">The owner file.</param>
+            <param name="name">The key's name.</param>
+            <param name="value">The key's value.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.#ctor(MadMilkman.Ini.IniFile,System.Collections.Generic.KeyValuePair{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniKey"/> class.
+            </summary>
+            <param name="parentFile">The owner file.</param>
+            <param name="nameValuePair">The key's data, pair of key's name and key's value.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.Copy">
+            <summary>
+            Copies this <see cref="T:MadMilkman.Ini.IniKey"/> instance.
+            </summary>
+            <returns>Copied <see cref="T:MadMilkman.Ini.IniKey"/>.</returns>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.Copy(MadMilkman.Ini.IniFile)">
+            <summary>
+            Copies this <see cref="T:MadMilkman.Ini.IniKey"/> instance and sets copied instance's <see cref="P:MadMilkman.Ini.IniItem.ParentFile">ParentFile</see>.
+            </summary>
+            <param name="destinationFile">Copied key's parent file.</param>
+            <returns>Copied <see cref="T:MadMilkman.Ini.IniKey"/> that belongs to a specified <see cref="T:MadMilkman.Ini.IniFile"/>.</returns>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.IsSupportedValueType(System.Type)">
+            <summary>
+            Indicates whether the <see cref="P:MadMilkman.Ini.IniKey.Value"/> can be converted to specified type.
+            </summary>
+            <param name="type">Type of the object to convert the <see cref="P:MadMilkman.Ini.IniKey.Value"/> to.</param>
+            <returns><see langword="true"/> if the specified type is supported.</returns>
+            <remarks>
+            Currently supported types are:
+            <list type="bullet">
+            <item><description>System.Boolean</description></item>
+            <item><description>System.Byte</description></item>
+            <item><description>System.SByte</description></item>
+            <item><description>System.Int16</description></item>
+            <item><description>System.UInt16</description></item>
+            <item><description>System.Int32</description></item>
+            <item><description>System.UInt32</description></item>
+            <item><description>System.Int64</description></item>
+            <item><description>System.UInt64</description></item>
+            <item><description>System.Char</description></item>
+            <item><description>System.Single</description></item>
+            <item><description>System.Double</description></item>
+            <item><description>System.Decimal</description></item>
+            <item><description>System.DateTime</description></item>
+            <item><description>System.TimeSpan</description></item>
+            <item><description>System.Enum</description></item>
+            <item><description>System.String</description></item>
+            </list>
+            Additionally both Array and List of the above types are supported.
+            </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.TryParseValue``1(``0@)">
+            <summary>
+            Converts the <see cref="P:MadMilkman.Ini.IniKey.Value"/> to an instance of the specified type.
+            </summary>
+            <param name="result">Uninitialized instance of a specific type which will hold the converted value if the conversion succeeds.</param>
+            <typeparam name="T">Type of the object to convert the <see cref="P:MadMilkman.Ini.IniKey.Value"/> to.</typeparam>
+            <returns>Value that indicates whether the conversion succeeded.</returns>
+            <remarks>
+      <para>For supported types see the remarks of <see cref="M:MadMilkman.Ini.IniKey.IsSupportedValueType(System.Type)"/> method.</para>
+      <para>Mapped value results in <see cref="P:MadMilkman.Ini.IniFile.ValueMappings"/> have priority over parsing the value.</para>
+    </remarks><seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.TryParseValue``1(``0[]@)">
+            <summary>
+            Converts the <see cref="P:MadMilkman.Ini.IniKey.Value"/> to an array of the specified type.
+            </summary>
+            <param name="results">Uninitialized array of a specific type which will hold the converted values if the conversion succeeds.</param>
+            <typeparam name="T">Type of the objects in array to convert the <see cref="P:MadMilkman.Ini.IniKey.Value"/> to.</typeparam>
+            <returns>Value that indicates whether the conversion succeeded.</returns>
+            <remarks>
+      <para>For supported types see the remarks of <see cref="M:MadMilkman.Ini.IniKey.IsSupportedValueType(System.Type)"/> method.</para>
+      <para>Mapped value results in <see cref="P:MadMilkman.Ini.IniFile.ValueMappings"/> have priority over parsing the value.</para>
+    </remarks><seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniKey.TryParseValue``1(System.Collections.Generic.List{``0}@)">
+            <summary>
+            Converts the <see cref="P:MadMilkman.Ini.IniKey.Value"/> to a list of the specified type.
+            </summary>
+            <param name="results">Uninitialized list of a specific type which will hold the converted values if the conversion succeeds.</param>
+            <typeparam name="T">Type of the objects in list to convert the <see cref="P:MadMilkman.Ini.IniKey.Value"/> to.</typeparam>
+            <returns>Value that indicates whether the conversion succeeded.</returns>
+            <remarks>
+      <para>For supported types see the remarks of <see cref="M:MadMilkman.Ini.IniKey.IsSupportedValueType(System.Type)"/> method.</para>
+      <para>Mapped value results in <see cref="P:MadMilkman.Ini.IniFile.ValueMappings"/> have priority over parsing the value.</para>
+    </remarks><seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
+        </member>
+        <member name="P:MadMilkman.Ini.IniKey.Value">
+            <summary>
+            Gets and sets <see cref="T:MadMilkman.Ini.IniKey"/> value.
+            </summary>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
+        </member>
+        <member name="P:MadMilkman.Ini.IniKey.ParentCollection">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniKeyCollection"/> to which this <see cref="T:MadMilkman.Ini.IniKey"/> belongs to.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniKey.ParentSection">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniSection"/> to which this <see cref="T:MadMilkman.Ini.IniKey"/> belongs to.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniSection">
+            <summary>
+            Represents a section item of the INI file with name and keys content.
+            </summary>
+        </member>
+        <member name="F:MadMilkman.Ini.IniSection.GlobalSectionName">
+            <summary>
+            Represents a section name which is used to define a global section, used for storing first keys series that don't belong to any section.
+            </summary>
+            <remarks>
+            <para>
+            If a section with this name is located as a first file's section then its name and comments are ignored.
+            If a section with this name isn't located as first file's section then it will be written with <c>MADMILKMAN_INI_FILE_GLOBAL_SECTION</c> name.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.#ctor(MadMilkman.Ini.IniFile,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniSection"/> class.
+            </summary>
+            <param name="parentFile">The owner file.</param>
+            <param name="name">The section's name.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.#ctor(MadMilkman.Ini.IniFile,System.String,MadMilkman.Ini.IniKey[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniSection"/> class.
+            </summary>
+            <param name="parentFile">The owner file.</param>
+            <param name="name">The section's name.</param>
+            <param name="keys">The section's keys.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.#ctor(MadMilkman.Ini.IniFile,System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniSection"/> class.
+            </summary>
+            <param name="parentFile">The owner file.</param>
+            <param name="name">The section's name.</param>
+            <param name="nameValuePairs">The section's keys data, pairs of key's name and key's value.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.#ctor(MadMilkman.Ini.IniFile,System.String,System.Collections.Generic.IEnumerable{MadMilkman.Ini.IniKey})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniSection"/> class.
+            </summary>
+            <param name="parentFile">The owner file.</param>
+            <param name="name">The section's name.</param>
+            <param name="keys">The section's keys.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.Copy">
+            <summary>
+            Copies this <see cref="T:MadMilkman.Ini.IniSection"/> instance.
+            </summary>
+            <returns>Copied <see cref="T:MadMilkman.Ini.IniSection"/>.</returns>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.Copy(MadMilkman.Ini.IniFile)">
+            <summary>
+            Copies this <see cref="T:MadMilkman.Ini.IniSection"/> instance and sets copied instance's <see cref="P:MadMilkman.Ini.IniItem.ParentFile">ParentFile</see>.
+            </summary>
+            <param name="destinationFile">Copied section's parent file.</param>
+            <returns>Copied <see cref="T:MadMilkman.Ini.IniSection"/> that belongs to a specified <see cref="T:MadMilkman.Ini.IniFile"/>.</returns>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.Serialize``1(``0)">
+            <summary>
+            Serializes the specified object into this <see cref="T:MadMilkman.Ini.IniSection"/>.
+            </summary>
+            <typeparam name="T">The type of serialized object.</typeparam>
+            <param name="source">The object to serialize.</param>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#serializing" target="_self">IniSection's Object Serialization</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSection.Deserialize``1">
+            <summary>
+            Deserializes this <see cref="T:MadMilkman.Ini.IniSection"/> into an object of specified type.
+            </summary>
+            <typeparam name="T">The type of deserialized object.</typeparam>
+            <returns>The object being deserialized.</returns>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#serializing" target="_self">IniSection's Object Serialization</seealso>
+        </member>
+        <member name="P:MadMilkman.Ini.IniSection.Keys">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniSection">section's</see> key collection.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniSection.ParentCollection">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniSectionCollection"/> to which this <see cref="T:MadMilkman.Ini.IniSection"/> belongs to.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniOptions">
+            <summary>
+            Represents a class that defines INI file's format, stores properties used for both reading and writing a file.
+            </summary>
+            <remarks>
+            <para>After an instance of this class is passed to an <see cref="T:MadMilkman.Ini.IniFile"/> constructor, further changes on that instance's properties will have no effect.</para>
+            <list type="table">
+            <listheader>
+            <term>Property</term>
+            <description>Default Value</description>
+            </listheader>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.CommentStarter">CommentStarter</see></term>
+            <description><see cref="F:MadMilkman.Ini.IniCommentStarter.Semicolon"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.CommentStarter">Compression</see></term>
+            <description><see langword="false"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.CommentStarter">EncryptionPassword</see></term>
+            <description><see langword="null"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.Encoding">Encoding</see></term>
+            <description><see cref="P:System.Text.Encoding.ASCII">Encoding.ASCII</see></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.KeyDelimiter">KeyDelimiter</see></term>
+            <description><see cref="F:MadMilkman.Ini.IniKeyDelimiter.Equal"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.KeyDuplicate">KeyDuplicate</see></term>
+            <description><see cref="F:MadMilkman.Ini.IniDuplication.Allowed"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.KeyNameCaseSensitive">KeyNameCaseSensitive</see></term>
+            <description><see langword="false"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.KeySpaceAroundDelimiter">KeySpaceAroundDelimiter</see></term>
+            <description><see langword="false"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.SectionDuplicate">SectionDuplicate</see></term>
+            <description><see cref="F:MadMilkman.Ini.IniDuplication.Allowed"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.SectionNameCaseSensitive">SectionNameCaseSensitive</see></term>
+            <description><see langword="false"/></description>
+            </item>
+            <item>
+            <term><see cref="P:MadMilkman.Ini.IniOptions.SectionWrapper">SectionWrapper</see></term>
+            <description><see cref="F:MadMilkman.Ini.IniSectionWrapper.SquareBrackets"/></description>
+            </item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MadMilkman.Ini.IniOptions"/> class.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.Encoding">
+            <summary>
+            Gets or sets encoding for reading and writing an INI file.
+            </summary>
+            <remarks>
+            Value should not be <see langword="null"/>, if it is then a default <see cref="P:System.Text.Encoding.ASCII">Encoding.ASCII</see> value will be used.
+            </remarks>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.CommentStarter">
+            <summary>
+            Gets or sets comments starting character.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.Compression">
+            <summary>
+            <para>Gets or sets a value indicating if file's size is reduced.</para>
+            <para>If <see langword="true"/> file is decompressed on Load and compressed on Save.</para>
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.EncryptionPassword">
+            <summary>
+            <para>Gets or sets an INI file's protection password.</para>
+            <para>File is decrypted on Load and encrypted on Save if a password is not <see langword="null"/> or <see cref="F:System.String.Empty"/>.</para>
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.KeyDelimiter">
+            <summary>
+            Gets or sets keys name and value delimiter character.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.KeyDuplicate">
+            <summary>
+            Gets or sets a value indicating whether keys with same name are allowed, disallowed or ignored.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.KeyNameCaseSensitive">
+            <summary>
+            Gets or sets a value indicating whether keys name are case sensitive.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.KeySpaceAroundDelimiter">
+            <summary>
+            Gets or sets a value indicating whether space is written around the keys delimiter.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.SectionDuplicate">
+            <summary>
+            Gets or sets a value indicating whether sections with same name are allowed, disallowed or ignored.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.SectionNameCaseSensitive">
+            <summary>
+            Gets or sets a value indicating whether sections name are case sensitive.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniOptions.SectionWrapper">
+            <summary>
+            Gets or sets wrapper characters of sections name.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniSectionCollection">
+            <summary>
+            Represents a collection of <see cref="T:MadMilkman.Ini.IniSection"/> items.
+            </summary>
+            <seealso cref="T:MadMilkman.Ini.IniSection"/>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSectionCollection.Add(System.String)">
+            <summary>
+            Adds an item to the end of this collection.
+            </summary>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniSection"/> to add to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniSection"/> that was added to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not added</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSectionCollection.Add(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Adds an item to the end of this collection.
+            </summary>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniSection"/> to add to this collection.</param>
+            <param name="nameValuePairs">The section's keys data, pairs of key's name and key's value, to add to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniSection"/> that was added to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not added</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSectionCollection.Insert(System.Int32,System.String)">
+            <summary>
+            Inserts an item to this collection at the specified index.
+            </summary>
+            <param name="index">Zero-based index at which item should be inserted.</param>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniSection"/> to insert to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniSection"/> that was inserted to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not inserted</b>.</para>
+    </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSectionCollection.Insert(System.Int32,System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Inserts an item to this collection at the specified index.
+            </summary>
+            <param name="index">Zero-based index at which item should be inserted.</param>
+            <param name="name">Name of the <see cref="T:MadMilkman.Ini.IniSection"/> to insert to this collection.</param>
+            <param name="nameValuePairs">The section's keys data, pairs of key's name and key's value, to insert to this collection.</param>
+            <returns><see cref="T:MadMilkman.Ini.IniSection"/> that was inserted to this collection.</returns>
+            <remarks>
+      <para>If item duplicates are <see cref="F:MadMilkman.Ini.IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not inserted</b>.</para>
+    </remarks>
+        </member>
+        <member name="T:MadMilkman.Ini.IniSerializationAttribute">
+            <summary>
+            Indicates the behavior of public property when serializing or deserializing the object that contains it.
+            </summary>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSerializationAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the IniSerializationAttribute class and specifies the <see cref="T:MadMilkman.Ini.IniKey"/>'s name.
+            </summary>
+            <param name="alias">The name of the generated <see cref="T:MadMilkman.Ini.IniKey"/>.</param>
+        </member>
+        <member name="M:MadMilkman.Ini.IniSerializationAttribute.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the IniSerializationAttribute class and specifies if serialization is ignored.
+            </summary>
+            <param name="ignore">The value indicating whether serialization is ignored.</param>
+        </member>
+        <member name="P:MadMilkman.Ini.IniSerializationAttribute.Alias">
+            <summary>
+            Gets the <see cref="T:MadMilkman.Ini.IniKey"/> name of serialized the property.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniSerializationAttribute.Ignore">
+            <summary>
+            Gets the value indicating whether serialization is ignored.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniValueBinding">
+            <summary>
+            Represents a class that is used for binding operations, an operation in which the <see cref="T:MadMilkman.Ini.IniKey">placeholder keys</see> values are replaced with an internal or external data.
+            </summary>
+            <remarks>
+            <para><see cref="T:MadMilkman.Ini.IniValueBinding"/> can be accessed through <see cref="P:MadMilkman.Ini.IniFile.ValueBinding"/> property.</para>
+            <para>Binding can be executed with internal data source or with a provided external data source.</para>
+            <para>For more information see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</see>.</para>
+            </remarks>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniValueBinding.Bind">
+            <summary>
+            Executes a binding operation with internal data source.
+            </summary>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniValueBinding.Bind(System.Object)">
+            <summary>
+            Executes a binding operation with external data source.
+            </summary>
+            <param name="dataSource">The binding data source.</param>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniValueBinding.Bind(System.Object,System.String)">
+            <summary>
+            Executes a binding operation with external data source, only on specified section.
+            </summary>
+            <param name="dataSource">The binding data source.</param>
+            <param name="sectionName">The <see cref="T:MadMilkman.Ini.IniSection"/>'s name.</param>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
+        </member>
+        <member name="E:MadMilkman.Ini.IniValueBinding.Binding">
+            <summary>
+            Occurs when a placeholder is binding with data source value and can be used to customize the binding operation.
+            </summary>
+        </member>
+        <member name="T:MadMilkman.Ini.IniValueBindingEventArgs">
+            <summary>
+            Provides data for <see cref="E:MadMilkman.Ini.IniValueBinding.Binding"/> event.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniValueBindingEventArgs.PlaceholderName">
+            <summary>
+            Gets the placeholder's name.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniValueBindingEventArgs.PlaceholderKey">
+            <summary>
+            Gets the placeholder's <see cref="T:MadMilkman.Ini.IniKey"/>.
+            </summary>
+        </member>
+        <member name="P:MadMilkman.Ini.IniValueBindingEventArgs.Value">
+            <summary>
+            Gets or sets the data source value that will replace the placeholder.
+            </summary>
+            <value>
+            The data source value that will replace the placeholder, if it's not <see langword="null"/>.
+            </value>
+        </member>
+        <member name="P:MadMilkman.Ini.IniValueBindingEventArgs.IsValueFound">
+            <summary>
+            Gets a value indicating whether value was found in the data source.
+            </summary>
+            <value>
+            <see langword="true"/> if value was found in the data source.
+            </value>
+        </member>
+        <member name="T:MadMilkman.Ini.IniValueMappings">
+            <summary>
+            Represents a class of mapped <see cref="P:MadMilkman.Ini.IniKey.Value"/>s and their results, used in <see cref="O:MadMilkman.Ini.IniKey.TryParseValue"/> methods.
+            </summary>
+            <remarks>
+            <para><see cref="T:MadMilkman.Ini.IniValueMappings"/> can be accessed through <see cref="P:MadMilkman.Ini.IniFile.ValueMappings"/> property.</para>
+            <para>Mapped value results have priority over parsing the value.</para>
+            <para>For more information see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</see>.</para>
+            </remarks>
+            <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
+        </member>
+        <member name="M:MadMilkman.Ini.IniValueMappings.Add``1(System.String,``0)">
+            <summary>
+            Adds a new mapping of <see cref="P:MadMilkman.Ini.IniKey.Value"/> to resulting object of parse methods.
+            </summary>
+            <param name="value">The key's value.</param>
+            <param name="mappedResult">The object that represents parsed <see cref="P:MadMilkman.Ini.IniKey.Value"/>.</param>
+            <typeparam name="T">Type of the object that represents parsed <see cref="P:MadMilkman.Ini.IniKey.Value"/>.</typeparam>
+            <remarks>
+            <para>The key's value cannot be <see langword="null"/>.</para>
+            <para>The mapped result's type must be one of the supported types for parsing, see the remarks of <see cref="M:MadMilkman.Ini.IniKey.IsSupportedValueType(System.Type)"/> method.</para>
+            <para>Collection cannot contain multiple entries of same key's value, value comparison is case-insensitive.</para>
+            </remarks>
+        </member>
+        <member name="M:MadMilkman.Ini.IniValueMappings.Contains(System.String)">
+            <summary>
+            Determines whether the collection contains a mapping for a specified key's value.
+            </summary>
+            <param name="value">The key's value to locate in the collection.</param>
+            <returns><see langword="true"/> if the collection contains a mapping for a specified key's value.</returns>
+        </member>
+        <member name="M:MadMilkman.Ini.IniValueMappings.Remove(System.String)">
+            <summary>
+            Removes a mapping for a specified key's value in the collection.
+            </summary>
+            <param name="value">The key's value to remove in the collection.</param>
+            <returns><see langword="true"/> if a mapping for a specified key's value is successfully found and removed.</returns>
+        </member>
+    </members>
+</doc>

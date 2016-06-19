@@ -1,18 +1,23 @@
-﻿using System;
-using System.Globalization;
+﻿using SWPatcher.Properties;
 
 namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
     {
-        public static class FileExtentionName
+        public const string PasteBinDevKey = "2e5bee04f7455774443dd399934494bd";
+        public const string PasteBinUsername = "SWPatcher";
+        public const string PasteBinPassword = "pIIrwSL8lNJOjPhW";
+        public static string LanguageName
         {
-            public const string V = ".v";
-            public const string Txt = ".txt";
-            public const string Res = ".res";
-            public const string Exe = ".exe";
-            public const string Ini = ".ini";
-            public const string Zip = ".zip";
+            get
+            {
+                return Settings.Default.LanguageName;
+            }
+            set
+            {
+                Settings.Default.LanguageName = value;
+                Settings.Default.Save();
+            }
         }
 
         public static class FileName
@@ -35,7 +40,7 @@ namespace SWPatcher.Helpers.GlobalVar
             public const string Translation = "Translation.ini";
             public const string LanguagePack = "LanguagePacks.ini";
             public const string TranslationPackData = "TranslationPackData.ini";
-            public const string OtherTranslationPackData = "OtherTranslationPackData.ini";
+            public const string BytesToPatch = "Sw100BytesToPatch.ini";
 
             public static class Ver
             {
@@ -58,13 +63,21 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string KeyPathOfDownload = "path_d";
                 public const string KeyFormat = "format";
             }
+
+            public static class PatchBytes
+            {
+                public const string KeyOriginal = "original";
+                public const string KeyPatch = "patch";
+            }
         }
 
         public static class FormText
         {
+            public const string NewTranslations = "New translations for {0} - ({1})";
             public const string Download = "Download Translations";
             public const string Play = "Ready To Play!";
             public const string Cancel = "Cancel";
+            public const string Cancelling = "Cancelling...";
 
             public static class Status
             {
@@ -75,17 +88,8 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string WaitClient = "Waiting for client...";
                 public const string ApplyFiles = "Applying files...";
                 public const string WaitClose = "Waiting for client termination...";
+                public const string PatchingExe = "Patching .exe...";
             }
-        }
-
-        public static DateTime ParseExact(string date)
-        {
-            return DateTime.ParseExact(date, "dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
-        }
-
-        public static string DateToString(DateTime date)
-        {
-            return date.ToString("dd/MMM/yyyy h:mm tt", CultureInfo.InvariantCulture);
         }
     }
 }

@@ -26,12 +26,48 @@ namespace SWPatcher.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SoulWorkerDirectory {
+        public string SoulworkerDirectory {
             get {
-                return ((string)(this["SoulWorkerDirectory"]));
+                return ((string)(this["SoulworkerDirectory"]));
             }
             set {
-                this["SoulWorkerDirectory"] = value;
+                this["SoulworkerDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LanguageName {
+            get {
+                return ((string)(this["LanguageName"]));
+            }
+            set {
+                this["LanguageName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PatcherWorkingDirectory {
+            get {
+                return ((string)(this["PatcherWorkingDirectory"]));
+            }
+            set {
+                this["PatcherWorkingDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool WantToPatchSoulworkerExe {
+            get {
+                return ((bool)(this["WantToPatchSoulworkerExe"]));
+            }
+            set {
+                this["WantToPatchSoulworkerExe"] = value;
             }
         }
     }

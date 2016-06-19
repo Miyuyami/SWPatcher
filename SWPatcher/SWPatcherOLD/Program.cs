@@ -1,57 +1,67 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using SWPatcher.Forms;
+using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVar;
+using System.Security.Principal;
 
 namespace SWPatcher
 {
     static class Program
     {
-        private static string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
-        private static string mutexId = string.Format("Global\\{{{0}}}", appGuid);
-        private static Mutex mutex = null;
-
-        private static bool IsAppAlreadyRunning()
-        {
-            bool createdNew;
-            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
-            var securitySettings = new MutexSecurity();
-            securitySettings.AddAccessRule(allowEveryoneRule);
-            mutex = new Mutex(false, mutexId, out createdNew, securitySettings);
-            return !mutex.WaitOne(TimeSpan.Zero, true);
-        }
-
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-            if (IsAppAlreadyRunning())
-                return;
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-            Directory.SetCurrentDirectory(SWPatcher.Helpers.GlobalVar.Paths.PatcherRoot);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            
+            if (!Directory.Exists(UserSettings.PatcherPath))
+                UserSettings.PatcherPath = "";
+            Directory.SetCurrentDirectory(UserSettings.PatcherPath);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
-            Application.Run(new MainForm());
-            mutex.ReleaseMutex();
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+
+            var controller = new SingleInstanceController();
+            controller.Run(Environment.GetCommandLineArgs());
         }
 
-        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            byte[] bytes = null;
-            string resourceName = "SWPatcher.Ionic.Zip.dll";
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            using (var stream = currentAssembly.GetManifestResourceStream(resourceName))
+            Error.Log(e.ExceptionObject as Exception);
+            MsgBox.Error(Error.ExeptionParser(e.ExceptionObject as Exception));
+
+            Application.Exit();
+        }
+
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Error.Log(e.Exception);
+            MsgBox.Error(Error.ExeptionParser(e.Exception));
+
+            Application.Exit();
+        }
+
+        private class SingleInstanceController : Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase
+        {
+            public SingleInstanceController()
             {
-                bytes = new byte[(int)stream.Length];
-                stream.Read(bytes, 0, (int)stream.Length);
+                this.IsSingleInstance = true;
+                this.StartupNextInstance += new Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventHandler(SingleInstanceController_StartupNextInstance);
             }
 
-            return Assembly.Load(bytes);
+            private void SingleInstanceController_StartupNextInstance(object sender, Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs e)
+            {
+                var mainForm = this.MainForm as SWPatcher.Forms.MainForm;
+                mainForm.RestoreFromTray();
+            }
+
+            protected override void OnCreateMainForm()
+            {
+                this.MainForm = new SWPatcher.Forms.MainForm();
+            }
         }
     }
 }

@@ -27,8 +27,8 @@
     <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
-    <ProductName>Soulworker Patcher</ProductName>
-    <PublisherName>SoulworkerHQ</PublisherName>
+    <ProductName>Soulworker Test Patcher</ProductName>
+    <PublisherName>SoulworkerHQ Test</PublisherName>
     <MinimumRequiredVersion>2.1.2.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>

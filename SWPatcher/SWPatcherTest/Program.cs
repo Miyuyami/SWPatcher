@@ -14,6 +14,8 @@ namespace SWPatcher
         private static void Main()
         {
             string[] args = Environment.GetCommandLineArgs();
+            for (int i = 0; i < args.Length; i++)
+                MsgBox.Success(String.Format("args[{0}]={1}", i, args[i]));
 
             if (!IsRunAsAdministrator())
                 Methods.RestartAsAdmin(new string[] { UserSettings.ConfigPath });

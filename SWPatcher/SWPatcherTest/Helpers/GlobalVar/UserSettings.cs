@@ -66,10 +66,9 @@ namespace SWPatcher.Helpers.GlobalVar
             }
             set
             {
+                AppDomain.CurrentDomain.SetupInformation.ConfigurationFile = value;
                 if (File.Exists(value))
                     AppDomain.CurrentDomain.SetupInformation.SetConfigurationBytes(File.ReadAllBytes(value));
-
-                AppDomain.CurrentDomain.SetupInformation.ConfigurationFile = value;
             }
         }
     }

@@ -381,5 +381,20 @@ namespace SWPatcher.Helpers
                 File.WriteAllBytes(gameExePath, resultBytes);
             }
         }
+
+        public static void RestartAsAdmin()
+        {
+            System.Diagnostics.Process currentproce = System.Diagnostics.Process.GetCurrentProcess();
+            System.Diagnostics.Process theproce = new System.Diagnostics.Process();
+
+            theproce.StartInfo.Arguments = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+            theproce.StartInfo.FileName = currentproce.MainModule.FileName;
+            currentproce.Close();
+            theproce.StartInfo.Verb = "runas";
+            theproce.StartInfo.UseShellExecute = true;
+            theproce.Start();
+            theproce.Close();
+            System.Environment.Exit(0);
+        }
     }
 }

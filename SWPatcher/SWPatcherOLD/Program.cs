@@ -24,8 +24,28 @@ namespace SWPatcher
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
+            System.Collections.Generic.List<string> theArg = new System.Collections.Generic.List<string>(Environment.GetCommandLineArgs());
+            if (UserSettings.PatcherRunas)
+            {
+                if (!IsRunAsAdministrator())
+                    Methods.RestartAsAdmin();
+                else
+                {
+                    AppDomain.CurrentDomain.SetupInformation.ConfigurationFile = Environment.GetCommandLineArgs()[0];
+                    theArg.RemoveAt(0);
+                }
+            }
+
             var controller = new SingleInstanceController();
-            controller.Run(Environment.GetCommandLineArgs());
+            controller.Run(theArg.ToArray());
+        }
+
+        private static bool IsRunAsAdministrator()
+        {
+            var wi = WindowsIdentity.GetCurrent();
+            var wp = new WindowsPrincipal(wi);
+
+            return wp.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

@@ -16,7 +16,10 @@ namespace SWPatcher
             string[] args = Environment.GetCommandLineArgs();
 
             if (!IsRunAsAdministrator())
+            {
+                MessageBox.Show(UserSettings.ConfigPath);
                 Methods.RestartAsAdmin(new string[] { UserSettings.ConfigPath });
+            }
             else if (args.Length == 2)
                 UserSettings.ConfigPath = args[1];
 

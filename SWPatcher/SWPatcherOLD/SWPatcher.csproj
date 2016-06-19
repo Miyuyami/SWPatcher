@@ -26,8 +26,9 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcherOLD/SWPatcher/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcherOLD/SWPatcher/publish/</UpdateUrl>
+    <SupportUrl>https://discord.gg/0elCk6HCY5WZB6cz</SupportUrl>
     <TargetCulture>en</TargetCulture>
-    <ProductName>Soulworker Patcher</ProductName>
+    <ProductName>Soulworker Patcher Public Beta Test</ProductName>
     <PublisherName>SoulworkerHQ</PublisherName>
     <MinimumRequiredVersion>2.1.1.4</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>

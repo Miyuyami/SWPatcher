@@ -29,10 +29,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Test Patcher</ProductName>
     <PublisherName>SoulworkerHQ Test</PublisherName>
-    <MinimumRequiredVersion>2.1.2.10</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.1.2.11</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>10</ApplicationRevision>
-    <ApplicationVersion>2.1.2.10</ApplicationVersion>
+    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationVersion>2.1.2.11</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -175,15 +175,6 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <None Include="SWPatcher_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

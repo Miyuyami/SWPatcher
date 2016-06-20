@@ -9,15 +9,8 @@ namespace SWPatcher.Helpers.GlobalVar
         public const string PasteBinPassword = "pIIrwSL8lNJOjPhW";
         public static string LanguageName
         {
-            get
-            {
-                return Settings.Default.LanguageName;
-            }
-            set
-            {
-                Settings.Default.LanguageName = value;
-                Settings.Default.Save();
-            }
+            get { return UserSettings.LanguageName; }
+            set { UserSettings.LanguageName = value; }
         }
 
         public static class FileName

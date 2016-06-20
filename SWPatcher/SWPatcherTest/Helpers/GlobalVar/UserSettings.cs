@@ -155,5 +155,17 @@ namespace SWPatcher.Helpers.GlobalVar
                 SetValue("WantToPatchExe", value);
             }
         }
+
+        public static string LanguageName
+        {
+            get
+            {
+                return (string)GetValue("LanguageName", string.Empty);
+            }
+            set
+            {
+                SetValue("LanguageName", value);
+            }
+        }
     }
 }

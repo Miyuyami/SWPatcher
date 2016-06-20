@@ -54,7 +54,10 @@ namespace SWPatcher.Helpers.GlobalVar
                     else
                     {
                         MethodInfo method = DefaultValue.GetType().GetMethod("Parse", BindingFlags.Static | BindingFlags.Public);
-                        return method.Invoke(null, new object[] { ConfigInstance.Sections[SettingName].Keys["Value"].Value });
+                        if (method == null)
+                            return ConfigInstance.Sections[SettingName].Keys["Value"].Value;
+                        else
+                            return method.Invoke(null, new object[] { ConfigInstance.Sections[SettingName].Keys["Value"].Value });
                     }
                 }
                 else
@@ -117,11 +120,10 @@ namespace SWPatcher.Helpers.GlobalVar
             }
             set
             {
-                if (!String.IsNullOrEmpty(value))
-                {
-                    Directory.CreateDirectory(value);
-                    Directory.SetCurrentDirectory(value);
-                }
+                if (String.IsNullOrWhiteSpace(value))
+                    value = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
+                Directory.CreateDirectory(value);
+                Directory.SetCurrentDirectory(value);
                 SetValue(SettingName.PatcherPath, value);
             }
         }

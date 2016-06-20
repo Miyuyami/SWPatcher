@@ -10,6 +10,8 @@ namespace SWPatcher.Helpers
         private const string _apiPostUrl = "http://pastebin.com/api/api_post.php";
         private const string _apiLoginUrl = "http://pastebin.com/api/api_login.php";
 
+
+        private WebClient _client;
         private readonly string _apiDevKey;
         private string _userName;
         private string _apiUserKey;
@@ -19,14 +21,12 @@ namespace SWPatcher.Helpers
             if (string.IsNullOrEmpty(apiDevKey))
                 throw new ArgumentNullException("apiDevKey");
             _apiDevKey = apiDevKey;
+            _client = new WebClient();
         }
 
         public string UserName
         {
-            get
-            {
-                return _userName;
-            }
+            get { return _userName; }
         }
 
         public void Login(string userName, string password)
@@ -39,9 +39,8 @@ namespace SWPatcher.Helpers
             var parameters = GetBaseParameters();
             parameters[ApiParameters.UserName] = userName;
             parameters[ApiParameters.UserPassword] = password;
-
-            WebClient client = new WebClient();
-            byte[] bytes = client.UploadValues(_apiLoginUrl, parameters);
+            
+            byte[] bytes = _client.UploadValues(_apiLoginUrl, parameters);
             string resp = GetResponseText(bytes);
             if (resp.StartsWith("Bad API request"))
                 throw new PasteBinApiException(resp);
@@ -54,6 +53,7 @@ namespace SWPatcher.Helpers
         {
             _userName = null;
             _apiUserKey = null;
+            _client.Dispose();
         }
 
         public string Paste(PasteBinEntry entry)
@@ -71,9 +71,8 @@ namespace SWPatcher.Helpers
             SetIfNotEmpty(parameters, ApiParameters.PastePrivate, entry.Private ? "2" : "1");
             SetIfNotEmpty(parameters, ApiParameters.PasteExpireDate, FormatExpireDate(entry.Expiration));
             SetIfNotEmpty(parameters, ApiParameters.UserKey, _apiUserKey);
-
-            WebClient client = new WebClient();
-            byte[] bytes = client.UploadValues(_apiPostUrl, parameters);
+            
+            byte[] bytes = _client.UploadValues(_apiPostUrl, parameters);
             string resp = GetResponseText(bytes);
             if (resp.StartsWith("Bad API request"))
                 throw new PasteBinApiException(resp);

@@ -382,15 +382,24 @@ namespace SWPatcher.Helpers
             }
         }
 
+        public static void RestartAsAdmin()
+        {
+            List<string> theArg = new List<string>(Environment.GetCommandLineArgs());
+            theArg.RemoveAt(0);
+            Methods.RestartAsAdmin(theArg.ToArray());
+        }
+
         public static void RestartAsAdmin(string[] args)
         {
             var processInfo = new ProcessStartInfo(Assembly.GetExecutingAssembly().CodeBase)
             {
                 UseShellExecute = true,
-                Verb = "runas",
-                Arguments = String.Join(" ", args.Select(s => '\"' + s + '\"'))
+                Verb = "runas"
             };
-            Process.Start(processInfo);
+            if (args != null)
+                if (args.Length > 0)
+                    processInfo.Arguments = String.Join(" ", args.Select(s => '\"' + s + '\"'));
+            Process.Start(processInfo).Close();
 
             Environment.Exit(0);
         }

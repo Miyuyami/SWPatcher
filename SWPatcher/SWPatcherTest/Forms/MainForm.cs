@@ -408,9 +408,15 @@ namespace SWPatcher.Forms
             this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
             if (String.IsNullOrEmpty(UserSettings.GamePath))
+            {
+                MessageBox.Show(Methods.GetSwPathFromRegistry(), "Triggered");
                 UserSettings.GamePath = Methods.GetSwPathFromRegistry();
+            }
             else if (!Methods.IsSwPath(UserSettings.GamePath))
+            {
+                MessageBox.Show(Methods.GetSwPathFromRegistry(), "Triggered 2");
                 UserSettings.GamePath = null;
+            }
 
             if (this.comboBoxLanguages.DataSource != null)
                 if (String.IsNullOrEmpty(Strings.LanguageName))

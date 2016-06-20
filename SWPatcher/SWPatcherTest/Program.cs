@@ -13,17 +13,11 @@ namespace SWPatcher
         [STAThread]
         private static void Main()
         {
-            string[] args = Environment.GetCommandLineArgs();
-
-            if (!IsRunAsAdministrator())
-            {
-                MessageBox.Show(UserSettings.ConfigPath);
-                Methods.RestartAsAdmin(new string[] { UserSettings.ConfigPath });
-            }
-            else if (args.Length == 2)
-                UserSettings.ConfigPath = args[1];
-
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+            if (UserSettings.PatcherRunas)
+                if (!IsRunAsAdministrator())
+                    Methods.RestartAsAdmin();
 
             if (!Directory.Exists(UserSettings.PatcherPath))
                 UserSettings.PatcherPath = "";
@@ -35,7 +29,7 @@ namespace SWPatcher
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
             var controller = new SingleInstanceController();
-            controller.Run(args);
+            controller.Run(Environment.GetCommandLineArgs());
         }
 
         private static bool IsRunAsAdministrator()

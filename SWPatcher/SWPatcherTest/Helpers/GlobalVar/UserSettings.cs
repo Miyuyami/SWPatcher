@@ -12,7 +12,7 @@ namespace SWPatcher.Helpers.GlobalVar
         #region "ConfigFile"
         private static IniFile theIni = null;
         private static string theIniPath = Path.Combine(new string[] { Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SWPatcher", "Settings.ini" });
-        public static IniFile Config
+        public static IniFile ConfigInstance
         {
             get
             {
@@ -24,32 +24,42 @@ namespace SWPatcher.Helpers.GlobalVar
                         Compression = false,
                         KeyNameCaseSensitive = false,
                         Encoding = System.Text.Encoding.UTF8,
-                        EncryptionPassword = "swhq"
+                        EncryptionPassword = ""
                     });
                     (new FileInfo(theIniPath).Directory).Create();
+
+                    //Here come the config migration.
                     if (File.Exists(theIniPath))
                         theIni.Load(theIniPath);
+                    else
+                    {
+                        SetValue(SettingName.PatcherPath, Settings.Default[SettingName.PatcherPath]);
+                        SetValue(SettingName.GamePath, Settings.Default[SettingName.GamePath]);
+                        SetValue(SettingName.WantToPatchExe, Settings.Default[SettingName.WantToPatchExe]);
+                        SetValue(SettingName.LanguageName, Settings.Default[SettingName.LanguageName]);
+                        theIni.Save(theIniPath);
+                    }
                 }
                 return theIni;
             }
         }
         private static object GetValue(string SettingName, object DefaultValue)
         {
-            if (Config.Sections.Contains(SettingName))
+            if (ConfigInstance.Sections.Contains(SettingName))
             {
                 if (!DefaultValue.GetType().Name.ToLower().Contains("string"))
                 {
-                    if (string.IsNullOrWhiteSpace(Config.Sections[SettingName].Keys["Value"].Value))
+                    if (string.IsNullOrWhiteSpace(ConfigInstance.Sections[SettingName].Keys["Value"].Value))
                         return DefaultValue;
                     else
                     {
                         MethodInfo method = DefaultValue.GetType().GetMethod("Parse", BindingFlags.Static | BindingFlags.Public);
-                        return method.Invoke(null, new object[] { Config.Sections[SettingName].Keys["Value"].Value });
+                        return method.Invoke(null, new object[] { ConfigInstance.Sections[SettingName].Keys["Value"].Value });
                     }
                 }
                 else
                 {
-                    return Config.Sections[SettingName].Keys["Value"].Value;
+                    return ConfigInstance.Sections[SettingName].Keys["Value"].Value;
                 }
             }
             return DefaultValue;
@@ -80,21 +90,30 @@ namespace SWPatcher.Helpers.GlobalVar
 
         private static void SetValue(string SettingName, object Value)
         {
-            if (!Config.Sections.Contains(SettingName))
-                Config.Sections.Add(SettingName);
-            if (!Config.Sections[SettingName].Keys.Contains("Value"))
-                Config.Sections[SettingName].Keys.Add("Value", Value.ToString());
+            if (!ConfigInstance.Sections.Contains(SettingName))
+                ConfigInstance.Sections.Add(SettingName);
+            if (!ConfigInstance.Sections[SettingName].Keys.Contains("Value"))
+                ConfigInstance.Sections[SettingName].Keys.Add("Value", Value.ToString());
             else
-                Config.Sections[SettingName].Keys["Value"].Value = Value.ToString();
-            Config.Save(theIniPath);
+                ConfigInstance.Sections[SettingName].Keys["Value"].Value = Value.ToString();
+            ConfigInstance.Save(theIniPath);
         }
         #endregion
+
+        private static class SettingName
+        {
+            public const string PatcherPath = "PatcherWorkingDirectory";
+            public const string PatcherRunas = "PatcherRunas";
+            public const string GamePath = "SoulworkerDirectory";
+            public const string WantToPatchExe = "WantToPatchSoulworkerExe";
+            public const string LanguageName = "LanguageName";
+        }
 
         public static string PatcherPath
         {
             get
             {
-                return (string)GetValue("PatcherPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name));
+                return (string)GetValue(SettingName.PatcherPath, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name));
             }
             set
             {
@@ -103,7 +122,7 @@ namespace SWPatcher.Helpers.GlobalVar
                     Directory.CreateDirectory(value);
                     Directory.SetCurrentDirectory(value);
                 }
-                SetValue("PatcherPath", value);
+                SetValue(SettingName.PatcherPath, value);
             }
         }
 
@@ -111,11 +130,11 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return (bool)GetValue("PatcherRunas", false);
+                return (bool)GetValue(SettingName.PatcherRunas, false);
             }
             set
             {
-                SetValue("PatcherRunas", value);
+                SetValue(SettingName.PatcherRunas, value);
 
                 if (value)
                 {
@@ -134,11 +153,11 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return (string)GetValue("GamePath", string.Empty);
+                return (string)GetValue(SettingName.GamePath, string.Empty);
             }
             set
             {
-                SetValue("GamePath", value);
+                SetValue(SettingName.GamePath, value);
             }
         }
 
@@ -146,13 +165,13 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return (bool)GetValue("WantToPatchExe", false);
+                return (bool)GetValue(SettingName.WantToPatchExe, false);
             }
             set
             {
                 File.Delete(Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe));
 
-                SetValue("WantToPatchExe", value);
+                SetValue(SettingName.WantToPatchExe, value);
             }
         }
 
@@ -160,11 +179,11 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return (string)GetValue("LanguageName", string.Empty);
+                return (string)GetValue(SettingName.LanguageName, string.Empty);
             }
             set
             {
-                SetValue("LanguageName", value);
+                SetValue(SettingName.LanguageName, value);
             }
         }
     }

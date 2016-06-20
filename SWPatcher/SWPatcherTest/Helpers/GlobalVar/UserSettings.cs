@@ -11,7 +11,8 @@ namespace SWPatcher.Helpers.GlobalVar
     {
         #region "ConfigFile"
         private static IniFile theIni = null;
-        private static string theIniPath = Path.Combine(new string[] { Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SWPatcher", "Settings.ini" });
+        private static string theIniFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "SWPatcher");
+        private static string theIniPath = Path.Combine(theIniFolder, "Settings.ini");
         public static IniFile ConfigInstance
         {
             get
@@ -26,8 +27,7 @@ namespace SWPatcher.Helpers.GlobalVar
                         Encoding = System.Text.Encoding.UTF8,
                         EncryptionPassword = ""
                     });
-                    (new FileInfo(theIniPath).Directory).Create();
-
+                    
                     //Here come the config migration.
                     if (File.Exists(theIniPath))
                         theIni.Load(theIniPath);
@@ -37,7 +37,6 @@ namespace SWPatcher.Helpers.GlobalVar
                         SetValue(SettingName.GamePath, Settings.Default[SettingName.GamePath]);
                         SetValue(SettingName.WantToPatchExe, Settings.Default[SettingName.WantToPatchExe]);
                         SetValue(SettingName.LanguageName, Settings.Default[SettingName.LanguageName]);
-                        theIni.Save(theIniPath);
                     }
                 }
                 return theIni;
@@ -99,6 +98,7 @@ namespace SWPatcher.Helpers.GlobalVar
                 ConfigInstance.Sections[SettingName].Keys.Add("Value", Value.ToString());
             else
                 ConfigInstance.Sections[SettingName].Keys["Value"].Value = Value.ToString();
+            Microsoft.VisualBasic.FileIO.FileSystem.CreateDirectory(theIniFolder);
             ConfigInstance.Save(theIniPath);
         }
         #endregion

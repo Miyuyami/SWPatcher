@@ -40,19 +40,19 @@
             this.buttonGameChangeDirectory = new System.Windows.Forms.Button();
             this.textBoxGameDirectory = new System.Windows.Forms.TextBox();
             this.tabPagePatcher = new System.Windows.Forms.TabPage();
+            this.groupBoxRunas = new System.Windows.Forms.GroupBox();
+            this.checkBoxRunas = new System.Windows.Forms.CheckBox();
             this.groupBoxPatcherDirectory = new System.Windows.Forms.GroupBox();
             this.buttonPatcherChangeDirectory = new System.Windows.Forms.Button();
             this.textBoxPatcherDirectory = new System.Windows.Forms.TextBox();
-            this.groupBoxRunas = new System.Windows.Forms.GroupBox();
-            this.checkBoxRunas = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGame.SuspendLayout();
             this.groupBoxPatchExe.SuspendLayout();
             this.groupBoxGameDirectory.SuspendLayout();
             this.tabPagePatcher.SuspendLayout();
-            this.groupBoxPatcherDirectory.SuspendLayout();
             this.groupBoxRunas.SuspendLayout();
+            this.groupBoxPatcherDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel
@@ -196,36 +196,6 @@
             this.tabPagePatcher.Text = "Patcher";
             this.tabPagePatcher.UseVisualStyleBackColor = true;
             // 
-            // groupBoxPatcherDirectory
-            // 
-            this.groupBoxPatcherDirectory.AutoSize = true;
-            this.groupBoxPatcherDirectory.Controls.Add(this.buttonPatcherChangeDirectory);
-            this.groupBoxPatcherDirectory.Controls.Add(this.textBoxPatcherDirectory);
-            this.groupBoxPatcherDirectory.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxPatcherDirectory.Location = new System.Drawing.Point(3, 3);
-            this.groupBoxPatcherDirectory.Name = "groupBoxPatcherDirectory";
-            this.groupBoxPatcherDirectory.Size = new System.Drawing.Size(300, 61);
-            this.groupBoxPatcherDirectory.TabIndex = 2;
-            this.groupBoxPatcherDirectory.TabStop = false;
-            this.groupBoxPatcherDirectory.Text = "Patcher location";
-            // 
-            // buttonPatcherChangeDirectory
-            // 
-            this.buttonPatcherChangeDirectory.Location = new System.Drawing.Point(219, 19);
-            this.buttonPatcherChangeDirectory.Name = "buttonPatcherChangeDirectory";
-            this.buttonPatcherChangeDirectory.Size = new System.Drawing.Size(75, 23);
-            this.buttonPatcherChangeDirectory.TabIndex = 1;
-            this.buttonPatcherChangeDirectory.Text = "Change";
-            this.buttonPatcherChangeDirectory.UseVisualStyleBackColor = true;
-            // 
-            // textBoxPatcherDirectory
-            // 
-            this.textBoxPatcherDirectory.Location = new System.Drawing.Point(6, 21);
-            this.textBoxPatcherDirectory.Name = "textBoxPatcherDirectory";
-            this.textBoxPatcherDirectory.ReadOnly = true;
-            this.textBoxPatcherDirectory.Size = new System.Drawing.Size(207, 20);
-            this.textBoxPatcherDirectory.TabIndex = 0;
-            // 
             // groupBoxRunas
             // 
             this.groupBoxRunas.AutoSize = true;
@@ -248,6 +218,37 @@
             this.checkBoxRunas.Text = "Run patcher as admin";
             this.checkBoxRunas.UseVisualStyleBackColor = true;
             this.checkBoxRunas.CheckedChanged += new System.EventHandler(this.checkBoxRunas_CheckedChanged);
+            // 
+            // groupBoxPatcherDirectory
+            // 
+            this.groupBoxPatcherDirectory.AutoSize = true;
+            this.groupBoxPatcherDirectory.Controls.Add(this.buttonPatcherChangeDirectory);
+            this.groupBoxPatcherDirectory.Controls.Add(this.textBoxPatcherDirectory);
+            this.groupBoxPatcherDirectory.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxPatcherDirectory.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxPatcherDirectory.Name = "groupBoxPatcherDirectory";
+            this.groupBoxPatcherDirectory.Size = new System.Drawing.Size(300, 61);
+            this.groupBoxPatcherDirectory.TabIndex = 2;
+            this.groupBoxPatcherDirectory.TabStop = false;
+            this.groupBoxPatcherDirectory.Text = "Patcher location";
+            // 
+            // buttonPatcherChangeDirectory
+            // 
+            this.buttonPatcherChangeDirectory.Location = new System.Drawing.Point(219, 19);
+            this.buttonPatcherChangeDirectory.Name = "buttonPatcherChangeDirectory";
+            this.buttonPatcherChangeDirectory.Size = new System.Drawing.Size(75, 23);
+            this.buttonPatcherChangeDirectory.TabIndex = 1;
+            this.buttonPatcherChangeDirectory.Text = "Change";
+            this.buttonPatcherChangeDirectory.UseVisualStyleBackColor = true;
+            this.buttonPatcherChangeDirectory.Click += new System.EventHandler(this.buttonPatcherChangeDirectory_Click);
+            // 
+            // textBoxPatcherDirectory
+            // 
+            this.textBoxPatcherDirectory.Location = new System.Drawing.Point(6, 21);
+            this.textBoxPatcherDirectory.Name = "textBoxPatcherDirectory";
+            this.textBoxPatcherDirectory.ReadOnly = true;
+            this.textBoxPatcherDirectory.Size = new System.Drawing.Size(207, 20);
+            this.textBoxPatcherDirectory.TabIndex = 0;
             // 
             // SettingsForm
             // 
@@ -275,10 +276,10 @@
             this.groupBoxGameDirectory.PerformLayout();
             this.tabPagePatcher.ResumeLayout(false);
             this.tabPagePatcher.PerformLayout();
-            this.groupBoxPatcherDirectory.ResumeLayout(false);
-            this.groupBoxPatcherDirectory.PerformLayout();
             this.groupBoxRunas.ResumeLayout(false);
             this.groupBoxRunas.PerformLayout();
+            this.groupBoxPatcherDirectory.ResumeLayout(false);
+            this.groupBoxPatcherDirectory.PerformLayout();
             this.ResumeLayout(false);
 
         }

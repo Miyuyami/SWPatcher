@@ -76,7 +76,7 @@ namespace SWPatcher.Forms
         {
             using (var folderDialog = new FolderBrowserDialog
             {
-                Description = "Select your new desired patcher folder."
+                Description = "Select your new desired patcher folder.\nNote: The datas will be also be moved to new location."
             })
             {
                 DialogResult result = folderDialog.ShowDialog();

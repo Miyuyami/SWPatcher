@@ -15,10 +15,6 @@ namespace SWPatcher
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            if (UserSettings.PatcherRunas)
-                if (!IsRunAsAdministrator())
-                    Methods.RestartAsAdmin();
-
             if (!Directory.Exists(UserSettings.PatcherPath))
                 UserSettings.PatcherPath = "";
             Directory.SetCurrentDirectory(UserSettings.PatcherPath);
@@ -30,14 +26,6 @@ namespace SWPatcher
 
             var controller = new SingleInstanceController();
             controller.Run(Environment.GetCommandLineArgs());
-        }
-
-        private static bool IsRunAsAdministrator()
-        {
-            var wi = WindowsIdentity.GetCurrent();
-            var wp = new WindowsPrincipal(wi);
-
-            return wp.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

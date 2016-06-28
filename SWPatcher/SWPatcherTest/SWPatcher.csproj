@@ -27,12 +27,12 @@
     <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
-    <ProductName>Soulworker Test Patcher</ProductName>
-    <PublisherName>SoulworkerHQ Test</PublisherName>
-    <MinimumRequiredVersion>2.1.3.1</MinimumRequiredVersion>
+    <ProductName>Soulworker PatcherTEST</ProductName>
+    <PublisherName>SoulworkerHQ</PublisherName>
+    <MinimumRequiredVersion>2.1.6.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>2.1.3.1</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.1.6.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -76,11 +76,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>07D8A0E137B074B4284D50251CF7B919EED3223A</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>726DCBC7D21E335FADD69B767EE5CCE9FD93147F</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>
-    </ManifestKeyFile>
+    <ManifestKeyFile>SWPatcher_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
@@ -90,9 +89,6 @@
   <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, processorArchitecture=MSIL">
@@ -129,15 +125,18 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="General\Language.cs" />
+    <Compile Include="General\MyWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="General\SWFile.cs" />
     <Compile Include="General\TempFile.cs" />
     <Compile Include="Helpers\Error.cs" />
-    <Compile Include="Helpers\GlobalVar\Assembly.cs" />
+    <Compile Include="Helpers\GlobalVar\AssemblyAccessor.cs" />
     <Compile Include="Helpers\GlobalVar\Strings.cs" />
     <Compile Include="Helpers\Methods.cs" />
     <Compile Include="Helpers\MsgBox.cs" />
     <Compile Include="Helpers\GlobalVar\UserSettings.cs" />
-    <Compile Include="Helpers\GlobalVar\Uris.cs" />
+    <Compile Include="Helpers\GlobalVar\Urls.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,11 +151,6 @@
     <Compile Include="Patching\PatcherProgressChangedEventHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
@@ -187,6 +181,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="SWPatcher_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\fadegray.png" />
@@ -222,7 +222,17 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="PubPluginLib">
+      <Guid>{BBA13B27-05A3-4DBC-975F-518DE762302A}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

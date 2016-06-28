@@ -254,7 +254,7 @@ namespace SWPatcher.Helpers
             using (var client = new WebClient())
             using (var zippedFile = new TempFile())
             {
-                client.DownloadFile(Urls.SoulWorkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
+                client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
 
                 using (var file = new TempFile())
                 {
@@ -382,26 +382,18 @@ namespace SWPatcher.Helpers
             }
         }
 
-        public static void RestartAsAdmin()
+        public static string[] GetVariableValue(string fullText, string variableName)
         {
-            List<string> theArg = new List<string>(Environment.GetCommandLineArgs());
-            theArg.RemoveAt(0);
-            Methods.RestartAsAdmin(theArg.ToArray());
-        }
+            string result;
+            int valueIndex = fullText.IndexOf(variableName);
 
-        public static void RestartAsAdmin(string[] args)
-        {
-            var processInfo = new ProcessStartInfo(Assembly.GetExecutingAssembly().CodeBase)
-            {
-                UseShellExecute = true,
-                Verb = "runas"
-            };
-            if (args != null)
-                if (args.Length > 0)
-                    processInfo.Arguments = String.Join(" ", args.Select(s => '\"' + s + '\"'));
-            Process.Start(processInfo).Close();
+            if (valueIndex == -1)
+                throw new IndexOutOfRangeException();
 
-            Environment.Exit(0);
+            result = fullText.Substring(valueIndex + variableName.Length + 1);
+            result = result.Substring(0, result.IndexOf('"'));
+
+            return result.Split(' ');
         }
     }
 }

@@ -11,7 +11,9 @@ namespace SWPatcher.Forms
         private string GameClientDirectory;
         private string PatcherWorkingDirectory;
         private bool WantToPatchSoulworkerExe;
-        private bool PatcherRunasAdmin;
+        private string GameUserId;
+        private string GameUserPassword;
+        private bool WantToLogin;
 
         public SettingsForm()
         {
@@ -23,21 +25,27 @@ namespace SWPatcher.Forms
             this.textBoxGameDirectory.Text = this.GameClientDirectory = UserSettings.GamePath;
             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
             this.checkBoxPatchExe.Checked = this.WantToPatchSoulworkerExe = UserSettings.WantToPatchExe;
-            this.checkBoxRunas.Checked = this.PatcherRunasAdmin = UserSettings.PatcherRunas;
+            this.textBoxId.Text = this.GameUserId = UserSettings.GameId;
+            this.textBoxPassword.Text = this.GameUserPassword = UserSettings.GamePw;
+            this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
 
             if ((this.Owner as MainForm).State == MainForm.States.Idle)
             {
                 this.textBoxGameDirectory.TextChanged += new EventHandler(EnableApplyButton);
                 this.textBoxPatcherDirectory.TextChanged += new EventHandler(EnableApplyButton);
                 this.checkBoxPatchExe.CheckedChanged += new EventHandler(EnableApplyButton);
-                this.checkBoxRunas.CheckedChanged += new EventHandler(EnableApplyButton);
+                this.textBoxId.TextChanged += new EventHandler(EnableApplyButton);
+                this.textBoxPassword.TextChanged += new EventHandler(EnableApplyButton);
+                this.checkBoxWantToLogin.CheckedChanged += new EventHandler(EnableApplyButton);
             }
             else
             {
                 this.buttonGameChangeDirectory.Enabled = false;
                 this.buttonPatcherChangeDirectory.Enabled = false;
                 this.checkBoxPatchExe.Enabled = false;
-                this.checkBoxRunas.Enabled = false;
+                this.textBoxId.ReadOnly = true;
+                this.textBoxPassword.ReadOnly = true;
+                this.checkBoxWantToLogin.Enabled = false;
             }
         }
 
@@ -76,7 +84,7 @@ namespace SWPatcher.Forms
         {
             using (var folderDialog = new FolderBrowserDialog
             {
-                Description = "Select your new desired patcher folder.\nNote: The datas will be also be moved to new location."
+                Description = "Select your new desired patcher folder."
             })
             {
                 DialogResult result = folderDialog.ShowDialog();
@@ -99,9 +107,19 @@ namespace SWPatcher.Forms
             this.WantToPatchSoulworkerExe = this.checkBoxPatchExe.Checked;
         }
 
-        private void checkBoxRunas_CheckedChanged(object sender, EventArgs e)
+        private void textBoxId_TextChanged(object sender, EventArgs e)
         {
-            this.PatcherRunasAdmin = this.checkBoxRunas.Checked;
+            this.GameUserId = this.textBoxId.Text;
+        }
+
+        private void textBoxPassword_TextChanged(object sender, EventArgs e)
+        {
+            this.GameUserPassword = this.textBoxPassword.Text;
+        }
+
+        private void checkBoxWantToLogin_CheckedChanged(object sender, EventArgs e)
+        {
+            this.WantToLogin = this.checkBoxWantToLogin.Checked;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -139,8 +157,15 @@ namespace SWPatcher.Forms
 
             if (UserSettings.WantToPatchExe != this.WantToPatchSoulworkerExe)
                 UserSettings.WantToPatchExe = this.WantToPatchSoulworkerExe;
-            if (UserSettings.PatcherRunas != this.PatcherRunasAdmin)
-                UserSettings.PatcherRunas = this.PatcherRunasAdmin;
+
+            if (UserSettings.GameId != this.GameUserId)
+                UserSettings.GameId = this.GameUserId;
+
+            if (UserSettings.GamePw != this.GameUserPassword)
+                UserSettings.GamePw = this.GameUserPassword;
+
+            if (UserSettings.WantToLogin != this.WantToLogin)
+                UserSettings.WantToLogin = this.WantToLogin;
 
             this.buttonApply.Enabled = false;
         }

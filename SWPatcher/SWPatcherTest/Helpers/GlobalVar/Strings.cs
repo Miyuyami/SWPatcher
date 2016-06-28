@@ -106,6 +106,9 @@ namespace SWPatcher.Helpers.GlobalVar
             public const string PostPw = "strpassword";
             public const string ReactorStr = "	reactorStr = ";
             public const string GameStartArg = "\"gs\":";
+            public const string ErrorCodeVariable = "var errCode = ";
+            public const string MaintenanceVariable = "var openCloseTypeCd = ";
+            public const string MessageVariable = "var msg = ";
         }
     }
 }

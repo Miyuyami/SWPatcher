@@ -10,12 +10,12 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using MadMilkman.Ini;
+using PubPluginLib;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
-using PubPluginLib;
 
 namespace SWPatcher.Forms
 {
@@ -265,13 +265,35 @@ namespace SWPatcher.Forms
                         var values = new NameValueCollection(2);
                         values[Strings.Web.PostId] = UserSettings.GameId;
                         values[Strings.Web.PostPw] = UserSettings.GamePw;
-                        client.UploadValues(Urls.HangameLogin, values);
-                        var response = client.DownloadString(Urls.SoulworkerGameStart);
+                        var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
+                        try
+                        {
+                            if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
+                                throw new Exception("ID or Password incorrect.");
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+
+                        }
+
+                        var gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
+                        try
+                        {
+                            if (Methods.GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
+                                throw new Exception("To play the game you need to accept the Terms of Service.");
+                            else if (Methods.GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
+                                throw new Exception("Game is under maintenance.");
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
+                        }
+
                         PubPluginClass pubPlugin = new PubPluginClass();
                         if (pubPlugin.IsReactorInstalled() == 1)
                             try
                             {
-                                pubPlugin.StartReactor(Methods.GetVariableValue(response, Strings.Web.ReactorStr)[0]);
+                                pubPlugin.StartReactor(Methods.GetVariableValue(gameStartResponse, Strings.Web.ReactorStr)[0]);
                                 throw new Exception("Update the game client then try again.");
                             }
                             catch (IndexOutOfRangeException)
@@ -350,9 +372,30 @@ namespace SWPatcher.Forms
                     var values = new NameValueCollection(2);
                     values[Strings.Web.PostId] = UserSettings.GameId;
                     values[Strings.Web.PostPw] = UserSettings.GamePw;
-                    client.UploadValues(Urls.HangameLogin, values);
+                    var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
+                    try
+                    {
+                        if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
+                            throw new Exception("ID or Password incorrect.");
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
 
-                    client.DownloadString(Urls.SoulworkerGameStart);
+                    }
+
+                    var gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
+                    try
+                    {
+                        if (Methods.GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
+                            throw new Exception("To play the game you need to accept the Terms of Service.");
+                        else if (Methods.GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
+                            throw new Exception("Game is under maintenance.");
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
+                    }
+
                     try
                     {
                         client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
@@ -366,8 +409,8 @@ namespace SWPatcher.Forms
                             throw;
                     }
 
-                    var response = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
-                    string[] gameStartArgs = new string[] { Methods.GetVariableValue(Encoding.Default.GetString(response), Strings.Web.GameStartArg)[0], "", "" };
+                    var reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
+                    string[] gameStartArgs = new string[] { Methods.GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0], "", "" };
 
                     IniFile ini = new IniFile();
                     ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralFile));

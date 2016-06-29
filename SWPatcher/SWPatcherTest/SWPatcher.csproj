@@ -28,11 +28,11 @@
     <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker PatcherTEST</ProductName>
-    <PublisherName>SoulworkerHQ</PublisherName>
-    <MinimumRequiredVersion>2.1.6.1</MinimumRequiredVersion>
+    <PublisherName>SoulworkerHQTEST</PublisherName>
+    <MinimumRequiredVersion>2.1.6.2</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>2.1.6.1</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>2.1.6.2</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

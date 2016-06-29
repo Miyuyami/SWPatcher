@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace SWPatcher.Helpers
+namespace SWPatcherTEST.Helpers
 {
     public static class MsgBox
     {

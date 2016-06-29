@@ -1,4 +1,4 @@
-﻿namespace SWPatcher.Forms
+﻿namespace SWPatcherTEST.Forms
 {
     partial class MainForm
     {
@@ -104,7 +104,7 @@
             // 
             // menuStrip
             // 
-            this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
+            this.menuStrip.BackgroundImage = global::SWPatcherTEST.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolStripMenuItem,
             this.settingsToolStripMenuItem,
@@ -208,7 +208,7 @@
             // 
             // tableLayoutPanel
             // 
-            this.tableLayoutPanel.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
+            this.tableLayoutPanel.BackgroundImage = global::SWPatcherTEST.Properties.Resources.fadegray;
             this.tableLayoutPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -235,10 +235,10 @@
             // 
             // pictureBox
             // 
-            this.pictureBox.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
+            this.pictureBox.BackgroundImage = global::SWPatcherTEST.Properties.Resources.fadegray;
             this.tableLayoutPanel.SetColumnSpan(this.pictureBox, 2);
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox.Image = global::SWPatcher.Properties.Resources.logo;
+            this.pictureBox.Image = global::SWPatcherTEST.Properties.Resources.logo;
             this.pictureBox.Location = new System.Drawing.Point(7, 7);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(350, 116);

@@ -1,4 +1,4 @@
-﻿namespace SWPatcher.Properties {
+﻿namespace SWPatcherTEST.Properties {
     
     
     // This class allows you to handle specific events on the settings class:

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcherTEST.Helpers.GlobalVar;
 
-namespace SWPatcher.Helpers
+namespace SWPatcherTEST.Helpers
 {
     public static class Error
     {

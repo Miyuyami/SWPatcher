@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SWPatcher.Downloading
+namespace SWPatcherTEST.Downloading
 {
     public class DownloaderProgressChangedEventArgs : EventArgs
     {

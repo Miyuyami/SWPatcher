@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xrml="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <assemblyIdentity name="SWPatcherTEST.application" version="2.1.6.3" publicKeyToken="57a59494e3651860" language="en" processorArchitecture="x86" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <description asmv2:publisher="SoulworkerHQTEST" asmv2:product="Soulworker PatcherTEST" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <deployment install="true" mapFileExtensions="true" minimumRequiredVersion="2.1.6.3" co.v1:createDesktopShortcut="true">
+    <subscription>
+      <update>
+        <beforeApplicationStartup />
+      </update>
+    </subscription>
+    <deploymentProvider codebase="https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/SWPatcherTEST.application" />
+  </deployment>
+  <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
+    <framework targetVersion="4.0" profile="Client" supportedRuntime="4.0.30319" />
+    <framework targetVersion="4.0" profile="Full" supportedRuntime="4.0.30319" />
+  </compatibleFrameworks>
+  <dependency>
+    <dependentAssembly dependencyType="install" codebase="Application Files\SWPatcherTEST_2_1_6_3\SWPatcherTEST.exe.manifest" size="9792">
+      <assemblyIdentity name="SWPatcherTEST.exe" version="2.1.6.3" publicKeyToken="57a59494e3651860" language="en" processorArchitecture="x86" type="win32" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>5DO4IcYJgb6TW8hYm5SOyivJJ6I=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+<publisherIdentity name="CN=Miyu-PC\Miyu" issuerKeyHash="9852565f155ae6e3779be0c24548311ee9f060fb" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>5Dubl/cMTarG3P3jRVJGbhxLTXo=</DigestValue></Reference></SignedInfo><SignatureValue>HheiW5bXURmbdaQhX/YtbVAcqN9JkeYKyjDwpaOXuUbHJk7gEooD3cSJrx6Yhh8biUdvGSB86LGQ7QGo+6SCzn4MBL3RJgYe9XHEJsCL3ejBzYOdS8//1CoFsJzJCU1o1iqb6/NwbeULfoAAAC46SmiX+iq63OyA//3R57C7jJ8=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>umYypZXLFOgYbiKxI0B4EDFuQS7GWdCJpUsFArk2dKXuYpE55NSOpA39DPaB65U908T/h3q26fpmCmhY+FzYlWBHhHIvBFPFP0W6S7JpOBitfMQlOc58GQsC9Us4PEw1Yy2xCg+7sB3/Q3U/SbTyx7bm6FniAClV2WvNTvHmkqk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="7a4d4b1c6e465245e3fddcc6aa4d0cf7979b3be4" Description="" Url=""><as:assemblyIdentity name="SWPatcherTEST.application" version="2.1.6.3" publicKeyToken="57a59494e3651860" language="en" processorArchitecture="x86" xmlns="urn:schemas-microsoft-com:asm.v1" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=Miyu-PC\Miyu</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>03pz+KjzAknQPtHCKT2pSIheOpM=</DigestValue></Reference></SignedInfo><SignatureValue>IVg54q5ODNKQETgJS0C6HY49IA7lldidZWJ8e/VA8MGO8E+sd+1+fWyOiOjXZlelIzxAsEMbJgg2Eu6pwgK3ESXgFPFMb018EnOcbwtMPGbof8VGL1/KY8/MfeP1j8Ys7CLT8fdTkuxHaF21Q2xWGeyoT+h0a3m1H3wTQ5Vu8wI=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>umYypZXLFOgYbiKxI0B4EDFuQS7GWdCJpUsFArk2dKXuYpE55NSOpA39DPaB65U908T/h3q26fpmCmhY+FzYlWBHhHIvBFPFP0W6S7JpOBitfMQlOc58GQsC9Us4PEw1Yy2xCg+7sB3/Q3U/SbTyx7bm6FniAClV2WvNTvHmkqk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIByTCCATKgAwIBAgIQWLPptb35saBAy2UE1ror5DANBgkqhkiG9w0BAQUFADAjMSEwHwYDVQQDHhgATQBpAHkAdQAtAFAAQwBcAE0AaQB5AHUwHhcNMTYwNjAxMDEzMTA2WhcNMTcwNjAxMDczMTA2WjAjMSEwHwYDVQQDHhgATQBpAHkAdQAtAFAAQwBcAE0AaQB5AHUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALpmMqWVyxToGG4isSNAeBAxbkEuxlnQiaVLBQK5NnSl7mKROeTUjqQN/Qz2geuVPdPE/4d6tun6ZgpoWPhc2JVgR4RyLwRTxT9FukuyaTgYrXzEJTnOfBkLAvVLODxMNWMtsQoPu7Ad/0N1P0m08se25uhZ4gApVdlrzU7x5pKpAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAPGGLC4A867n91WGTABZJPz8F/ffD8Yq7lvc69wWy7pSeHYUISAL8dTaj9PBgHnWi9ngq8DQYWmvGE9FdgONCCgCJnbYSKjCG7OUczRix+0ex3hN+hezzzvMlI6m93LStsNhYUOCHgjVh5EB+MJaUBdql5X1KIQFF/2p/5y6wIws=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

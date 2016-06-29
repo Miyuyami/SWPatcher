@@ -4,11 +4,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcherTEST.General;
+using SWPatcherTEST.Helpers;
+using SWPatcherTEST.Helpers.GlobalVar;
 
-namespace SWPatcher.Patching
+namespace SWPatcherTEST.Patching
 {
     public class Patcher
     {

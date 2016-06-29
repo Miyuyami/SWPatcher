@@ -9,13 +9,13 @@ using System.Security.Cryptography;
 using System.Text;
 using Ionic.Zip;
 using MadMilkman.Ini;
-using SWPatcher.General;
-using SWPatcher.Helpers.GlobalVar;
-using SWPatcher.Properties;
+using SWPatcherTEST.General;
+using SWPatcherTEST.Helpers.GlobalVar;
+using SWPatcherTEST.Properties;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace SWPatcher.Helpers
+namespace SWPatcherTEST.Helpers
 {
     public static class Methods
     {

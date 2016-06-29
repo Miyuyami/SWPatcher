@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcherTEST.Helpers;
+using SWPatcherTEST.Helpers.GlobalVar;
 using System.IO;
 
-namespace SWPatcher.Forms
+namespace SWPatcherTEST.Forms
 {
     public partial class SettingsForm : Form
     {

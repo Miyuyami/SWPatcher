@@ -4,11 +4,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using MadMilkman.Ini;
-using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcherTEST.General;
+using SWPatcherTEST.Helpers;
+using SWPatcherTEST.Helpers.GlobalVar;
 
-namespace SWPatcher.Downloading
+namespace SWPatcherTEST.Downloading
 {
     public class Downloader
     {

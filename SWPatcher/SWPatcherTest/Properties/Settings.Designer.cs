@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SWPatcher.Properties {
+namespace SWPatcherTEST.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

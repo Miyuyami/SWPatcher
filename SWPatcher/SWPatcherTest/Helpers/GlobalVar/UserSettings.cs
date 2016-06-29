@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using SWPatcher.Properties;
+using SWPatcherTEST.Properties;
 using System.Windows.Forms;
 
-namespace SWPatcher.Helpers.GlobalVar
+namespace SWPatcherTEST.Helpers.GlobalVar
 {
     public static class UserSettings
     {

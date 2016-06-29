@@ -11,13 +11,13 @@ using System.Threading;
 using System.Windows.Forms;
 using MadMilkman.Ini;
 using PubPluginLib;
-using SWPatcher.Downloading;
-using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
-using SWPatcher.Patching;
+using SWPatcherTEST.Downloading;
+using SWPatcherTEST.General;
+using SWPatcherTEST.Helpers;
+using SWPatcherTEST.Helpers.GlobalVar;
+using SWPatcherTEST.Patching;
 
-namespace SWPatcher.Forms
+namespace SWPatcherTEST.Forms
 {
     public partial class MainForm : Form
     {

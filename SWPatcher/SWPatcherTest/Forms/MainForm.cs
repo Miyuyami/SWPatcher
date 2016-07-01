@@ -294,7 +294,7 @@ namespace SWPatcherTEST.Forms
                             try
                             {
                                 pubPlugin.StartReactor(Methods.GetVariableValue(gameStartResponse, Strings.Web.ReactorStr)[0]);
-                                throw new Exception("Update the game client then try again.");
+                                throw new Exception("Update the game client using the game launcher.\nWhen it finished, close it and try 'Ready to Play' again.");
                             }
                             catch (IndexOutOfRangeException)
                             {

@@ -13,7 +13,6 @@ namespace SWPatcherTEST.General
         {
             var request = (HttpWebRequest)base.GetWebRequest(address);
             request.CookieContainer = _container;
-            //request.ClientCertificates.Add(new X509Certificate());
             return request;
         }
 

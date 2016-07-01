@@ -27,7 +27,7 @@ namespace SWPatcherTEST.Forms
             this.checkBoxPatchExe.Checked = this.WantToPatchSoulworkerExe = UserSettings.WantToPatchExe;
             this.textBoxId.Text = this.GameUserId = UserSettings.GameId;
             this.textBoxPassword.Text = this.GameUserPassword = UserSettings.GamePw;
-            this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
+            this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
 
             if ((this.Owner as MainForm).State == MainForm.States.Idle)
             {
@@ -119,7 +119,7 @@ namespace SWPatcherTEST.Forms
 
         private void checkBoxWantToLogin_CheckedChanged(object sender, EventArgs e)
         {
-            this.WantToLogin = this.checkBoxWantToLogin.Checked;
+            this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.WantToLogin = this.checkBoxWantToLogin.Checked;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)

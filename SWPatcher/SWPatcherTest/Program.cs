@@ -9,7 +9,7 @@ namespace SWPatcherTEST
 {
     static class Program
     {
-        [MTAThread]
+        [STAThread]
         private static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);

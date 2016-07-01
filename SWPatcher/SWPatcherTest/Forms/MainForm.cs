@@ -289,7 +289,16 @@ namespace SWPatcherTEST.Forms
                             throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
                         }
 
-                        PubPluginClass pubPlugin = new PubPluginClass();
+                        PubPluginClass pubPluginClass = new PubPluginClass();
+                        IPubPlugin pubPlugin = null;
+                        try
+                        {
+                            pubPlugin = (IPubPlugin)pubPluginClass;
+                        }
+                        catch (InvalidCastException)
+                        {
+                            throw new Exception("Run the game from the website first to install the plugin and reactor!");
+                        }
                         if (pubPlugin.IsReactorInstalled() == 1)
                             try
                             {
@@ -301,7 +310,7 @@ namespace SWPatcherTEST.Forms
                                 throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
                             }
                         else
-                            throw new Exception("Reactor not installed!");
+                            throw new Exception("Run the game from the website first to install the plugin and reactor!");
                     }
                 }
                 else

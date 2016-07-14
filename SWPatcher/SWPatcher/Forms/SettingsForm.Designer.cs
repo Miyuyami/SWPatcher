@@ -42,12 +42,23 @@
             this.groupBoxGameDirectory = new System.Windows.Forms.GroupBox();
             this.buttonGameChangeDirectory = new System.Windows.Forms.Button();
             this.textBoxGameDirectory = new System.Windows.Forms.TextBox();
+            this.tabPageCredentials = new System.Windows.Forms.TabPage();
+            this.groupBoxGameUserId = new System.Windows.Forms.GroupBox();
+            this.textBoxId = new System.Windows.Forms.TextBox();
+            this.groupBoxGameUserPassword = new System.Windows.Forms.GroupBox();
+            this.textBoxPassword = new System.Windows.Forms.TextBox();
+            this.groupBoxGameWantLogin = new System.Windows.Forms.GroupBox();
+            this.checkBoxWantToLogin = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGame.SuspendLayout();
             this.groupBoxPatchExe.SuspendLayout();
             this.groupBoxPatcherDirectory.SuspendLayout();
             this.groupBoxGameDirectory.SuspendLayout();
+            this.tabPageCredentials.SuspendLayout();
+            this.groupBoxGameUserId.SuspendLayout();
+            this.groupBoxGameUserPassword.SuspendLayout();
+            this.groupBoxGameWantLogin.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel
@@ -105,6 +116,7 @@
             // 
             this.tableLayoutPanel.SetColumnSpan(this.tabControl, 4);
             this.tabControl.Controls.Add(this.tabPageGame);
+            this.tabControl.Controls.Add(this.tabPageCredentials);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(3, 3);
             this.tabControl.Name = "tabControl";
@@ -210,6 +222,84 @@
             this.textBoxGameDirectory.Size = new System.Drawing.Size(207, 20);
             this.textBoxGameDirectory.TabIndex = 0;
             // 
+            // tabPageCredentials
+            // 
+            this.tabPageCredentials.Controls.Add(this.groupBoxGameWantLogin);
+            this.tabPageCredentials.Controls.Add(this.groupBoxGameUserPassword);
+            this.tabPageCredentials.Controls.Add(this.groupBoxGameUserId);
+            this.tabPageCredentials.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCredentials.Name = "tabPageCredentials";
+            this.tabPageCredentials.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCredentials.Size = new System.Drawing.Size(306, 189);
+            this.tabPageCredentials.TabIndex = 1;
+            this.tabPageCredentials.Text = "Credentials";
+            this.tabPageCredentials.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxGameUserId
+            // 
+            this.groupBoxGameUserId.AutoSize = true;
+            this.groupBoxGameUserId.Controls.Add(this.textBoxId);
+            this.groupBoxGameUserId.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxGameUserId.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxGameUserId.Name = "groupBoxGameUserId";
+            this.groupBoxGameUserId.Size = new System.Drawing.Size(300, 60);
+            this.groupBoxGameUserId.TabIndex = 0;
+            this.groupBoxGameUserId.TabStop = false;
+            this.groupBoxGameUserId.Text = "Soulworker ID";
+            // 
+            // textBoxId
+            // 
+            this.textBoxId.Location = new System.Drawing.Point(6, 21);
+            this.textBoxId.Name = "textBoxId";
+            this.textBoxId.Size = new System.Drawing.Size(180, 20);
+            this.textBoxId.TabIndex = 0;
+            this.textBoxId.TextChanged += new System.EventHandler(this.textBoxId_TextChanged);
+            // 
+            // groupBoxGameUserPassword
+            // 
+            this.groupBoxGameUserPassword.AutoSize = true;
+            this.groupBoxGameUserPassword.Controls.Add(this.textBoxPassword);
+            this.groupBoxGameUserPassword.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxGameUserPassword.Location = new System.Drawing.Point(3, 63);
+            this.groupBoxGameUserPassword.Name = "groupBoxGameUserPassword";
+            this.groupBoxGameUserPassword.Size = new System.Drawing.Size(300, 60);
+            this.groupBoxGameUserPassword.TabIndex = 1;
+            this.groupBoxGameUserPassword.TabStop = false;
+            this.groupBoxGameUserPassword.Text = "Soulworker Password";
+            // 
+            // textBoxPassword
+            // 
+            this.textBoxPassword.Location = new System.Drawing.Point(6, 21);
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.PasswordChar = '*';
+            this.textBoxPassword.Size = new System.Drawing.Size(180, 20);
+            this.textBoxPassword.TabIndex = 0;
+            this.textBoxPassword.UseSystemPasswordChar = true;
+            this.textBoxPassword.TextChanged += new System.EventHandler(this.textBoxPassword_TextChanged);
+            // 
+            // groupBoxGameWantLogin
+            // 
+            this.groupBoxGameWantLogin.AutoSize = true;
+            this.groupBoxGameWantLogin.Controls.Add(this.checkBoxWantToLogin);
+            this.groupBoxGameWantLogin.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxGameWantLogin.Location = new System.Drawing.Point(3, 123);
+            this.groupBoxGameWantLogin.Name = "groupBoxGameWantLogin";
+            this.groupBoxGameWantLogin.Size = new System.Drawing.Size(300, 61);
+            this.groupBoxGameWantLogin.TabIndex = 2;
+            this.groupBoxGameWantLogin.TabStop = false;
+            this.groupBoxGameWantLogin.Text = "Tired to login from the website?";
+            // 
+            // checkBoxWantToLogin
+            // 
+            this.checkBoxWantToLogin.AutoSize = true;
+            this.checkBoxWantToLogin.Location = new System.Drawing.Point(6, 25);
+            this.checkBoxWantToLogin.Name = "checkBoxWantToLogin";
+            this.checkBoxWantToLogin.Size = new System.Drawing.Size(138, 17);
+            this.checkBoxWantToLogin.TabIndex = 0;
+            this.checkBoxWantToLogin.Text = "Login using the Patcher";
+            this.checkBoxWantToLogin.UseVisualStyleBackColor = true;
+            this.checkBoxWantToLogin.CheckedChanged += new System.EventHandler(this.checkBoxWantToLogin_CheckedChanged);
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -236,6 +326,14 @@
             this.groupBoxPatcherDirectory.PerformLayout();
             this.groupBoxGameDirectory.ResumeLayout(false);
             this.groupBoxGameDirectory.PerformLayout();
+            this.tabPageCredentials.ResumeLayout(false);
+            this.tabPageCredentials.PerformLayout();
+            this.groupBoxGameUserId.ResumeLayout(false);
+            this.groupBoxGameUserId.PerformLayout();
+            this.groupBoxGameUserPassword.ResumeLayout(false);
+            this.groupBoxGameUserPassword.PerformLayout();
+            this.groupBoxGameWantLogin.ResumeLayout(false);
+            this.groupBoxGameWantLogin.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -256,5 +354,12 @@
         private System.Windows.Forms.TextBox textBoxPatcherDirectory;
         private System.Windows.Forms.GroupBox groupBoxPatchExe;
         private System.Windows.Forms.CheckBox checkBoxPatchExe;
+        private System.Windows.Forms.TabPage tabPageCredentials;
+        private System.Windows.Forms.GroupBox groupBoxGameUserPassword;
+        private System.Windows.Forms.TextBox textBoxPassword;
+        private System.Windows.Forms.GroupBox groupBoxGameUserId;
+        private System.Windows.Forms.TextBox textBoxId;
+        private System.Windows.Forms.GroupBox groupBoxGameWantLogin;
+        private System.Windows.Forms.CheckBox checkBoxWantToLogin;
     }
 }

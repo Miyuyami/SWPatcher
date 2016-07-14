@@ -254,7 +254,7 @@ namespace SWPatcher.Helpers
             using (var client = new WebClient())
             using (var zippedFile = new TempFile())
             {
-                client.DownloadFile(Urls.SoulWorkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
+                client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
 
                 using (var file = new TempFile())
                 {
@@ -380,6 +380,20 @@ namespace SWPatcher.Helpers
 
                 File.WriteAllBytes(gameExePath, resultBytes);
             }
+        }
+
+        public static string[] GetVariableValue(string fullText, string variableName)
+        {
+            string result;
+            int valueIndex = fullText.IndexOf(variableName);
+
+            if (valueIndex == -1)
+                throw new IndexOutOfRangeException();
+
+            result = fullText.Substring(valueIndex + variableName.Length + 1);
+            result = result.Substring(0, result.IndexOf('"'));
+
+            return result.Split(' ');
         }
     }
 }

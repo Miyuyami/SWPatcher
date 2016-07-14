@@ -41,6 +41,7 @@ namespace SWPatcher.Helpers.GlobalVar
             public const string LanguagePack = "LanguagePacks.ini";
             public const string TranslationPackData = "TranslationPackData.ini";
             public const string BytesToPatch = "Sw100BytesToPatch.ini";
+            public const string GeneralFile = "General.ini";
 
             public static class Ver
             {
@@ -69,6 +70,13 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string KeyOriginal = "original";
                 public const string KeyPatch = "patch";
             }
+
+            public static class General
+            {
+                public const string SectionNetwork = "Network Info";
+                public const string KeyIP = "IP";
+                public const string KeyPort = "PORT";
+            }
         }
 
         public static class FormText
@@ -90,6 +98,17 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string WaitClose = "Waiting for client termination...";
                 public const string PatchingExe = "Patching .exe...";
             }
+        }
+
+        public static class Web
+        {
+            public const string PostId = "strmemberid";
+            public const string PostPw = "strpassword";
+            public const string ReactorStr = "	reactorStr = ";
+            public const string GameStartArg = "\"gs\":";
+            public const string ErrorCodeVariable = "var errCode = ";
+            public const string MaintenanceVariable = "var openCloseTypeCd = ";
+            public const string MessageVariable = "var msg = ";
         }
     }
 }

@@ -26,12 +26,12 @@ namespace SWPatcher.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SoulworkerDirectory {
+        public string GameDirectory {
             get {
-                return ((string)(this["SoulworkerDirectory"]));
+                return ((string)(this["GameDirectory"]));
             }
             set {
-                this["SoulworkerDirectory"] = value;
+                this["GameDirectory"] = value;
             }
         }
         
@@ -68,6 +68,42 @@ namespace SWPatcher.Properties {
             }
             set {
                 this["WantToPatchSoulworkerExe"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GameUserId {
+            get {
+                return ((string)(this["GameUserId"]));
+            }
+            set {
+                this["GameUserId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GameUserPassword {
+            get {
+                return ((string)(this["GameUserPassword"]));
+            }
+            set {
+                this["GameUserPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool WantToLoginWithPatcher {
+            get {
+                return ((bool)(this["WantToLoginWithPatcher"]));
+            }
+            set {
+                this["WantToLoginWithPatcher"] = value;
             }
         }
     }

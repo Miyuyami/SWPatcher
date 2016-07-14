@@ -10,8 +10,13 @@
         */
         public const string PatcherGitHubHome = "https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/";
         public const string TranslationGitHubHome = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";
-        public const string SoulWorkerSettingsHome = "http://down.hangame.co.jp/jp/purple/plii/j_sw/";
+        public const string SoulworkerSettingsHome = "http://down.hangame.co.jp/jp/purple/plii/j_sw/";
 
-        public const string SoulWorkerHome = "http://soulworker.hangame.co.jp/";
+        public const string SoulworkerHome = "http://soulworker.hangame.co.jp/";
+        public const string HangameLogin = "https://id.hangame.co.jp/login.nhn";
+        public const string SoulworkerGameStart = "http://soulworker.hangame.co.jp/gamestart.nhn";
+        public const string SoulworkerReactorGameStart = "http://soulworker.hangame.co.jp/reactor/gameStart.nhn";
+        public const string SoulworkerReactor = "http://soulworker.hangame.co.jp/reactor/reactor.nhn";
+        public const string SoulworkerRegistCheck = "http://soulworker.hangame.co.jp/reactor/registCheck.nhn";
     }
 }

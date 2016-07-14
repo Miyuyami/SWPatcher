@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using MadMilkman.Ini;
+using PubPluginLib;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
@@ -254,7 +257,65 @@ namespace SWPatcher.Forms
             Language language = e.Argument as Language;
 
             if (Methods.IsNewerGameClientVersion())
-                throw new Exception("Game client is not updated to the latest version.");
+            {
+                if (UserSettings.WantToLogin)
+                {
+                    using (var client = new MyWebClient())
+                    {
+                        var values = new NameValueCollection(2);
+                        values[Strings.Web.PostId] = UserSettings.GameId;
+                        values[Strings.Web.PostPw] = UserSettings.GamePw;
+                        var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
+                        try
+                        {
+                            if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
+                                throw new Exception("ID or Password incorrect.");
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+
+                        }
+
+                        var gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
+                        try
+                        {
+                            if (Methods.GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
+                                throw new Exception("To play the game you need to accept the Terms of Service.");
+                            else if (Methods.GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
+                                throw new Exception("Game is under maintenance.");
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
+                        }
+
+                        PubPluginClass pubPluginClass = new PubPluginClass();
+                        IPubPlugin pubPlugin = null;
+                        try
+                        {
+                            pubPlugin = (IPubPlugin)pubPluginClass;
+                        }
+                        catch (InvalidCastException)
+                        {
+                            throw new Exception("Run the game from the website first to install the plugin and reactor!");
+                        }
+                        if (pubPlugin.IsReactorInstalled() == 1)
+                            try
+                            {
+                                pubPlugin.StartReactor(Methods.GetVariableValue(gameStartResponse, Strings.Web.ReactorStr)[0]);
+                                throw new Exception("Update the game client using the game launcher.\nWhen it finished, close it and try 'Ready to Play' again.");
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
+                            }
+                        else
+                            throw new Exception("Run the game from the website first to install the plugin and reactor!");
+                    }
+                }
+                else
+                    throw new Exception("Game client is not updated to the latest version.");
+            }
 
             if (Methods.IsTranslationOutdated(language))
             {
@@ -312,28 +373,93 @@ namespace SWPatcher.Forms
                 File.Move(gameExePatchedPath, gameExePath);
             }
 
-            this.Worker.ReportProgress((int)States.WaitingClient);
             Process clientProcess = null;
-            while (true)
+            if (UserSettings.WantToLogin)
             {
-                if (this.Worker.CancellationPending)
+                using (var client = new MyWebClient())
                 {
-                    e.Cancel = true;
-                    return;
+                    var values = new NameValueCollection(2);
+                    values[Strings.Web.PostId] = UserSettings.GameId;
+                    values[Strings.Web.PostPw] = UserSettings.GamePw;
+                    var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
+                    try
+                    {
+                        if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
+                            throw new Exception("ID or Password incorrect.");
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+
+                    }
+
+                    var gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
+                    try
+                    {
+                        if (Methods.GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
+                            throw new Exception("To play the game you need to accept the Terms of Service.");
+                        else if (Methods.GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
+                            throw new Exception("Game is under maintenance.");
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
+                    }
+
+                    try
+                    {
+                        client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
+                    }
+                    catch (WebException webEx)
+                    {
+                        var responseError = webEx.Response as HttpWebResponse;
+                        if (responseError.StatusCode == HttpStatusCode.NotFound)
+                            throw new WebException("Validation failed. Maybe your IP/Region is blocked?", webEx);
+                        else
+                            throw;
+                    }
+
+                    var reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
+                    string[] gameStartArgs = new string[] { Methods.GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0], "", "" };
+
+                    IniFile ini = new IniFile();
+                    ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralFile));
+                    gameStartArgs[1] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyIP].Value;
+                    gameStartArgs[2] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyPort].Value;
+                    var startInfo = new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        Verb = "runas",
+                        Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                        WorkingDirectory = UserSettings.GamePath,
+                        FileName = Strings.FileName.GameExe
+                    };
+                    clientProcess = Process.Start(startInfo);
                 }
+            }
+            else
+            {
+                this.Worker.ReportProgress((int)States.WaitingClient);
+                while (true)
+                {
+                    if (this.Worker.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
 
-                clientProcess = Methods.GetProcess(Strings.FileName.GameExe);
+                    clientProcess = Methods.GetProcess(Strings.FileName.GameExe);
 
-                if (clientProcess == null)
-                    Thread.Sleep(1000);
-                else
-                    break;
+                    if (clientProcess == null)
+                        Thread.Sleep(1000);
+                    else
+                        break;
+                }
             }
 
             this.Worker.ReportProgress((int)States.Applying);
             var archives = this.SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
 
-            foreach (var archive in archives) // backup and place *.v fils
+            foreach (var archive in archives) // backup and place *.v files
             {
                 string archivePath = Path.Combine(UserSettings.GamePath, archive);
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, archive);
@@ -539,7 +665,7 @@ namespace SWPatcher.Forms
 
         private void openSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("iexplore.exe", Urls.SoulWorkerHome);
+            Process.Start("iexplore.exe", Urls.SoulworkerHome);
         }
 
         private void uploadLogToPastebinToolStripMenuItem_Click(object sender, EventArgs e)

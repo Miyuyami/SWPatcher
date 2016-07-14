@@ -7,7 +7,7 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Soulworker HQ Patcher")]
-[assembly: AssemblyDescription("Soulworker Patcher was made to easily patch lastest translations to your Soulworker Client without much risk of corrupting your original files when updating. It also can download latest translations from our team and apply them at any time.")]
+[assembly: AssemblyDescription("Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating. It also can download latest translations from our team and apply them at any time.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SWHQ Patcher")]
@@ -33,6 +33,6 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.1.1.3")]
-[assembly: AssemblyFileVersion("2.1.1.3")]
+[assembly: AssemblyVersion("2.2.0.0")]
+[assembly: AssemblyFileVersion("2.2.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("en")]

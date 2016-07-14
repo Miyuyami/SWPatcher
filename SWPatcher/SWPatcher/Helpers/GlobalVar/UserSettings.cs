@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using SWPatcher.Properties;
-using System.Windows.Forms;
 
 namespace SWPatcher.Helpers.GlobalVar
 {
@@ -32,11 +31,11 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return Settings.Default.SoulworkerDirectory;
+                return Settings.Default.GameDirectory;
             }
             set
             {
-                Settings.Default.SoulworkerDirectory = value;
+                Settings.Default.GameDirectory = value;
                 Settings.Default.Save();
             }
         }
@@ -54,6 +53,45 @@ namespace SWPatcher.Helpers.GlobalVar
                     File.Delete(gameExePatchedPath);
 
                 Settings.Default.WantToPatchSoulworkerExe = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public static string GameId
+        {
+            get
+            {
+                return Settings.Default.GameUserId;
+            }
+            set
+            {
+                Settings.Default.GameUserId = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public static string GamePw
+        {
+            get
+            {
+                return Settings.Default.GameUserPassword;
+            }
+            set
+            {
+                Settings.Default.GameUserPassword = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public static bool WantToLogin
+        {
+            get
+            {
+                return Settings.Default.WantToLoginWithPatcher;
+            }
+            set
+            {
+                Settings.Default.WantToLoginWithPatcher = value;
                 Settings.Default.Save();
             }
         }

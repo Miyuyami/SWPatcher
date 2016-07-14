@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows.Forms;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
-using System.Security.Principal;
 
 namespace SWPatcher
 {
@@ -14,7 +13,7 @@ namespace SWPatcher
         private static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            
+
             if (!Directory.Exists(UserSettings.PatcherPath))
                 UserSettings.PatcherPath = "";
             Directory.SetCurrentDirectory(UserSettings.PatcherPath);

@@ -43,32 +43,7 @@ namespace SWPatcherTEST.Downloading
             if (Methods.IsNewerGameClientVersion())
                 throw new Exception("Game client is not updated to the latest version.");
 
-            if (this.SWFiles.Count == 0)
-            {
-                using (var client = new WebClient())
-                using (var file = new TempFile())
-                {
-                    client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                    IniFile ini = new IniFile();
-                    ini.Load(file.Path);
-
-                    foreach (var section in ini.Sections)
-                    {
-                        string name = section.Name;
-                        string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
-                        string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
-                        string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
-                        string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
-                        this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
-
-                        if (this.Worker.CancellationPending)
-                        {
-                            e.Cancel = true;
-                            return;
-                        }
-                    }
-                }
-            }
+            Methods.SetSWFiles(this.SWFiles);
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

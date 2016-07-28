@@ -29,10 +29,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker PatcherTEST</ProductName>
     <PublisherName>SoulworkerHQTEST</PublisherName>
-    <MinimumRequiredVersion>2.1.6.5</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.2.1.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>2.1.6.5</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.2.1.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -127,6 +127,9 @@
     </Compile>
     <Compile Include="General\Language.cs" />
     <Compile Include="General\MyWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="General\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\SWFile.cs" />

@@ -14,7 +14,7 @@ namespace SWPatcherTEST.Forms
             this.labelVersion.Text = String.Format("Version {0}", AssemblyAccessor.Version);
             this.textBoxDescription.Text = AssemblyAccessor.Description;
             this.linkLabelWebsite.Links.Add(0, 17, Urls.SWHQWebsite);
-            this.logoPictureBox.ImageLocation = String.Format("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/Images/{0}.png", (new Random()).Next(73) + 1);
+            this.logoPictureBox.ImageLocation = String.Format("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/Images/{0}.png", (new Random()).Next(72) + 1);
         }
 
         private void linkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

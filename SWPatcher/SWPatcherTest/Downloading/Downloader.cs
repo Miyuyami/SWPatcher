@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
-using MadMilkman.Ini;
 using SWPatcherTEST.General;
 using SWPatcherTEST.Helpers;
 using SWPatcherTEST.Helpers.GlobalVar;

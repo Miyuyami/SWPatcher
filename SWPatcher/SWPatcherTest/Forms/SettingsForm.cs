@@ -1,8 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using SWPatcherTEST.Helpers;
 using SWPatcherTEST.Helpers.GlobalVar;
-using System.IO;
 
 namespace SWPatcherTEST.Forms
 {

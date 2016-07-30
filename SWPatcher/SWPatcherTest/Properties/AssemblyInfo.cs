@@ -7,7 +7,7 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Soulworker HQ PatcherTEST")]
-[assembly: AssemblyDescription("Soulworker Patcher was made to easily patch lastest translations to your Soulworker Client without much risk of corrupting your original files when updating. It also can download latest translations from our team and apply them at any time.")]
+[assembly: AssemblyDescription("Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating. It also can download latest translations from our team and apply them at any time.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SWHQ PatcherTEST")]

@@ -52,6 +52,7 @@ namespace SWPatcherTEST.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = true;
                             buttonExit.Enabled = true;
                             forceStripMenuItem.Enabled = true;
                             refreshToolStripMenuItem.Enabled = true;
@@ -65,6 +66,7 @@ namespace SWPatcherTEST.Forms
                             buttonDownload.Text = Strings.FormText.Cancel;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -78,6 +80,7 @@ namespace SWPatcherTEST.Forms
                             buttonDownload.Text = Strings.FormText.Cancel;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -91,6 +94,7 @@ namespace SWPatcherTEST.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -104,6 +108,7 @@ namespace SWPatcherTEST.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Cancel;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -117,6 +122,7 @@ namespace SWPatcherTEST.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -130,6 +136,7 @@ namespace SWPatcherTEST.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -192,7 +199,7 @@ namespace SWPatcherTEST.Forms
                 return;
             }
 
-            this.State = 0;
+            this.State = States.Idle;
         }
 
         private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
@@ -245,102 +252,143 @@ namespace SWPatcherTEST.Forms
                 ini.Save(iniPath);
             }
 
-            this.State = 0;
+            this.State = States.Idle;
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Language language = e.Argument as Language;
+            this.Worker.ReportProgress((int)States.Preparing);
 
-            if (Methods.IsNewerGameClientVersion())
+            if (e.Argument != null)
             {
+                Language language = e.Argument as Language;
+
+                if (Methods.IsNewerGameClientVersion())
+                {
+                    if (UserSettings.WantToLogin)
+                    {
+                        Methods.StartReactorToUpdate();
+                    }
+                    else
+                        throw new Exception("Game client is not updated to the latest version.");
+                }
+
+                if (Methods.IsTranslationOutdated(language))
+                {
+                    e.Result = true; // force patch = true
+                    return;
+                }
+
+                Methods.SetSWFiles(this.SWFiles);
+
+                if (UserSettings.WantToPatchExe)
+                {
+                    string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
+                    string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                    string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
+                    string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+
+                    if (!File.Exists(gameExePatchedPath))
+                    {
+                        File.Copy(gameExePath, gameExePatchedPath);
+                        Methods.PatchExeFile(gameExePatchedPath);
+
+                        GC.Collect();
+                    }
+
+                    if (!Directory.Exists(backupFileDirectory))
+                        Directory.CreateDirectory(backupFileDirectory);
+
+                    File.Move(gameExePath, backupFilePath);
+                    File.Move(gameExePatchedPath, gameExePath);
+                }
+
+                Process clientProcess = null;
+                ProcessStartInfo startInfo = null;
                 if (UserSettings.WantToLogin)
                 {
-                    Methods.StartReactorToUpdate();
+                    using (var client = new MyWebClient())
+                    {
+                        Methods.HangameLogin(client);
+                        Methods.GetGameStartResponse(client);
+                        string[] gameStartArgs = Methods.GetGameStartArguments(client);
+
+                        startInfo = new ProcessStartInfo
+                        {
+                            UseShellExecute = true,
+                            Verb = "runas",
+                            Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                            WorkingDirectory = UserSettings.GamePath,
+                            FileName = Strings.FileName.GameExe
+                        };
+                    }
                 }
                 else
-                    throw new Exception("Game client is not updated to the latest version.");
-            }
-
-            if (Methods.IsTranslationOutdated(language))
-            {
-                e.Result = true; // force patch = true
-                return;
-            }
-
-            Methods.SetSWFiles(this.SWFiles);
-
-            if (UserSettings.WantToPatchExe)
-            {
-                string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
-                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
-
-                if (!File.Exists(gameExePatchedPath))
                 {
-                    File.Copy(gameExePath, gameExePatchedPath);
-                    Methods.PatchExeFile(gameExePatchedPath);
-
-                    GC.Collect();
-                }
-
-                if (!Directory.Exists(backupFileDirectory))
-                    Directory.CreateDirectory(backupFileDirectory);
-
-                File.Move(gameExePath, backupFilePath);
-                File.Move(gameExePatchedPath, gameExePath);
-            }
-
-            Process clientProcess = null;
-            ProcessStartInfo startInfo = null;
-            if (UserSettings.WantToLogin)
-            {
-                using (var client = new MyWebClient())
-                {
-                    Methods.HangameLogin(client);
-                    Methods.GetGameStartResponse(client);
-                    string[] gameStartArgs = Methods.GetGameStartArguments(client);
-
-                    startInfo = new ProcessStartInfo
+                    this.Worker.ReportProgress((int)States.WaitingClient);
+                    while (true)
                     {
-                        UseShellExecute = true,
-                        Verb = "runas",
-                        Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                        WorkingDirectory = UserSettings.GamePath,
-                        FileName = Strings.FileName.GameExe
-                    };
+                        if (this.Worker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+
+                        clientProcess = Methods.GetProcess(Strings.FileName.GameExe);
+
+                        if (clientProcess == null)
+                            Thread.Sleep(1000);
+                        else
+                            break;
+                    }
                 }
+
+                this.Worker.ReportProgress((int)States.Applying);
+                Methods.BackupAndPlaceDataFiles(this.SWFiles, language);
+                Methods.BackupAndPlaceOtherFiles(this.SWFiles, language);
+
+                if (startInfo != null)
+                    clientProcess = Process.Start(startInfo);
+
+                this.Worker.ReportProgress((int)States.WaitingClose);
+                clientProcess.WaitForExit();
             }
             else
             {
-                this.Worker.ReportProgress((int)States.WaitingClient);
-                while (true)
+                if (UserSettings.WantToLogin)
                 {
-                    if (this.Worker.CancellationPending)
+                    if (Methods.IsNewerGameClientVersion())
                     {
-                        e.Cancel = true;
-                        return;
+                        Methods.StartReactorToUpdate();
                     }
-
-                    clientProcess = Methods.GetProcess(Strings.FileName.GameExe);
-
-                    if (clientProcess == null)
-                        Thread.Sleep(1000);
                     else
-                        break;
+                    {
+                        ProcessStartInfo startInfo = null;
+                        using (var client = new MyWebClient())
+                        {
+                            Methods.HangameLogin(client);
+                            Methods.GetGameStartResponse(client);
+                            string[] gameStartArgs = Methods.GetGameStartArguments(client);
+
+                            startInfo = new ProcessStartInfo
+                            {
+                                UseShellExecute = true,
+                                Verb = "runas",
+                                Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                                WorkingDirectory = UserSettings.GamePath,
+                                FileName = Strings.FileName.GameExe
+                            };
+                        }
+
+                        Process.Start(startInfo);
+                        e.Cancel = true;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Direct login option is not active.");
                 }
             }
-
-            this.Worker.ReportProgress((int)States.Applying);
-            Methods.BackupAndPlaceDataFiles(this.SWFiles, language);
-            Methods.BackupAndPlaceOtherFiles(this.SWFiles, language);
-
-            if (startInfo != null)
-                clientProcess = Process.Start(startInfo);
-
-            this.Worker.ReportProgress((int)States.WaitingClose);
-            clientProcess.WaitForExit();
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -359,7 +407,7 @@ namespace SWPatcherTEST.Forms
             else if (e.Result != null && Convert.ToBoolean(e.Result))
             {
                 MsgBox.Error("Your translation files are outdated, force patching will now commence.");
-                forceStripMenuItem_Click(null, null);
+                forceStripMenuItem_Click(sender, e);
 
                 return;
             }
@@ -372,7 +420,7 @@ namespace SWPatcherTEST.Forms
             }
             finally
             {
-                this.State = 0;
+                this.State = States.Idle;
             }
         }
 
@@ -441,61 +489,16 @@ namespace SWPatcherTEST.Forms
             }
             else
             {
-                this.State = States.Preparing;
                 this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
             }
         }
 
         private void toolStripMenuItemStartRaw_Click(object sender, EventArgs e)
         {
-            var localbw = new BackgroundWorker();
-            localbw.DoWork += delegate
+            if (this.State == States.Idle)
             {
-                if (UserSettings.WantToLogin)
-                {
-                    if (Methods.IsNewerGameClientVersion())
-                    {
-                        Methods.StartReactorToUpdate();
-                    }
-                    else
-                    {
-                        ProcessStartInfo startInfo = null;
-                        using (var client = new MyWebClient())
-                        {
-                            Methods.HangameLogin(client);
-                            Methods.GetGameStartResponse(client);
-                            string[] gameStartArgs = Methods.GetGameStartArguments(client);
-
-                            startInfo = new ProcessStartInfo
-                            {
-                                UseShellExecute = true,
-                                Verb = "runas",
-                                Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                                WorkingDirectory = UserSettings.GamePath,
-                                FileName = Strings.FileName.GameExe
-                            };
-                        }
-
-                        Process.Start(startInfo);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Direct login option is not active.");
-                }
-            };
-
-            localbw.RunWorkerCompleted += delegate(object bwsender, RunWorkerCompletedEventArgs bwe)
-            {
-                if (bwe.Cancelled) { }
-                else if (bwe.Error != null)
-                {
-                    Error.Log(bwe.Error);
-                    MsgBox.Error(Error.ExeptionParser(bwe.Error));
-                }
-            };
-
-            localbw.RunWorkerAsync();
+                this.Worker.RunWorkerAsync();
+            }
         }
 
         private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)

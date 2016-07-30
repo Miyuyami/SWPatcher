@@ -91,10 +91,10 @@ namespace SWPatcherTEST.Helpers.GlobalVar
             {
                 public const string Idle = "";
                 public const string Download = "Downloading...";
-                public const string Patch = "Working files...";
-                public const string Prepare = "Preparing files...";
+                public const string Patch = "Working...";
+                public const string Prepare = "Preparing...";
                 public const string WaitClient = "Waiting for client...";
-                public const string ApplyFiles = "Applying files...";
+                public const string ApplyFiles = "Applying...";
                 public const string WaitClose = "Waiting for client termination...";
                 public const string PatchingExe = "Patching .exe...";
             }

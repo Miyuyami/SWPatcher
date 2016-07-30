@@ -29,10 +29,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker PatcherTEST</ProductName>
     <PublisherName>SoulworkerHQTEST</PublisherName>
-    <MinimumRequiredVersion>2.2.1.1</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.2.1.2</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>2.2.1.1</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>2.2.1.2</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

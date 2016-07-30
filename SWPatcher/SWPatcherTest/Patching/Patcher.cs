@@ -271,6 +271,8 @@ namespace SWPatcherTEST.Patching
                     else
                         Methods.DoZipFile(archivePath, swFile.PathA, swFilePath);
                 }
+
+                File.Delete(swFilePath);
             }
 
             this.CurrentStep = 3;

@@ -79,15 +79,5 @@ namespace SWPatcherTEST.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Sedurin_patcher_about_image {
-            get {
-                object obj = ResourceManager.GetObject("Sedurin_patcher_about_image", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

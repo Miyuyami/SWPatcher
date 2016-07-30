@@ -7,6 +7,7 @@ namespace SWPatcherTEST.Helpers.GlobalVar
         public const string PasteBinDevKey = "2e5bee04f7455774443dd399934494bd";
         public const string PasteBinUsername = "SWPatcher";
         public const string PasteBinPassword = "pIIrwSL8lNJOjPhW";
+
         public static string LanguageName
         {
             get

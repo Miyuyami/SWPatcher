@@ -301,7 +301,7 @@ namespace SWPatcherTEST.Forms
                     Methods.HangameLogin(client);
                     Methods.GetGameStartResponse(client);
                     string[] gameStartArgs = Methods.GetGameStartArguments(client);
-                    
+
                     startInfo = new ProcessStartInfo
                     {
                         UseShellExecute = true,
@@ -448,9 +448,10 @@ namespace SWPatcherTEST.Forms
 
         private void toolStripMenuItemStartRaw_Click(object sender, EventArgs e)
         {
-            if (UserSettings.WantToLogin)
+            var localbw = new BackgroundWorker();
+            localbw.DoWork += delegate
             {
-                try
+                if (UserSettings.WantToLogin)
                 {
                     if (Methods.IsNewerGameClientVersion())
                     {
@@ -478,16 +479,23 @@ namespace SWPatcherTEST.Forms
                         Process.Start(startInfo);
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Error.Log(ex);
-                    MsgBox.Error(Error.ExeptionParser(ex));
+                    throw new Exception("Direct login option is not active.");
                 }
-            }
-            else
+            };
+
+            localbw.RunWorkerCompleted += delegate(object bwsender, RunWorkerCompletedEventArgs bwe)
             {
-                MsgBox.Error("Direct login option is not active.");
-            }
+                if (bwe.Cancelled) { }
+                else if (bwe.Error != null)
+                {
+                    Error.Log(bwe.Error);
+                    MsgBox.Error(Error.ExeptionParser(bwe.Error));
+                }
+            };
+
+            localbw.RunWorkerAsync();
         }
 
         private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)

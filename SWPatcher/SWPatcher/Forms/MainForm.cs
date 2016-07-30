@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using MadMilkman.Ini;
-using PubPluginLib;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
@@ -56,6 +52,7 @@ namespace SWPatcher.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = true;
                             buttonExit.Enabled = true;
                             forceStripMenuItem.Enabled = true;
                             refreshToolStripMenuItem.Enabled = true;
@@ -69,6 +66,7 @@ namespace SWPatcher.Forms
                             buttonDownload.Text = Strings.FormText.Cancel;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -82,6 +80,7 @@ namespace SWPatcher.Forms
                             buttonDownload.Text = Strings.FormText.Cancel;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -95,6 +94,7 @@ namespace SWPatcher.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -108,6 +108,7 @@ namespace SWPatcher.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Cancel;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -121,6 +122,7 @@ namespace SWPatcher.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -134,6 +136,7 @@ namespace SWPatcher.Forms
                             buttonDownload.Text = Strings.FormText.Download;
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
+                            toolStripMenuItemStartRaw.Enabled = false;
                             buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
@@ -196,7 +199,7 @@ namespace SWPatcher.Forms
                 return;
             }
 
-            this.State = 0;
+            this.State = States.Idle;
         }
 
         private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
@@ -249,248 +252,143 @@ namespace SWPatcher.Forms
                 ini.Save(iniPath);
             }
 
-            this.State = 0;
+            this.State = States.Idle;
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Language language = e.Argument as Language;
+            this.Worker.ReportProgress((int)States.Preparing);
 
-            if (Methods.IsNewerGameClientVersion())
+            if (e.Argument != null)
             {
+                Language language = e.Argument as Language;
+
+                if (Methods.IsNewerGameClientVersion())
+                {
+                    if (UserSettings.WantToLogin)
+                    {
+                        Methods.StartReactorToUpdate();
+                    }
+                    else
+                        throw new Exception("Game client is not updated to the latest version.");
+                }
+
+                if (Methods.IsTranslationOutdated(language))
+                {
+                    e.Result = true; // force patch = true
+                    return;
+                }
+
+                Methods.SetSWFiles(this.SWFiles);
+
+                if (UserSettings.WantToPatchExe)
+                {
+                    string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
+                    string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                    string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
+                    string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+
+                    if (!File.Exists(gameExePatchedPath))
+                    {
+                        File.Copy(gameExePath, gameExePatchedPath);
+                        Methods.PatchExeFile(gameExePatchedPath);
+
+                        GC.Collect();
+                    }
+
+                    if (!Directory.Exists(backupFileDirectory))
+                        Directory.CreateDirectory(backupFileDirectory);
+
+                    File.Move(gameExePath, backupFilePath);
+                    File.Move(gameExePatchedPath, gameExePath);
+                }
+
+                Process clientProcess = null;
+                ProcessStartInfo startInfo = null;
                 if (UserSettings.WantToLogin)
                 {
                     using (var client = new MyWebClient())
                     {
-                        var values = new NameValueCollection(2);
-                        values[Strings.Web.PostId] = UserSettings.GameId;
-                        values[Strings.Web.PostPw] = UserSettings.GamePw;
-                        var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
-                        try
-                        {
-                            if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
-                                throw new Exception("ID or Password incorrect.");
-                        }
-                        catch (IndexOutOfRangeException)
-                        {
+                        Methods.HangameLogin(client);
+                        Methods.GetGameStartResponse(client);
+                        string[] gameStartArgs = Methods.GetGameStartArguments(client);
 
-                        }
-
-                        var gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
-                        try
+                        startInfo = new ProcessStartInfo
                         {
-                            if (Methods.GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
-                                throw new Exception("To play the game you need to accept the Terms of Service.");
-                            else if (Methods.GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
-                                throw new Exception("Game is under maintenance.");
-                        }
-                        catch (IndexOutOfRangeException)
-                        {
-                            throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
-                        }
-
-                        PubPluginClass pubPluginClass = new PubPluginClass();
-                        IPubPlugin pubPlugin = null;
-                        try
-                        {
-                            pubPlugin = (IPubPlugin)pubPluginClass;
-                        }
-                        catch (InvalidCastException)
-                        {
-                            throw new Exception("Run the game from the website first to install the plugin and reactor!");
-                        }
-                        if (pubPlugin.IsReactorInstalled() == 1)
-                            try
-                            {
-                                pubPlugin.StartReactor(Methods.GetVariableValue(gameStartResponse, Strings.Web.ReactorStr)[0]);
-                                throw new Exception("Update the game client using the game launcher.\nWhen it finished, close it and try 'Ready to Play' again.");
-                            }
-                            catch (IndexOutOfRangeException)
-                            {
-                                throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
-                            }
-                        else
-                            throw new Exception("Run the game from the website first to install the plugin and reactor!");
+                            UseShellExecute = true,
+                            Verb = "runas",
+                            Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                            WorkingDirectory = UserSettings.GamePath,
+                            FileName = Strings.FileName.GameExe
+                        };
                     }
                 }
                 else
-                    throw new Exception("Game client is not updated to the latest version.");
-            }
-
-            if (Methods.IsTranslationOutdated(language))
-            {
-                e.Result = true; // force patch = true
-                return;
-            }
-
-            if (this.SWFiles.Count == 0)
-            {
-                this.SWFiles.Clear();
-                using (var client = new WebClient())
-                using (var file = new TempFile())
                 {
-                    client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                    IniFile ini = new IniFile();
-                    ini.Load(file.Path);
-
-                    foreach (var section in ini.Sections)
+                    this.Worker.ReportProgress((int)States.WaitingClient);
+                    while (true)
                     {
-                        string name = section.Name;
-                        string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
-                        string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
-                        string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
-                        string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
-                        this.SWFiles.Add(new SWFile(name, path, pathA, pathD, format));
-
                         if (this.Worker.CancellationPending)
                         {
                             e.Cancel = true;
                             return;
                         }
-                    }
-                }
-            }
 
-            if (UserSettings.WantToPatchExe)
-            {
-                string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
-                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+                        clientProcess = Methods.GetProcess(Strings.FileName.GameExe);
 
-                if (!File.Exists(gameExePatchedPath))
-                {
-                    File.Copy(gameExePath, gameExePatchedPath);
-                    Methods.PatchExeFile(gameExePatchedPath);
-
-                    GC.Collect();
-                }
-
-                if (!Directory.Exists(backupFileDirectory))
-                    Directory.CreateDirectory(backupFileDirectory);
-
-                File.Move(gameExePath, backupFilePath);
-                File.Move(gameExePatchedPath, gameExePath);
-            }
-
-            Process clientProcess = null;
-            if (UserSettings.WantToLogin)
-            {
-                using (var client = new MyWebClient())
-                {
-                    var values = new NameValueCollection(2);
-                    values[Strings.Web.PostId] = UserSettings.GameId;
-                    values[Strings.Web.PostPw] = UserSettings.GamePw;
-                    var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
-                    try
-                    {
-                        if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
-                            throw new Exception("ID or Password incorrect.");
-                    }
-                    catch (IndexOutOfRangeException)
-                    {
-
-                    }
-
-                    var gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
-                    try
-                    {
-                        if (Methods.GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
-                            throw new Exception("To play the game you need to accept the Terms of Service.");
-                        else if (Methods.GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
-                            throw new Exception("Game is under maintenance.");
-                    }
-                    catch (IndexOutOfRangeException)
-                    {
-                        throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
-                    }
-
-                    try
-                    {
-                        client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
-                    }
-                    catch (WebException webEx)
-                    {
-                        var responseError = webEx.Response as HttpWebResponse;
-                        if (responseError.StatusCode == HttpStatusCode.NotFound)
-                            throw new WebException("Validation failed. Maybe your IP/Region is blocked?", webEx);
+                        if (clientProcess == null)
+                            Thread.Sleep(1000);
                         else
-                            throw;
+                            break;
                     }
-
-                    var reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
-                    string[] gameStartArgs = new string[] { Methods.GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0], "", "" };
-
-                    IniFile ini = new IniFile();
-                    ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralFile));
-                    gameStartArgs[1] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyIP].Value;
-                    gameStartArgs[2] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyPort].Value;
-                    var startInfo = new ProcessStartInfo
-                    {
-                        UseShellExecute = true,
-                        Verb = "runas",
-                        Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                        WorkingDirectory = UserSettings.GamePath,
-                        FileName = Strings.FileName.GameExe
-                    };
-                    clientProcess = Process.Start(startInfo);
                 }
+
+                this.Worker.ReportProgress((int)States.Applying);
+                Methods.BackupAndPlaceDataFiles(this.SWFiles, language);
+                Methods.BackupAndPlaceOtherFiles(this.SWFiles, language);
+
+                if (startInfo != null)
+                    clientProcess = Process.Start(startInfo);
+
+                this.Worker.ReportProgress((int)States.WaitingClose);
+                clientProcess.WaitForExit();
             }
             else
             {
-                this.Worker.ReportProgress((int)States.WaitingClient);
-                while (true)
+                if (UserSettings.WantToLogin)
                 {
-                    if (this.Worker.CancellationPending)
+                    if (Methods.IsNewerGameClientVersion())
                     {
-                        e.Cancel = true;
-                        return;
+                        Methods.StartReactorToUpdate();
                     }
-
-                    clientProcess = Methods.GetProcess(Strings.FileName.GameExe);
-
-                    if (clientProcess == null)
-                        Thread.Sleep(1000);
                     else
-                        break;
+                    {
+                        ProcessStartInfo startInfo = null;
+                        using (var client = new MyWebClient())
+                        {
+                            Methods.HangameLogin(client);
+                            Methods.GetGameStartResponse(client);
+                            string[] gameStartArgs = Methods.GetGameStartArguments(client);
+
+                            startInfo = new ProcessStartInfo
+                            {
+                                UseShellExecute = true,
+                                Verb = "runas",
+                                Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                                WorkingDirectory = UserSettings.GamePath,
+                                FileName = Strings.FileName.GameExe
+                            };
+                        }
+
+                        Process.Start(startInfo);
+                        e.Cancel = true;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Direct login option is not active.");
                 }
             }
-
-            this.Worker.ReportProgress((int)States.Applying);
-            var archives = this.SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
-
-            foreach (var archive in archives) // backup and place *.v files
-            {
-                string archivePath = Path.Combine(UserSettings.GamePath, archive);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, archive);
-                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
-
-                if (!Directory.Exists(backupFileDirectory))
-                    Directory.CreateDirectory(backupFileDirectory);
-
-                File.Move(archivePath, backupFilePath);
-                File.Move(Path.Combine(language.Lang, archive), archivePath);
-            }
-
-            var swFiles = this.SWFiles.Where(f => String.IsNullOrEmpty(f.PathA));
-
-            foreach (var swFile in swFiles) // other files that weren't patched
-            {
-                string swFileName = Path.Combine(swFile.Path, Path.GetFileName(swFile.PathD));
-                string swFilePath = Path.Combine(language.Lang, swFileName);
-                string filePath = Path.Combine(UserSettings.GamePath, swFileName);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, swFileName);
-                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
-
-                if (!Directory.Exists(backupFileDirectory))
-                    Directory.CreateDirectory(backupFileDirectory);
-
-                File.Move(filePath, backupFilePath);
-                File.Move(swFilePath, filePath);
-            }
-
-            this.Worker.ReportProgress((int)States.WaitingClose);
-            clientProcess.WaitForExit();
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -509,7 +407,7 @@ namespace SWPatcher.Forms
             else if (e.Result != null && Convert.ToBoolean(e.Result))
             {
                 MsgBox.Error("Your translation files are outdated, force patching will now commence.");
-                forceStripMenuItem_Click(null, null);
+                forceStripMenuItem_Click(sender, e);
 
                 return;
             }
@@ -522,7 +420,7 @@ namespace SWPatcher.Forms
             }
             finally
             {
-                this.State = 0;
+                this.State = States.Idle;
             }
         }
 
@@ -530,7 +428,6 @@ namespace SWPatcher.Forms
         {
             Methods.RestoreBackup();
             Language[] languages = Methods.GetAvailableLanguages();
-            //Language[] languages = new Language[0];
             this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
             if (String.IsNullOrEmpty(UserSettings.GamePath))
@@ -582,7 +479,7 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void buttonPlay_Click(object sender, EventArgs e)
+        private void buttonPlay_MouseDown(object sender, MouseEventArgs e)
         {
             if (this.State == States.WaitingClient)
             {
@@ -592,8 +489,15 @@ namespace SWPatcher.Forms
             }
             else
             {
-                this.State = States.Preparing;
                 this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
+            }
+        }
+
+        private void toolStripMenuItemStartRaw_Click(object sender, EventArgs e)
+        {
+            if (this.State == States.Idle)
+            {
+                this.Worker.RunWorkerAsync();
             }
         }
 

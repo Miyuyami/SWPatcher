@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SWPatcher.General
 {
@@ -10,14 +11,15 @@ namespace SWPatcher.General
 
         protected override WebRequest GetWebRequest(Uri address)
         {
-            var request = (HttpWebRequest)base.GetWebRequest(address);
+            HttpWebRequest request = (HttpWebRequest)base.GetWebRequest(address);
+            request.ClientCertificates.Add(new X509Certificate());
             request.CookieContainer = _container;
             return request;
         }
 
         protected override WebResponse GetWebResponse(WebRequest request)
         {
-            var response = (HttpWebResponse)base.GetWebResponse(request);
+            HttpWebResponse response = (HttpWebResponse)base.GetWebResponse(request);
             if (this.ResponseCookies != null)
                 this.ResponseCookies.Add(response.Cookies);
             else

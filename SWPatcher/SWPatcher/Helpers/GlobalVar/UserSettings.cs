@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using SWPatcher.Properties;
+using System.Windows.Forms;
 
 namespace SWPatcher.Helpers.GlobalVar
 {

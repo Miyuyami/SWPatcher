@@ -30,7 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.buttonPlay = new System.Windows.Forms.Button();
+            this.buttonPlay = new SWPatcher.General.SplitButton();
+            this.contextMenuStripPlay = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemStartRaw = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonDownload = new System.Windows.Forms.Button();
             this.comboBoxLanguages = new System.Windows.Forms.ComboBox();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -50,6 +52,7 @@
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.buttonExit = new System.Windows.Forms.Button();
             this.labelNewTranslations = new System.Windows.Forms.Label();
+            this.contextMenuStripPlay.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -60,6 +63,7 @@
             // 
             this.buttonPlay.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.tableLayoutPanel.SetColumnSpan(this.buttonPlay, 2);
+            this.buttonPlay.ContextMenuStripSplit = this.contextMenuStripPlay;
             this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPlay.Location = new System.Drawing.Point(117, 210);
             this.buttonPlay.Name = "buttonPlay";
@@ -67,7 +71,21 @@
             this.buttonPlay.TabIndex = 3;
             this.buttonPlay.Text = "Ready To Play!";
             this.buttonPlay.UseVisualStyleBackColor = true;
-            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+            this.buttonPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonPlay_MouseDown);
+            // 
+            // contextMenuStripPlay
+            // 
+            this.contextMenuStripPlay.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemStartRaw});
+            this.contextMenuStripPlay.Name = "contextMenuStrip";
+            this.contextMenuStripPlay.Size = new System.Drawing.Size(158, 48);
+            // 
+            // toolStripMenuItemStartRaw
+            // 
+            this.toolStripMenuItemStartRaw.Name = "toolStripMenuItemStartRaw";
+            this.toolStripMenuItemStartRaw.Size = new System.Drawing.Size(157, 22);
+            this.toolStripMenuItemStartRaw.Text = "Start Game Raw";
+            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.toolStripMenuItemStartRaw_Click);
             // 
             // buttonDownload
             // 
@@ -286,6 +304,7 @@
             this.Name = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
+            this.contextMenuStripPlay.ResumeLayout(false);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -301,7 +320,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-        private System.Windows.Forms.Button buttonPlay;
+        private SWPatcher.General.SplitButton buttonPlay;
         private System.Windows.Forms.Button buttonDownload;
         private System.Windows.Forms.ComboBox comboBoxLanguages;
         private System.Windows.Forms.NotifyIcon notifyIcon;
@@ -320,6 +339,8 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uploadLogToPastebinToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripPlay;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemStartRaw;
     }
 }
 

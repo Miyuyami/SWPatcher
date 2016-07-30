@@ -29,10 +29,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>SoulworkerHQ</PublisherName>
-    <MinimumRequiredVersion>2.2.0.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.2.1.4</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.2.0.0</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>2.2.1.4</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -129,6 +129,9 @@
     <Compile Include="General\MyWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="General\SplitButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="General\SWFile.cs" />
     <Compile Include="General\TempFile.cs" />
     <Compile Include="Helpers\Error.cs" />
@@ -195,9 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Sedurin patcher about image.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="patcher.ico" />

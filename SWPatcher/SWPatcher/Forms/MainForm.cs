@@ -273,13 +273,13 @@ namespace SWPatcher.Forms
                         throw new Exception("Game client is not updated to the latest version.");
                 }
 
-                if (Methods.IsTranslationOutdated(language))
+                Methods.SetSWFiles(this.SWFiles);
+
+                if (Methods.IsTranslationOutdated(language, this.SWFiles))
                 {
                     e.Result = true; // force patch = true
                     return;
                 }
-
-                Methods.SetSWFiles(this.SWFiles);
 
                 if (UserSettings.WantToPatchExe)
                 {
@@ -402,7 +402,7 @@ namespace SWPatcher.Forms
             else if (e.Error != null)
             {
                 Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
+                MsgBox.Error(e.Error.Message);
             }
             else if (e.Result != null && Convert.ToBoolean(e.Result))
             {
@@ -426,7 +426,6 @@ namespace SWPatcher.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Methods.RestoreBackup();
             Language[] languages = Methods.GetAvailableLanguages();
             this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
@@ -443,6 +442,8 @@ namespace SWPatcher.Forms
                     int index = this.comboBoxLanguages.Items.IndexOf(new Language(Strings.LanguageName, DateTime.UtcNow));
                     this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
                 }
+
+            Methods.StartupBackupCheck(this.comboBoxLanguages.SelectedItem as Language);
 
             if (!Methods.IsValidSwPatcherPath(Directory.GetCurrentDirectory()))
             {
@@ -624,6 +625,16 @@ namespace SWPatcher.Forms
         {
             AboutBox aboutBox = new AboutBox();
             aboutBox.ShowDialog(this);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.State != States.Idle)
+            {
+                MsgBox.Error(AssemblyAccessor.Title + " is currently busy and cannot close.");
+
+                e.Cancel = true;
+            }
         }
 
         private void exit_Click(object sender, EventArgs e)

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 using Ionic.Zip;
 using MadMilkman.Ini;
 using PubPluginLib;
@@ -61,27 +62,23 @@ namespace SWPatcher.Helpers
             return Directory.Exists(path) && Directory.Exists(Path.Combine(path, Strings.FolderName.Data)) && File.Exists(Path.Combine(path, Strings.FileName.GameExe)) && File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
         }
 
-        internal static void RestoreBackup()
+        internal static void StartupBackupCheck(Language language)
         {
             if (Directory.Exists(Strings.FolderName.Backup))
             {
-                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
-
-                if (!String.IsNullOrEmpty(UserSettings.GamePath) && Methods.IsSwPath(UserSettings.GamePath))
+                if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    foreach (var s in filePaths)
-                    {
-                        string path = Path.Combine(UserSettings.GamePath, s.Substring(Strings.FolderName.Backup.Length + 1));
+                    var result = MsgBox.Question(String.Format("Backup files found. Do you want to restore them now back in your client?\nExisting ones from your client will be swapped to the {0} translation.\nSelecting No will remove those backup files.", language.Lang));
 
-                        if (Directory.Exists(Path.GetDirectoryName(path)) && !File.Exists(path))
-                            File.Move(s, path);
-                        else
-                            File.Delete(s);
-                    }
+                    if (result == DialogResult.Yes)
+                        RestoreBackup(language);
+                    else
+                        Directory.Delete(Strings.FolderName.Backup, true);
                 }
-                else
-                    foreach (var s in filePaths)
-                        File.Delete(s);
+            }
+            else
+            {
+                Directory.CreateDirectory(Strings.FolderName.Backup);
             }
         }
 
@@ -275,7 +272,7 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static bool IsTranslationOutdated(Language language)
+        internal static bool IsTranslationOutdated(Language language, List<SWFile> swFiles)
         {
             string selectedTranslationPath = Path.Combine(language.Lang, Strings.IniName.Translation);
             if (!File.Exists(selectedTranslationPath))
@@ -294,6 +291,14 @@ namespace SWPatcher.Helpers
             string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
             if (VersionCompare(clientVer, translationVer))
                 return true;
+
+            var otherSWFilesPaths = swFiles.Where(f => String.IsNullOrEmpty(f.PathA)).Select(f => f.Path + Path.GetFileName(f.PathD));
+            var archivesPaths = swFiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
+            var translationPaths = archivesPaths.Union(otherSWFilesPaths).Select(f => Path.Combine(language.Lang, f));
+
+            foreach (var path in translationPaths)
+                if (!File.Exists(path))
+                    return true;
 
             return false;
         }
@@ -426,8 +431,9 @@ namespace SWPatcher.Helpers
             var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
             try
             {
-                if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
-                    throw new Exception("Incorrect ID or Password.");
+                string[] messages = Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable);
+                if (messages[0].Length > 0)
+                    throw new Exception("Incorrect ID or Password.", new Exception(String.Join("\n", messages)));
             }
             catch (IndexOutOfRangeException)
             {

@@ -53,7 +53,6 @@ namespace SWPatcher.Forms
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = true;
-                            buttonExit.Enabled = true;
                             forceStripMenuItem.Enabled = true;
                             refreshToolStripMenuItem.Enabled = true;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
@@ -67,7 +66,6 @@ namespace SWPatcher.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Download;
@@ -81,7 +79,6 @@ namespace SWPatcher.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
@@ -95,7 +92,6 @@ namespace SWPatcher.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Prepare;
@@ -109,7 +105,6 @@ namespace SWPatcher.Forms
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Cancel;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.WaitClient;
@@ -123,7 +118,6 @@ namespace SWPatcher.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.ApplyFiles;
@@ -137,7 +131,6 @@ namespace SWPatcher.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.WaitClose;
@@ -635,11 +628,14 @@ namespace SWPatcher.Forms
 
                 e.Cancel = true;
             }
+            else
+            {
+                Strings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
+            }
         }
 
         private void exit_Click(object sender, EventArgs e)
         {
-            Strings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
             this.Close();
         }
     }

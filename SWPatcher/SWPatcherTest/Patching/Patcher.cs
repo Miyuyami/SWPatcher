@@ -73,7 +73,10 @@ namespace SWPatcherTEST.Patching
                 {
                     using (var swFilePathRes = new TempFile(Path.ChangeExtension(swFilePath, ".res")))
                     {
-                        Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory());
+                        if (string.IsNullOrEmpty(swFile.Password))
+                            Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory());
+                        else
+                            Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory(), swFile.Password);
 
                         using (var swFilePathOriginalRes = new TempFile(Path.GetFileName(swFile.PathA)))
                         {
@@ -261,7 +264,10 @@ namespace SWPatcherTEST.Patching
                             #endregion
                         }
 
-                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path);
+                        if (string.IsNullOrEmpty(swFile.Password))
+                            Methods.DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path);
+                        else
+                            Methods.DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path, swFile.Password);
                     }
                 }
                 else // just zip other files

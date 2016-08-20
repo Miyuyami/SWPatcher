@@ -40,7 +40,7 @@ namespace SWPatcherTEST.Helpers.GlobalVar
             public const string ClientVer = "Ver.ini";
             public const string Translation = "Translation.ini";
             public const string LanguagePack = "LanguagePacks.ini";
-            public const string TranslationPackData = "TranslationPackData.ini";
+            public const string TranslationPackData = "TranslationPackDataTest.ini";
             public const string BytesToPatch = "Sw100BytesToPatch.ini";
             public const string GeneralFile = "General.ini";
 
@@ -64,6 +64,7 @@ namespace SWPatcherTEST.Helpers.GlobalVar
                 public const string KeyPathInArchive = "path_a";
                 public const string KeyPathOfDownload = "path_d";
                 public const string KeyFormat = "format";
+                public const string Password = "password";
             }
 
             public static class PatchBytes

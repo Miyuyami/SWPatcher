@@ -204,6 +204,27 @@ namespace SWPatcherTEST.Helpers
             }
         }
 
+        internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination, string password)
+        {
+            using (var zip = ZipFile.Read(zipPath))
+            {
+                zip.Password = password;
+                zip.FlattenFoldersOnExtract = true;
+                zip[fileName].Extract(extractDestination, ExtractExistingFileAction.OverwriteSilently);
+            }
+        }
+
+        internal static void DoZipFile(string zipPath, string fileName, string filePath, string password)
+        {
+            using (var zip = ZipFile.Read(zipPath))
+            {
+                zip.Password = password;
+                zip.RemoveEntry(fileName);
+                zip.AddFile(filePath, Path.GetDirectoryName(fileName));
+                zip.Save();
+            }
+        }
+
         internal static void DoZipFile(string zipPath, string fileName, string filePath)
         {
             using (var zip = ZipFile.Read(zipPath))
@@ -413,7 +434,12 @@ namespace SWPatcherTEST.Helpers
                     string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
                     string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
                     string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
-                    swfiles.Add(new SWFile(name, path, pathA, pathD, format));
+                    string password = string.Empty;
+                    if (section.Keys.Contains(Strings.IniName.Pack.Password))
+                    {
+                        password = section.Keys[Strings.IniName.Pack.Password].Value;
+                    }
+                    swfiles.Add(new SWFile(name, path, pathA, pathD, format, password));
                 }
             }
         }

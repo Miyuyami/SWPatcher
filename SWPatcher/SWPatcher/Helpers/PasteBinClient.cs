@@ -71,6 +71,7 @@ namespace SWPatcher.Helpers
             SetIfNotEmpty(parameters, ApiParameters.PasteFormat, entry.Format);
             SetIfNotEmpty(parameters, ApiParameters.PastePrivate, entry.Private ? "2" : "1");
             SetIfNotEmpty(parameters, ApiParameters.PasteExpireDate, FormatExpireDate(entry.Expiration));
+            SetIfNotEmpty(parameters, ApiParameters.PasteLimit, "1000");
             SetIfNotEmpty(parameters, ApiParameters.UserKey, _apiUserKey);
 
             byte[] bytes;
@@ -139,6 +140,7 @@ namespace SWPatcher.Helpers
             public const string PastePrivate = "api_paste_private";
             public const string PasteFormat = "api_paste_format";
             public const string PasteExpireDate = "api_paste_expire_date";
+            public const string PasteLimit = "api_results_limit";
         }
     }
 

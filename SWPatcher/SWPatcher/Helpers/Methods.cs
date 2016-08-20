@@ -182,7 +182,7 @@ namespace SWPatcher.Helpers
         internal static string GetMD5(string text)
         {
             var md5 = new MD5CryptoServiceProvider();
-            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
+            md5.ComputeHash(Encoding.ASCII.GetBytes(text));
             byte[] result = md5.Hash;
 
             StringBuilder sb = new StringBuilder();
@@ -190,6 +190,15 @@ namespace SWPatcher.Helpers
                 sb.Append(result[i].ToString("x2"));
 
             return sb.ToString();
+        }
+
+        internal static string GetSHA256(string filename)
+        {
+            using (var sha256 = SHA256.Create())
+            using (var stream = File.OpenRead(filename))
+            {
+                return BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "");
+            }
         }
 
         internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination, string password)

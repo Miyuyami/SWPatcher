@@ -19,14 +19,6 @@ namespace SWPatcher.Helpers.GlobalVar
             }
         }
 
-        public static string Version
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
-        }
-
         public static string Description
         {
             get
@@ -46,6 +38,14 @@ namespace SWPatcher.Helpers.GlobalVar
                 if (attributes.Length == 0)
                     return "";
                 return ((AssemblyProductAttribute)attributes[0]).Product;
+            }
+        }
+
+        public static string Version
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }
     }

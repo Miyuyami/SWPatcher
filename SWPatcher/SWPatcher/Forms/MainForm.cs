@@ -589,9 +589,9 @@ namespace SWPatcher.Forms
 
             var entry = new PasteBinEntry
             {
-                Title = this.Text + " at " + Methods.DateToString(DateTime.UtcNow),
+                Title = String.Format("{0} ({1}) at {2}", AssemblyAccessor.Version, Methods.GetSHA256(Application.ExecutablePath).Substring(0, 12), Methods.DateToString(DateTime.UtcNow)),
                 Text = logText,
-                Expiration = PasteBinExpiration.OneWeek,
+                Expiration = PasteBinExpiration.OneHour,
                 Private = true,
                 Format = "csharp"
             };

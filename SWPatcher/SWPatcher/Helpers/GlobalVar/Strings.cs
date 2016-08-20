@@ -42,7 +42,8 @@ namespace SWPatcher.Helpers.GlobalVar
             public const string LanguagePack = "LanguagePacks.ini";
             public const string TranslationPackData = "TranslationPackData.ini";
             public const string BytesToPatch = "Sw100BytesToPatch.ini";
-            public const string GeneralFile = "General.ini";
+            public const string GeneralClient = "General.ini";
+            public const string DatasArchives = "datas.ini";
 
             public static class Ver
             {
@@ -77,6 +78,12 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string SectionNetwork = "Network Info";
                 public const string KeyIP = "IP";
                 public const string KeyPort = "PORT";
+            }
+
+            public static class Datas
+            {
+                public const string SectionZipPassword = "Zip Passwords";
+                public const string Data12 = "data12";
             }
         }
 

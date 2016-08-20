@@ -192,30 +192,33 @@ namespace SWPatcher.Helpers
             return sb.ToString();
         }
 
-        internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination)
+        internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination, string password)
         {
             using (var zip = ZipFile.Read(zipPath))
             {
+                zip.Password = password;
                 zip.FlattenFoldersOnExtract = true;
                 zip[fileName].Extract(extractDestination, ExtractExistingFileAction.OverwriteSilently);
             }
         }
 
-        internal static void DoZipFile(string zipPath, string fileName, string filePath)
+        internal static void DoZipFile(string zipPath, string fileName, string filePath, string password)
         {
             using (var zip = ZipFile.Read(zipPath))
             {
+                zip.Password = password;
                 zip.RemoveEntry(fileName);
                 zip.AddFile(filePath, Path.GetDirectoryName(fileName));
                 zip.Save();
             }
         }
 
-        internal static void AddZipToZip(string zipPath, string destinationZipPath, string directoryInDestination)
+        internal static void AddZipToZip(string zipPath, string destinationZipPath, string directoryInDestination, string password)
         {
             using (var zip = ZipFile.Read(zipPath))
             using (var destinationZip = ZipFile.Read(destinationZipPath))
             {
+                zip.Password = password;
                 var tempFileList = zip.Entries.Select(entry => new TempFile(Path.Combine(Path.GetTempPath(), Path.GetFileName(entry.FileName)))).ToList();
                 zip.FlattenFoldersOnExtract = true;
 
@@ -385,6 +388,27 @@ namespace SWPatcher.Helpers
             }
         }
 
+        internal static Dictionary<string, string> LoadPasswords()
+        {
+            using (var client = new WebClient())
+            using (var file = new TempFile())
+            {
+                var result = new Dictionary<string, string>();
+
+                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.DatasArchives, file.Path);
+                IniFile ini = new IniFile();
+                ini.Load(file.Path);
+
+                var section = ini.Sections[Strings.IniName.Datas.SectionZipPassword];
+                foreach (var key in section.Keys)
+                {
+                    result.Add(key.Name, key.Value);
+                }
+
+                return result;
+            }
+        }
+
         internal static string[] GetVariableValue(string fullText, string variableName)
         {
             string result;
@@ -508,7 +532,7 @@ namespace SWPatcher.Helpers
 
             var reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
             IniFile ini = new IniFile();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralFile));
+            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralClient));
 
             string[] gameStartArgs = new string[3];
             gameStartArgs[0] = Methods.GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0];

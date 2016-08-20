@@ -41,6 +41,8 @@ namespace SWPatcher.Patching
             var archives = archivedSWFiles.Select(f => f.Path).Distinct();
             int archivedSWFilesCount = archivedSWFiles.Count();
 
+            var passwordDictionary = Methods.LoadPasswords();
+
             this.CurrentStep = 1;
             foreach (var archive in archives) // copy and Xor archives
             {
@@ -67,13 +69,18 @@ namespace SWPatcher.Patching
                 this.Worker.ReportProgress(count++ == archivedSWFilesCount ? int.MaxValue : Convert.ToInt32(((double)count / archivedSWFilesCount) * int.MaxValue));
 
                 string archivePath = Path.Combine(this.Language.Lang, swFile.Path);
+                string archiveFileNameWithoutExtension = Path.GetFileNameWithoutExtension(archivePath);
+                string archivePassword = "";
                 string swFilePath = Methods.GetArchivedSWFilePath(swFile, this.Language);
+
+                if (passwordDictionary.ContainsKey(archiveFileNameWithoutExtension))
+                    archivePassword = passwordDictionary[archiveFileNameWithoutExtension];
 
                 if (!String.IsNullOrEmpty(swFile.Format)) // if file should be patched(.res)
                 {
                     using (var swFilePathRes = new TempFile(Path.ChangeExtension(swFilePath, ".res")))
                     {
-                        Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory());
+                        Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory(), archivePassword);
 
                         using (var swFilePathOriginalRes = new TempFile(Path.GetFileName(swFile.PathA)))
                         {
@@ -261,15 +268,15 @@ namespace SWPatcher.Patching
                             #endregion
                         }
 
-                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path);
+                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path, archivePassword);
                     }
                 }
                 else // just zip other files
                 {
                     if (Path.GetExtension(swFilePath) == ".zip")
-                        Methods.AddZipToZip(swFilePath, archivePath, swFile.PathA);
+                        Methods.AddZipToZip(swFilePath, archivePath, swFile.PathA, archivePassword);
                     else
-                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePath);
+                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePath, archivePassword);
                 }
 
                 File.Delete(swFilePath);

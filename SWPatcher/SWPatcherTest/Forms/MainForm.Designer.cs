@@ -78,7 +78,7 @@
             this.contextMenuStripPlay.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemStartRaw});
             this.contextMenuStripPlay.Name = "contextMenuStrip";
-            this.contextMenuStripPlay.Size = new System.Drawing.Size(158, 48);
+            this.contextMenuStripPlay.Size = new System.Drawing.Size(158, 26);
             // 
             // toolStripMenuItemStartRaw
             // 
@@ -302,6 +302,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.contextMenuStripPlay.ResumeLayout(false);

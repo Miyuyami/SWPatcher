@@ -27,6 +27,8 @@ namespace SWPatcherTEST.Downloading
             this.Worker.DoWork += new DoWorkEventHandler(Worker_DoWork);
             this.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
             this.Client = new WebClient();
+            this.Client.Proxy = null;
+            this.Client.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
             this.Client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Client_DownloadProgressChanged);
             this.Client.DownloadFileCompleted += new AsyncCompletedEventHandler(Client_DownloadFileCompleted);
         }
@@ -42,6 +44,10 @@ namespace SWPatcherTEST.Downloading
             if (Methods.IsNewerGameClientVersion())
                 throw new Exception("Game client is not updated to the latest version.");
 
+            foreach (var archive in Directory.GetFiles(this.Language.Lang, "*.v", SearchOption.AllDirectories)) // Clean up old archives (or .v files)
+            {
+                File.Delete(archive);
+            }
             Methods.SetSWFiles(this.SWFiles);
         }
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 using Ionic.Zip;
 using MadMilkman.Ini;
 using PubPluginLib;
@@ -61,27 +62,23 @@ namespace SWPatcherTEST.Helpers
             return Directory.Exists(path) && Directory.Exists(Path.Combine(path, Strings.FolderName.Data)) && File.Exists(Path.Combine(path, Strings.FileName.GameExe)) && File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
         }
 
-        internal static void RestoreBackup()
+        internal static void StartupBackupCheck(Language language)
         {
             if (Directory.Exists(Strings.FolderName.Backup))
             {
-                string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
-
-                if (!String.IsNullOrEmpty(UserSettings.GamePath) && Methods.IsSwPath(UserSettings.GamePath))
+                if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    foreach (var s in filePaths)
-                    {
-                        string path = Path.Combine(UserSettings.GamePath, s.Substring(Strings.FolderName.Backup.Length + 1));
+                    var result = MsgBox.Question(String.Format("Backup files found. Do you want to restore them now back in your client?\nExisting ones from your client will be swapped to the {0} translation.\nSelecting No will remove those backup files.", language.Lang));
 
-                        if (Directory.Exists(Path.GetDirectoryName(path)) && !File.Exists(path))
-                            File.Move(s, path);
-                        else
-                            File.Delete(s);
-                    }
+                    if (result == DialogResult.Yes)
+                        RestoreBackup(language);
+                    else
+                        Directory.Delete(Strings.FolderName.Backup, true);
                 }
-                else
-                    foreach (var s in filePaths)
-                        File.Delete(s);
+            }
+            else
+            {
+                Directory.CreateDirectory(Strings.FolderName.Backup);
             }
         }
 
@@ -185,7 +182,7 @@ namespace SWPatcherTEST.Helpers
         internal static string GetMD5(string text)
         {
             var md5 = new MD5CryptoServiceProvider();
-            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
+            md5.ComputeHash(Encoding.ASCII.GetBytes(text));
             byte[] result = md5.Hash;
 
             StringBuilder sb = new StringBuilder();
@@ -195,12 +192,12 @@ namespace SWPatcherTEST.Helpers
             return sb.ToString();
         }
 
-        internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination)
+        internal static string GetSHA256(string filename)
         {
-            using (var zip = ZipFile.Read(zipPath))
+            using (var sha256 = SHA256.Create())
+            using (var stream = File.OpenRead(filename))
             {
-                zip.FlattenFoldersOnExtract = true;
-                zip[fileName].Extract(extractDestination, ExtractExistingFileAction.OverwriteSilently);
+                return BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "");
             }
         }
 
@@ -225,21 +222,12 @@ namespace SWPatcherTEST.Helpers
             }
         }
 
-        internal static void DoZipFile(string zipPath, string fileName, string filePath)
-        {
-            using (var zip = ZipFile.Read(zipPath))
-            {
-                zip.RemoveEntry(fileName);
-                zip.AddFile(filePath, Path.GetDirectoryName(fileName));
-                zip.Save();
-            }
-        }
-
-        internal static void AddZipToZip(string zipPath, string destinationZipPath, string directoryInDestination)
+        internal static void AddZipToZip(string zipPath, string destinationZipPath, string directoryInDestination, string password)
         {
             using (var zip = ZipFile.Read(zipPath))
             using (var destinationZip = ZipFile.Read(destinationZipPath))
             {
+                zip.Password = password;
                 var tempFileList = zip.Entries.Select(entry => new TempFile(Path.Combine(Path.GetTempPath(), Path.GetFileName(entry.FileName)))).ToList();
                 zip.FlattenFoldersOnExtract = true;
 
@@ -296,7 +284,7 @@ namespace SWPatcherTEST.Helpers
             }
         }
 
-        internal static bool IsTranslationOutdated(Language language)
+        internal static bool IsTranslationOutdated(Language language, List<SWFile> swFiles)
         {
             string selectedTranslationPath = Path.Combine(language.Lang, Strings.IniName.Translation);
             if (!File.Exists(selectedTranslationPath))
@@ -315,6 +303,14 @@ namespace SWPatcherTEST.Helpers
             string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
             if (VersionCompare(clientVer, translationVer))
                 return true;
+
+            var otherSWFilesPaths = swFiles.Where(f => String.IsNullOrEmpty(f.PathA)).Select(f => f.Path + Path.GetFileName(f.PathD));
+            var archivesPaths = swFiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
+            var translationPaths = archivesPaths.Union(otherSWFilesPaths).Select(f => Path.Combine(language.Lang, f));
+
+            foreach (var path in translationPaths)
+                if (!File.Exists(path))
+                    return true;
 
             return false;
         }
@@ -401,6 +397,27 @@ namespace SWPatcherTEST.Helpers
             }
         }
 
+        internal static Dictionary<string, string> LoadPasswords()
+        {
+            using (var client = new WebClient())
+            using (var file = new TempFile())
+            {
+                var result = new Dictionary<string, string>();
+
+                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.DatasArchives, file.Path);
+                IniFile ini = new IniFile();
+                ini.Load(file.Path);
+
+                var section = ini.Sections[Strings.IniName.Datas.SectionZipPassword];
+                foreach (var key in section.Keys)
+                {
+                    result.Add(key.Name, key.Value);
+                }
+
+                return result;
+            }
+        }
+
         internal static string[] GetVariableValue(string fullText, string variableName)
         {
             string result;
@@ -434,12 +451,7 @@ namespace SWPatcherTEST.Helpers
                     string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
                     string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
                     string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
-                    string password = string.Empty;
-                    if (section.Keys.Contains(Strings.IniName.Pack.Password))
-                    {
-                        password = section.Keys[Strings.IniName.Pack.Password].Value;
-                    }
-                    swfiles.Add(new SWFile(name, path, pathA, pathD, format, password));
+                    swfiles.Add(new SWFile(name, path, pathA, pathD, format));
                 }
             }
         }
@@ -452,8 +464,9 @@ namespace SWPatcherTEST.Helpers
             var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
             try
             {
-                if (Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable)[0].Length > 0)
-                    throw new Exception("Incorrect ID or Password.");
+                string[] messages = Methods.GetVariableValue(loginResponse, Strings.Web.MessageVariable);
+                if (messages[0].Length > 0)
+                    throw new Exception("Incorrect ID or Password.", new Exception(String.Join("\n", messages)));
             }
             catch (IndexOutOfRangeException)
             {
@@ -528,7 +541,7 @@ namespace SWPatcherTEST.Helpers
 
             var reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
             IniFile ini = new IniFile();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralFile));
+            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralClient));
 
             string[] gameStartArgs = new string[3];
             gameStartArgs[0] = Methods.GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0];

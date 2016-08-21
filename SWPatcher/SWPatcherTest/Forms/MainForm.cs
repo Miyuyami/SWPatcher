@@ -53,7 +53,6 @@ namespace SWPatcherTEST.Forms
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = true;
-                            buttonExit.Enabled = true;
                             forceStripMenuItem.Enabled = true;
                             refreshToolStripMenuItem.Enabled = true;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
@@ -67,7 +66,6 @@ namespace SWPatcherTEST.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Download;
@@ -81,7 +79,6 @@ namespace SWPatcherTEST.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
@@ -95,7 +92,6 @@ namespace SWPatcherTEST.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.Prepare;
@@ -109,7 +105,6 @@ namespace SWPatcherTEST.Forms
                             buttonPlay.Enabled = true;
                             buttonPlay.Text = Strings.FormText.Cancel;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.WaitClient;
@@ -123,7 +118,6 @@ namespace SWPatcherTEST.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.ApplyFiles;
@@ -137,7 +131,6 @@ namespace SWPatcherTEST.Forms
                             buttonPlay.Enabled = false;
                             buttonPlay.Text = Strings.FormText.Play;
                             toolStripMenuItemStartRaw.Enabled = false;
-                            buttonExit.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
                             toolStripStatusLabel.Text = Strings.FormText.Status.WaitClose;
@@ -273,13 +266,13 @@ namespace SWPatcherTEST.Forms
                         throw new Exception("Game client is not updated to the latest version.");
                 }
 
-                if (Methods.IsTranslationOutdated(language))
+                Methods.SetSWFiles(this.SWFiles);
+
+                if (Methods.IsTranslationOutdated(language, this.SWFiles))
                 {
                     e.Result = true; // force patch = true
                     return;
                 }
-
-                Methods.SetSWFiles(this.SWFiles);
 
                 if (UserSettings.WantToPatchExe)
                 {
@@ -402,7 +395,7 @@ namespace SWPatcherTEST.Forms
             else if (e.Error != null)
             {
                 Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
+                MsgBox.Error(e.Error.Message);
             }
             else if (e.Result != null && Convert.ToBoolean(e.Result))
             {
@@ -426,7 +419,6 @@ namespace SWPatcherTEST.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Methods.RestoreBackup();
             Language[] languages = Methods.GetAvailableLanguages();
             this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
 
@@ -443,6 +435,8 @@ namespace SWPatcherTEST.Forms
                     int index = this.comboBoxLanguages.Items.IndexOf(new Language(Strings.LanguageName, DateTime.UtcNow));
                     this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
                 }
+
+            Methods.StartupBackupCheck(this.comboBoxLanguages.SelectedItem as Language);
 
             if (!Methods.IsValidSwPatcherPath(Directory.GetCurrentDirectory()))
             {
@@ -595,9 +589,9 @@ namespace SWPatcherTEST.Forms
 
             var entry = new PasteBinEntry
             {
-                Title = this.Text + " at " + Methods.DateToString(DateTime.UtcNow),
+                Title = String.Format("{0} ({1}) at {2}", AssemblyAccessor.Version, Methods.GetSHA256(Application.ExecutablePath).Substring(0, 12), Methods.DateToString(DateTime.UtcNow)),
                 Text = logText,
-                Expiration = PasteBinExpiration.OneWeek,
+                Expiration = PasteBinExpiration.OneHour,
                 Private = true,
                 Format = "csharp"
             };
@@ -626,9 +620,22 @@ namespace SWPatcherTEST.Forms
             aboutBox.ShowDialog(this);
         }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.State != States.Idle)
+            {
+                MsgBox.Error(AssemblyAccessor.Title + " is currently busy and cannot close.");
+
+                e.Cancel = true;
+            }
+            else
+            {
+                Strings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
+            }
+        }
+
         private void exit_Click(object sender, EventArgs e)
         {
-            Strings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
             this.Close();
         }
     }

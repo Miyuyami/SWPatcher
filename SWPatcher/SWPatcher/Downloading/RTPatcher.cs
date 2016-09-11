@@ -105,6 +105,28 @@ namespace SWPatcher.Helpers
             }
         }
 
+        private Version GetNextVersion(Version clientVer, Version serverVer)
+        {
+            var result = new Version(clientVer.Major + 1, 0, 0, 0);
+
+            if (result > serverVer)
+            {
+                result = new Version(clientVer.Major, clientVer.Minor + 1, 0, 0);
+
+                if (result > serverVer)
+                {
+                    result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build + 1, 0);
+
+                    if (result > serverVer)
+                    {
+                        result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build, clientVer.Revision + 1);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private static IniFile GetServerIni()
         {
             using (var client = new WebClient())

@@ -4,13 +4,13 @@ namespace SWPatcher.Helpers
 {
     public class RTPatchCompletedEventArgs : EventArgs
     {
-        public RTPatchVersion Version { get; private set; }
+        public Version Version { get; private set; }
         public string Caller { get; private set; }
         public uint Result { get; private set; }
         public bool Cancelled { get; private set; }
         public Exception Error { get; private set; }
 
-        public RTPatchCompletedEventArgs(RTPatchVersion version, string caller)
+        public RTPatchCompletedEventArgs(Version version, string caller)
         {
             this.Version = version;
             this.Caller = caller;
@@ -19,7 +19,7 @@ namespace SWPatcher.Helpers
             this.Error = null;
         }
 
-        public RTPatchCompletedEventArgs(RTPatchVersion version, string caller, bool cancelled, Exception error)
+        public RTPatchCompletedEventArgs(Version version, string caller, bool cancelled, Exception error)
         {
             this.Version = version;
             this.Caller = caller;
@@ -28,7 +28,7 @@ namespace SWPatcher.Helpers
             this.Error = error;
         }
 
-        public RTPatchCompletedEventArgs(RTPatchVersion version, string caller, uint result, bool cancelled, Exception error)
+        public RTPatchCompletedEventArgs(Version version, string caller, uint result, bool cancelled, Exception error)
         {
             this.Version = version;
             this.Caller = caller;

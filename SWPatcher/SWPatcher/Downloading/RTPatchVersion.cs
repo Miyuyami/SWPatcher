@@ -17,12 +17,9 @@ namespace SWPatcher.Helpers
             this.Revision = version.Revision;
         }
 
-        public string ToString(bool flag)
+        public override string ToString()
         {
-            if (flag)
-                return $"{this.Major}.{this.Minor}.{this.Build}.{this.Revision}";
-            else
-                return $"{this.Major}_{this.Minor}_{this.Build}_{this.Revision}.RTP";
+            return $"{this.Major}_{this.Minor}_{this.Build}_{this.Revision}.RTP";
         }
     }
 }

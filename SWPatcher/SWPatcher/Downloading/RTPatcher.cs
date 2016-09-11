@@ -26,7 +26,9 @@ namespace SWPatcher.Helpers
         private string CurrentLogFile;
         private string FileName;
         private string Caller;
-        private RTPatchVersion RTVersion;
+        private string Url;
+        private Version ClientVersion;
+        private Version ServerVersion;
         private int FileCount;
         private int FileNumber;
 
@@ -54,58 +56,57 @@ namespace SWPatcher.Helpers
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             string gamePath = UserSettings.GamePath;
-            e.Result = this.Apply(gamePath, Path.Combine(gamePath, this.RTVersion.ToString(false)));
+            e.Result = this.Apply(gamePath, Path.Combine(gamePath, new RTPatchVersion(this.ClientVersion).ToString()));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.RTPatchCompleted?.Invoke(sender, new RTPatchCompletedEventArgs(this.RTVersion, this.Caller, Convert.ToUInt32(e.Result), e.Cancelled, e.Error));
+                this.RTPatchCompleted?.Invoke(sender, new RTPatchCompletedEventArgs(this.ClientVersion, this.Caller, Convert.ToUInt32(e.Result), e.Cancelled, e.Error));
             else
                 this.Download();
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.RTPatchDownloadProgressChanged?.Invoke(sender, new RTPatchDownloadProgressChangedEventArgs(this.RTVersion.ToString(false), e));
+            this.RTPatchDownloadProgressChanged?.Invoke(sender, new RTPatchDownloadProgressChangedEventArgs(new RTPatchVersion(this.ClientVersion).ToString(), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-            {
-                this.RTPatchCompleted?.Invoke(sender, new RTPatchCompletedEventArgs(this.RTVersion, this.Caller, e.Cancelled, e.Error));
-            }
+                this.RTPatchCompleted?.Invoke(sender, new RTPatchCompletedEventArgs(this.ClientVersion, this.Caller, e.Cancelled, e.Error));
             else
-            {
                 this.Worker.RunWorkerAsync();
-            }
+        }
+
+        private void LoadVersions()
+        {
+            IniFile serverIni = GetServerIni();
+            this.ServerVersion = new Version(serverIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
+            string address = serverIni.Sections[Strings.IniName.ServerRepository.Section].Keys[Strings.IniName.ServerRepository.Key].Value;
+            this.Url = address + Strings.IniName.ServerRepository.UpdateRepository;
+
+            IniFile clientIni = new IniFile();
+            clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
+            this.ClientVersion = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
         }
 
         private void Download()
         {
-            IniFile serverIni = GetServerIni();
-            Version serverVer = new Version(serverIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
-            string address = serverIni.Sections[Strings.IniName.ServerRepository.Section].Keys[Strings.IniName.ServerRepository.Key].Value;
-            Uri url = new Uri(new Uri(address), Strings.IniName.ServerRepository.UpdateRepository);
-
-            IniFile clientIni = new IniFile();
-            clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-            Version clientVer = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
-
-            if (clientVer < serverVer)
+            if (this.ClientVersion < this.ServerVersion)
             {
-                this.RTVersion = new RTPatchVersion(clientVer);
-                string RTPFileName = this.RTVersion.ToString(false);
-                Client.DownloadFileAsync(new Uri(url, RTPFileName), Path.Combine(UserSettings.GamePath, RTPFileName));
+                this.ClientVersion = GetNextVersion(this.ClientVersion, this.ServerVersion);
+                string RTPFileName = new RTPatchVersion(this.ClientVersion).ToString();
+                Client.DownloadFileAsync(new Uri(this.Url + '/' + RTPFileName), Path.Combine(UserSettings.GamePath, RTPFileName));
             }
             else
             {
-                this.RTPatchCompleted?.Invoke(null, new RTPatchCompletedEventArgs(this.RTVersion, this.Caller));
+                this.RTPatchCompleted?.Invoke(null, new RTPatchCompletedEventArgs(this.ClientVersion, this.Caller));
             }
         }
 
-        private Version GetNextVersion(Version clientVer, Version serverVer)
+        private static Version GetNextVersion(Version clientVer, Version serverVer)
         {
             var result = new Version(clientVer.Major + 1, 0, 0, 0);
 
@@ -157,12 +158,16 @@ namespace SWPatcher.Helpers
         private uint Apply(string directory, string diffFilePath)
         {
             this.CurrentLogFile = Strings.FileName.RTPatchLog + Path.GetFileNameWithoutExtension(diffFilePath);
-            File.WriteAllText(CurrentLogFile, string.Empty);
+            string logDirectory = Path.GetDirectoryName(this.CurrentLogFile);
+            if (!Directory.Exists(logDirectory))
+                Directory.CreateDirectory(logDirectory);
+            File.WriteAllText(this.CurrentLogFile, string.Empty);
 
             string command = $"/u /nos \"{directory}\" \"{diffFilePath}\"";
             RTPatchCallback func = new RTPatchCallback(RTPatchMessage);
             uint result = RTPatchApply(command, func, true);
-            File.AppendAllText(CurrentLogFile, $"Result=[{result}]");
+            File.AppendAllText(this.CurrentLogFile, $"Result=[{result}]");
+            File.Delete(diffFilePath);
 
             return result;
         }
@@ -241,6 +246,7 @@ namespace SWPatcher.Helpers
                 return;
 
             this.Caller = caller;
+            this.LoadVersions();
             this.Download();
         }
     }

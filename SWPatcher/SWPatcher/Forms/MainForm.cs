@@ -443,13 +443,21 @@ namespace SWPatcher.Forms
 
         private void RTPatcher_Completed(object sender, RTPatchCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                this.State = States.Idle;
+
+                return;
+            }
             else if (e.Error != null)
             {
                 Error.Log(e.Error);
                 MsgBox.Error(Error.ExeptionParser(e.Error));
+                this.State = States.Idle;
+
+                return;
             }
-            else
+            else if (e.Version != null)
             {
                 IniFile ini = new IniFile(new IniOptions
                 {
@@ -458,39 +466,40 @@ namespace SWPatcher.Forms
                 });
                 string iniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
                 ini.Load(iniPath);
-                ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value = e.Version.ToString(true);
-                ini.Save(iniPath);
-
-                // TODO: e.Result somewhere someday
-
-                switch (e.Caller.ToLower())
+                string serverVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
+                string clientVer = e.Version.ToString();
+                if (serverVer != clientVer)
                 {
-                    case "downloader":
-                        {
-                            this.State = States.Downloading;
-                            this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
-
-                            break;
-                        }
-                    case "downloaderf":
-                        {
-                            this.State = States.Downloading;
-                            this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, true);
-
-                            break;
-                        }
-                    case "starter":
-                        {
-                            this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
-
-                            break;
-                        }
+                    ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value = clientVer;
+                    ini.Save(iniPath);
                 }
-
-                return;
             }
 
-            this.State = States.Idle;
+            // TODO: e.Result somewhere someday
+
+            switch (e.Caller.ToLower())
+            {
+                case "downloader":
+                    {
+                        this.State = States.Downloading;
+                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
+
+                        break;
+                    }
+                case "downloaderf":
+                    {
+                        this.State = States.Downloading;
+                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, true);
+
+                        break;
+                    }
+                case "starter":
+                    {
+                        this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
+
+                        break;
+                    }
+            }
         }
 
         public IEnumerable<string> GetComboBoxStringItems()

@@ -476,6 +476,7 @@ namespace SWPatcher.Forms
             }
 
             // TODO: e.Result somewhere someday
+            MsgBox.Notice($"Result=[{e.Result}]");
 
             switch (e.Caller.ToLower())
             {

@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.Helpers
 {
     class PasteBinClient
     {

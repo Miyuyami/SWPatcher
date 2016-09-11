@@ -1,7 +1,7 @@
 ﻿using Ionic.Zip;
 using MadMilkman.Ini;
-using SWPatcher.Downloading.GlobalVar;
 using SWPatcher.General;
+using SWPatcher.Helpers.GlobalVar;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -9,7 +9,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.Helpers
 {
     public delegate void RTPatchDownloadProgressChangedEventHandler(object sender, RTPatchDownloadProgressChangedEventArgs e);
     public delegate void RTPatchProgressChangedEventHandler(object sender, RTPatchProgressChangedEventArgs e);

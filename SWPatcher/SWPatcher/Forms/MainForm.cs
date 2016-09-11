@@ -1,8 +1,8 @@
 ﻿using MadMilkman.Ini;
 using PubPluginLib;
-using SWPatcher.Downloading;
+using SWPatcher.Helpers;
 using SWPatcher.General;
-using SWPatcher.Downloading.GlobalVar;
+using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
 using System;
 using System.Collections.Generic;

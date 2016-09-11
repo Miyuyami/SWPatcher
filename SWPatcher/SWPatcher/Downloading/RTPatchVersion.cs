@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.Helpers
 {
     public class RTPatchVersion
     {

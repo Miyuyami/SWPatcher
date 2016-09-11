@@ -1,6 +1,6 @@
 ﻿using SWPatcher.Properties;
 
-namespace SWPatcher.Downloading.GlobalVar
+namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
     {

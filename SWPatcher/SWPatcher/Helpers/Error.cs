@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using SWPatcher.Downloading.GlobalVar;
+using SWPatcher.Helpers.GlobalVar;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.Helpers
 {
     public static class Error
     {

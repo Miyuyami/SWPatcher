@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.Helpers
 {
     public static class MsgBox
     {

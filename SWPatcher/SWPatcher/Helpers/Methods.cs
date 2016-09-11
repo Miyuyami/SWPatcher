@@ -1,6 +1,6 @@
 ﻿using Ionic.Zip;
 using MadMilkman.Ini;
-using SWPatcher.Downloading.GlobalVar;
+using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.General;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.Helpers
 {
     internal static class Methods
     {

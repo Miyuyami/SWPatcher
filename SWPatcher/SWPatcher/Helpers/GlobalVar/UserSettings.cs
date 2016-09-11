@@ -4,7 +4,7 @@ using System.Reflection;
 using SWPatcher.Properties;
 using System.Windows.Forms;
 
-namespace SWPatcher.Downloading.GlobalVar
+namespace SWPatcher.Helpers.GlobalVar
 {
     public static class UserSettings
     {

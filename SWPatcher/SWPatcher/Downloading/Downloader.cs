@@ -1,13 +1,12 @@
-﻿using System;
+﻿using SWPatcher.General;
+using SWPatcher.Helpers.GlobalVar;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
-using SWPatcher.General;
-using SWPatcher.Downloading;
-using SWPatcher.Downloading.GlobalVar;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.Helpers
 {
     public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
     public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
@@ -102,7 +101,7 @@ namespace SWPatcher.Downloading
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
                 return;
-            
+
             this.Language = language;
             this.Worker.RunWorkerAsync(isForced);
         }

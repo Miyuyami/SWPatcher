@@ -1,8 +1,8 @@
 ﻿using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.General;
-using SWPatcher.Downloading;
-using SWPatcher.Downloading.GlobalVar;
+using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVar;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

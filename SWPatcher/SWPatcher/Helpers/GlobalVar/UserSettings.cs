@@ -4,7 +4,7 @@ using System.Reflection;
 using SWPatcher.Properties;
 using System.Windows.Forms;
 
-namespace SWPatcher.Helpers.GlobalVar
+namespace SWPatcher.Downloading.GlobalVar
 {
     public static class UserSettings
     {
@@ -93,6 +93,19 @@ namespace SWPatcher.Helpers.GlobalVar
             set
             {
                 Settings.Default.WantToLoginWithPatcher = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public static string LanguageName
+        {
+            get
+            {
+                return Settings.Default.LanguageName;
+            }
+            set
+            {
+                Settings.Default.LanguageName = value;
                 Settings.Default.Save();
             }
         }

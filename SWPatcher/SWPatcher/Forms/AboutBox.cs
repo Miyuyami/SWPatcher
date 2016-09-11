@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Downloading.GlobalVar;
 
 namespace SWPatcher.Forms
 {

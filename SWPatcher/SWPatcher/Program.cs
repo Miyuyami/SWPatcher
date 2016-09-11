@@ -2,8 +2,8 @@
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Downloading;
+using SWPatcher.Downloading.GlobalVar;
 
 namespace SWPatcher
 {

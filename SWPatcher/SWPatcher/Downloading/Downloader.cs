@@ -4,11 +4,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Downloading;
+using SWPatcher.Downloading.GlobalVar;
 
 namespace SWPatcher.Downloading
 {
+    public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
+    public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
+
     public class Downloader
     {
         private readonly BackgroundWorker Worker;
@@ -24,11 +27,11 @@ namespace SWPatcher.Downloading
             {
                 WorkerSupportsCancellation = true
             };
-            this.Worker.DoWork += new DoWorkEventHandler(Worker_DoWork);
-            this.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
+            this.Worker.DoWork += Worker_DoWork;
+            this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             this.Client = new WebClient();
-            this.Client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Client_DownloadProgressChanged);
-            this.Client.DownloadFileCompleted += new AsyncCompletedEventHandler(Client_DownloadFileCompleted);
+            this.Client.DownloadProgressChanged += Client_DownloadProgressChanged;
+            this.Client.DownloadFileCompleted += Client_DownloadFileCompleted;
         }
 
         public event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
@@ -39,16 +42,13 @@ namespace SWPatcher.Downloading
             if (!(bool)e.Argument && !Methods.HasNewTranslations(this.Language))
                 throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
 
-            if (Methods.IsNewerGameClientVersion())
-                throw new Exception("Game client is not updated to the latest version.");
-
             Methods.SetSWFiles(this.SWFiles);
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
+                this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
             else
             {
                 this.DownloadIndex = 0;
@@ -58,32 +58,20 @@ namespace SWPatcher.Downloading
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.OnDownloaderProgressChanged(sender, new DownloaderProgressChangedEventArgs(this.DownloadIndex + 1, this.SWFiles.Count, Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Name), e));
+            this.DownloaderProgressChanged?.Invoke(sender, new DownloaderProgressChangedEventArgs(this.DownloadIndex + 1, this.SWFiles.Count, Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Name), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
+                this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
             else
             {
                 if (SWFiles.Count > ++this.DownloadIndex)
                     DownloadNext();
                 else
-                    this.OnDownloaderComplete(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
+                    this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
             }
-        }
-
-        private void OnDownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
-        {
-            if (this.DownloaderProgressChanged != null)
-                this.DownloaderProgressChanged(sender, e);
-        }
-
-        private void OnDownloaderComplete(object sender, DownloaderCompletedEventArgs e)
-        {
-            if (this.DownloaderCompleted != null)
-                this.DownloaderCompleted(sender, e);
         }
 
         private void DownloadNext()
@@ -114,7 +102,7 @@ namespace SWPatcher.Downloading
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
                 return;
-
+            
             this.Language = language;
             this.Worker.RunWorkerAsync(isForced);
         }

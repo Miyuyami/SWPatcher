@@ -1,8 +1,10 @@
-﻿using System;
+﻿using SWPatcher.Downloading;
+using SWPatcher.Downloading.GlobalVar;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher.Forms
 {
@@ -144,7 +146,7 @@ namespace SWPatcher.Forms
             {
                 try
                 {
-                    Methods.MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
+                    MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
                 }
                 catch (IOException ex)
                 {
@@ -168,6 +170,48 @@ namespace SWPatcher.Forms
                 UserSettings.WantToLogin = this.WantToLogin;
 
             this.buttonApply.Enabled = false;
+        }
+
+        private static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)
+        {
+            string[] movingFolders = translationFolders.Where(s => Directory.Exists(s)).ToArray();
+            string backupDirectory = Path.Combine(oldPath, Strings.FolderName.Backup);
+            string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
+            string gameExePath = Path.Combine(oldPath, Strings.FileName.GameExe);
+
+            foreach (var folder in movingFolders)
+            {
+                string folderPath = Path.Combine(oldPath, folder);
+                string destinationPath = Path.Combine(newPath, folder);
+
+                foreach (var dirPath in Directory.GetDirectories(folderPath, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(folderPath, destinationPath));
+
+                foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
+                    File.Move(filePath, filePath.Replace(folderPath, destinationPath));
+
+                Directory.Delete(folder, true);
+            }
+
+            if (Directory.Exists(backupDirectory))
+            {
+                foreach (var dirPath in Directory.GetDirectories(backupDirectory, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup)));
+
+                foreach (var filePath in Directory.GetFiles(backupDirectory, "*", SearchOption.AllDirectories))
+                    File.Move(filePath, filePath.Replace(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup)));
+
+                Directory.Delete(backupDirectory, true);
+            }
+
+            if (File.Exists(logFilePath))
+                File.Move(logFilePath, Path.Combine(newPath, Strings.FileName.Log));
+
+            string newGameExePath = Path.Combine(newPath, Strings.FileName.GameExe);
+            if (File.Exists(gameExePath))
+                File.Move(gameExePath, newGameExePath);
+            else if (File.Exists(newGameExePath))
+                File.Delete(newGameExePath);
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

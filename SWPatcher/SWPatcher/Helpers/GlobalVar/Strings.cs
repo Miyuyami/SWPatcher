@@ -1,6 +1,6 @@
 ﻿using SWPatcher.Properties;
 
-namespace SWPatcher.Helpers.GlobalVar
+namespace SWPatcher.Downloading.GlobalVar
 {
     public static class Strings
     {
@@ -8,23 +8,11 @@ namespace SWPatcher.Helpers.GlobalVar
         public const string PasteBinUsername = "SWPatcher";
         public const string PasteBinPassword = "pIIrwSL8lNJOjPhW";
 
-        public static string LanguageName
-        {
-            get
-            {
-                return Settings.Default.LanguageName;
-            }
-            set
-            {
-                Settings.Default.LanguageName = value;
-                Settings.Default.Save();
-            }
-        }
-
         public static class FileName
         {
             public const string GameExe = "SoulWorker100.exe";
             public const string Log = "log.txt";
+            public const string RTPatchLog = @"RTPatchLogs\";
         }
 
         public static class FolderName
@@ -49,6 +37,13 @@ namespace SWPatcher.Helpers.GlobalVar
             {
                 public const string Section = "Client";
                 public const string Key = "ver";
+            }
+
+            public static class ServerRepository
+            {
+                public const string Section = "FTP";
+                public const string Key = "address";
+                public const string UpdateRepository = "update";
             }
 
             public static class Patcher
@@ -105,6 +100,7 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string ApplyFiles = "Applying...";
                 public const string WaitClose = "Waiting for client termination...";
                 public const string PatchingExe = "Patching .exe...";
+                public const string UpdatingClient = "Updating client...";
             }
         }
 

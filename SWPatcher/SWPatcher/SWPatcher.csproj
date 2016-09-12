@@ -101,6 +101,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -172,7 +173,6 @@
     </Compile>
     <Compile Include="Helpers\PasteBinClient.cs" />
     <Compile Include="Downloading\RTPatcher.cs" />
-    <Compile Include="Downloading\RTPatchVersion.cs" />
     <Compile Include="Patching\Patcher.cs" />
     <Compile Include="Patching\PatcherCompletedEventArgs.cs" />
     <Compile Include="Patching\PatcherProgressChangedEventArgs.cs" />

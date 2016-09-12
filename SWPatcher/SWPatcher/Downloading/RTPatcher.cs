@@ -13,7 +13,6 @@ namespace SWPatcher.Helpers
 {
     public delegate void RTPatchDownloadProgressChangedEventHandler(object sender, RTPatchDownloadProgressChangedEventArgs e);
     public delegate void RTPatchProgressChangedEventHandler(object sender, RTPatchProgressChangedEventArgs e);
-    public delegate void RTPatchCompletedEventHandler(object sender, RTPatchCompletedEventArgs e);
     public delegate string RTPatchCallback(uint id, IntPtr ptr);
 
     public class RTPatcher
@@ -23,9 +22,8 @@ namespace SWPatcher.Helpers
 
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
-        private string CurrentLogFile;
+        private string CurrentLogFilePath;
         private string FileName;
-        private string Caller;
         private string Url;
         private Version ClientVersion;
         private Version ServerVersion;
@@ -34,7 +32,7 @@ namespace SWPatcher.Helpers
 
         public event RTPatchDownloadProgressChangedEventHandler RTPatchDownloadProgressChanged;
         public event RTPatchProgressChangedEventHandler RTPatchProgressChanged;
-        public event RTPatchCompletedEventHandler RTPatchCompleted;
+        public event AsyncCompletedEventHandler RTPatchCompleted;
 
         public RTPatcher()
         {
@@ -43,7 +41,6 @@ namespace SWPatcher.Helpers
             this.FileNumber = 0;
             this.Worker = new BackgroundWorker()
             {
-                WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
             this.Worker.DoWork += Worker_DoWork;
@@ -55,34 +52,57 @@ namespace SWPatcher.Helpers
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (this.Worker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             string gamePath = UserSettings.GamePath;
-            e.Result = this.Apply(gamePath, Path.Combine(gamePath, new RTPatchVersion(this.ClientVersion).ToString()));
+            this.Apply(gamePath, Path.Combine(gamePath, Methods.VersionToRTP(this.ClientVersion)));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.RTPatchCompleted?.Invoke(sender, new RTPatchCompletedEventArgs(this.ClientVersion, this.Caller, Convert.ToUInt32(e.Result), e.Cancelled, e.Error));
+                this.RTPatchCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.Result));
             else
-                this.Download();
+            {
+                IniFile ini = new IniFile(new IniOptions
+                {
+                    KeyDuplicate = IniDuplication.Ignored,
+                    SectionDuplicate = IniDuplication.Ignored
+                });
+                string iniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
+                ini.Load(iniPath);
+                string serverVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
+                string clientVer = this.ClientVersion.ToString();
+                if (serverVer != clientVer)
+                {
+                    ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value = clientVer;
+                    ini.Save(iniPath);
+                }
+
+                this.DownloadNext();
+            }
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.RTPatchDownloadProgressChanged?.Invoke(sender, new RTPatchDownloadProgressChangedEventArgs(new RTPatchVersion(this.ClientVersion).ToString(), e));
+            this.RTPatchDownloadProgressChanged?.Invoke(sender, new RTPatchDownloadProgressChangedEventArgs(Methods.VersionToRTP(this.ClientVersion), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.RTPatchCompleted?.Invoke(sender, new RTPatchCompletedEventArgs(this.ClientVersion, this.Caller, e.Cancelled, e.Error));
+                this.RTPatchCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             else
                 this.Worker.RunWorkerAsync();
         }
 
         private void LoadVersions()
         {
-            IniFile serverIni = GetServerIni();
+            IniFile serverIni = Methods.GetServerIni();
             this.ServerVersion = new Version(serverIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
             string address = serverIni.Sections[Strings.IniName.ServerRepository.Section].Keys[Strings.IniName.ServerRepository.Key].Value;
             this.Url = address + Strings.IniName.ServerRepository.UpdateRepository;
@@ -92,17 +112,17 @@ namespace SWPatcher.Helpers
             this.ClientVersion = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
         }
 
-        private void Download()
+        private void DownloadNext()
         {
             if (this.ClientVersion < this.ServerVersion)
             {
                 this.ClientVersion = GetNextVersion(this.ClientVersion, this.ServerVersion);
-                string RTPFileName = new RTPatchVersion(this.ClientVersion).ToString();
+                string RTPFileName = Methods.VersionToRTP(this.ClientVersion);
                 Client.DownloadFileAsync(new Uri(this.Url + '/' + RTPFileName), Path.Combine(UserSettings.GamePath, RTPFileName));
             }
             else
             {
-                this.RTPatchCompleted?.Invoke(null, new RTPatchCompletedEventArgs(this.ClientVersion, this.Caller));
+                this.RTPatchCompleted?.Invoke(this, new AsyncCompletedEventArgs(null, false, null));
             }
         }
 
@@ -128,48 +148,21 @@ namespace SWPatcher.Helpers
             return result;
         }
 
-        private static IniFile GetServerIni()
+        private void Apply(string directory, string diffFilePath)
         {
-            using (var client = new WebClient())
-            using (var zippedFile = new TempFile())
-            {
-                client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
-
-                using (var file = new TempFile())
-                {
-                    using (ZipFile zip = ZipFile.Read(zippedFile.Path))
-                    {
-                        ZipEntry entry = zip[0];
-                        entry.FileName = Path.GetFileName(file.Path);
-                        entry.Extract(Path.GetDirectoryName(file.Path), ExtractExistingFileAction.OverwriteSilently);
-                    }
-
-                    IniFile ini = new IniFile(new IniOptions
-                    {
-                        Encoding = Encoding.Unicode
-                    });
-                    ini.Load(file.Path);
-
-                    return ini;
-                }
-            }
-        }
-
-        private uint Apply(string directory, string diffFilePath)
-        {
-            this.CurrentLogFile = Strings.FileName.RTPatchLog + Path.GetFileNameWithoutExtension(diffFilePath);
-            string logDirectory = Path.GetDirectoryName(this.CurrentLogFile);
-            if (!Directory.Exists(logDirectory))
-                Directory.CreateDirectory(logDirectory);
-            File.WriteAllText(this.CurrentLogFile, string.Empty);
+            this.CurrentLogFilePath = Path.Combine(Strings.FolderName.RTPatchLogs, Path.GetFileName(diffFilePath) + ".log");
+            string logDirectory = Path.GetDirectoryName(this.CurrentLogFilePath);
+            Directory.CreateDirectory(logDirectory);
+            File.WriteAllText(this.CurrentLogFilePath, string.Empty);
 
             string command = $"/u /nos \"{directory}\" \"{diffFilePath}\"";
             RTPatchCallback func = new RTPatchCallback(RTPatchMessage);
             uint result = RTPatchApply(command, func, true);
-            File.AppendAllText(this.CurrentLogFile, $"Result=[{result}]");
             File.Delete(diffFilePath);
+            File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
 
-            return result;
+            if (result != 0)
+                throw new Exception($"Result=[{result}]");
         }
 
         private string RTPatchMessage(uint id, IntPtr ptr)
@@ -184,48 +177,48 @@ namespace SWPatcher.Helpers
                 case 9u:
                 case 10u:
                 case 11u:
-                case 12u:
+                case 12u: // outputs
                     {
                         string arg = Marshal.PtrToStringAnsi(ptr);
-                        File.AppendAllText(this.CurrentLogFile, arg);
+                        File.AppendAllText(this.CurrentLogFilePath, arg);
 
                         break;
                     }
                 case 14u:
                 case 17u:
-                case 18u:
+                case 18u: // idk
                     return null;
-                case 5u:
+                case 5u: // completion percentage
                     {
                         int percentage = (Marshal.ReadInt32(ptr) & 0xFFFF) * 100 / 0x8000;
-                        this.RTPatchProgressChanged?.Invoke(null, new RTPatchProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, percentage));
-                        File.AppendAllText(this.CurrentLogFile, $"[{percentage}%] ");
+                        this.RTPatchProgressChanged?.Invoke(this, new RTPatchProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, percentage));
+                        File.AppendAllText(this.CurrentLogFilePath, $"[{percentage}%] ");
 
                         break;
                     }
-                case 6u:
+                case 6u: // number of files in patch
                     {
                         int fileCount = Marshal.ReadInt32(ptr);
                         this.FileCount = fileCount;
-                        File.AppendAllText(this.CurrentLogFile, $"File Count=[{fileCount}]");
+                        File.AppendAllText(this.CurrentLogFilePath, $"File Count=[{fileCount}]");
 
                         break;
                     }
-                case 7u:
+                case 7u: // current file
                     {
                         string fileName = Marshal.PtrToStringAnsi(ptr);
                         this.FileNumber++;
                         this.FileName = fileName;
-                        File.AppendAllText(this.CurrentLogFile, $"Patching=[{fileName}]");
+                        File.AppendAllText(this.CurrentLogFilePath, $"Patching=[{fileName}]");
 
                         break;
                     }
                 case 32u:
-                case 33u:
+                case 33u: // idk
                     {
                         int[] numbers = new int[2];
                         Marshal.Copy(ptr, numbers, 0, 2);
-                        File.AppendAllText(this.CurrentLogFile, $"number1=[{numbers[0]}] number2=[{numbers[1]}]");
+                        File.AppendAllText(this.CurrentLogFilePath, $"number1=[{numbers[0]}] number2=[{numbers[1]}]");
 
                         break;
                     }
@@ -240,14 +233,13 @@ namespace SWPatcher.Helpers
             this.Worker.CancelAsync();
         }
 
-        public void Run(string caller)
+        public void Run()
         {
             if (this.Client.IsBusy || this.Worker.IsBusy)
                 return;
-
-            this.Caller = caller;
+            
             this.LoadVersions();
-            this.Download();
+            this.DownloadNext();
         }
     }
 }

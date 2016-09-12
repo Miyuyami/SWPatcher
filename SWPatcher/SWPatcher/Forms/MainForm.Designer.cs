@@ -85,7 +85,7 @@
             this.toolStripMenuItemStartRaw.Name = "toolStripMenuItemStartRaw";
             this.toolStripMenuItemStartRaw.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItemStartRaw.Text = "Start Game Raw";
-            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.toolStripMenuItemStartRaw_Click);
+            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.buttonStartRaw_Click);
             // 
             // buttonDownload
             // 

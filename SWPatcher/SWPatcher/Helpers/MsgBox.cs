@@ -4,8 +4,6 @@ namespace SWPatcher.Helpers
 {
     public static class MsgBox
     {
-        //public static messages...
-
         public static void Error(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);

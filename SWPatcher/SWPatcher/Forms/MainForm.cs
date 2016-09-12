@@ -21,26 +21,35 @@ namespace SWPatcher.Forms
 {
     public partial class MainForm : Form
     {
-        public enum States
+        public enum State
         {
             Idle = 0,
-            Downloading = 1,
-            Patching = 2,
-            Preparing = 3,
-            WaitingClient = 4,
-            Applying = 5,
-            WaitingClose = 6,
-            RTPatching = 7
+            Download,
+            Patch,
+            Prepare,
+            WaitClient,
+            Apply,
+            WaitClose,
+            RTPatch,
         }
 
-        private States _state;
+        private enum NextState
+        {
+            None = 0,
+            Download,
+            Play,
+            PlayRaw
+        }
+
+        private State _state;
+        private NextState _nextState;
         private readonly Downloader Downloader;
         private readonly Patcher Patcher;
         private readonly BackgroundWorker Worker;
         private readonly RTPatcher RTPatcher;
         private readonly List<SWFile> SWFiles;
 
-        public States State
+        public State CurrentState
         {
             get
             {
@@ -52,7 +61,7 @@ namespace SWPatcher.Forms
                 {
                     switch (value)
                     {
-                        case States.Idle:
+                        case State.Idle:
                             comboBoxLanguages.Enabled = true;
                             buttonDownload.Enabled = true;
                             buttonDownload.Text = Strings.FormText.Download;
@@ -65,7 +74,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
-                        case States.Downloading:
+                        case State.Download:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
                             buttonDownload.Text = Strings.FormText.Cancel;
@@ -78,7 +87,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
-                        case States.Patching:
+                        case State.Patch:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
                             buttonDownload.Text = Strings.FormText.Cancel;
@@ -91,7 +100,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
-                        case States.Preparing:
+                        case State.Prepare:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
                             buttonDownload.Text = Strings.FormText.Download;
@@ -104,7 +113,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
-                        case States.WaitingClient:
+                        case State.WaitClient:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
                             buttonDownload.Text = Strings.FormText.Download;
@@ -117,7 +126,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
-                        case States.Applying:
+                        case State.Apply:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
                             buttonDownload.Text = Strings.FormText.Download;
@@ -130,7 +139,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
-                        case States.WaitingClose:
+                        case State.WaitClose:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
                             buttonDownload.Text = Strings.FormText.Download;
@@ -144,7 +153,7 @@ namespace SWPatcher.Forms
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             WindowState = FormWindowState.Minimized;
                             break;
-                        case States.RTPatching:
+                        case State.RTPatch:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
                             buttonDownload.Text = Strings.FormText.Cancel;
@@ -192,7 +201,7 @@ namespace SWPatcher.Forms
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
-            if (this.State == States.Downloading)
+            if (this.CurrentState == State.Download)
             {
                 this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.FileCount);
                 this.toolStripProgressBar.Value = e.Progress;
@@ -209,18 +218,18 @@ namespace SWPatcher.Forms
             }
             else
             {
-                this.State = States.Patching;
+                this.CurrentState = State.Patch;
                 this.Patcher.Run(e.Language);
 
                 return;
             }
 
-            this.State = States.Idle;
+            this.CurrentState = State.Idle;
         }
 
         private void Patcher_PatcherProgressChanged(object sender, PatcherProgressChangedEventArgs e)
         {
-            if (this.State == States.Patching)
+            if (this.CurrentState == State.Patch)
             {
                 if (e.Progress == -1)
                 {
@@ -268,12 +277,12 @@ namespace SWPatcher.Forms
                 ini.Save(iniPath);
             }
 
-            this.State = States.Idle;
+            this.CurrentState = State.Idle;
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            this.Worker.ReportProgress((int)States.Preparing);
+            this.Worker.ReportProgress((int)State.Prepare);
             if (e.Argument != null)
             {
                 Language language = e.Argument as Language;
@@ -301,8 +310,7 @@ namespace SWPatcher.Forms
                         GC.Collect();
                     }
 
-                    if (!Directory.Exists(backupFileDirectory))
-                        Directory.CreateDirectory(backupFileDirectory);
+                    Directory.CreateDirectory(backupFileDirectory);
 
                     File.Move(gameExePath, backupFilePath);
                     File.Move(gameExePatchedPath, gameExePath);
@@ -330,7 +338,7 @@ namespace SWPatcher.Forms
                 }
                 else
                 {
-                    this.Worker.ReportProgress((int)States.WaitingClient);
+                    this.Worker.ReportProgress((int)State.WaitClient);
                     while (true)
                     {
                         if (this.Worker.CancellationPending)
@@ -348,14 +356,14 @@ namespace SWPatcher.Forms
                     }
                 }
 
-                this.Worker.ReportProgress((int)States.Applying);
+                this.Worker.ReportProgress((int)State.Apply);
                 BackupAndPlaceDataFiles(this.SWFiles, language);
                 BackupAndPlaceOtherFiles(this.SWFiles, language);
 
                 if (startInfo != null)
                     clientProcess = Process.Start(startInfo);
 
-                this.Worker.ReportProgress((int)States.WaitingClose);
+                this.Worker.ReportProgress((int)State.WaitClose);
                 clientProcess.WaitForExit();
             }
             else
@@ -381,7 +389,6 @@ namespace SWPatcher.Forms
 
                     Process.Start(startInfo);
                     e.Cancel = true;
-                    //}
                 }
                 else
                 {
@@ -392,7 +399,7 @@ namespace SWPatcher.Forms
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            this.State = (States)e.ProgressPercentage;
+            this.CurrentState = (State)e.ProgressPercentage;
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -419,88 +426,69 @@ namespace SWPatcher.Forms
             }
             finally
             {
-                this.State = States.Idle;
+                this.CurrentState = State.Idle;
             }
         }
 
         private void RTPatcher_DownloadProgressChanged(object sender, RTPatchDownloadProgressChangedEventArgs e)
         {
-            if (this.State == States.Downloading)
+            if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1}", Strings.FormText.Status.Download, e.FileName);
+                this.toolStripStatusLabel.Text = String.Format("{0} {1}", Strings.FormText.Status.UpdatingClient, e.FileName);
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
 
         private void RTPatcher_ProgressChanged(object sender, RTPatchProgressChangedEventArgs e)
         {
-            if (this.State == States.Downloading)
+            if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.ApplyFiles, e.FileName, e.FileNumber, e.FileCount);
+                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.UpdatingClient, e.FileName, e.FileNumber, e.FileCount);
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
 
-        private void RTPatcher_Completed(object sender, RTPatchCompletedEventArgs e)
+        private void RTPatcher_Completed(object sender, AsyncCompletedEventArgs e)
         {
-            if (e.Cancelled)
-            {
-                this.State = States.Idle;
-
-                return;
-            }
+            RTPatchCleanup();
+            if (e.Cancelled) { }
             else if (e.Error != null)
             {
                 Error.Log(e.Error);
                 MsgBox.Error(Error.ExeptionParser(e.Error));
-                this.State = States.Idle;
-
-                return;
             }
-            else if (e.Version != null)
+            else
             {
-                IniFile ini = new IniFile(new IniOptions
+                switch (this._nextState)
                 {
-                    KeyDuplicate = IniDuplication.Ignored,
-                    SectionDuplicate = IniDuplication.Ignored
-                });
-                string iniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
-                ini.Load(iniPath);
-                string serverVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
-                string clientVer = e.Version.ToString();
-                if (serverVer != clientVer)
-                {
-                    ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value = clientVer;
-                    ini.Save(iniPath);
-                }
-            }
-
-            // TODO: e.Result somewhere someday
-            MsgBox.Notice($"Result=[{e.Result}]");
-
-            switch (e.Caller.ToLower())
-            {
-                case "downloader":
-                    {
-                        this.State = States.Downloading;
-                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, false);
+                    case NextState.Download:
+                        this.CurrentState = State.Download;
+                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
 
                         break;
-                    }
-                case "downloaderf":
-                    {
-                        this.State = States.Downloading;
-                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language, true);
-
-                        break;
-                    }
-                case "starter":
-                    {
+                    case NextState.Play:
                         this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
 
                         break;
-                    }
+                    case NextState.PlayRaw:
+                        this.Worker.RunWorkerAsync();
+
+                        break;
+                }
+
+                this._nextState = 0;
+                return;
             }
+
+            this.CurrentState = State.Idle;
+        }
+
+        private static void RTPatchCleanup()
+        {
+            string[] filters = { "RT*", ".RTP" };
+            foreach (var filter in filters)
+                foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
+                    File.Delete(file);
         }
 
         public IEnumerable<string> GetComboBoxStringItems()
@@ -548,7 +536,8 @@ namespace SWPatcher.Forms
                 string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
                 string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
 
-                File.Move(gameExePath, gameExePatchedPath);
+                if (File.Exists(gameExePath))
+                    File.Move(gameExePath, gameExePatchedPath);
                 File.Move(backupFilePath, gameExePath);
             }
 
@@ -558,8 +547,17 @@ namespace SWPatcher.Forms
             {
                 string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
 
-                File.Move(path, Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1)));
-                File.Move(file, path);
+                if (File.Exists(path))
+                    File.Move(path, Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1)));
+                try
+                {
+                    File.Move(file, path);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    MsgBox.Error($"Directory with the file doesn't exist {Path.GetFullPath(file)} missing. Cannot restore this folder and it will be deleted.");
+                    File.Delete(file);
+                }
             }
         }
 
@@ -679,8 +677,7 @@ namespace SWPatcher.Forms
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, archive);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
-                if (!Directory.Exists(backupFileDirectory))
-                    Directory.CreateDirectory(backupFileDirectory);
+                Directory.CreateDirectory(backupFileDirectory);
 
                 File.Move(archivePath, backupFilePath);
                 File.Move(Path.Combine(language.Lang, archive), archivePath);
@@ -697,9 +694,8 @@ namespace SWPatcher.Forms
                 string filePath = Path.Combine(UserSettings.GamePath, swFileName);
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, swFileName);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
-
-                if (!Directory.Exists(backupFileDirectory))
-                    Directory.CreateDirectory(backupFileDirectory);
+                
+                Directory.CreateDirectory(backupFileDirectory);
 
                 File.Move(filePath, backupFilePath);
                 File.Move(swFilePath, filePath);
@@ -861,52 +857,77 @@ namespace SWPatcher.Forms
 
         private void buttonDownload_Click(object sender, EventArgs e)
         {
-            if (this.State == States.Downloading)
+            switch (this.CurrentState)
             {
-                this.buttonDownload.Enabled = false;
-                this.buttonDownload.Text = Strings.FormText.Cancelling;
-                this.Downloader.Cancel();
-            }
-            else if (this.State == States.Patching)
-            {
-                this.buttonDownload.Enabled = false;
-                this.buttonDownload.Text = Strings.FormText.Cancelling;
-                this.Patcher.Cancel();
-            }
-            else if (this.State == States.RTPatching)
-            {
-                this.buttonDownload.Enabled = false;
-                this.buttonDownload.Text = Strings.FormText.Cancelling;
-                this.RTPatcher.Cancel();
-            }
-            else if (this.State == States.Idle)
-            {
-                this.State = States.RTPatching;
-                this.RTPatcher.Run("Downloader");
+                case State.Idle:
+                    this.CurrentState = State.RTPatch;
+                    this._nextState = NextState.Download;
+                    this.RTPatcher.Run();
+
+                    break;
+                case State.Download:
+                    this.buttonDownload.Enabled = false;
+                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.Downloader.Cancel();
+
+                    break;
+                case State.Patch:
+                    this.buttonDownload.Enabled = false;
+                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.Patcher.Cancel();
+
+                    break;
+                case State.RTPatch:
+                    this.buttonDownload.Enabled = false;
+                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.RTPatcher.Cancel();
+
+                    break;
             }
         }
 
         private void buttonPlay_MouseDown(object sender, MouseEventArgs e)
         {
-            if (this.State == States.WaitingClient)
+            switch (this.CurrentState)
             {
-                this.buttonPlay.Enabled = false;
-                this.buttonPlay.Text = Strings.FormText.Cancelling;
-                this.Worker.CancelAsync();
-            }
-            else
-            {
-                this.State = States.RTPatching;
-                RTPatcher.Run("Starter");
+                case State.Idle:
+                    this.CurrentState = State.RTPatch;
+                    this._nextState = NextState.Play;
+                    RTPatcher.Run();
+
+                    break;
+                case State.WaitClient:
+                    this.buttonPlay.Enabled = false;
+                    this.buttonPlay.Text = Strings.FormText.Cancelling;
+                    this.Worker.CancelAsync();
+
+                    break;
             }
         }
 
-        private void toolStripMenuItemStartRaw_Click(object sender, EventArgs e)
+        private void buttonStartRaw_Click(object sender, EventArgs e)
         {
-            if (this.State == States.Idle)
+            switch (this.CurrentState)
             {
-                this.Worker.RunWorkerAsync();
+                case State.Idle:
+                    this.CurrentState = State.RTPatch;
+                    this._nextState = NextState.PlayRaw;
+                    RTPatcher.Run();
+
+                    break;
             }
+        }
+
+        private void forceStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Language language = this.comboBoxLanguages.SelectedItem as Language;
+
+            DeleteTranslationIni(language);
+            this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
+
+            this.CurrentState = State.RTPatch;
+            this._nextState = NextState.Download;
+            this.RTPatcher.Run();
         }
 
         private void comboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
@@ -934,17 +955,6 @@ namespace SWPatcher.Forms
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
         {
             this.RestoreFromTray();
-        }
-
-        private void forceStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Language language = this.comboBoxLanguages.SelectedItem as Language;
-
-            DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
-
-            this.State = States.RTPatching;
-            this.RTPatcher.Run("DownloaderF");
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1027,7 +1037,7 @@ namespace SWPatcher.Forms
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.State != States.Idle)
+            if (this.CurrentState != State.Idle)
             {
                 MsgBox.Error(AssemblyAccessor.Title + " is currently busy and cannot close.");
 

@@ -12,13 +12,13 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             public const string GameExe = "SoulWorker100.exe";
             public const string Log = "log.txt";
-            public const string RTPatchLog = @"RTPatchLogs\";
         }
 
         public static class FolderName
         {
             public const string Data = "datas";
             public const string Backup = "backup";
+            public const string RTPatchLogs = "RTPatchLogs";
         }
 
         public static class IniName

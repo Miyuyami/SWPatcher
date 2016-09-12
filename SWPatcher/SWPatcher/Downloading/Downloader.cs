@@ -38,7 +38,7 @@ namespace SWPatcher.Helpers
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (!(bool)e.Argument && !Methods.HasNewTranslations(this.Language))
+            if (!Methods.HasNewTranslations(this.Language))
                 throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
 
             Methods.SetSWFiles(this.SWFiles);
@@ -82,12 +82,10 @@ namespace SWPatcher.Helpers
                 path = Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path);
             else
                 path = Path.Combine(Path.GetDirectoryName(Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path)), Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Path));
+            
+            Directory.CreateDirectory(path);
 
-            string directoryDestionation = path;
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            string fileDestination = Path.Combine(directoryDestionation, Path.GetFileName(this.SWFiles[this.DownloadIndex].PathD));
+            string fileDestination = Path.Combine(path, Path.GetFileName(this.SWFiles[this.DownloadIndex].PathD));
             this.Client.DownloadFileAsync(uri, fileDestination);
         }
 
@@ -97,13 +95,13 @@ namespace SWPatcher.Helpers
             this.Client.CancelAsync();
         }
 
-        public void Run(Language language, bool isForced)
+        public void Run(Language language)
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
                 return;
 
             this.Language = language;
-            this.Worker.RunWorkerAsync(isForced);
+            this.Worker.RunWorkerAsync();
         }
     }
 }

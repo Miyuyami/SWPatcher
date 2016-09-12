@@ -79,6 +79,11 @@ namespace SWPatcher.Helpers
 
         private static string GetServerVersion()
         {
+            return GetServerIni().Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
+        }
+
+        internal static IniFile GetServerIni()
+        {
             using (var client = new WebClient())
             using (var zippedFile = new TempFile())
             {
@@ -99,7 +104,7 @@ namespace SWPatcher.Helpers
                     });
                     ini.Load(file.Path);
 
-                    return ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
+                    return ini;
                 }
             }
         }
@@ -156,6 +161,11 @@ namespace SWPatcher.Helpers
                     swfiles.Add(new SWFile(name, path, pathA, pathD, format));
                 }
             }
+        }
+
+        internal static string VersionToRTP(Version version)
+        {
+            return $"{version.Major}_{version.Minor}_{version.Build}_{version.Revision}.RTP";
         }
     }
 }

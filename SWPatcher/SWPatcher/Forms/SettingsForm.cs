@@ -31,7 +31,7 @@ namespace SWPatcher.Forms
             this.textBoxPassword.Text = this.GameUserPassword = UserSettings.GamePw;
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
 
-            if ((this.Owner as MainForm).State == MainForm.States.Idle)
+            if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
             {
                 this.textBoxGameDirectory.TextChanged += new EventHandler(EnableApplyButton);
                 this.textBoxPatcherDirectory.TextChanged += new EventHandler(EnableApplyButton);
@@ -129,7 +129,7 @@ namespace SWPatcher.Forms
             if (this.buttonApply.Enabled)
                 this.ApplyChanges();
 
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.DialogResult = DialogResult.OK;
         }
 
         private void buttonApply_Click(object sender, EventArgs e)
@@ -176,42 +176,58 @@ namespace SWPatcher.Forms
         {
             string[] movingFolders = translationFolders.Where(s => Directory.Exists(s)).ToArray();
             string backupDirectory = Path.Combine(oldPath, Strings.FolderName.Backup);
+            string rtpLogsDirectory = Path.Combine(oldPath, Strings.FolderName.RTPatchLogs);
             string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
             string gameExePath = Path.Combine(oldPath, Strings.FileName.GameExe);
 
             foreach (var folder in movingFolders)
+                MoveDirectory(Path.Combine(oldPath, folder), newPath);
+
+            MoveDirectory(backupDirectory, newPath);
+            MoveDirectory(rtpLogsDirectory, newPath);
+
+            MoveFile(logFilePath, newPath, false);
+            MoveFile(gameExePath, newPath, false);
+        }
+
+        private static bool MoveDirectory(string directory, string newPath)
+        {
+            if (Directory.Exists(directory))
             {
-                string folderPath = Path.Combine(oldPath, folder);
-                string destinationPath = Path.Combine(newPath, folder);
+                string destination = Path.Combine(newPath, Path.GetFileName(directory));
+                Directory.CreateDirectory(destination);
 
-                foreach (var dirPath in Directory.GetDirectories(folderPath, "*", SearchOption.AllDirectories))
-                    Directory.CreateDirectory(dirPath.Replace(folderPath, destinationPath));
+                foreach (var dirPath in Directory.GetDirectories(directory, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(directory, destination));
 
-                foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
-                    File.Move(filePath, filePath.Replace(folderPath, destinationPath));
+                foreach (var filePath in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+                    MoveFile(filePath, filePath.Replace(directory, destination), true);
 
-                Directory.Delete(folder, true);
+                Directory.Delete(directory, true);
+                return true;
             }
 
-            if (Directory.Exists(backupDirectory))
+            return false;
+        }
+
+        private static bool MoveFile(string file, string newPath, bool newPathHasFileName)
+        {
+            if (File.Exists(file))
             {
-                foreach (var dirPath in Directory.GetDirectories(backupDirectory, "*", SearchOption.AllDirectories))
-                    Directory.CreateDirectory(dirPath.Replace(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup)));
+                string newFilePath = "";
+                if (newPathHasFileName)
+                    newFilePath = newPath;
+                else
+                    newFilePath = Path.Combine(newPath, Path.GetFileName(file));
 
-                foreach (var filePath in Directory.GetFiles(backupDirectory, "*", SearchOption.AllDirectories))
-                    File.Move(filePath, filePath.Replace(backupDirectory, Path.Combine(newPath, Strings.FolderName.Backup)));
+                if (File.Exists(newFilePath))
+                    File.Delete(newFilePath);
+                File.Move(file, newFilePath);
 
-                Directory.Delete(backupDirectory, true);
+                return true;
             }
 
-            if (File.Exists(logFilePath))
-                File.Move(logFilePath, Path.Combine(newPath, Strings.FileName.Log));
-
-            string newGameExePath = Path.Combine(newPath, Strings.FileName.GameExe);
-            if (File.Exists(gameExePath))
-                File.Move(gameExePath, newGameExePath);
-            else if (File.Exists(newGameExePath))
-                File.Delete(newGameExePath);
+            return false;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

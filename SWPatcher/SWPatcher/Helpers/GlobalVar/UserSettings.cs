@@ -18,8 +18,7 @@ namespace SWPatcher.Helpers.GlobalVar
             {
                 if (!String.IsNullOrEmpty(value))
                 {
-                    if (!Directory.Exists(value))
-                        Directory.CreateDirectory(value);
+                    Directory.CreateDirectory(value);
                     Directory.SetCurrentDirectory(value);
                 }
 

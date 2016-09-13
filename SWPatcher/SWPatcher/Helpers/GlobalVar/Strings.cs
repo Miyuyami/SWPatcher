@@ -100,7 +100,7 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string ApplyFiles = "Applying...";
                 public const string WaitClose = "Waiting for client termination...";
                 public const string PatchingExe = "Patching .exe...";
-                public const string UpdatingClient = "Updating client...";
+                public const string UpdatingClient = "Updating...";
             }
         }
 

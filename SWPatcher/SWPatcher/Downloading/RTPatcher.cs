@@ -18,7 +18,10 @@ namespace SWPatcher.Helpers
     public class RTPatcher
     {
         [DllImport("patchw32.dll", EntryPoint = "RTPatchApply32@12")]
-        public static extern uint RTPatchApply(string command, RTPatchCallback func, bool waitFlag);
+        public static extern uint RTPatchApply32(string command, RTPatchCallback func, bool waitFlag);
+
+        [DllImport("patchw64.dll", EntryPoint = "RTPatchApply32")]
+        public static extern uint RTPatchApply64(string command, RTPatchCallback func, bool waitFlag);
 
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
@@ -36,14 +39,13 @@ namespace SWPatcher.Helpers
 
         public RTPatcher()
         {
-            this.FileName = "";
-            this.FileCount = 0;
-            this.FileNumber = 0;
             this.Worker = new BackgroundWorker()
             {
+                WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
             this.Worker.DoWork += Worker_DoWork;
+            this.Worker.ProgressChanged += Worker_ProgressChanged;
             this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             this.Client = new WebClient();
             this.Client.DownloadProgressChanged += Client_DownloadProgressChanged;
@@ -60,6 +62,11 @@ namespace SWPatcher.Helpers
 
             string gamePath = UserSettings.GamePath;
             this.Apply(gamePath, Path.Combine(gamePath, Methods.VersionToRTP(this.ClientVersion)));
+        }
+
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.RTPatchProgressChanged?.Invoke(this, new RTPatchProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, e.ProgressPercentage));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -156,8 +163,7 @@ namespace SWPatcher.Helpers
             File.WriteAllText(this.CurrentLogFilePath, string.Empty);
 
             string command = $"/u /nos \"{directory}\" \"{diffFilePath}\"";
-            RTPatchCallback func = new RTPatchCallback(RTPatchMessage);
-            uint result = RTPatchApply(command, func, true);
+            ulong result = Environment.Is64BitProcess ? RTPatchApply64(command, new RTPatchCallback(RTPatchMessage), true) : RTPatchApply32(command, new RTPatchCallback(RTPatchMessage), true);
             File.Delete(diffFilePath);
             File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
 
@@ -190,17 +196,20 @@ namespace SWPatcher.Helpers
                     return null;
                 case 5u: // completion percentage
                     {
-                        int percentage = (Marshal.ReadInt32(ptr) & 0xFFFF) * 100 / 0x8000;
-                        this.RTPatchProgressChanged?.Invoke(this, new RTPatchProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, percentage));
-                        File.AppendAllText(this.CurrentLogFilePath, $"[{percentage}%] ");
+                        int readInt = Marshal.ReadInt32(ptr);
+                        int percentage = readInt > short.MaxValue ? int.MaxValue : readInt * 0x10000;
+                        this.Worker.ReportProgress(percentage);
+                        percentage = readInt * 100 / 0x8000;
+                        File.AppendAllText(this.CurrentLogFilePath, $"[{percentage}%]");
 
                         break;
                     }
                 case 6u: // number of files in patch
                     {
                         int fileCount = Marshal.ReadInt32(ptr);
+                        this.FileNumber = 0;
                         this.FileCount = fileCount;
-                        File.AppendAllText(this.CurrentLogFilePath, $"File Count=[{fileCount}]");
+                        File.AppendAllText(this.CurrentLogFilePath, $"File Count=[{fileCount}]\n");
 
                         break;
                     }
@@ -209,7 +218,7 @@ namespace SWPatcher.Helpers
                         string fileName = Marshal.PtrToStringAnsi(ptr);
                         this.FileNumber++;
                         this.FileName = fileName;
-                        File.AppendAllText(this.CurrentLogFilePath, $"Patching=[{fileName}]");
+                        File.AppendAllText(this.CurrentLogFilePath, $"Patching=[{fileName}]\n");
 
                         break;
                     }
@@ -218,11 +227,11 @@ namespace SWPatcher.Helpers
                     {
                         int[] numbers = new int[2];
                         Marshal.Copy(ptr, numbers, 0, 2);
-                        File.AppendAllText(this.CurrentLogFilePath, $"number1=[{numbers[0]}] number2=[{numbers[1]}]");
+                        File.AppendAllText(this.CurrentLogFilePath, $"number1=[{numbers[0]}] number2=[{numbers[1]}]\n");
 
                         break;
                     }
-                default: break;
+                default: break; // ignore rest
             }
             return "";
         }
@@ -237,7 +246,8 @@ namespace SWPatcher.Helpers
         {
             if (this.Client.IsBusy || this.Worker.IsBusy)
                 return;
-            
+
+            Methods.RTPatchCleanup();
             this.LoadVersions();
             this.DownloadNext();
         }

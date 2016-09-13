@@ -280,6 +280,59 @@ namespace SWPatcher.Forms
             this.CurrentState = State.Idle;
         }
 
+        private void RTPatcher_DownloadProgressChanged(object sender, RTPatchDownloadProgressChangedEventArgs e)
+        {
+            if (this.CurrentState == State.RTPatch)
+            {
+                this.toolStripStatusLabel.Text = String.Format("{0} {1}", Strings.FormText.Status.UpdatingClient, e.FileName);
+                this.toolStripProgressBar.Value = e.Progress;
+            }
+        }
+
+        private void RTPatcher_ProgressChanged(object sender, RTPatchProgressChangedEventArgs e)
+        {
+            if (this.CurrentState == State.RTPatch)
+            {
+                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.UpdatingClient, e.FileName, e.FileNumber, e.FileCount);
+                this.toolStripProgressBar.Value = e.Progress;
+            }
+        }
+
+        private void RTPatcher_Completed(object sender, AsyncCompletedEventArgs e)
+        {
+            Methods.RTPatchCleanup();
+            if (e.Cancelled) { }
+            else if (e.Error != null)
+            {
+                Error.Log(e.Error);
+                MsgBox.Error(Error.ExeptionParser(e.Error));
+            }
+            else
+            {
+                switch (this._nextState)
+                {
+                    case NextState.Download:
+                        this.CurrentState = State.Download;
+                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
+
+                        break;
+                    case NextState.Play:
+                        this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
+
+                        break;
+                    case NextState.PlayRaw:
+                        this.Worker.RunWorkerAsync();
+
+                        break;
+                }
+
+                this._nextState = 0;
+                return;
+            }
+
+            this.CurrentState = State.Idle;
+        }
+
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             this.Worker.ReportProgress((int)State.Prepare);
@@ -428,67 +481,6 @@ namespace SWPatcher.Forms
             {
                 this.CurrentState = State.Idle;
             }
-        }
-
-        private void RTPatcher_DownloadProgressChanged(object sender, RTPatchDownloadProgressChangedEventArgs e)
-        {
-            if (this.CurrentState == State.RTPatch)
-            {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1}", Strings.FormText.Status.UpdatingClient, e.FileName);
-                this.toolStripProgressBar.Value = e.Progress;
-            }
-        }
-
-        private void RTPatcher_ProgressChanged(object sender, RTPatchProgressChangedEventArgs e)
-        {
-            if (this.CurrentState == State.RTPatch)
-            {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.UpdatingClient, e.FileName, e.FileNumber, e.FileCount);
-                this.toolStripProgressBar.Value = e.Progress;
-            }
-        }
-
-        private void RTPatcher_Completed(object sender, AsyncCompletedEventArgs e)
-        {
-            RTPatchCleanup();
-            if (e.Cancelled) { }
-            else if (e.Error != null)
-            {
-                Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
-            }
-            else
-            {
-                switch (this._nextState)
-                {
-                    case NextState.Download:
-                        this.CurrentState = State.Download;
-                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
-
-                        break;
-                    case NextState.Play:
-                        this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
-
-                        break;
-                    case NextState.PlayRaw:
-                        this.Worker.RunWorkerAsync();
-
-                        break;
-                }
-
-                this._nextState = 0;
-                return;
-            }
-
-            this.CurrentState = State.Idle;
-        }
-
-        private static void RTPatchCleanup()
-        {
-            string[] filters = { "RT*", ".RTP" };
-            foreach (var filter in filters)
-                foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
-                    File.Delete(file);
         }
 
         public IEnumerable<string> GetComboBoxStringItems()

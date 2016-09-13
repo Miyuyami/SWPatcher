@@ -167,5 +167,13 @@ namespace SWPatcher.Helpers
         {
             return $"{version.Major}_{version.Minor}_{version.Build}_{version.Revision}.RTP";
         }
+
+        internal static void RTPatchCleanup()
+        {
+            string[] filters = { "RT*", "*.RTP" };
+            foreach (var filter in filters)
+                foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
+                    File.Delete(file);
+        }
     }
 }

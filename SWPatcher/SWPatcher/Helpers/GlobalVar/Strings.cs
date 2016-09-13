@@ -84,7 +84,6 @@ namespace SWPatcher.Helpers.GlobalVar
 
         public static class FormText
         {
-            public const string NewTranslations = "New translations for {0} - ({1})";
             public const string Download = "Download Translations";
             public const string Play = "Ready To Play!";
             public const string Cancel = "Cancel";
@@ -100,7 +99,7 @@ namespace SWPatcher.Helpers.GlobalVar
                 public const string ApplyFiles = "Applying...";
                 public const string WaitClose = "Waiting for client termination...";
                 public const string PatchingExe = "Patching .exe...";
-                public const string UpdatingClient = "Updating...";
+                public const string UpdatingClient = "";
             }
         }
 

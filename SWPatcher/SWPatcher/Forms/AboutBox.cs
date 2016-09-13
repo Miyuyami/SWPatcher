@@ -6,15 +6,17 @@ namespace SWPatcher.Forms
 {
     partial class AboutBox : Form
     {
+        private int ImagesCount = 72;
+
         public AboutBox()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyAccessor.Title);
+            this.Text = $"About {AssemblyAccessor.Title}";
             this.labelProductName.Text = AssemblyAccessor.Product;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyAccessor.Version);
+            this.labelVersion.Text = $"Version {AssemblyAccessor.Version}";
             this.textBoxDescription.Text = AssemblyAccessor.Description;
-            this.linkLabelWebsite.Links.Add(0, 17, Urls.SWHQWebsite);
-            this.logoPictureBox.ImageLocation = String.Format("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/Images/{0}.png", (new Random()).Next(72) + 1);
+            this.linkLabelWebsite.Links.Add(0, this.linkLabelWebsite.Text.Length, Urls.SWHQWebsite);
+            this.logoPictureBox.ImageLocation = $"https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/Images/{(new Random()).Next(ImagesCount) + 1}.png";
         }
 
         private void linkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

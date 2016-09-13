@@ -6,16 +6,18 @@ namespace SWPatcher.Helpers
 {
     public static class Error
     {
+        private static string LogFormat = "--------------------{2}{0}{2}--------------------{2}{1}{2}";
+
         public static void Log(string message)
         {
             using (StreamWriter sw = new StreamWriter(Strings.FileName.Log, true))
-                sw.Write(String.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Methods.DateToString(DateTime.UtcNow), message, System.Environment.NewLine));
+                sw.Write(String.Format(LogFormat, Methods.DateToString(DateTime.UtcNow), message, Environment.NewLine));
         }
 
         public static void Log(Exception ex)
         {
             using (StreamWriter sw = new StreamWriter(Strings.FileName.Log, true))
-                sw.Write(String.Format("--------------------{2}{0}{2}--------------------{2}{1}{2}", Methods.DateToString(DateTime.UtcNow), StackTraceExceptionParser(ex), System.Environment.NewLine));
+                sw.Write(String.Format(LogFormat, Methods.DateToString(DateTime.UtcNow), StackTraceExceptionParser(ex), Environment.NewLine));
         }
 
         public static string ExeptionParser(Exception ex)

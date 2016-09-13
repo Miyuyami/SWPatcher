@@ -155,7 +155,6 @@
   <ItemGroup>
     <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
-    <Compile Include="Downloading\RTPatchCompletedEventArgs.cs" />
     <Compile Include="Downloading\RTPatchDownloadProgressChangedEventArgs.cs" />
     <Compile Include="Downloading\RTPatchProgressChangedEventArgs.cs" />
     <Compile Include="Forms\AboutBox.cs">

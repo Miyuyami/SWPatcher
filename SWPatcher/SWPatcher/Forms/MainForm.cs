@@ -1,7 +1,7 @@
 ﻿using MadMilkman.Ini;
 using PubPluginLib;
-using SWPatcher.Helpers;
 using SWPatcher.General;
+using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
 using System;
@@ -195,6 +195,7 @@ namespace SWPatcher.Forms
             this.RTPatcher.RTPatchDownloadProgressChanged += RTPatcher_DownloadProgressChanged;
             this.RTPatcher.RTPatchProgressChanged += RTPatcher_ProgressChanged;
             this.RTPatcher.RTPatchCompleted += RTPatcher_Completed;
+            // TODO: minimalist UI
             InitializeComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
         }
@@ -203,7 +204,7 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.Download)
             {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.FileCount);
+                this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.Download} {e.FileName} ({e.FileNumber}/{e.FileCount})";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -238,7 +239,7 @@ namespace SWPatcher.Forms
                 }
                 else
                 {
-                    this.toolStripStatusLabel.Text = String.Format("{0} Step {1}/{2}", Strings.FormText.Status.Patch, e.FileNumber, e.FileCount);
+                    this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.Patch} Step {e.FileNumber}/{e.FileCount}";
                     this.toolStripProgressBar.Value = e.Progress;
                 }
             }
@@ -284,7 +285,7 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1}", Strings.FormText.Status.UpdatingClient, e.FileName);
+                this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.UpdatingClient} {e.FileName}";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -293,7 +294,7 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.UpdatingClient, e.FileName, e.FileNumber, e.FileCount);
+                this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.UpdatingClient} {e.FileName} ({e.FileNumber}/{e.FileCount})";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -503,7 +504,7 @@ namespace SWPatcher.Forms
             {
                 if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    var result = MsgBox.Question(String.Format("Backup files found. Do you want to restore them now back in your client?\nExisting ones from your client will be swapped to the {0} translation.\nSelecting No will remove those backup files.", language.Lang));
+                    var result = MsgBox.Question($"Backup files found. Do you want to restore them now back in your client?\nExisting ones from your client will be swapped to the {language.Lang} translation.\nSelecting No will remove those backup files.");
 
                     if (result == DialogResult.Yes)
                         RestoreBackup(language);
@@ -915,7 +916,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
+            this.labelNewTranslations.Text = $"New translations for {language.Lang} - ({Methods.DateToString(language.LastUpdate)})";
 
             this.CurrentState = State.RTPatch;
             this._nextState = NextState.Download;
@@ -927,7 +928,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             if (language != null && Methods.HasNewTranslations(language))
-                this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
+                this.labelNewTranslations.Text = $"New translations for {language.Lang} - ({Methods.DateToString(language.LastUpdate)})";
             else
                 this.labelNewTranslations.Text = String.Empty;
         }
@@ -996,7 +997,7 @@ namespace SWPatcher.Forms
 
             var entry = new PasteBinEntry
             {
-                Title = String.Format("{0} ({1}) at {2}", AssemblyAccessor.Version, GetSHA256(Application.ExecutablePath).Substring(0, 12), Methods.DateToString(DateTime.UtcNow)),
+                Title = $"{AssemblyAccessor.Version} ({GetSHA256(Application.ExecutablePath).Substring(0, 12)}) at {Methods.DateToString(DateTime.UtcNow)}",
                 Text = logText,
                 Expiration = PasteBinExpiration.OneHour,
                 Private = true,

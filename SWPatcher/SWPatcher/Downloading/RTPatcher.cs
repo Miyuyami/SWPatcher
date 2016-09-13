@@ -1,13 +1,10 @@
-﻿using Ionic.Zip;
-using MadMilkman.Ini;
-using SWPatcher.General;
+﻿using MadMilkman.Ini;
 using SWPatcher.Helpers.GlobalVar;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace SWPatcher.Helpers
 {

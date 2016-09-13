@@ -39,7 +39,7 @@ namespace SWPatcher.Helpers
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             if (!Methods.HasNewTranslations(this.Language))
-                throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
+                throw new Exception($"You already have the latest({Methods.DateToString(this.Language.LastUpdate)} JST) translation files for this language!");
 
             Methods.SetSWFiles(this.SWFiles);
         }

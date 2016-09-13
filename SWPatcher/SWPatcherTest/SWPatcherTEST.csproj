@@ -25,8 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcher/publish/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcher/publish/</UpdateUrl>
+    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>SoulworkerHQ</PublisherName>

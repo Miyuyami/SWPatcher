@@ -1,25 +1,12 @@
-﻿using SWPatcherTEST.Properties;
+﻿using SWPatcherTest.Properties;
 
-namespace SWPatcherTEST.Helpers.GlobalVar
+namespace SWPatcherTest.Helpers.GlobalVar
 {
     public static class Strings
     {
         public const string PasteBinDevKey = "2e5bee04f7455774443dd399934494bd";
-        public const string PasteBinUsername = "SWPatcher";
+        public const string PasteBinUsername = "SWPatcherTest";
         public const string PasteBinPassword = "pIIrwSL8lNJOjPhW";
-
-        public static string LanguageName
-        {
-            get
-            {
-                return Settings.Default.LanguageName;
-            }
-            set
-            {
-                Settings.Default.LanguageName = value;
-                Settings.Default.Save();
-            }
-        }
 
         public static class FileName
         {
@@ -31,6 +18,7 @@ namespace SWPatcherTEST.Helpers.GlobalVar
         {
             public const string Data = "datas";
             public const string Backup = "backup";
+            public const string RTPatchLogs = "RTPatchLogs";
         }
 
         public static class IniName
@@ -49,6 +37,13 @@ namespace SWPatcherTEST.Helpers.GlobalVar
             {
                 public const string Section = "Client";
                 public const string Key = "ver";
+            }
+
+            public static class ServerRepository
+            {
+                public const string Section = "FTP";
+                public const string Key = "address";
+                public const string UpdateRepository = "update";
             }
 
             public static class Patcher
@@ -105,6 +100,7 @@ namespace SWPatcherTEST.Helpers.GlobalVar
                 public const string ApplyFiles = "Applying...";
                 public const string WaitClose = "Waiting for client termination...";
                 public const string PatchingExe = "Patching .exe...";
+                public const string UpdatingClient = "Updating client...";
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace SWPatcherTEST.Helpers.GlobalVar
+﻿namespace SWPatcherTest.Helpers.GlobalVar
 {
     public static class Urls
     {

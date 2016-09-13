@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using SWPatcherTEST.Properties;
+using SWPatcherTest.Properties;
 using System.Windows.Forms;
 
-namespace SWPatcherTEST.Helpers.GlobalVar
+namespace SWPatcherTest.Helpers.GlobalVar
 {
     public static class UserSettings
     {
@@ -18,8 +18,7 @@ namespace SWPatcherTEST.Helpers.GlobalVar
             {
                 if (!String.IsNullOrEmpty(value))
                 {
-                    if (!Directory.Exists(value))
-                        Directory.CreateDirectory(value);
+                    Directory.CreateDirectory(value);
                     Directory.SetCurrentDirectory(value);
                 }
 
@@ -93,6 +92,19 @@ namespace SWPatcherTEST.Helpers.GlobalVar
             set
             {
                 Settings.Default.WantToLoginWithPatcher = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public static string LanguageName
+        {
+            get
+            {
+                return Settings.Default.LanguageName;
+            }
+            set
+            {
+                Settings.Default.LanguageName = value;
                 Settings.Default.Save();
             }
         }

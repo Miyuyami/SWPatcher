@@ -1,4 +1,4 @@
-﻿namespace SWPatcherTEST.General
+﻿namespace SWPatcherTest.General
 {
     public class SWFile
     {

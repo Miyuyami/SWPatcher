@@ -2,10 +2,10 @@
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using SWPatcherTEST.Helpers;
-using SWPatcherTEST.Helpers.GlobalVar;
+using SWPatcherTest.Helpers;
+using SWPatcherTest.Helpers.GlobalVar;
 
-namespace SWPatcherTEST
+namespace SWPatcherTest
 {
     static class Program
     {
@@ -53,13 +53,13 @@ namespace SWPatcherTEST
 
             private void SingleInstanceController_StartupNextInstance(object sender, Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs e)
             {
-                var mainForm = this.MainForm as SWPatcherTEST.Forms.MainForm;
+                var mainForm = this.MainForm as SWPatcherTest.Forms.MainForm;
                 mainForm.RestoreFromTray();
             }
 
             protected override void OnCreateMainForm()
             {
-                this.MainForm = new SWPatcherTEST.Forms.MainForm();
+                this.MainForm = new SWPatcherTest.Forms.MainForm();
             }
         }
     }

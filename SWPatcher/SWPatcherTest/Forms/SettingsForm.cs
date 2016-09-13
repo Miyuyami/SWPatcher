@@ -1,10 +1,12 @@
-﻿using System;
+﻿using SWPatcherTest.Helpers;
+using SWPatcherTest.Helpers.GlobalVar;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
-using SWPatcherTEST.Helpers;
-using SWPatcherTEST.Helpers.GlobalVar;
 
-namespace SWPatcherTEST.Forms
+namespace SWPatcherTest.Forms
 {
     public partial class SettingsForm : Form
     {
@@ -29,7 +31,7 @@ namespace SWPatcherTEST.Forms
             this.textBoxPassword.Text = this.GameUserPassword = UserSettings.GamePw;
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
 
-            if ((this.Owner as MainForm).State == MainForm.States.Idle)
+            if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
             {
                 this.textBoxGameDirectory.TextChanged += new EventHandler(EnableApplyButton);
                 this.textBoxPatcherDirectory.TextChanged += new EventHandler(EnableApplyButton);
@@ -127,7 +129,7 @@ namespace SWPatcherTEST.Forms
             if (this.buttonApply.Enabled)
                 this.ApplyChanges();
 
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.DialogResult = DialogResult.OK;
         }
 
         private void buttonApply_Click(object sender, EventArgs e)
@@ -144,7 +146,7 @@ namespace SWPatcherTEST.Forms
             {
                 try
                 {
-                    Methods.MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
+                    MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
                 }
                 catch (IOException ex)
                 {
@@ -168,6 +170,64 @@ namespace SWPatcherTEST.Forms
                 UserSettings.WantToLogin = this.WantToLogin;
 
             this.buttonApply.Enabled = false;
+        }
+
+        private static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)
+        {
+            string[] movingFolders = translationFolders.Where(s => Directory.Exists(s)).ToArray();
+            string backupDirectory = Path.Combine(oldPath, Strings.FolderName.Backup);
+            string rtpLogsDirectory = Path.Combine(oldPath, Strings.FolderName.RTPatchLogs);
+            string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
+            string gameExePath = Path.Combine(oldPath, Strings.FileName.GameExe);
+
+            foreach (var folder in movingFolders)
+                MoveDirectory(Path.Combine(oldPath, folder), newPath);
+
+            MoveDirectory(backupDirectory, newPath);
+            MoveDirectory(rtpLogsDirectory, newPath);
+
+            MoveFile(logFilePath, newPath, false);
+            MoveFile(gameExePath, newPath, false);
+        }
+
+        private static bool MoveDirectory(string directory, string newPath)
+        {
+            if (Directory.Exists(directory))
+            {
+                string destination = Path.Combine(newPath, Path.GetFileName(directory));
+                Directory.CreateDirectory(destination);
+
+                foreach (var dirPath in Directory.GetDirectories(directory, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(dirPath.Replace(directory, destination));
+
+                foreach (var filePath in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+                    MoveFile(filePath, filePath.Replace(directory, destination), true);
+
+                Directory.Delete(directory, true);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool MoveFile(string file, string newPath, bool newPathHasFileName)
+        {
+            if (File.Exists(file))
+            {
+                string newFilePath = "";
+                if (newPathHasFileName)
+                    newFilePath = newPath;
+                else
+                    newFilePath = Path.Combine(newPath, Path.GetFileName(file));
+
+                if (File.Exists(newFilePath))
+                    File.Delete(newFilePath);
+                File.Move(file, newFilePath);
+
+                return true;
+            }
+
+            return false;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

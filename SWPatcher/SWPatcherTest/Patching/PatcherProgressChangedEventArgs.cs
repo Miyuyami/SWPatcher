@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SWPatcherTEST.Patching
+namespace SWPatcherTest.Patching
 {
     public class PatcherProgressChangedEventArgs : EventArgs
     {

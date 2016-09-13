@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using SWPatcherTEST.Helpers.GlobalVar;
+using SWPatcherTest.Helpers.GlobalVar;
 
-namespace SWPatcherTEST.Forms
+namespace SWPatcherTest.Forms
 {
     partial class AboutBox : Form
     {

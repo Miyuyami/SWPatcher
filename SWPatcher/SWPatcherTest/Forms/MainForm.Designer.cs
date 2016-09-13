@@ -1,4 +1,4 @@
-﻿namespace SWPatcherTEST.Forms
+﻿namespace SWPatcherTest.Forms
 {
     partial class MainForm
     {
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.buttonPlay = new SWPatcherTEST.General.SplitButton();
+            this.buttonPlay = new SWPatcherTest.General.SplitButton();
             this.contextMenuStripPlay = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemStartRaw = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonDownload = new System.Windows.Forms.Button();
@@ -85,7 +85,7 @@
             this.toolStripMenuItemStartRaw.Name = "toolStripMenuItemStartRaw";
             this.toolStripMenuItemStartRaw.Size = new System.Drawing.Size(157, 22);
             this.toolStripMenuItemStartRaw.Text = "Start Game Raw";
-            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.toolStripMenuItemStartRaw_Click);
+            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.buttonStartRaw_Click);
             // 
             // buttonDownload
             // 
@@ -122,7 +122,7 @@
             // 
             // menuStrip
             // 
-            this.menuStrip.BackgroundImage = global::SWPatcherTEST.Properties.Resources.fadegray;
+            this.menuStrip.BackgroundImage = global::SWPatcherTest.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolStripMenuItem,
             this.settingsToolStripMenuItem,
@@ -226,7 +226,7 @@
             // 
             // tableLayoutPanel
             // 
-            this.tableLayoutPanel.BackgroundImage = global::SWPatcherTEST.Properties.Resources.fadegray;
+            this.tableLayoutPanel.BackgroundImage = global::SWPatcherTest.Properties.Resources.fadegray;
             this.tableLayoutPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -253,10 +253,10 @@
             // 
             // pictureBox
             // 
-            this.pictureBox.BackgroundImage = global::SWPatcherTEST.Properties.Resources.fadegray;
+            this.pictureBox.BackgroundImage = global::SWPatcherTest.Properties.Resources.fadegray;
             this.tableLayoutPanel.SetColumnSpan(this.pictureBox, 2);
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox.Image = global::SWPatcherTEST.Properties.Resources.logo;
+            this.pictureBox.Image = global::SWPatcherTest.Properties.Resources.logo;
             this.pictureBox.Location = new System.Drawing.Point(7, 7);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(350, 116);
@@ -321,7 +321,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-        private SWPatcherTEST.General.SplitButton buttonPlay;
+        private SWPatcherTest.General.SplitButton buttonPlay;
         private System.Windows.Forms.Button buttonDownload;
         private System.Windows.Forms.ComboBox comboBoxLanguages;
         private System.Windows.Forms.NotifyIcon notifyIcon;

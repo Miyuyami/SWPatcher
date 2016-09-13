@@ -1,7 +1,7 @@
 ﻿using System;
-using SWPatcherTEST.General;
+using SWPatcherTest.General;
 
-namespace SWPatcherTEST.Downloading
+namespace SWPatcherTest.Helpers
 {
     public class DownloaderCompletedEventArgs : EventArgs
     {

@@ -1,15 +1,22 @@
-﻿using System;
+﻿using Ionic.Zip;
+using MadMilkman.Ini;
+using SWPatcherTest.General;
+using SWPatcherTest.Helpers;
+using SWPatcherTest.Helpers.GlobalVar;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
 using System.Text;
-using SWPatcherTEST.General;
-using SWPatcherTEST.Helpers;
-using SWPatcherTEST.Helpers.GlobalVar;
 
-namespace SWPatcherTEST.Patching
+namespace SWPatcherTest.Patching
 {
+    public delegate void PatcherProgressChangedEventHandler(object sender, PatcherProgressChangedEventArgs e);
+    public delegate void PatcherCompletedEventHandler(object sender, PatcherCompletedEventArgs e);
+
     public class Patcher
     {
         private readonly BackgroundWorker Worker;
@@ -26,9 +33,9 @@ namespace SWPatcherTEST.Patching
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-            this.Worker.DoWork += new DoWorkEventHandler(Worker_DoWork);
-            this.Worker.ProgressChanged += new ProgressChangedEventHandler(Worker_ProgressChanged);
-            this.Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
+            this.Worker.DoWork += Worker_DoWork;
+            this.Worker.ProgressChanged += Worker_ProgressChanged;
+            this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
         }
 
         public event PatcherProgressChangedEventHandler PatcherProgressChanged;
@@ -41,7 +48,7 @@ namespace SWPatcherTEST.Patching
             var archives = archivedSWFiles.Select(f => f.Path).Distinct();
             int archivedSWFilesCount = archivedSWFiles.Count();
 
-            var passwordDictionary = Methods.LoadPasswords();
+            var passwordDictionary = LoadPasswords();
 
             this.CurrentStep = 1;
             foreach (var archive in archives) // copy and Xor archives
@@ -71,7 +78,7 @@ namespace SWPatcherTEST.Patching
                 string archivePath = Path.Combine(this.Language.Lang, swFile.Path);
                 string archiveFileNameWithoutExtension = Path.GetFileNameWithoutExtension(archivePath);
                 string archivePassword = "";
-                string swFilePath = Methods.GetArchivedSWFilePath(swFile, this.Language);
+                string swFilePath = GetArchivedSWFilePath(swFile, this.Language);
 
                 if (passwordDictionary.ContainsKey(archiveFileNameWithoutExtension))
                     archivePassword = passwordDictionary[archiveFileNameWithoutExtension];
@@ -80,7 +87,7 @@ namespace SWPatcherTEST.Patching
                 {
                     using (var swFilePathRes = new TempFile(Path.ChangeExtension(swFilePath, ".res")))
                     {
-                        Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory(), archivePassword);
+                        DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory(), archivePassword);
 
                         using (var swFilePathOriginalRes = new TempFile(Path.GetFileName(swFile.PathA)))
                         {
@@ -260,7 +267,7 @@ namespace SWPatcherTEST.Patching
                                 }
 
                                 bw.Write(hashLength);
-                                string hashString = Methods.GetMD5(Convert.ToString(dataSum));
+                                string hashString = GetMD5(Convert.ToString(dataSum));
                                 for (int i = 0; i < hashLength; i++)
                                     hash[i] = Convert.ToByte(hashString[i]);
                                 bw.Write(hash);
@@ -268,15 +275,15 @@ namespace SWPatcherTEST.Patching
                             #endregion
                         }
 
-                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path, archivePassword);
+                        DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path, archivePassword);
                     }
                 }
                 else // just zip other files
                 {
                     if (Path.GetExtension(swFilePath) == ".zip")
-                        Methods.AddZipToZip(swFilePath, archivePath, swFile.PathA, archivePassword);
+                        AddZipToZip(swFilePath, archivePath, swFile.PathA, archivePassword);
                     else
-                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePath, archivePassword);
+                        DoZipFile(archivePath, swFile.PathA, swFilePath, archivePassword);
                 }
 
                 File.Delete(swFilePath);
@@ -311,24 +318,12 @@ namespace SWPatcherTEST.Patching
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            OnPatcherProgressChanged(new PatcherProgressChangedEventArgs(CurrentStep, StepCount, e.ProgressPercentage));
+            this.PatcherProgressChanged?.Invoke(sender, new PatcherProgressChangedEventArgs(CurrentStep, StepCount, e.ProgressPercentage));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            OnPatcherComplete(sender, new PatcherCompletedEventArgs(this.Language, e.Cancelled, e.Error));
-        }
-
-        private void OnPatcherProgressChanged(PatcherProgressChangedEventArgs e)
-        {
-            if (this.PatcherProgressChanged != null)
-                this.PatcherProgressChanged(this, e);
-        }
-
-        private void OnPatcherComplete(object sender, PatcherCompletedEventArgs e)
-        {
-            if (this.PatcherCompleted != null)
-                this.PatcherCompleted(sender, e);
+            this.PatcherCompleted?.Invoke(sender, new PatcherCompletedEventArgs(this.Language, e.Cancelled, e.Error));
         }
 
         private Dictionary<ulong, string[]> ReadInputFile(string path, int lineCount, int idIndex)
@@ -379,6 +374,89 @@ namespace SWPatcherTEST.Patching
             }
 
             File.WriteAllBytes(path, fileBytes);
+        }
+
+        private static string GetArchivedSWFilePath(SWFile swFile, Language language)
+        {
+            string directory = Path.GetDirectoryName(Path.Combine(language.Lang, swFile.Path));
+            string archiveName = Path.GetFileNameWithoutExtension(swFile.Path);
+            string fileName = Path.GetFileName(swFile.PathD);
+
+            return Path.Combine(directory, archiveName, fileName);
+        }
+
+        private static string GetMD5(string text)
+        {
+            var md5 = new MD5CryptoServiceProvider();
+            md5.ComputeHash(Encoding.ASCII.GetBytes(text));
+            byte[] result = md5.Hash;
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < result.Length; i++)
+                sb.Append(result[i].ToString("x2"));
+
+            return sb.ToString();
+        }
+
+        private static void DoUnzipFile(string zipPath, string fileName, string extractDestination, string password)
+        {
+            using (var zip = ZipFile.Read(zipPath))
+            {
+                zip.Password = password;
+                zip.FlattenFoldersOnExtract = true;
+                zip[fileName].Extract(extractDestination, ExtractExistingFileAction.OverwriteSilently);
+            }
+        }
+
+        private static void DoZipFile(string zipPath, string fileName, string filePath, string password)
+        {
+            using (var zip = ZipFile.Read(zipPath))
+            {
+                zip.Password = password;
+                zip.RemoveEntry(fileName);
+                zip.AddFile(filePath, Path.GetDirectoryName(fileName));
+                zip.Save();
+            }
+        }
+
+        private static void AddZipToZip(string zipPath, string destinationZipPath, string directoryInDestination, string password)
+        {
+            using (var zip = ZipFile.Read(zipPath))
+            using (var destinationZip = ZipFile.Read(destinationZipPath))
+            {
+                zip.Password = password;
+                var tempFileList = zip.Entries.Select(entry => new TempFile(Path.Combine(Path.GetTempPath(), Path.GetFileName(entry.FileName)))).ToList();
+                zip.FlattenFoldersOnExtract = true;
+
+                zip.ExtractAll(Path.GetTempPath(), ExtractExistingFileAction.OverwriteSilently);
+
+                destinationZip.RemoveEntries(zip.Entries.Select(e => Path.Combine(directoryInDestination, e.FileName)).ToList());
+                destinationZip.AddFiles(tempFileList.Select(tf => tf.Path), directoryInDestination);
+                destinationZip.Save();
+
+                tempFileList.ForEach(tf => tf.Dispose());
+            }
+        }
+
+        private static Dictionary<string, string> LoadPasswords()
+        {
+            using (var client = new WebClient())
+            using (var file = new TempFile())
+            {
+                var result = new Dictionary<string, string>();
+
+                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.DatasArchives, file.Path);
+                IniFile ini = new IniFile();
+                ini.Load(file.Path);
+
+                var section = ini.Sections[Strings.IniName.Datas.SectionZipPassword];
+                foreach (var key in section.Keys)
+                {
+                    result.Add(key.Name, key.Value);
+                }
+
+                return result;
+            }
         }
 
         public void Cancel()

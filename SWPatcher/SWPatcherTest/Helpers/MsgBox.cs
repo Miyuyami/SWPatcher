@@ -1,11 +1,9 @@
 ﻿using System.Windows.Forms;
 
-namespace SWPatcherTEST.Helpers
+namespace SWPatcherTest.Helpers
 {
     public static class MsgBox
     {
-        //public static messages...
-
         public static void Error(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
@@ -29,6 +27,11 @@ namespace SWPatcherTEST.Helpers
         public static void Default(string message, string title, MessageBoxButtons button, MessageBoxIcon icon)
         {
             MessageBox.Show(message, title, button, icon, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
+        }
+
+        public static void Notice(string message)
+        {
+            MessageBox.Show(message, "Notice", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0x40000);
         }
     }
 }

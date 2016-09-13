@@ -2,7 +2,7 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-namespace SWPatcherTEST.General
+namespace SWPatcherTest.General
 {
     public class MyWebClient : WebClient
     {

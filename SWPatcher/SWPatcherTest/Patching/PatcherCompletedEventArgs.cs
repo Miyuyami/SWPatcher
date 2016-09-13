@@ -1,7 +1,7 @@
 ﻿using System;
-using SWPatcherTEST.General;
+using SWPatcherTest.General;
 
-namespace SWPatcherTEST.Patching
+namespace SWPatcherTest.Patching
 {
     public class PatcherCompletedEventArgs : EventArgs
     {

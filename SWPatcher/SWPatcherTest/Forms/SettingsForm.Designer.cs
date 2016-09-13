@@ -1,4 +1,4 @@
-﻿namespace SWPatcherTEST.Forms
+﻿namespace SWPatcherTest.Forms
 {
     partial class SettingsForm
     {

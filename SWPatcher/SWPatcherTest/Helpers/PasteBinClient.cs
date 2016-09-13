@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 
-namespace SWPatcherTEST.Helpers
+namespace SWPatcherTest.Helpers
 {
     class PasteBinClient
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SWPatcherTEST.General
+namespace SWPatcherTest.General
 {
     public class TempFile : IDisposable
     {

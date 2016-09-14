@@ -36,29 +36,35 @@
             this.tabPageGame = new System.Windows.Forms.TabPage();
             this.groupBoxPatchExe = new System.Windows.Forms.GroupBox();
             this.checkBoxPatchExe = new System.Windows.Forms.CheckBox();
-            this.groupBoxPatcherDirectory = new System.Windows.Forms.GroupBox();
-            this.buttonPatcherChangeDirectory = new System.Windows.Forms.Button();
-            this.textBoxPatcherDirectory = new System.Windows.Forms.TextBox();
             this.groupBoxGameDirectory = new System.Windows.Forms.GroupBox();
             this.buttonGameChangeDirectory = new System.Windows.Forms.Button();
             this.textBoxGameDirectory = new System.Windows.Forms.TextBox();
             this.tabPageCredentials = new System.Windows.Forms.TabPage();
-            this.groupBoxGameUserId = new System.Windows.Forms.GroupBox();
-            this.textBoxId = new System.Windows.Forms.TextBox();
-            this.groupBoxGameUserPassword = new System.Windows.Forms.GroupBox();
-            this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.groupBoxGameWantLogin = new System.Windows.Forms.GroupBox();
             this.checkBoxWantToLogin = new System.Windows.Forms.CheckBox();
+            this.groupBoxGameUserPassword = new System.Windows.Forms.GroupBox();
+            this.textBoxPassword = new System.Windows.Forms.TextBox();
+            this.groupBoxGameUserId = new System.Windows.Forms.GroupBox();
+            this.textBoxId = new System.Windows.Forms.TextBox();
+            this.tabPagePatcher = new System.Windows.Forms.TabPage();
+            this.groupBoxUIStyle = new System.Windows.Forms.GroupBox();
+            this.radioButtonMinimal = new System.Windows.Forms.RadioButton();
+            this.radioButtonFull = new System.Windows.Forms.RadioButton();
+            this.groupBoxPatcherDirectory = new System.Windows.Forms.GroupBox();
+            this.buttonPatcherChangeDirectory = new System.Windows.Forms.Button();
+            this.textBoxPatcherDirectory = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGame.SuspendLayout();
             this.groupBoxPatchExe.SuspendLayout();
-            this.groupBoxPatcherDirectory.SuspendLayout();
             this.groupBoxGameDirectory.SuspendLayout();
             this.tabPageCredentials.SuspendLayout();
-            this.groupBoxGameUserId.SuspendLayout();
-            this.groupBoxGameUserPassword.SuspendLayout();
             this.groupBoxGameWantLogin.SuspendLayout();
+            this.groupBoxGameUserPassword.SuspendLayout();
+            this.groupBoxGameUserId.SuspendLayout();
+            this.tabPagePatcher.SuspendLayout();
+            this.groupBoxUIStyle.SuspendLayout();
+            this.groupBoxPatcherDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel
@@ -117,6 +123,7 @@
             this.tableLayoutPanel.SetColumnSpan(this.tabControl, 4);
             this.tabControl.Controls.Add(this.tabPageGame);
             this.tabControl.Controls.Add(this.tabPageCredentials);
+            this.tabControl.Controls.Add(this.tabPagePatcher);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(3, 3);
             this.tabControl.Name = "tabControl";
@@ -127,7 +134,6 @@
             // tabPageGame
             // 
             this.tabPageGame.Controls.Add(this.groupBoxPatchExe);
-            this.tabPageGame.Controls.Add(this.groupBoxPatcherDirectory);
             this.tabPageGame.Controls.Add(this.groupBoxGameDirectory);
             this.tabPageGame.Location = new System.Drawing.Point(4, 22);
             this.tabPageGame.Name = "tabPageGame";
@@ -142,7 +148,7 @@
             this.groupBoxPatchExe.AutoSize = true;
             this.groupBoxPatchExe.Controls.Add(this.checkBoxPatchExe);
             this.groupBoxPatchExe.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxPatchExe.Location = new System.Drawing.Point(3, 125);
+            this.groupBoxPatchExe.Location = new System.Drawing.Point(3, 64);
             this.groupBoxPatchExe.Name = "groupBoxPatchExe";
             this.groupBoxPatchExe.Size = new System.Drawing.Size(300, 61);
             this.groupBoxPatchExe.TabIndex = 2;
@@ -159,37 +165,6 @@
             this.checkBoxPatchExe.Text = "Yes, I am aware of the risks and want to patch it";
             this.checkBoxPatchExe.UseVisualStyleBackColor = true;
             this.checkBoxPatchExe.CheckedChanged += new System.EventHandler(this.checkBoxPatchExe_CheckedChanged);
-            // 
-            // groupBoxPatcherDirectory
-            // 
-            this.groupBoxPatcherDirectory.AutoSize = true;
-            this.groupBoxPatcherDirectory.Controls.Add(this.buttonPatcherChangeDirectory);
-            this.groupBoxPatcherDirectory.Controls.Add(this.textBoxPatcherDirectory);
-            this.groupBoxPatcherDirectory.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxPatcherDirectory.Location = new System.Drawing.Point(3, 64);
-            this.groupBoxPatcherDirectory.Name = "groupBoxPatcherDirectory";
-            this.groupBoxPatcherDirectory.Size = new System.Drawing.Size(300, 61);
-            this.groupBoxPatcherDirectory.TabIndex = 1;
-            this.groupBoxPatcherDirectory.TabStop = false;
-            this.groupBoxPatcherDirectory.Text = "Patcher location";
-            // 
-            // buttonPatcherChangeDirectory
-            // 
-            this.buttonPatcherChangeDirectory.Location = new System.Drawing.Point(219, 19);
-            this.buttonPatcherChangeDirectory.Name = "buttonPatcherChangeDirectory";
-            this.buttonPatcherChangeDirectory.Size = new System.Drawing.Size(75, 23);
-            this.buttonPatcherChangeDirectory.TabIndex = 1;
-            this.buttonPatcherChangeDirectory.Text = "Change";
-            this.buttonPatcherChangeDirectory.UseVisualStyleBackColor = true;
-            this.buttonPatcherChangeDirectory.Click += new System.EventHandler(this.buttonPatcherChangeDirectory_Click);
-            // 
-            // textBoxPatcherDirectory
-            // 
-            this.textBoxPatcherDirectory.Location = new System.Drawing.Point(6, 21);
-            this.textBoxPatcherDirectory.Name = "textBoxPatcherDirectory";
-            this.textBoxPatcherDirectory.ReadOnly = true;
-            this.textBoxPatcherDirectory.Size = new System.Drawing.Size(207, 20);
-            this.textBoxPatcherDirectory.TabIndex = 0;
             // 
             // groupBoxGameDirectory
             // 
@@ -235,48 +210,6 @@
             this.tabPageCredentials.Text = "Credentials";
             this.tabPageCredentials.UseVisualStyleBackColor = true;
             // 
-            // groupBoxGameUserId
-            // 
-            this.groupBoxGameUserId.AutoSize = true;
-            this.groupBoxGameUserId.Controls.Add(this.textBoxId);
-            this.groupBoxGameUserId.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxGameUserId.Location = new System.Drawing.Point(3, 3);
-            this.groupBoxGameUserId.Name = "groupBoxGameUserId";
-            this.groupBoxGameUserId.Size = new System.Drawing.Size(300, 60);
-            this.groupBoxGameUserId.TabIndex = 0;
-            this.groupBoxGameUserId.TabStop = false;
-            this.groupBoxGameUserId.Text = "Soulworker ID";
-            // 
-            // textBoxId
-            // 
-            this.textBoxId.Location = new System.Drawing.Point(6, 21);
-            this.textBoxId.Name = "textBoxId";
-            this.textBoxId.Size = new System.Drawing.Size(180, 20);
-            this.textBoxId.TabIndex = 0;
-            this.textBoxId.TextChanged += new System.EventHandler(this.textBoxId_TextChanged);
-            // 
-            // groupBoxGameUserPassword
-            // 
-            this.groupBoxGameUserPassword.AutoSize = true;
-            this.groupBoxGameUserPassword.Controls.Add(this.textBoxPassword);
-            this.groupBoxGameUserPassword.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxGameUserPassword.Location = new System.Drawing.Point(3, 63);
-            this.groupBoxGameUserPassword.Name = "groupBoxGameUserPassword";
-            this.groupBoxGameUserPassword.Size = new System.Drawing.Size(300, 60);
-            this.groupBoxGameUserPassword.TabIndex = 1;
-            this.groupBoxGameUserPassword.TabStop = false;
-            this.groupBoxGameUserPassword.Text = "Soulworker Password";
-            // 
-            // textBoxPassword
-            // 
-            this.textBoxPassword.Location = new System.Drawing.Point(6, 21);
-            this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.PasswordChar = '*';
-            this.textBoxPassword.Size = new System.Drawing.Size(180, 20);
-            this.textBoxPassword.TabIndex = 0;
-            this.textBoxPassword.UseSystemPasswordChar = true;
-            this.textBoxPassword.TextChanged += new System.EventHandler(this.textBoxPassword_TextChanged);
-            // 
             // groupBoxGameWantLogin
             // 
             this.groupBoxGameWantLogin.AutoSize = true;
@@ -300,6 +233,127 @@
             this.checkBoxWantToLogin.UseVisualStyleBackColor = true;
             this.checkBoxWantToLogin.CheckedChanged += new System.EventHandler(this.checkBoxWantToLogin_CheckedChanged);
             // 
+            // groupBoxGameUserPassword
+            // 
+            this.groupBoxGameUserPassword.AutoSize = true;
+            this.groupBoxGameUserPassword.Controls.Add(this.textBoxPassword);
+            this.groupBoxGameUserPassword.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxGameUserPassword.Location = new System.Drawing.Point(3, 63);
+            this.groupBoxGameUserPassword.Name = "groupBoxGameUserPassword";
+            this.groupBoxGameUserPassword.Size = new System.Drawing.Size(300, 60);
+            this.groupBoxGameUserPassword.TabIndex = 1;
+            this.groupBoxGameUserPassword.TabStop = false;
+            this.groupBoxGameUserPassword.Text = "Soulworker Password";
+            // 
+            // textBoxPassword
+            // 
+            this.textBoxPassword.Location = new System.Drawing.Point(6, 21);
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.PasswordChar = '*';
+            this.textBoxPassword.Size = new System.Drawing.Size(180, 20);
+            this.textBoxPassword.TabIndex = 0;
+            this.textBoxPassword.UseSystemPasswordChar = true;
+            this.textBoxPassword.TextChanged += new System.EventHandler(this.textBoxPassword_TextChanged);
+            // 
+            // groupBoxGameUserId
+            // 
+            this.groupBoxGameUserId.AutoSize = true;
+            this.groupBoxGameUserId.Controls.Add(this.textBoxId);
+            this.groupBoxGameUserId.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxGameUserId.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxGameUserId.Name = "groupBoxGameUserId";
+            this.groupBoxGameUserId.Size = new System.Drawing.Size(300, 60);
+            this.groupBoxGameUserId.TabIndex = 0;
+            this.groupBoxGameUserId.TabStop = false;
+            this.groupBoxGameUserId.Text = "Soulworker ID";
+            // 
+            // textBoxId
+            // 
+            this.textBoxId.Location = new System.Drawing.Point(6, 21);
+            this.textBoxId.Name = "textBoxId";
+            this.textBoxId.Size = new System.Drawing.Size(180, 20);
+            this.textBoxId.TabIndex = 0;
+            this.textBoxId.TextChanged += new System.EventHandler(this.textBoxId_TextChanged);
+            // 
+            // tabPagePatcher
+            // 
+            this.tabPagePatcher.Controls.Add(this.groupBoxUIStyle);
+            this.tabPagePatcher.Controls.Add(this.groupBoxPatcherDirectory);
+            this.tabPagePatcher.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePatcher.Name = "tabPagePatcher";
+            this.tabPagePatcher.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPagePatcher.Size = new System.Drawing.Size(306, 189);
+            this.tabPagePatcher.TabIndex = 2;
+            this.tabPagePatcher.Text = "Patcher";
+            this.tabPagePatcher.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxUIStyle
+            // 
+            this.groupBoxUIStyle.AutoSize = true;
+            this.groupBoxUIStyle.Controls.Add(this.radioButtonMinimal);
+            this.groupBoxUIStyle.Controls.Add(this.radioButtonFull);
+            this.groupBoxUIStyle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxUIStyle.Location = new System.Drawing.Point(3, 64);
+            this.groupBoxUIStyle.Name = "groupBoxUIStyle";
+            this.groupBoxUIStyle.Size = new System.Drawing.Size(300, 55);
+            this.groupBoxUIStyle.TabIndex = 3;
+            this.groupBoxUIStyle.TabStop = false;
+            this.groupBoxUIStyle.Text = "Interface Style";
+            // 
+            // radioButtonMinimal
+            // 
+            this.radioButtonMinimal.AutoSize = true;
+            this.radioButtonMinimal.Location = new System.Drawing.Point(53, 19);
+            this.radioButtonMinimal.Name = "radioButtonMinimal";
+            this.radioButtonMinimal.Size = new System.Drawing.Size(60, 17);
+            this.radioButtonMinimal.TabIndex = 1;
+            this.radioButtonMinimal.TabStop = true;
+            this.radioButtonMinimal.Text = "Minimal";
+            this.radioButtonMinimal.UseVisualStyleBackColor = true;
+            this.radioButtonMinimal.CheckedChanged += new System.EventHandler(this.radioButtonMinimal_CheckedChanged);
+            // 
+            // radioButtonFull
+            // 
+            this.radioButtonFull.AutoSize = true;
+            this.radioButtonFull.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonFull.Name = "radioButtonFull";
+            this.radioButtonFull.Size = new System.Drawing.Size(41, 17);
+            this.radioButtonFull.TabIndex = 0;
+            this.radioButtonFull.TabStop = true;
+            this.radioButtonFull.Text = "Full";
+            this.radioButtonFull.UseVisualStyleBackColor = true;
+            this.radioButtonFull.CheckedChanged += new System.EventHandler(this.radioButtonFull_CheckedChanged);
+            // 
+            // groupBoxPatcherDirectory
+            // 
+            this.groupBoxPatcherDirectory.AutoSize = true;
+            this.groupBoxPatcherDirectory.Controls.Add(this.buttonPatcherChangeDirectory);
+            this.groupBoxPatcherDirectory.Controls.Add(this.textBoxPatcherDirectory);
+            this.groupBoxPatcherDirectory.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxPatcherDirectory.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxPatcherDirectory.Name = "groupBoxPatcherDirectory";
+            this.groupBoxPatcherDirectory.Size = new System.Drawing.Size(300, 61);
+            this.groupBoxPatcherDirectory.TabIndex = 2;
+            this.groupBoxPatcherDirectory.TabStop = false;
+            this.groupBoxPatcherDirectory.Text = "Patcher location";
+            // 
+            // buttonPatcherChangeDirectory
+            // 
+            this.buttonPatcherChangeDirectory.Location = new System.Drawing.Point(219, 19);
+            this.buttonPatcherChangeDirectory.Name = "buttonPatcherChangeDirectory";
+            this.buttonPatcherChangeDirectory.Size = new System.Drawing.Size(75, 23);
+            this.buttonPatcherChangeDirectory.TabIndex = 1;
+            this.buttonPatcherChangeDirectory.Text = "Change";
+            this.buttonPatcherChangeDirectory.UseVisualStyleBackColor = true;
+            // 
+            // textBoxPatcherDirectory
+            // 
+            this.textBoxPatcherDirectory.Location = new System.Drawing.Point(6, 21);
+            this.textBoxPatcherDirectory.Name = "textBoxPatcherDirectory";
+            this.textBoxPatcherDirectory.ReadOnly = true;
+            this.textBoxPatcherDirectory.Size = new System.Drawing.Size(207, 20);
+            this.textBoxPatcherDirectory.TabIndex = 0;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.buttonOk;
@@ -322,18 +376,22 @@
             this.tabPageGame.PerformLayout();
             this.groupBoxPatchExe.ResumeLayout(false);
             this.groupBoxPatchExe.PerformLayout();
-            this.groupBoxPatcherDirectory.ResumeLayout(false);
-            this.groupBoxPatcherDirectory.PerformLayout();
             this.groupBoxGameDirectory.ResumeLayout(false);
             this.groupBoxGameDirectory.PerformLayout();
             this.tabPageCredentials.ResumeLayout(false);
             this.tabPageCredentials.PerformLayout();
-            this.groupBoxGameUserId.ResumeLayout(false);
-            this.groupBoxGameUserId.PerformLayout();
-            this.groupBoxGameUserPassword.ResumeLayout(false);
-            this.groupBoxGameUserPassword.PerformLayout();
             this.groupBoxGameWantLogin.ResumeLayout(false);
             this.groupBoxGameWantLogin.PerformLayout();
+            this.groupBoxGameUserPassword.ResumeLayout(false);
+            this.groupBoxGameUserPassword.PerformLayout();
+            this.groupBoxGameUserId.ResumeLayout(false);
+            this.groupBoxGameUserId.PerformLayout();
+            this.tabPagePatcher.ResumeLayout(false);
+            this.tabPagePatcher.PerformLayout();
+            this.groupBoxUIStyle.ResumeLayout(false);
+            this.groupBoxUIStyle.PerformLayout();
+            this.groupBoxPatcherDirectory.ResumeLayout(false);
+            this.groupBoxPatcherDirectory.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -349,9 +407,6 @@
         private System.Windows.Forms.GroupBox groupBoxGameDirectory;
         private System.Windows.Forms.Button buttonGameChangeDirectory;
         private System.Windows.Forms.TextBox textBoxGameDirectory;
-        private System.Windows.Forms.GroupBox groupBoxPatcherDirectory;
-        private System.Windows.Forms.Button buttonPatcherChangeDirectory;
-        private System.Windows.Forms.TextBox textBoxPatcherDirectory;
         private System.Windows.Forms.GroupBox groupBoxPatchExe;
         private System.Windows.Forms.CheckBox checkBoxPatchExe;
         private System.Windows.Forms.TabPage tabPageCredentials;
@@ -361,5 +416,12 @@
         private System.Windows.Forms.TextBox textBoxId;
         private System.Windows.Forms.GroupBox groupBoxGameWantLogin;
         private System.Windows.Forms.CheckBox checkBoxWantToLogin;
+        private System.Windows.Forms.TabPage tabPagePatcher;
+        private System.Windows.Forms.GroupBox groupBoxPatcherDirectory;
+        private System.Windows.Forms.Button buttonPatcherChangeDirectory;
+        private System.Windows.Forms.TextBox textBoxPatcherDirectory;
+        private System.Windows.Forms.GroupBox groupBoxUIStyle;
+        private System.Windows.Forms.RadioButton radioButtonMinimal;
+        private System.Windows.Forms.RadioButton radioButtonFull;
     }
 }

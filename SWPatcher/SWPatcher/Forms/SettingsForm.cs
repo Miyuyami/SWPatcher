@@ -10,12 +10,14 @@ namespace SWPatcher.Forms
 {
     public partial class SettingsForm : Form
     {
+        private bool PendingRestart;
         private string GameClientDirectory;
         private string PatcherWorkingDirectory;
         private bool WantToPatchSoulworkerExe;
         private string GameUserId;
         private string GameUserPassword;
         private bool WantToLogin;
+        private byte InterfaceMode;
 
         public SettingsForm()
         {
@@ -24,21 +26,32 @@ namespace SWPatcher.Forms
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            this.PendingRestart = false;
             this.textBoxGameDirectory.Text = this.GameClientDirectory = UserSettings.GamePath;
             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
             this.checkBoxPatchExe.Checked = this.WantToPatchSoulworkerExe = UserSettings.WantToPatchExe;
             this.textBoxId.Text = this.GameUserId = UserSettings.GameId;
             this.textBoxPassword.Text = this.GameUserPassword = UserSettings.GamePw;
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
+            switch (this.InterfaceMode = UserSettings.InterfaceMode)
+            {
+                case 0:
+                    this.radioButtonFull.Checked = true;
+                    break;
+                case 1:
+                    this.radioButtonMinimal.Checked = true;
+                    break;
+            }
 
             if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
             {
-                this.textBoxGameDirectory.TextChanged += new EventHandler(EnableApplyButton);
-                this.textBoxPatcherDirectory.TextChanged += new EventHandler(EnableApplyButton);
-                this.checkBoxPatchExe.CheckedChanged += new EventHandler(EnableApplyButton);
-                this.textBoxId.TextChanged += new EventHandler(EnableApplyButton);
-                this.textBoxPassword.TextChanged += new EventHandler(EnableApplyButton);
-                this.checkBoxWantToLogin.CheckedChanged += new EventHandler(EnableApplyButton);
+                this.textBoxGameDirectory.TextChanged += EnableApplyButton;
+                this.textBoxPatcherDirectory.TextChanged += EnableApplyButton;
+                this.checkBoxPatchExe.CheckedChanged += EnableApplyButton;
+                this.textBoxId.TextChanged += EnableApplyButton;
+                this.textBoxPassword.TextChanged += EnableApplyButton;
+                this.checkBoxWantToLogin.CheckedChanged += EnableApplyButton;
+                this.radioButtonFull.CheckedChanged += EnableApplyButton;
             }
             else
             {
@@ -48,6 +61,8 @@ namespace SWPatcher.Forms
                 this.textBoxId.ReadOnly = true;
                 this.textBoxPassword.ReadOnly = true;
                 this.checkBoxWantToLogin.Enabled = false;
+                this.radioButtonFull.Enabled = false;
+                this.radioButtonMinimal.Enabled = false;
             }
         }
 
@@ -124,6 +139,18 @@ namespace SWPatcher.Forms
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.WantToLogin = this.checkBoxWantToLogin.Checked;
         }
 
+        private void radioButtonFull_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonFull.Checked)
+                this.InterfaceMode = 0;
+        }
+
+        private void radioButtonMinimal_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButtonMinimal.Checked)
+                this.InterfaceMode = 1;
+        }
+
         private void buttonOk_Click(object sender, EventArgs e)
         {
             if (this.buttonApply.Enabled)
@@ -169,7 +196,16 @@ namespace SWPatcher.Forms
             if (UserSettings.WantToLogin != this.WantToLogin)
                 UserSettings.WantToLogin = this.WantToLogin;
 
+            if (UserSettings.InterfaceMode != this.InterfaceMode)
+            {
+                UserSettings.InterfaceMode = this.InterfaceMode;
+                this.PendingRestart = true;
+            }
+
             this.buttonApply.Enabled = false;
+
+            if (this.PendingRestart)
+                MsgBox.Notice("Some changings will only be applied after restarting the application.");
         }
 
         private static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)

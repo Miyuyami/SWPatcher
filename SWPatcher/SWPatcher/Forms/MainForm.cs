@@ -41,6 +41,7 @@ namespace SWPatcher.Forms
             PlayRaw
         }
 
+        private IContainer components = null;
         private State _state;
         private NextState _nextState;
         private readonly Downloader Downloader;
@@ -196,7 +197,15 @@ namespace SWPatcher.Forms
             this.RTPatcher.RTPatchProgressChanged += RTPatcher_ProgressChanged;
             this.RTPatcher.RTPatchCompleted += RTPatcher_Completed;
             // TODO: minimalist UI
-            InitializeComponent();
+            switch (UserSettings.InterfaceMode)
+            {
+                case 0:
+                    InitializeComponentFull();
+                    break;
+                case 1:
+                    InitializeComponentMinimal();
+                    break;
+            }
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
         }
 
@@ -1045,6 +1054,15 @@ namespace SWPatcher.Forms
         private void exit_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+		
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

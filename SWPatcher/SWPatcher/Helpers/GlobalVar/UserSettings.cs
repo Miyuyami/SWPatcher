@@ -1,8 +1,7 @@
-﻿using System;
+﻿using SWPatcher.Properties;
+using System;
 using System.IO;
 using System.Reflection;
-using SWPatcher.Properties;
-using System.Windows.Forms;
 
 namespace SWPatcher.Helpers.GlobalVar
 {
@@ -12,7 +11,7 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory) ? UserSettings.PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name) : Settings.Default.PatcherWorkingDirectory;
+                return String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory) ? PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name) : Settings.Default.PatcherWorkingDirectory;
             }
             set
             {
@@ -48,7 +47,7 @@ namespace SWPatcher.Helpers.GlobalVar
             }
             set
             {
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                string gameExePatchedPath = Path.Combine(PatcherPath, Strings.FileName.GameExe);
                 if (File.Exists(gameExePatchedPath))
                     File.Delete(gameExePatchedPath);
 
@@ -105,6 +104,19 @@ namespace SWPatcher.Helpers.GlobalVar
             set
             {
                 Settings.Default.LanguageName = value;
+                Settings.Default.Save();
+            }
+        }
+
+        public static byte InterfaceMode
+        {
+            get
+            {
+                return Settings.Default.UIMode;
+            }
+            set
+            {
+                Settings.Default.UIMode = value;
                 Settings.Default.Save();
             }
         }

@@ -1,5 +1,4 @@
 ﻿using MadMilkman.Ini;
-using PubPluginLib;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
@@ -743,43 +742,6 @@ namespace SWPatcher.Forms
             }
 
             return gameStartResponse;
-        }
-
-        private static void StartReactorToUpdate()
-        {
-            again:
-            using (var client = new MyWebClient())
-            {
-                HangameLogin(client);
-                string gameStartResponse = GetGameStartResponse(client);
-
-                PubPluginClass pubPluginClass = new PubPluginClass();
-                IPubPlugin pubPlugin = null;
-                try
-                {
-                    pubPlugin = pubPluginClass;
-                }
-                catch (InvalidCastException)
-                {
-                    throw new Exception("Run the game from the website first to install the plugin and reactor!");
-                }
-                if (pubPlugin.IsReactorInstalled() == 1)
-                    try
-                    {
-                        pubPlugin.StartReactor(GetVariableValue(gameStartResponse, Strings.Web.ReactorStr)[0]);
-                        throw new Exception("Update the game client using the game launcher.\nWhen it finished, close it and try 'Ready to Play' again.");
-                    }
-                    catch (IndexOutOfRangeException)
-                    {
-                        var dialog = MsgBox.ErrorRetry("Validation failed.");
-                        if (dialog == DialogResult.Retry)
-                            goto again;
-
-                        throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
-                    }
-                else
-                    throw new Exception("Run the game from the website first to install the plugin and reactor!");
-            }
         }
 
         private static string[] GetGameStartArguments(MyWebClient client)

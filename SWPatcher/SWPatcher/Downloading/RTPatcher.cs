@@ -15,10 +15,10 @@ namespace SWPatcher.Helpers
     public class RTPatcher
     {
         [DllImport("patchw32.dll", EntryPoint = "RTPatchApply32@12")]
-        public static extern uint RTPatchApply32(string command, RTPatchCallback func, bool waitFlag);
+        internal static extern uint RTPatchApply32(string command, RTPatchCallback func, bool waitFlag);
 
         [DllImport("patchw64.dll", EntryPoint = "RTPatchApply32")]
-        public static extern uint RTPatchApply64(string command, RTPatchCallback func, bool waitFlag);
+        internal static extern uint RTPatchApply64(string command, RTPatchCallback func, bool waitFlag);
 
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;

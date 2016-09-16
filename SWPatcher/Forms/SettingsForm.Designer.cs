@@ -345,6 +345,7 @@
             this.buttonPatcherChangeDirectory.TabIndex = 1;
             this.buttonPatcherChangeDirectory.Text = "Change";
             this.buttonPatcherChangeDirectory.UseVisualStyleBackColor = true;
+            this.buttonPatcherChangeDirectory.Click += new System.EventHandler(this.buttonPatcherChangeDirectory_Click);
             // 
             // textBoxPatcherDirectory
             // 

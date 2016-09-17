@@ -14,6 +14,8 @@ namespace SWPatcher.Helpers
                     return Resources.en.ResourceManager.GetString(name);
                 case "kr":
                     return Resources.kr.ResourceManager.GetString(name);
+                case "vi":
+                    return Resources.vi.ResourceManager.GetString(name);
                 default:
                     throw new Exception($"unknown code=[{languageCode}]");
             }

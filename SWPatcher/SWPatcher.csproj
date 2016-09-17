@@ -30,10 +30,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>MiyuPatcher</PublisherName>
-    <MinimumRequiredVersion>2.3.1.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.3.2.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.3.1.0</ApplicationVersion>
+    <ApplicationVersion>2.3.2.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -219,6 +219,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>kr.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resources\vi.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>vi.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
@@ -248,6 +253,10 @@
     <EmbeddedResource Include="Resources\kr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>kr.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\vi.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>vi.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest">

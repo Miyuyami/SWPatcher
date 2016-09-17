@@ -71,12 +71,15 @@ namespace SWPatcher.Forms
             }
             var en = new ResxLanguage("English", "en");
             var kr = new ResxLanguage("한국어", "kr");
-            this.comboBoxUILanguage.DataSource = new ResxLanguage[] { en, kr };
+            var vi = new ResxLanguage("Tiếng Việt", "vi");
+            this.comboBoxUILanguage.DataSource = new ResxLanguage[] { en, kr, vi };
             string savedCode = this.UILanguage = UserSettings.UILanguageCode;
             if (en.Code == savedCode)
                 this.comboBoxUILanguage.SelectedItem = en;
-            else // if (kr.Code == savedCode)
+            else if (kr.Code == savedCode)
                 this.comboBoxUILanguage.SelectedItem = kr;
+            else // if (vi.Code == savedCode)
+                this.comboBoxUILanguage.SelectedItem = vi;
 
             if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
             {

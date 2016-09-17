@@ -65,91 +65,91 @@ namespace SWPatcher.Forms
                         case State.Idle:
                             comboBoxLanguages.Enabled = true;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = true;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = true;
                             forceStripMenuItem.Enabled = true;
                             refreshToolStripMenuItem.Enabled = true;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_idle");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Download:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Cancel;
+                            buttonDownload.Text = StringLoader.GetText("button_cancel");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Download;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_download");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Patch:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Cancel;
+                            buttonDownload.Text = StringLoader.GetText("button_cancel");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_patch");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Prepare:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Prepare;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_prepare");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
                         case State.WaitClient:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = true;
-                            buttonPlay.Text = Strings.FormText.Cancel;
+                            buttonPlay.Text = StringLoader.GetText("button_cancel");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitClient;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_wait_client");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Apply:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.ApplyFiles;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_apply");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
                         case State.WaitClose:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitClose;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_wait_close");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             WindowState = FormWindowState.Minimized;
@@ -157,13 +157,13 @@ namespace SWPatcher.Forms
                         case State.RTPatch:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Cancel;
+                            buttonDownload.Text = StringLoader.GetText("button_cancel");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.UpdatingClient;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_update_client");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
@@ -205,14 +205,33 @@ namespace SWPatcher.Forms
                     InitializeComponentMinimal();
                     break;
             }
+            InitializeTextComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
+        }
+
+        private void InitializeTextComponent()
+        {
+            this.menuToolStripMenuItem.Text = StringLoader.GetText("form_menu");
+            this.settingsToolStripMenuItem.Text = StringLoader.GetText("form_settings");
+            this.refreshToolStripMenuItem.Text = StringLoader.GetText("form_refresh");
+            this.aboutToolStripMenuItem.Text = StringLoader.GetText("form_about");
+            this.forceStripMenuItem.Text = StringLoader.GetText("form_force_patch");
+            this.openSWWebpageToolStripMenuItem.Text = StringLoader.GetText("form_open_sw_webpage");
+            this.uploadLogToPastebinToolStripMenuItem.Text = StringLoader.GetText("form_upload_log");
+            this.buttonDownload.Text = StringLoader.GetText("button_download_translation");
+            this.buttonPlay.Text = StringLoader.GetText("button_play");
+            this.buttonExit.Text = StringLoader.GetText("button_exit");
+            this.notifyIcon.BalloonTipText = StringLoader.GetText("notify_balloon_text");
+            this.notifyIcon.BalloonTipTitle = StringLoader.GetText("notify_balloon_title");
+            this.notifyIcon.Text = StringLoader.GetText("notify_text");
+            this.toolStripMenuItemStartRaw.Text = StringLoader.GetText("button_play_raw");
         }
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
             if (this.CurrentState == State.Download)
             {
-                this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.Download} {e.FileName} ({e.FileNumber}/{e.FileCount})";
+                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_download")} {e.FileName} ({e.FileNumber}/{e.FileCount})";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -242,12 +261,12 @@ namespace SWPatcher.Forms
             {
                 if (e.Progress == -1)
                 {
-                    this.toolStripStatusLabel.Text = Strings.FormText.Status.PatchingExe;
+                    this.toolStripStatusLabel.Text = StringLoader.GetText("form_status_patch_exe");
                     this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                 }
                 else
                 {
-                    this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.Patch} Step {e.FileNumber}/{e.FileCount}";
+                    this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} Step {e.FileNumber}/{e.FileCount}";
                     this.toolStripProgressBar.Value = e.Progress;
                 }
             }
@@ -293,7 +312,7 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.UpdatingClient} {e.FileName}";
+                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName}";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -302,7 +321,7 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = $"{Strings.FormText.Status.UpdatingClient} {e.FileName} ({e.FileNumber}/{e.FileCount})";
+                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName} ({e.FileNumber}/{e.FileCount})";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -454,7 +473,7 @@ namespace SWPatcher.Forms
                 }
                 else
                 {
-                    throw new Exception("Direct login option is not active.");
+                    throw new Exception(StringLoader.GetText("exception_not_login_option"));
                 }
             }
         }
@@ -474,7 +493,7 @@ namespace SWPatcher.Forms
             }
             else if (e.Result != null && Convert.ToBoolean(e.Result))
             {
-                MsgBox.Notice("Outdated translation files, force patching will now commence.");
+                MsgBox.Notice(StringLoader.GetText("notice_outdated_translation"));
                 forceStripMenuItem_Click(sender, e);
 
                 return;
@@ -512,7 +531,7 @@ namespace SWPatcher.Forms
             {
                 if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    var result = MsgBox.Question($"Backup files found. Do you want to restore them now back in your client?\nExisting ones from your client will be swapped to the {language.Lang} translation.\nSelecting No will remove those backup files.");
+                    var result = MsgBox.Question(String.Format(StringLoader.GetText("question_backup_files_found"), language.Lang));
 
                     if (result == DialogResult.Yes)
                         RestoreBackup(language);
@@ -556,7 +575,7 @@ namespace SWPatcher.Forms
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    MsgBox.Error($"Directory with the file doesn't exist {Path.GetFullPath(file)} missing. Cannot restore this folder and it will be deleted.");
+                    MsgBox.Error(String.Format("exception_cannot_restore_file", Path.GetFullPath(file)));
                     File.Delete(file);
                 }
             }
@@ -579,7 +598,7 @@ namespace SWPatcher.Forms
                     if (key32 != null)
                         return Convert.ToString(key32.GetValue("folder", String.Empty));
                     else
-                        throw new Exception("Soulworker installation not found.");
+                        throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
                 }
             }
             else
@@ -595,7 +614,7 @@ namespace SWPatcher.Forms
                             if (key32 != null)
                                 return Convert.ToString(key32.GetValue("folder", String.Empty));
                             else
-                                throw new Exception("Soulworker installation not found.");
+                                throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
                         }
                     }
                 }
@@ -610,7 +629,10 @@ namespace SWPatcher.Forms
             using (var file = new TempFile())
             {
                 client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
-                IniFile ini = new IniFile();
+                IniFile ini = new IniFile(new IniOptions
+                {
+                    Encoding = Encoding.UTF8
+                });
                 ini.Load(file.Path);
 
                 foreach (var section in ini.Sections)
@@ -646,7 +668,7 @@ namespace SWPatcher.Forms
             ini.Load(selectedTranslationPath);
 
             if (!ini.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Patcher.KeyVer))
-                throw new Exception("Error reading translation version, try to Menu -> Force Patch");
+                throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
 
             Version translationVer = new Version(ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value);
             ini.Sections.Clear();
@@ -721,7 +743,7 @@ namespace SWPatcher.Forms
             {
                 string[] messages = GetVariableValue(loginResponse, Strings.Web.MessageVariable);
                 if (messages[0].Length > 0)
-                    throw new Exception("Incorrect ID or Password.", new Exception(String.Join("\n", messages)));
+                    throw new Exception(StringLoader.GetText("exception_incorrect_id_pw"), new Exception(String.Join("\n", messages)));
             }
             catch (IndexOutOfRangeException)
             {
@@ -736,17 +758,17 @@ namespace SWPatcher.Forms
             try
             {
                 if (GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
-                    throw new Exception("To play the game you need to accept the Terms of Service.");
+                    throw new Exception(StringLoader.GetText("exception_not_tos"));
                 else if (GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
-                    throw new Exception("Game is under maintenance.");
+                    throw new Exception(StringLoader.GetText("exception_game_maintenance"));
             }
             catch (IndexOutOfRangeException)
             {
-                var dialog = MsgBox.ErrorRetry("Validation failed.");
+                var dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                 if (dialog == DialogResult.Retry)
                     goto again;
 
-                throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
+                throw new Exception(StringLoader.GetText("exception_validation_failed"));
             }
 
             return gameStartResponse;
@@ -761,13 +783,13 @@ namespace SWPatcher.Forms
             }
             catch (WebException webEx)
             {
-                var dialog = MsgBox.ErrorRetry("Validation failed.");
+                var dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                 if (dialog == DialogResult.Retry)
                     goto again;
 
                 var responseError = webEx.Response as HttpWebResponse;
                 if (responseError.StatusCode == HttpStatusCode.NotFound)
-                    throw new WebException("Validation failed. Maybe your IP/Region is blocked?", webEx);
+                    throw new WebException(StringLoader.GetText("exception_validation_failed"), webEx);
                 else
                     throw;
             }
@@ -824,7 +846,7 @@ namespace SWPatcher.Forms
 
             if (!Methods.IsValidSwPatcherPath(Directory.GetCurrentDirectory()))
             {
-                string error = "The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move the patcher in another location or continue at your own risk.";
+                string error = StringLoader.GetText("exception_folder_same_path_game");
 
                 Error.Log(error);
                 MsgBox.Error(error);
@@ -843,19 +865,19 @@ namespace SWPatcher.Forms
                     break;
                 case State.Download:
                     this.buttonDownload.Enabled = false;
-                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Downloader.Cancel();
 
                     break;
                 case State.Patch:
                     this.buttonDownload.Enabled = false;
-                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Patcher.Cancel();
 
                     break;
                 case State.RTPatch:
                     this.buttonDownload.Enabled = false;
-                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.RTPatcher.Cancel();
 
                     break;
@@ -874,7 +896,7 @@ namespace SWPatcher.Forms
                     break;
                 case State.WaitClient:
                     this.buttonPlay.Enabled = false;
-                    this.buttonPlay.Text = Strings.FormText.Cancelling;
+                    this.buttonPlay.Text = StringLoader.GetText("button_cancelling");
                     this.Worker.CancelAsync();
 
                     break;
@@ -899,7 +921,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = $"New translations for {language.Lang} - ({Methods.DateToString(language.LastUpdate)})";
+            this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Lang, Methods.DateToString(language.LastUpdate));
 
             this.CurrentState = State.RTPatch;
             this._nextState = NextState.Download;
@@ -911,7 +933,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             if (language != null && Methods.HasNewTranslations(language))
-                this.labelNewTranslations.Text = $"New translations for {language.Lang} - ({Methods.DateToString(language.LastUpdate)})";
+                this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Lang, Methods.DateToString(language.LastUpdate));
             else
                 this.labelNewTranslations.Text = String.Empty;
         }
@@ -961,7 +983,7 @@ namespace SWPatcher.Forms
         {
             if (!File.Exists(Strings.FileName.Log))
             {
-                MsgBox.Error("Log file does not exist.");
+                MsgBox.Error(StringLoader.GetText("exception_log_not_exist"));
 
                 return;
             }
@@ -992,12 +1014,12 @@ namespace SWPatcher.Forms
                 string pasteUrl = client.Paste(entry);
 
                 Clipboard.SetText(pasteUrl);
-                MsgBox.Success("Log file was uploaded to " + pasteUrl + "\nThe link was copied to clipboard.");
+                MsgBox.Success(String.Format(StringLoader.GetText("success_log_file_upload"), pasteUrl));
             }
             catch (Exception ex)
             {
                 Error.Log(ex);
-                MsgBox.Error("Failed to upload log file.");
+                MsgBox.Error(StringLoader.GetText("exception_log_file_failed"));
             }
             finally
             {
@@ -1015,7 +1037,7 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState != State.Idle)
             {
-                MsgBox.Error(AssemblyAccessor.Title + " is currently busy and cannot close.");
+                MsgBox.Error(String.Format(StringLoader.GetText("exception_cannot_close"), AssemblyAccessor.Title));
 
                 e.Cancel = true;
             }

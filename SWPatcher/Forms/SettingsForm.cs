@@ -1,4 +1,5 @@
-﻿using SWPatcher.Helpers;
+﻿using SWPatcher.General;
+using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,36 @@ namespace SWPatcher.Forms
         private string GameUserPassword;
         private bool WantToLogin;
         private byte InterfaceMode;
+        private string UILanguage;
 
         public SettingsForm()
         {
             InitializeComponent();
+            InitializeTextComponent();
+        }
+
+        private void InitializeTextComponent()
+        {
+            this.Text = StringLoader.GetText("form_settings");
+            this.buttonOk.Text = StringLoader.GetText("button_ok");
+            this.buttonCancel.Text = StringLoader.GetText("button_cancel");
+            this.buttonApply.Text = StringLoader.GetText("button_apply");
+            this.tabPageGame.Text = StringLoader.GetText("tab_game");
+            this.groupBoxGameDirectory.Text = StringLoader.GetText("box_game_dir");
+            this.buttonGameChangeDirectory.Text = this.buttonPatcherChangeDirectory.Text = StringLoader.GetText("button_change");
+            this.groupBoxPatchExe.Text = StringLoader.GetText("box_patch_exe");
+            this.checkBoxPatchExe.Text = StringLoader.GetText("check_patch_exe");
+            this.tabPageCredentials.Text = StringLoader.GetText("tab_credentials");
+            this.groupBoxGameUserId.Text = StringLoader.GetText("box_id");
+            this.groupBoxGameUserPassword.Text = StringLoader.GetText("box_pw");
+            this.groupBoxGameWantLogin.Text = StringLoader.GetText("box_want_login");
+            this.checkBoxWantToLogin.Text = StringLoader.GetText("check_want_login");
+            this.tabPagePatcher.Text = StringLoader.GetText("tab_patcher");
+            this.groupBoxPatcherDirectory.Text = StringLoader.GetText("box_patcher_dir");
+            this.groupBoxUIStyle.Text = StringLoader.GetText("box_ui_style");
+            this.radioButtonFull.Text = StringLoader.GetText("radio_full");
+            this.radioButtonMinimal.Text = StringLoader.GetText("radio_min");
+            this.groupBoxUILanguagePicker.Text = StringLoader.GetText("box_language");
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -42,6 +69,14 @@ namespace SWPatcher.Forms
                     this.radioButtonMinimal.Checked = true;
                     break;
             }
+            var en = new ResxLanguage("English", "en");
+            var kr = new ResxLanguage("한국어", "kr");
+            this.comboBoxUILanguage.DataSource = new ResxLanguage[] { en, kr };
+            string savedCode = this.UILanguage = UserSettings.UILanguageCode;
+            if (en.Code == savedCode)
+                this.comboBoxUILanguage.SelectedItem = en;
+            else // if (kr.Code == savedCode)
+                this.comboBoxUILanguage.SelectedItem = kr;
 
             if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
             {
@@ -52,6 +87,7 @@ namespace SWPatcher.Forms
                 this.textBoxPassword.TextChanged += EnableApplyButton;
                 this.checkBoxWantToLogin.CheckedChanged += EnableApplyButton;
                 this.radioButtonFull.CheckedChanged += EnableApplyButton;
+                this.comboBoxUILanguage.SelectedIndexChanged += EnableApplyButton;
             }
             else
             {
@@ -63,6 +99,7 @@ namespace SWPatcher.Forms
                 this.checkBoxWantToLogin.Enabled = false;
                 this.radioButtonFull.Enabled = false;
                 this.radioButtonMinimal.Enabled = false;
+                this.comboBoxUILanguage.Enabled = false;
             }
         }
 
@@ -76,7 +113,7 @@ namespace SWPatcher.Forms
             using (var folderDialog = new FolderBrowserDialog
             {
                 ShowNewFolderButton = false,
-                Description = "Select your Soulworker game client folder."
+                Description = StringLoader.GetText("dialog_folder_change_game_dir")
             })
             {
                 DialogResult result = folderDialog.ShowDialog();
@@ -87,13 +124,13 @@ namespace SWPatcher.Forms
                             this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                         else
                         {
-                            var dialogResult = MsgBox.Question("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nAre you sure you want to set to this folder?");
+                            var dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
 
                             if (dialogResult == DialogResult.Yes)
                                 this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                         }
                     else
-                        MsgBox.Error("The selected folder is not a Soul Worker game client folder.");
+                        MsgBox.Error(StringLoader.GetText("exception_folder_not_game_folder"));
             }
         }
 
@@ -101,7 +138,7 @@ namespace SWPatcher.Forms
         {
             using (var folderDialog = new FolderBrowserDialog
             {
-                Description = "Select your new desired patcher folder."
+                Description = StringLoader.GetText("dialog_folder_change_patcher_dir")
             })
             {
                 DialogResult result = folderDialog.ShowDialog();
@@ -112,7 +149,7 @@ namespace SWPatcher.Forms
                         this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
                     else
                     {
-                        var dialogResult = MsgBox.Question("The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nAre you sure you want to set to this folder?");
+                        var dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
 
                         if (dialogResult == DialogResult.Yes)
                             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
@@ -151,6 +188,11 @@ namespace SWPatcher.Forms
         {
             if (this.radioButtonMinimal.Checked)
                 this.InterfaceMode = 1;
+        }
+
+        private void comboBoxUILanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.UILanguage = (this.comboBoxUILanguage.SelectedItem as ResxLanguage).Code;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)
@@ -204,10 +246,16 @@ namespace SWPatcher.Forms
                 this.PendingRestart = true;
             }
 
+            if (UserSettings.UILanguageCode != this.UILanguage)
+            {
+                UserSettings.UILanguageCode = this.UILanguage;
+                this.PendingRestart = true;
+            }
+
             this.buttonApply.Enabled = false;
 
             if (this.PendingRestart)
-                MsgBox.Notice("Some changings will only be applied after restarting the application.");
+                MsgBox.Notice(StringLoader.GetText("notice_pending_restart"));
         }
 
         private static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)

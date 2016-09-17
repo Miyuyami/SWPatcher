@@ -120,5 +120,18 @@ namespace SWPatcher.Helpers.GlobalVar
                 Settings.Default.Save();
             }
         }
+
+        public static string UILanguageCode
+        {
+            get
+            {
+                return Settings.Default.UILanguage;
+            }
+            set
+            {
+                Settings.Default.UILanguage = value;
+                Settings.Default.Save();
+            }
+        }
     }
 }

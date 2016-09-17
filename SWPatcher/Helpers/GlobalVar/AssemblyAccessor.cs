@@ -19,17 +19,6 @@ namespace SWPatcher.Helpers.GlobalVar
             }
         }
 
-        public static string Description
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-                if (attributes.Length == 0)
-                    return "";
-                return ((AssemblyDescriptionAttribute)attributes[0]).Description;
-            }
-        }
-
         public static string Product
         {
             get

@@ -1,6 +1,4 @@
-﻿using SWPatcher.Properties;
-
-namespace SWPatcher.Helpers.GlobalVar
+﻿namespace SWPatcher.Helpers.GlobalVar
 {
     public static class Strings
     {
@@ -79,27 +77,6 @@ namespace SWPatcher.Helpers.GlobalVar
             {
                 public const string SectionZipPassword = "Zip Passwords";
                 public const string Data12 = "data12";
-            }
-        }
-
-        public static class FormText
-        {
-            public const string Download = "Download Translations";
-            public const string Play = "Ready To Play!";
-            public const string Cancel = "Cancel";
-            public const string Cancelling = "Cancelling...";
-
-            public static class Status
-            {
-                public const string Idle = "";
-                public const string Download = "Downloading...";
-                public const string Patch = "Working...";
-                public const string Prepare = "Preparing...";
-                public const string WaitClient = "Waiting for client...";
-                public const string ApplyFiles = "Applying...";
-                public const string WaitClose = "Waiting for client termination...";
-                public const string PatchingExe = "Patching .exe...";
-                public const string UpdatingClient = "";
             }
         }
 

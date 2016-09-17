@@ -46,7 +46,6 @@
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(130, 26);
             this.buttonPlay.TabIndex = 3;
-            this.buttonPlay.Text = "Ready To Play!";
             this.buttonPlay.UseVisualStyleBackColor = true;
             this.buttonPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonPlay_MouseDown);
             // 
@@ -61,7 +60,6 @@
             // 
             this.toolStripMenuItemStartRaw.Name = "toolStripMenuItemStartRaw";
             this.toolStripMenuItemStartRaw.Size = new System.Drawing.Size(157, 22);
-            this.toolStripMenuItemStartRaw.Text = "Start Game Raw";
             this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.buttonStartRaw_Click);
             // 
             // buttonDownload
@@ -72,7 +70,6 @@
             this.buttonDownload.Name = "buttonDownload";
             this.buttonDownload.Size = new System.Drawing.Size(140, 24);
             this.buttonDownload.TabIndex = 2;
-            this.buttonDownload.Text = "Download Translations";
             this.buttonDownload.UseVisualStyleBackColor = true;
             this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
             // 
@@ -91,10 +88,7 @@
             // notifyIcon
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon.BalloonTipText = "Double click to restore...";
-            this.notifyIcon.BalloonTipTitle = "Patcher is hidden here";
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "Soul Worker Patcher";
             this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
             // menuStrip
@@ -109,7 +103,6 @@
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(364, 24);
             this.menuStrip.TabIndex = 0;
-            this.menuStrip.Text = "menuStrip1";
             // 
             // menuToolStripMenuItem
             // 
@@ -119,48 +112,41 @@
             this.uploadLogToPastebinToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
-            this.menuToolStripMenuItem.Text = "Menu";
             // 
             // forceStripMenuItem
             // 
             this.forceStripMenuItem.Name = "forceStripMenuItem";
             this.forceStripMenuItem.Size = new System.Drawing.Size(197, 22);
-            this.forceStripMenuItem.Text = "Force Patch";
             this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
             // 
             // openSWWebpageToolStripMenuItem
             // 
             this.openSWWebpageToolStripMenuItem.Name = "openSWWebpageToolStripMenuItem";
             this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-            this.openSWWebpageToolStripMenuItem.Text = "Open SW Webpage";
             this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.openSWWebpageToolStripMenuItem_Click);
             // 
             // uploadLogToPastebinToolStripMenuItem
             // 
             this.uploadLogToPastebinToolStripMenuItem.Name = "uploadLogToPastebinToolStripMenuItem";
             this.uploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-            this.uploadLogToPastebinToolStripMenuItem.Text = "Upload Log to PasteBin";
             this.uploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.uploadLogToPastebinToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-            this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // statusStrip
@@ -234,6 +220,7 @@
             this.tableLayoutPanel.SetColumnSpan(this.pictureBox, 2);
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox.Image = Properties.Resources.logo;
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox.Location = new System.Drawing.Point(7, 7);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(350, 116);
@@ -248,7 +235,6 @@
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(100, 28);
             this.buttonExit.TabIndex = 4;
-            this.buttonExit.Text = "Exit";
             this.buttonExit.UseVisualStyleBackColor = true;
             this.buttonExit.Click += new System.EventHandler(this.exit_Click);
             // 

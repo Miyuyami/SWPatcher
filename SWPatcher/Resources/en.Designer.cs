@@ -540,6 +540,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Match Windows.
+        /// </summary>
+        internal static string match_windows {
+            get {
+                return ResourceManager.GetString("match_windows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Outdated translation files, force patching will now commence..
         /// </summary>
         internal static string notice_outdated_translation {

@@ -22,14 +22,14 @@ namespace SWPatcher.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class kr {
+    internal class ko {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal kr() {
+        internal ko() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace SWPatcher.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SWPatcher.Resources.kr", typeof(kr).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SWPatcher.Resources.ko", typeof(ko).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -536,6 +536,15 @@ namespace SWPatcher.Resources {
         internal static string form_upload_log {
             get {
                 return ResourceManager.GetString("form_upload_log", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows 일치.
+        /// </summary>
+        internal static string match_windows {
+            get {
+                return ResourceManager.GetString("match_windows", resourceCulture);
             }
         }
         

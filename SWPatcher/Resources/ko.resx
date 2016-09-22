@@ -326,4 +326,7 @@
     <value>로그파일이 {0} 로 업로드되었습니다.
 링크가 클립보드로 복사되었습니다.</value>
   </data>
+  <data name="match_windows" xml:space="preserve">
+    <value>Windows 일치</value>
+  </data>
 </root>

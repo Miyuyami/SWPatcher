@@ -370,7 +370,7 @@ namespace SWPatcher.Forms
 
                 Methods.SetSWFiles(this.SWFiles);
 
-                if (IsTranslationOutdated(language, this.SWFiles))
+                if (IsTranslationOutdatedOrMissing(language, this.SWFiles))
                 {
                     e.Result = true; // force patch = true
                     return;
@@ -658,24 +658,9 @@ namespace SWPatcher.Forms
             }
         }
 
-        private static bool IsTranslationOutdated(Language language, List<SWFile> swFiles)
+        private static bool IsTranslationOutdatedOrMissing(Language language, List<SWFile> swFiles)
         {
-            string selectedTranslationPath = Path.Combine(language.Lang, Strings.IniName.Translation);
-            if (!File.Exists(selectedTranslationPath))
-                return true;
-
-            IniFile ini = new IniFile();
-            ini.Load(selectedTranslationPath);
-
-            if (!ini.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Patcher.KeyVer))
-                throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
-
-            Version translationVer = new Version(ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value);
-            ini.Sections.Clear();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-
-            Version clientVer = new Version(ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
-            if (clientVer > translationVer)
+            if (Methods.IsTranslationOutdated(language))
                 return true;
 
             var otherSWFilesPaths = swFiles.Where(f => String.IsNullOrEmpty(f.PathA)).Select(f => f.Path + Path.GetFileName(f.PathD));

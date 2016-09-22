@@ -121,7 +121,7 @@ namespace SWPatcher.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
         public string UILanguage {
             get {
                 return ((string)(this["UILanguage"]));

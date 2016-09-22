@@ -326,4 +326,7 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
     <value>Tệp Log đã được đăng {0}
 Đường link đã được copy vào clipboard.</value>
   </data>
+  <data name="match_windows" xml:space="preserve">
+    <value>Tự động</value>
+  </data>
 </root>

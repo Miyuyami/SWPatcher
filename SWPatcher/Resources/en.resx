@@ -326,4 +326,7 @@ Are you sure you want to set to this folder?</value>
     <value>Log file was uploaded to {0}
 The link was copied to clipboard.</value>
   </data>
+  <data name="match_windows" xml:space="preserve">
+    <value>Match Windows</value>
+  </data>
 </root>

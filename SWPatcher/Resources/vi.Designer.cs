@@ -540,6 +540,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tự động.
+        /// </summary>
+        internal static string match_windows {
+            get {
+                return ResourceManager.GetString("match_windows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bản dịch lỗi thời, tiến hành làm lại Patch mới..
         /// </summary>
         internal static string notice_outdated_translation {

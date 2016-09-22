@@ -69,17 +69,20 @@ namespace SWPatcher.Forms
                     this.radioButtonMinimal.Checked = true;
                     break;
             }
+            var def = new ResxLanguage(StringLoader.GetText("match_windows"), "default");
             var en = new ResxLanguage("English", "en");
-            var kr = new ResxLanguage("한국어", "kr");
+            var ko = new ResxLanguage("한국어", "ko");
             var vi = new ResxLanguage("Tiếng Việt", "vi");
-            this.comboBoxUILanguage.DataSource = new ResxLanguage[] { en, kr, vi };
+            this.comboBoxUILanguage.DataSource = new ResxLanguage[] { def, en, ko, vi };
             string savedCode = this.UILanguage = UserSettings.UILanguageCode;
             if (en.Code == savedCode)
                 this.comboBoxUILanguage.SelectedItem = en;
-            else if (kr.Code == savedCode)
-                this.comboBoxUILanguage.SelectedItem = kr;
-            else // if (vi.Code == savedCode)
+            else if (ko.Code == savedCode)
+                this.comboBoxUILanguage.SelectedItem = ko;
+            else if (vi.Code == savedCode)
                 this.comboBoxUILanguage.SelectedItem = vi;
+            else
+                this.comboBoxUILanguage.SelectedItem = def;
 
             if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
             {

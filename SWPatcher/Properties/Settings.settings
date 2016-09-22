@@ -27,7 +27,7 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="UILanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)">en</Value>
+      <Value Profile="(Default)">default</Value>
     </Setting>
   </Settings>
 </SettingsFile>

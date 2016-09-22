@@ -38,10 +38,12 @@ namespace SWPatcher.Helpers
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (!Methods.HasNewTranslations(this.Language))
+            if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
+            {
+                Methods.SetSWFiles(this.SWFiles);
+            }
+            else
                 throw new Exception(String.Format(StringLoader.GetText("exception_already_latest_translation"), Methods.DateToString(this.Language.LastUpdate)));
-
-            Methods.SetSWFiles(this.SWFiles);
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

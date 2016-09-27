@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace SWPatcher.Helpers
+namespace SWPatcher.Downloading
 {
     public class RTPatchDownloadProgressChangedEventArgs : EventArgs
     {

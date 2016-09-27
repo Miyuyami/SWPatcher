@@ -1,5 +1,6 @@
 ﻿using MadMilkman.Ini;
 using Microsoft.Win32;
+using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
@@ -710,7 +711,7 @@ namespace SWPatcher.Forms
                 string filePath = Path.Combine(UserSettings.GamePath, swFileName);
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, swFileName);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
-                
+
                 Directory.CreateDirectory(backupFileDirectory);
 
                 File.Move(filePath, backupFilePath);
@@ -812,7 +813,7 @@ namespace SWPatcher.Forms
 
             var gamePath = UserSettings.GamePath;
             if (String.IsNullOrEmpty(gamePath) || !Methods.IsSwPath(gamePath))
-                    UserSettings.GamePath = GetSwPathFromRegistry();
+                UserSettings.GamePath = GetSwPathFromRegistry();
 
             if (this.comboBoxLanguages.DataSource != null)
             {
@@ -1036,7 +1037,7 @@ namespace SWPatcher.Forms
         {
             this.Close();
         }
-		
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))

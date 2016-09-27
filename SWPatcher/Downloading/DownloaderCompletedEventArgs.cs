@@ -1,7 +1,7 @@
 ﻿using System;
 using SWPatcher.General;
 
-namespace SWPatcher.Helpers
+namespace SWPatcher.Downloading
 {
     public class DownloaderCompletedEventArgs : EventArgs
     {

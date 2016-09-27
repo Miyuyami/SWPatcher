@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SWPatcher.Helpers
+namespace SWPatcher.Downloading
 {
     public class RTPatchProgressChangedEventArgs : EventArgs
     {

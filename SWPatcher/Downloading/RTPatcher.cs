@@ -1,4 +1,5 @@
 ﻿using MadMilkman.Ini;
+using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using System;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace SWPatcher.Helpers
+namespace SWPatcher.Downloading
 {
     public delegate void RTPatchDownloadProgressChangedEventHandler(object sender, RTPatchDownloadProgressChangedEventArgs e);
     public delegate void RTPatchProgressChangedEventHandler(object sender, RTPatchProgressChangedEventArgs e);

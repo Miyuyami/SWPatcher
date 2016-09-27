@@ -1,4 +1,5 @@
 ﻿using SWPatcher.General;
+using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 
-namespace SWPatcher.Helpers
+namespace SWPatcher.Downloading
 {
     public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
     public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
@@ -84,7 +85,7 @@ namespace SWPatcher.Helpers
                 path = Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path);
             else
                 path = Path.Combine(Path.GetDirectoryName(Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path)), Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Path));
-            
+
             Directory.CreateDirectory(path);
 
             string fileDestination = Path.Combine(path, Path.GetFileName(this.SWFiles[this.DownloadIndex].PathD));

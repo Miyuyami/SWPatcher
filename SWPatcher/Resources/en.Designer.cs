@@ -378,6 +378,16 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown error occured while updating Soulworker, best known way to fix at this moment is a complete reinstall of Soulworker. Code=[{0}]
+        ///{1} was uploaded for improving the patcher in the future..
+        /// </summary>
+        internal static string exception_rtpatch_result {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validation failed. Maybe your IP/Region is blocked?.
         /// </summary>
         internal static string exception_validation_failed {

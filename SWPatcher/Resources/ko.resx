@@ -329,4 +329,8 @@
   <data name="match_windows" xml:space="preserve">
     <value>Windows 일치</value>
   </data>
+  <data name="exception_rtpatch_result" xml:space="preserve">
+    <value>소울워커를 업데이트중 발생미상의 오류가 발생하였습니다. 지금으로써 알려진 고치는 방법은 소울워커를 재인스톨 하는것 뿐입니다. 코드=[{0}]
+{1} 가 패쳐의 향상을 위해 업로드되었습니다.</value>
+  </data>
 </root>

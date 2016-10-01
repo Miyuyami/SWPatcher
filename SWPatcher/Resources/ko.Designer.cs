@@ -378,6 +378,16 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 소울워커를 업데이트중 발생미상의 오류가 발생하였습니다. 지금으로써 알려진 고치는 방법은 소울워커를 재인스톨 하는것 뿐입니다. 코드=[{0}]
+        ///{1} 가 패쳐의 향상을 위해 업로드되었습니다..
+        /// </summary>
+        internal static string exception_rtpatch_result {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 인증 실패하였습니다. IP/지정 나라가 차단되있는게 아닐지?.
         /// </summary>
         internal static string exception_validation_failed {

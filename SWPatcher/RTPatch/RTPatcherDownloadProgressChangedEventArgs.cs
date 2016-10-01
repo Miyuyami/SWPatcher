@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Net;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.RTPatch
 {
-    public class RTPatchDownloadProgressChangedEventArgs : EventArgs
+    public class RTPatcherDownloadProgressChangedEventArgs : EventArgs
     {
         public string FileName { get; private set; }
         public int Progress { get; private set; }
 
-        public RTPatchDownloadProgressChangedEventArgs(string fileName, DownloadProgressChangedEventArgs e)
+        public RTPatcherDownloadProgressChangedEventArgs(string fileName, DownloadProgressChangedEventArgs e)
         {
             this.FileName = fileName;
             this.Progress = e.BytesReceived == e.TotalBytesToReceive ? int.MaxValue : Convert.ToInt32(((double)e.BytesReceived / e.TotalBytesToReceive) * int.MaxValue);

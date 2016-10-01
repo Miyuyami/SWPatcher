@@ -30,10 +30,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>MiyuPatcher</PublisherName>
-    <MinimumRequiredVersion>2.3.4.1</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.3.5.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>2.3.4.1</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.3.5.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -165,8 +165,9 @@
   <ItemGroup>
     <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
-    <Compile Include="Downloading\RTPatchDownloadProgressChangedEventArgs.cs" />
-    <Compile Include="Downloading\RTPatchProgressChangedEventArgs.cs" />
+    <Compile Include="RTPatch\ResultException.cs" />
+    <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
+    <Compile Include="RTPatch\RTPatcherProgressChangedEventArgs.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,7 +211,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Helpers\PasteBinClient.cs" />
-    <Compile Include="Downloading\RTPatcher.cs" />
+    <Compile Include="RTPatch\RTPatcher.cs" />
     <Compile Include="Helpers\StringLoader.cs" />
     <Compile Include="Patching\Patcher.cs" />
     <Compile Include="Patching\PatcherCompletedEventArgs.cs" />
@@ -244,7 +245,7 @@
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <Content Include="patcher.ico" />
+    <None Include="patcher.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

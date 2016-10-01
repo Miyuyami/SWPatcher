@@ -5,6 +5,7 @@ using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVar;
 using SWPatcher.Patching;
+using SWPatcher.RTPatch;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -194,9 +195,9 @@ namespace SWPatcher.Forms
             this.Worker.ProgressChanged += Worker_ProgressChanged;
             this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             this.RTPatcher = new RTPatcher();
-            this.RTPatcher.RTPatchDownloadProgressChanged += RTPatcher_DownloadProgressChanged;
-            this.RTPatcher.RTPatchProgressChanged += RTPatcher_ProgressChanged;
-            this.RTPatcher.RTPatchCompleted += RTPatcher_Completed;
+            this.RTPatcher.RTPatcherDownloadProgressChanged += RTPatcher_DownloadProgressChanged;
+            this.RTPatcher.RTPatcherProgressChanged += RTPatcher_ProgressChanged;
+            this.RTPatcher.RTPatcherCompleted += RTPatcher_Completed;
             switch (UserSettings.InterfaceMode)
             {
                 case 0:
@@ -309,7 +310,7 @@ namespace SWPatcher.Forms
             this.CurrentState = State.Idle;
         }
 
-        private void RTPatcher_DownloadProgressChanged(object sender, RTPatchDownloadProgressChangedEventArgs e)
+        private void RTPatcher_DownloadProgressChanged(object sender, RTPatcherDownloadProgressChangedEventArgs e)
         {
             if (this.CurrentState == State.RTPatch)
             {
@@ -318,7 +319,7 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void RTPatcher_ProgressChanged(object sender, RTPatchProgressChangedEventArgs e)
+        private void RTPatcher_ProgressChanged(object sender, RTPatcherProgressChangedEventArgs e)
         {
             if (this.CurrentState == State.RTPatch)
             {
@@ -333,8 +334,29 @@ namespace SWPatcher.Forms
             if (e.Cancelled) { }
             else if (e.Error != null)
             {
-                Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
+                if (e.Error is ResultException)
+                {
+                    var ex = (ResultException)e.Error;
+                    string logFileName = Path.GetFileName(ex.LogPath);
+                    string logFileText = File.ReadAllText(ex.LogPath);
+
+                    try
+                    {
+                        UploadToPasteBin(logFileName, logFileText, PasteBinExpiration.OneWeek, true, "text");
+                    }
+                    catch (PasteBinApiException)
+                    {
+
+                    }
+
+                    Error.Log($"See {logFileName} for details. Error Code=[{ex.Result}]");
+                    MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_result"), ex.Result, logFileName));
+                }
+                else
+                {
+                    Error.Log(e.Error);
+                    MsgBox.Error(Error.ExeptionParser(e.Error));
+                }
             }
             else
             {
@@ -806,6 +828,45 @@ namespace SWPatcher.Forms
             return result.Split(' ');
         }
 
+        private string UploadToPasteBin(string title, string text, PasteBinExpiration expiration, bool isPrivate, string format)
+        {
+            var client = new PasteBinClient(Strings.PasteBinDevKey);
+
+            try
+            {
+                client.Login(Strings.PasteBinUsername, Strings.PasteBinPassword);
+            }
+            catch (Exception ex)
+            {
+                Error.Log(ex);
+            }
+
+            var entry = new PasteBinEntry
+            {
+                Title = title,
+                Text = text,
+                Expiration = expiration,
+                Private = isPrivate,
+                Format = format
+            };
+
+            try
+            {
+                return client.Paste(entry);
+            }
+            catch (Exception ex)
+            {
+                Error.Log(ex);
+                MsgBox.Error(StringLoader.GetText("exception_log_file_failed"));
+            }
+            finally
+            {
+                client.Logout();
+            }
+
+            return null;
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             Language[] languages = GetAvailableLanguages();
@@ -974,42 +1035,18 @@ namespace SWPatcher.Forms
                 return;
             }
 
+            string logTitle = $"{AssemblyAccessor.Version} ({GetSHA256(Application.ExecutablePath).Substring(0, 12)}) at {Methods.DateToString(DateTime.UtcNow)}";
             string logText = File.ReadAllText(Strings.FileName.Log);
-            var client = new PasteBinClient(Strings.PasteBinDevKey);
+            var pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "csharp");
 
-            try
+            if (!String.IsNullOrEmpty(pasteUrl))
             {
-                client.Login(Strings.PasteBinUsername, Strings.PasteBinPassword);
-            }
-            catch (Exception ex)
-            {
-                Error.Log(ex);
-            }
-
-            var entry = new PasteBinEntry
-            {
-                Title = $"{AssemblyAccessor.Version} ({GetSHA256(Application.ExecutablePath).Substring(0, 12)}) at {Methods.DateToString(DateTime.UtcNow)}",
-                Text = logText,
-                Expiration = PasteBinExpiration.OneHour,
-                Private = true,
-                Format = "csharp"
-            };
-
-            try
-            {
-                string pasteUrl = client.Paste(entry);
-
                 Clipboard.SetText(pasteUrl);
                 MsgBox.Success(String.Format(StringLoader.GetText("success_log_file_upload"), pasteUrl));
             }
-            catch (Exception ex)
+            else
             {
-                Error.Log(ex);
                 MsgBox.Error(StringLoader.GetText("exception_log_file_failed"));
-            }
-            finally
-            {
-                client.Logout();
             }
         }
 

@@ -7,10 +7,10 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.RTPatch
 {
-    public delegate void RTPatchDownloadProgressChangedEventHandler(object sender, RTPatchDownloadProgressChangedEventArgs e);
-    public delegate void RTPatchProgressChangedEventHandler(object sender, RTPatchProgressChangedEventArgs e);
+    public delegate void RTPatcherDownloadProgressChangedEventHandler(object sender, RTPatcherDownloadProgressChangedEventArgs e);
+    public delegate void RTPatcherProgressChangedEventHandler(object sender, RTPatcherProgressChangedEventArgs e);
     public delegate string RTPatchCallback(uint id, IntPtr ptr);
 
     public class RTPatcher
@@ -31,9 +31,9 @@ namespace SWPatcher.Downloading
         private int FileCount;
         private int FileNumber;
 
-        public event RTPatchDownloadProgressChangedEventHandler RTPatchDownloadProgressChanged;
-        public event RTPatchProgressChangedEventHandler RTPatchProgressChanged;
-        public event AsyncCompletedEventHandler RTPatchCompleted;
+        public event RTPatcherDownloadProgressChangedEventHandler RTPatcherDownloadProgressChanged;
+        public event RTPatcherProgressChangedEventHandler RTPatcherProgressChanged;
+        public event AsyncCompletedEventHandler RTPatcherCompleted;
 
         public RTPatcher()
         {
@@ -59,18 +59,31 @@ namespace SWPatcher.Downloading
             }
 
             string gamePath = UserSettings.GamePath;
-            this.Apply(gamePath, Path.Combine(gamePath, Methods.VersionToRTP(this.ClientVersion)));
+            string diffFilePath = Path.Combine(gamePath, Methods.VersionToRTP(this.ClientVersion));
+
+            this.CurrentLogFilePath = Path.Combine(Strings.FolderName.RTPatchLogs, Path.GetFileName(diffFilePath) + ".log");
+            string logDirectory = Path.GetDirectoryName(this.CurrentLogFilePath);
+            Directory.CreateDirectory(logDirectory);
+            File.WriteAllText(this.CurrentLogFilePath, string.Empty);
+
+            string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";
+            ulong result = Environment.Is64BitProcess ? RTPatchApply64(command, new RTPatchCallback(RTPatchMessage), true) : RTPatchApply32(command, new RTPatchCallback(RTPatchMessage), true);
+            File.Delete(diffFilePath);
+            File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
+            
+            if (result != 0)
+                throw new ResultException(result, this.CurrentLogFilePath);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            this.RTPatchProgressChanged?.Invoke(this, new RTPatchProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, e.ProgressPercentage));
+            this.RTPatcherProgressChanged?.Invoke(this, new RTPatcherProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, e.ProgressPercentage));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.RTPatchCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.Result));
+                this.RTPatcherCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, null));
             else
             {
                 IniFile ini = new IniFile(new IniOptions
@@ -88,19 +101,19 @@ namespace SWPatcher.Downloading
                     ini.Save(iniPath);
                 }
 
-                this.DownloadNext();
+                DownloadNext();
             }
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.RTPatchDownloadProgressChanged?.Invoke(sender, new RTPatchDownloadProgressChangedEventArgs(Methods.VersionToRTP(this.ClientVersion), e));
+            this.RTPatcherDownloadProgressChanged?.Invoke(sender, new RTPatcherDownloadProgressChangedEventArgs(Methods.VersionToRTP(this.ClientVersion), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
-                this.RTPatchCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.RTPatcherCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             else
                 this.Worker.RunWorkerAsync();
         }
@@ -127,7 +140,7 @@ namespace SWPatcher.Downloading
             }
             else
             {
-                this.RTPatchCompleted?.Invoke(this, new AsyncCompletedEventArgs(null, false, null));
+                RTPatcherCompleted?.Invoke(this, new AsyncCompletedEventArgs(null, false, null));
             }
         }
 
@@ -151,22 +164,6 @@ namespace SWPatcher.Downloading
             }
 
             return result;
-        }
-
-        private void Apply(string directory, string diffFilePath)
-        {
-            this.CurrentLogFilePath = Path.Combine(Strings.FolderName.RTPatchLogs, Path.GetFileName(diffFilePath) + ".log");
-            string logDirectory = Path.GetDirectoryName(this.CurrentLogFilePath);
-            Directory.CreateDirectory(logDirectory);
-            File.WriteAllText(this.CurrentLogFilePath, string.Empty);
-
-            string command = $"/u /nos \"{directory}\" \"{diffFilePath}\"";
-            ulong result = Environment.Is64BitProcess ? RTPatchApply64(command, new RTPatchCallback(RTPatchMessage), true) : RTPatchApply32(command, new RTPatchCallback(RTPatchMessage), true);
-            File.Delete(diffFilePath);
-            File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
-
-            if (result != 0)
-                throw new Exception($"Result=[{result}]");
         }
 
         private string RTPatchMessage(uint id, IntPtr ptr)
@@ -246,8 +243,8 @@ namespace SWPatcher.Downloading
                 return;
 
             Methods.RTPatchCleanup();
-            this.LoadVersions();
-            this.DownloadNext();
+            LoadVersions();
+            DownloadNext();
         }
     }
 }

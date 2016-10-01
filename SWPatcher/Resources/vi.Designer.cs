@@ -378,6 +378,16 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Có lỗi xảy ra trong lúc cập nhật SoulWorker, cách tốt nhất là cài đặt lại trò chơi. Code=[{0}]
+        ///{1} đã được đăng lên để cải thiện patcher..
+        /// </summary>
+        internal static string exception_rtpatch_result {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kiểm tra thất bại. Bạn có chắc rằng bạn không bị chặn?.
         /// </summary>
         internal static string exception_validation_failed {

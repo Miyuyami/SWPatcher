@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace SWPatcher.Downloading
+namespace SWPatcher.RTPatch
 {
-    public class RTPatchProgressChangedEventArgs : EventArgs
+    public class RTPatcherProgressChangedEventArgs : EventArgs
     {
         public int FileNumber { get; private set; }
         public int FileCount { get; private set; }
         public string FileName { get; private set; }
         public int Progress { get; private set; }
 
-        public RTPatchProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, int progress)
+        public RTPatcherProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, int progress)
         {
             this.FileNumber = fileNumber;
             this.FileCount = fileCount;

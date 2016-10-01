@@ -329,4 +329,8 @@ The link was copied to clipboard.</value>
   <data name="match_windows" xml:space="preserve">
     <value>Match Windows</value>
   </data>
+  <data name="exception_rtpatch_result" xml:space="preserve">
+    <value>Unknown error occured while updating Soulworker, best known way to fix at this moment is a complete reinstall of Soulworker. Code=[{0}]
+{1} was uploaded for improving the patcher in the future.</value>
+  </data>
 </root>

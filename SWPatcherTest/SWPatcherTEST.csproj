@@ -28,8 +28,8 @@
     <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcherTest/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcherTest/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
-    <ProductName>Soulworker Patcher</ProductName>
-    <PublisherName>MiyuPatcher</PublisherName>
+    <ProductName>Soulworker Patcher Test</ProductName>
+    <PublisherName>MiyuTestPatcher</PublisherName>
     <MinimumRequiredVersion>2.4.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>

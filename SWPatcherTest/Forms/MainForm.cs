@@ -1,9 +1,11 @@
 ﻿using MadMilkman.Ini;
-using PubPluginLib;
-using SWPatcherTest.Helpers;
+using Microsoft.Win32;
+using SWPatcherTest.Downloading;
 using SWPatcherTest.General;
-using SWPatcherTest.Helpers.GlobalVar;
+using SWPatcherTest.Helpers;
+using SWPatcherTest.Helpers.GlobalVariables;
 using SWPatcherTest.Patching;
+using SWPatcherTest.RTPatch;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -15,6 +17,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Web;
 using System.Windows.Forms;
 
 namespace SWPatcherTest.Forms
@@ -30,7 +33,7 @@ namespace SWPatcherTest.Forms
             WaitClient,
             Apply,
             WaitClose,
-            RTPatch,
+            RTPatch
         }
 
         private enum NextState
@@ -41,6 +44,7 @@ namespace SWPatcherTest.Forms
             PlayRaw
         }
 
+        private IContainer components = null;
         private State _state;
         private NextState _nextState;
         private readonly Downloader Downloader;
@@ -64,91 +68,91 @@ namespace SWPatcherTest.Forms
                         case State.Idle:
                             comboBoxLanguages.Enabled = true;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = true;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = true;
                             forceStripMenuItem.Enabled = true;
                             refreshToolStripMenuItem.Enabled = true;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Idle;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_idle");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Download:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Cancel;
+                            buttonDownload.Text = StringLoader.GetText("button_cancel");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Download;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_download");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Patch:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Cancel;
+                            buttonDownload.Text = StringLoader.GetText("button_cancel");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Patch;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_patch");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Prepare:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.Prepare;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_prepare");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
                         case State.WaitClient:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = true;
-                            buttonPlay.Text = Strings.FormText.Cancel;
+                            buttonPlay.Text = StringLoader.GetText("button_cancel");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitClient;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_wait_client");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                         case State.Apply:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.ApplyFiles;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_apply");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
                         case State.WaitClose:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = false;
-                            buttonDownload.Text = Strings.FormText.Download;
+                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.WaitClose;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_wait_close");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             WindowState = FormWindowState.Minimized;
@@ -156,19 +160,20 @@ namespace SWPatcherTest.Forms
                         case State.RTPatch:
                             comboBoxLanguages.Enabled = false;
                             buttonDownload.Enabled = true;
-                            buttonDownload.Text = Strings.FormText.Cancel;
+                            buttonDownload.Text = StringLoader.GetText("button_cancel");
                             buttonPlay.Enabled = false;
-                            buttonPlay.Text = Strings.FormText.Play;
+                            buttonPlay.Text = StringLoader.GetText("button_play");
                             toolStripMenuItemStartRaw.Enabled = false;
                             forceStripMenuItem.Enabled = false;
                             refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = Strings.FormText.Status.UpdatingClient;
+                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_update_client");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
                             break;
                     }
 
-                    this.comboBoxLanguages_SelectedIndexChanged(null, null);
+                    Logger.Info($"State=[{value}]");
+                    this.comboBoxLanguages_SelectedIndexChanged(this, null);
                     _state = value;
                 }
             }
@@ -192,32 +197,65 @@ namespace SWPatcherTest.Forms
             this.Worker.ProgressChanged += Worker_ProgressChanged;
             this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             this.RTPatcher = new RTPatcher();
-            this.RTPatcher.RTPatchDownloadProgressChanged += RTPatcher_DownloadProgressChanged;
-            this.RTPatcher.RTPatchProgressChanged += RTPatcher_ProgressChanged;
-            this.RTPatcher.RTPatchCompleted += RTPatcher_Completed;
-            InitializeComponent();
+            this.RTPatcher.RTPatcherDownloadProgressChanged += RTPatcher_DownloadProgressChanged;
+            this.RTPatcher.RTPatcherProgressChanged += RTPatcher_ProgressChanged;
+            this.RTPatcher.RTPatcherCompleted += RTPatcher_Completed;
+            byte uiMode = UserSettings.InterfaceMode;
+            switch (uiMode)
+            {
+                case 0:
+                    InitializeComponentFull();
+                    break;
+                case 1:
+                    InitializeComponentMinimal();
+                    break;
+            }
+            InitializeTextComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
+            Logger.Info($"[{this.Text}] starting in UI Mode=[{uiMode}] UI Language=[{UserSettings.UILanguageCode}]");
+        }
+
+        private void InitializeTextComponent()
+        {
+            this.menuToolStripMenuItem.Text = StringLoader.GetText("form_menu");
+            this.settingsToolStripMenuItem.Text = StringLoader.GetText("form_settings");
+            this.refreshToolStripMenuItem.Text = StringLoader.GetText("form_refresh");
+            this.aboutToolStripMenuItem.Text = StringLoader.GetText("form_about");
+            this.forceStripMenuItem.Text = StringLoader.GetText("form_force_patch");
+            this.openSWWebpageToolStripMenuItem.Text = StringLoader.GetText("form_open_sw_webpage");
+            this.uploadLogToPastebinToolStripMenuItem.Text = StringLoader.GetText("form_upload_log");
+            this.buttonDownload.Text = StringLoader.GetText("button_download_translation");
+            this.buttonPlay.Text = StringLoader.GetText("button_play");
+            this.buttonExit.Text = StringLoader.GetText("button_exit");
+            this.notifyIcon.BalloonTipText = StringLoader.GetText("notify_balloon_text");
+            this.notifyIcon.BalloonTipTitle = StringLoader.GetText("notify_balloon_title");
+            this.notifyIcon.Text = StringLoader.GetText("notify_text");
+            this.toolStripMenuItemStartRaw.Text = StringLoader.GetText("button_play_raw");
         }
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)
         {
             if (this.CurrentState == State.Download)
             {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.Download, e.FileName, e.FileNumber, e.FileCount);
+                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_download")} {e.FileName} ({e.FileNumber}/{e.FileCount})";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
 
         private void Downloader_DownloaderCompleted(object sender, DownloaderCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled");
+            }
             else if (e.Error != null)
             {
-                Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
+                Logger.Error(e.Error);
+                MsgBox.Error(Logger.ExeptionParser(e.Error));
             }
             else
             {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
                 this.CurrentState = State.Patch;
                 this.Patcher.Run(e.Language);
 
@@ -233,12 +271,12 @@ namespace SWPatcherTest.Forms
             {
                 if (e.Progress == -1)
                 {
-                    this.toolStripStatusLabel.Text = Strings.FormText.Status.PatchingExe;
+                    this.toolStripStatusLabel.Text = StringLoader.GetText("form_status_patch_exe");
                     this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                 }
                 else
                 {
-                    this.toolStripStatusLabel.Text = String.Format("{0} Step {1}/{2}", Strings.FormText.Status.Patch, e.FileNumber, e.FileCount);
+                    this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} Step {e.FileNumber}/{e.FileCount}";
                     this.toolStripProgressBar.Value = e.Progress;
                 }
             }
@@ -246,15 +284,19 @@ namespace SWPatcherTest.Forms
 
         private void Patcher_PatcherCompleted(object sender, PatcherCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled");
+            }
             else if (e.Error != null)
             {
-                Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
+                Logger.Error(e.Error);
+                MsgBox.Error(Logger.ExeptionParser(e.Error));
                 DeleteTmpFiles(e.Language);
             }
             else
             {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
                 IniFile ini = new IniFile(new IniOptions
                 {
                     KeyDuplicate = IniDuplication.Ignored,
@@ -280,6 +322,84 @@ namespace SWPatcherTest.Forms
             this.CurrentState = State.Idle;
         }
 
+        private void RTPatcher_DownloadProgressChanged(object sender, RTPatcherDownloadProgressChangedEventArgs e)
+        {
+            if (this.CurrentState == State.RTPatch)
+            {
+                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName}";
+                this.toolStripProgressBar.Value = e.Progress;
+            }
+        }
+
+        private void RTPatcher_ProgressChanged(object sender, RTPatcherProgressChangedEventArgs e)
+        {
+            if (this.CurrentState == State.RTPatch)
+            {
+                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName} ({e.FileNumber}/{e.FileCount})";
+                this.toolStripProgressBar.Value = e.Progress;
+            }
+        }
+
+        private void RTPatcher_Completed(object sender, AsyncCompletedEventArgs e)
+        {
+            Methods.RTPatchCleanup();
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled");
+            }
+            else if (e.Error != null)
+            {
+                if (e.Error is ResultException)
+                {
+                    var ex = (ResultException)e.Error;
+                    string logFileName = Path.GetFileName(ex.LogPath);
+                    string logFileText = File.ReadAllText(ex.LogPath);
+
+                    try
+                    {
+                        UploadToPasteBin(logFileName, logFileText, PasteBinExpiration.OneWeek, true, "text");
+                    }
+                    catch (PasteBinApiException)
+                    {
+
+                    }
+
+                    Logger.Error($"See {logFileName} for details. Error Code=[{ex.Result}]");
+                    MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_result"), ex.Result, logFileName));
+                }
+                else
+                {
+                    Logger.Error(e.Error);
+                    MsgBox.Error(Logger.ExeptionParser(e.Error));
+                }
+            }
+            else
+            {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
+                switch (this._nextState)
+                {
+                    case NextState.Download:
+                        this.CurrentState = State.Download;
+                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
+
+                        break;
+                    case NextState.Play:
+                        this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
+
+                        break;
+                    case NextState.PlayRaw:
+                        this.Worker.RunWorkerAsync();
+
+                        break;
+                }
+
+                this._nextState = 0;
+                return;
+            }
+
+            this.CurrentState = State.Idle;
+        }
+
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             this.Worker.ReportProgress((int)State.Prepare);
@@ -289,7 +409,7 @@ namespace SWPatcherTest.Forms
 
                 Methods.SetSWFiles(this.SWFiles);
 
-                if (IsTranslationOutdated(language, this.SWFiles))
+                if (IsTranslationOutdatedOrMissing(language, this.SWFiles))
                 {
                     e.Result = true; // force patch = true
                     return;
@@ -392,7 +512,7 @@ namespace SWPatcherTest.Forms
                 }
                 else
                 {
-                    throw new Exception("Direct login option is not active.");
+                    throw new Exception(StringLoader.GetText("exception_not_login_option"));
                 }
             }
         }
@@ -404,21 +524,27 @@ namespace SWPatcherTest.Forms
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled.");
+            }
             else if (e.Error != null)
             {
-                Error.Log(e.Error);
+                Logger.Error(e.Error);
                 MsgBox.Error(e.Error.Message);
             }
             else if (e.Result != null && Convert.ToBoolean(e.Result))
             {
-                MsgBox.Notice("Outdated translation files, force patching will now commence.");
+                MsgBox.Notice(StringLoader.GetText("notice_outdated_translation"));
                 forceStripMenuItem_Click(sender, e);
 
                 return;
             }
             else
+            {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
                 this.RestoreFromTray();
+            }
 
             try
             {
@@ -430,68 +556,7 @@ namespace SWPatcherTest.Forms
             }
         }
 
-        private void RTPatcher_DownloadProgressChanged(object sender, RTPatchDownloadProgressChangedEventArgs e)
-        {
-            if (this.CurrentState == State.RTPatch)
-            {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1}", Strings.FormText.Status.UpdatingClient, e.FileName);
-                this.toolStripProgressBar.Value = e.Progress;
-            }
-        }
-
-        private void RTPatcher_ProgressChanged(object sender, RTPatchProgressChangedEventArgs e)
-        {
-            if (this.CurrentState == State.RTPatch)
-            {
-                this.toolStripStatusLabel.Text = String.Format("{0} {1} ({2}/{3})", Strings.FormText.Status.UpdatingClient, e.FileName, e.FileNumber, e.FileCount);
-                this.toolStripProgressBar.Value = e.Progress;
-            }
-        }
-
-        private void RTPatcher_Completed(object sender, AsyncCompletedEventArgs e)
-        {
-            RTPatchCleanup();
-            if (e.Cancelled) { }
-            else if (e.Error != null)
-            {
-                Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
-            }
-            else
-            {
-                switch (this._nextState)
-                {
-                    case NextState.Download:
-                        this.CurrentState = State.Download;
-                        this.Downloader.Run(this.comboBoxLanguages.SelectedItem as Language);
-
-                        break;
-                    case NextState.Play:
-                        this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
-
-                        break;
-                    case NextState.PlayRaw:
-                        this.Worker.RunWorkerAsync();
-
-                        break;
-                }
-
-                this._nextState = 0;
-                return;
-            }
-
-            this.CurrentState = State.Idle;
-        }
-
-        private static void RTPatchCleanup()
-        {
-            string[] filters = { "RT*", ".RTP" };
-            foreach (var filter in filters)
-                foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
-                    File.Delete(file);
-        }
-
-        public IEnumerable<string> GetComboBoxStringItems()
+        public IEnumerable<string> GetComboBoxItemsAsString()
         {
             return this.comboBoxLanguages.Items.Cast<Language>().Select(s => s.Lang);
         }
@@ -507,11 +572,13 @@ namespace SWPatcherTest.Forms
 
         private static void StartupBackupCheck(Language language)
         {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
             if (Directory.Exists(Strings.FolderName.Backup))
             {
                 if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    var result = MsgBox.Question(String.Format("Backup files found. Do you want to restore them now back in your client?\nExisting ones from your client will be swapped to the {0} translation.\nSelecting No will remove those backup files.", language.Lang));
+                    var result = MsgBox.Question(String.Format(StringLoader.GetText("question_backup_files_found"), language.Lang));
 
                     if (result == DialogResult.Yes)
                         RestoreBackup(language);
@@ -527,6 +594,8 @@ namespace SWPatcherTest.Forms
 
         private static void RestoreBackup(Language language)
         {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
             if (!Directory.Exists(Strings.FolderName.Backup))
                 return;
 
@@ -535,6 +604,7 @@ namespace SWPatcherTest.Forms
             {
                 string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
                 string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                Logger.Debug($"original=[{gameExePath}] backup=[{gameExePatchedPath}]");
 
                 if (File.Exists(gameExePath))
                     File.Move(gameExePath, gameExePatchedPath);
@@ -546,6 +616,7 @@ namespace SWPatcherTest.Forms
             foreach (var file in filePaths)
             {
                 string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
+                Logger.Debug($"original=[{path}] backup=[{file}]");
 
                 if (File.Exists(path))
                     File.Move(path, Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1)));
@@ -555,7 +626,8 @@ namespace SWPatcherTest.Forms
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    MsgBox.Error($"Directory with the file doesn't exist {Path.GetFullPath(file)} missing. Cannot restore this folder and it will be deleted.");
+                    MsgBox.Error(String.Format("exception_cannot_restore_file", Path.GetFullPath(file)));
+                    Logger.Error($"Cannot restore path=[{file}]");
                     File.Delete(file);
                 }
             }
@@ -566,27 +638,38 @@ namespace SWPatcherTest.Forms
             string[] tmpFilePaths = Directory.GetFiles(language.Lang, "*.tmp", SearchOption.AllDirectories);
 
             foreach (var tmpFile in tmpFilePaths)
+            {
                 File.Delete(tmpFile);
+                Logger.Debug($"Deleting tmp path=[{tmpFile}]");
+            }
         }
 
-        public static string GetSwPathFromRegistry()
+        private static string GetSwPathFromRegistry()
         {
-            using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\HanPurple\J_SW"))
+            if (!Environment.Is64BitOperatingSystem)
             {
-                if (key != null)
-                    return Convert.ToString(key.GetValue("folder", String.Empty));
-                else
+                using (var key32 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
                 {
-                    Error.Log("64-bit - Key not found");
-
-                    using (var key32 = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
+                    if (key32 != null)
+                        return Convert.ToString(key32.GetValue("folder", String.Empty));
+                    else
+                        throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
+                }
+            }
+            else
+            {
+                using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\HanPurple\J_SW"))
+                {
+                    if (key != null)
+                        return Convert.ToString(key.GetValue("folder", String.Empty));
+                    else
                     {
-                        if (key32 != null)
-                            return Convert.ToString(key32.GetValue("folder", String.Empty));
-                        else
+                        using (var key32 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
                         {
-                            Error.Log("32-bit - Key not found");
-                            throw new Exception("Soulworker installation not found.");
+                            if (key32 != null)
+                                return Convert.ToString(key32.GetValue("folder", String.Empty));
+                            else
+                                throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
                         }
                     }
                 }
@@ -601,7 +684,10 @@ namespace SWPatcherTest.Forms
             using (var file = new TempFile())
             {
                 client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
-                IniFile ini = new IniFile();
+                IniFile ini = new IniFile(new IniOptions
+                {
+                    Encoding = Encoding.UTF8
+                });
                 ini.Load(file.Path);
 
                 foreach (var section in ini.Sections)
@@ -621,30 +707,15 @@ namespace SWPatcherTest.Forms
         private static string GetSHA256(string filename)
         {
             using (var sha256 = SHA256.Create())
-            using (var stream = File.OpenRead(filename))
+            using (var fs = File.OpenRead(filename))
             {
-                return BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "");
+                return BitConverter.ToString(sha256.ComputeHash(fs)).Replace("-", "");
             }
         }
 
-        private static bool IsTranslationOutdated(Language language, List<SWFile> swFiles)
+        private static bool IsTranslationOutdatedOrMissing(Language language, List<SWFile> swFiles)
         {
-            string selectedTranslationPath = Path.Combine(language.Lang, Strings.IniName.Translation);
-            if (!File.Exists(selectedTranslationPath))
-                return true;
-
-            IniFile ini = new IniFile();
-            ini.Load(selectedTranslationPath);
-
-            if (!ini.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Patcher.KeyVer))
-                throw new Exception("Error reading translation version, try to Menu -> Force Patch");
-
-            Version translationVer = new Version(ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value);
-            ini.Sections.Clear();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-
-            Version clientVer = new Version(ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
-            if (clientVer > translationVer)
+            if (Methods.IsTranslationOutdated(language))
                 return true;
 
             var otherSWFilesPaths = swFiles.Where(f => String.IsNullOrEmpty(f.PathA)).Select(f => f.Path + Path.GetFileName(f.PathD));
@@ -694,7 +765,7 @@ namespace SWPatcherTest.Forms
                 string filePath = Path.Combine(UserSettings.GamePath, swFileName);
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, swFileName);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
-                
+
                 Directory.CreateDirectory(backupFileDirectory);
 
                 File.Move(filePath, backupFilePath);
@@ -705,14 +776,29 @@ namespace SWPatcherTest.Forms
         private static void HangameLogin(MyWebClient client)
         {
             var values = new NameValueCollection(2);
-            values[Strings.Web.PostId] = UserSettings.GameId;
-            values[Strings.Web.PostPw] = UserSettings.GamePw;
+            string id = HttpUtility.UrlEncode(UserSettings.GameId);
+
+            values[Strings.Web.PostEncodeId] = id;
+            values[Strings.Web.PostEncodeFlag] = Strings.Web.PostEncodeFlagDefaultValue;
+            values[Strings.Web.PostId] = id;
+            using (var secure = Methods.DecryptString(UserSettings.GamePw))
+            {
+                values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure));
+            }
+            values[Strings.Web.PostClearFlag] = Strings.Web.PostClearFlagDefaultValue;
+            values[Strings.Web.PostNextUrl] = Strings.Web.PostNextUrlDefaultValue;
+
             var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
+            if (loginResponse.Contains(Strings.Web.CaptchaValidationText))
+            {
+                Process.Start(Strings.Web.CaptchaUrl);
+                throw new Exception(StringLoader.GetText("exception_captcha_validation"));
+            }
             try
             {
                 string[] messages = GetVariableValue(loginResponse, Strings.Web.MessageVariable);
                 if (messages[0].Length > 0)
-                    throw new Exception("Incorrect ID or Password.", new Exception(String.Join("\n", messages)));
+                    throw new Exception(StringLoader.GetText("exception_incorrect_id_pw"));
             }
             catch (IndexOutOfRangeException)
             {
@@ -722,97 +808,58 @@ namespace SWPatcherTest.Forms
 
         private static string GetGameStartResponse(MyWebClient client)
         {
-            again:
+        again:
             string gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
             try
             {
                 if (GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
-                    throw new Exception("To play the game you need to accept the Terms of Service.");
+                    throw new Exception(StringLoader.GetText("exception_not_tos"));
                 else if (GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
-                    throw new Exception("Game is under maintenance.");
+                    throw new Exception(StringLoader.GetText("exception_game_maintenance"));
             }
             catch (IndexOutOfRangeException)
             {
-                var dialog = MsgBox.ErrorRetry("Validation failed.");
+                var dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                 if (dialog == DialogResult.Retry)
                     goto again;
 
-                throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
+                throw new Exception(StringLoader.GetText("exception_validation_failed"));
             }
 
             return gameStartResponse;
         }
 
-        private static void StartReactorToUpdate()
-        {
-            again:
-            using (var client = new MyWebClient())
-            {
-                HangameLogin(client);
-                string gameStartResponse = GetGameStartResponse(client);
-
-                PubPluginClass pubPluginClass = new PubPluginClass();
-                IPubPlugin pubPlugin = null;
-                try
-                {
-                    pubPlugin = pubPluginClass;
-                }
-                catch (InvalidCastException)
-                {
-                    throw new Exception("Run the game from the website first to install the plugin and reactor!");
-                }
-                if (pubPlugin.IsReactorInstalled() == 1)
-                    try
-                    {
-                        pubPlugin.StartReactor(GetVariableValue(gameStartResponse, Strings.Web.ReactorStr)[0]);
-                        throw new Exception("Update the game client using the game launcher.\nWhen it finished, close it and try 'Ready to Play' again.");
-                    }
-                    catch (IndexOutOfRangeException)
-                    {
-                        var dialog = MsgBox.ErrorRetry("Validation failed.");
-                        if (dialog == DialogResult.Retry)
-                            goto again;
-
-                        throw new Exception("Validation failed. Maybe your IP/Region is blocked?");
-                    }
-                else
-                    throw new Exception("Run the game from the website first to install the plugin and reactor!");
-            }
-        }
-
         private static string[] GetGameStartArguments(MyWebClient client)
         {
-            again:
+        again:
             try
             {
                 client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
             }
             catch (WebException webEx)
             {
-                var dialog = MsgBox.ErrorRetry("Validation failed.");
+                var dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                 if (dialog == DialogResult.Retry)
                     goto again;
 
                 var responseError = webEx.Response as HttpWebResponse;
                 if (responseError.StatusCode == HttpStatusCode.NotFound)
-                    throw new WebException("Validation failed. Maybe your IP/Region is blocked?", webEx);
+                    throw new WebException(StringLoader.GetText("exception_validation_failed"), webEx);
                 else
                     throw;
             }
 
             var reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
-            IniFile ini = new IniFile();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralClient));
 
             string[] gameStartArgs = new string[3];
             gameStartArgs[0] = GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0];
-            gameStartArgs[1] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyIP].Value;
-            gameStartArgs[2] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyPort].Value;
+            gameStartArgs[1] = Strings.Server.IP;
+            gameStartArgs[2] = Strings.Server.Port;
 
             return gameStartArgs;
         }
 
-        internal static string[] GetVariableValue(string fullText, string variableName)
+        private static string[] GetVariableValue(string fullText, string variableName)
         {
             string result;
             int valueIndex = fullText.IndexOf(variableName);
@@ -826,6 +873,87 @@ namespace SWPatcherTest.Forms
             return result.Split(' ');
         }
 
+        private string UploadToPasteBin(string title, string text, PasteBinExpiration expiration, bool isPrivate, string format)
+        {
+            var client = new PasteBinClient(Strings.PasteBin.DevKey);
+
+            try
+            {
+                client.Login(Strings.PasteBin.Username, Strings.PasteBin.Password);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+
+            var entry = new PasteBinEntry
+            {
+                Title = title,
+                Text = text,
+                Expiration = expiration,
+                Private = isPrivate,
+                Format = format
+            };
+
+            try
+            {
+                return client.Paste(entry);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                MsgBox.Error(StringLoader.GetText("exception_log_file_failed"));
+            }
+            finally
+            {
+                client.Logout();
+            }
+
+            return null;
+        }
+
+        private static string DecryptLog(string fileName)
+        {
+            if (!Logger.Encrypt)
+                return File.ReadAllText(fileName);
+
+            string message = "";
+
+            using (var br = new BinaryReader(File.OpenRead(fileName)))
+            {
+                ushort[] messageShorts = new ushort[br.BaseStream.Length / 2];
+                byte[] messageBytes = new byte[br.BaseStream.Length];
+
+                for (int i = 0; i < br.BaseStream.Length / 2; i++)
+                {
+                    messageShorts[i] = br.ReadUInt16();
+                    messageShorts[i] ^= 0x24;
+                    messageBytes[i * 2] = (byte)(messageShorts[i] >> 8);
+                    messageBytes[i * 2 + 1] = (byte)(messageShorts[i] & 255);
+                }
+
+                message = Encoding.BigEndianUnicode.GetString(messageBytes);
+            }
+
+            return message;
+        }
+
+        private static string TrimStringIfNecessary(string str)
+        {
+            int limit = 500000;
+
+            byte[] strBytes = Encoding.UTF8.GetBytes(str);
+            if (strBytes.Length > limit)
+            {
+                byte[] trimmedStrBytes = new byte[limit];
+                Array.Copy(strBytes, strBytes.Length - limit, trimmedStrBytes, 0, limit);
+
+                return Encoding.UTF8.GetString(trimmedStrBytes);
+            }
+
+            return str;
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             Language[] languages = GetAvailableLanguages();
@@ -836,21 +964,27 @@ namespace SWPatcherTest.Forms
                 UserSettings.GamePath = GetSwPathFromRegistry();
 
             if (this.comboBoxLanguages.DataSource != null)
+            {
+                Logger.Info($"Loading languages: {String.Join(" ", languages.Select(l => l.ToString()))}");
+
                 if (String.IsNullOrEmpty(UserSettings.LanguageName))
+                {
                     UserSettings.LanguageName = (this.comboBoxLanguages.SelectedItem as Language).Lang;
+                }
                 else
                 {
                     int index = this.comboBoxLanguages.Items.IndexOf(new Language(UserSettings.LanguageName, DateTime.UtcNow));
                     this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
                 }
+            }
 
             StartupBackupCheck(this.comboBoxLanguages.SelectedItem as Language);
 
             if (!Methods.IsValidSwPatcherPath(Directory.GetCurrentDirectory()))
             {
-                string error = "The program is in the same or in a sub folder as your game client.\nThis will cause malfunctions or data corruption on your game client.\nPlease move the patcher in another location or continue at your own risk.";
+                string error = StringLoader.GetText("exception_folder_same_path_game");
 
-                Error.Log(error);
+                Logger.Error(error);
                 MsgBox.Error(error);
             }
         }
@@ -866,20 +1000,17 @@ namespace SWPatcherTest.Forms
 
                     break;
                 case State.Download:
-                    this.buttonDownload.Enabled = false;
-                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Downloader.Cancel();
 
                     break;
                 case State.Patch:
-                    this.buttonDownload.Enabled = false;
-                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Patcher.Cancel();
 
                     break;
                 case State.RTPatch:
-                    this.buttonDownload.Enabled = false;
-                    this.buttonDownload.Text = Strings.FormText.Cancelling;
+                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.RTPatcher.Cancel();
 
                     break;
@@ -893,12 +1024,11 @@ namespace SWPatcherTest.Forms
                 case State.Idle:
                     this.CurrentState = State.RTPatch;
                     this._nextState = NextState.Play;
-                    RTPatcher.Run();
+                    this.RTPatcher.Run();
 
                     break;
                 case State.WaitClient:
-                    this.buttonPlay.Enabled = false;
-                    this.buttonPlay.Text = Strings.FormText.Cancelling;
+                    this.buttonPlay.Text = StringLoader.GetText("button_cancelling");
                     this.Worker.CancelAsync();
 
                     break;
@@ -912,7 +1042,7 @@ namespace SWPatcherTest.Forms
                 case State.Idle:
                     this.CurrentState = State.RTPatch;
                     this._nextState = NextState.PlayRaw;
-                    RTPatcher.Run();
+                    this.RTPatcher.Run();
 
                     break;
             }
@@ -922,8 +1052,9 @@ namespace SWPatcherTest.Forms
         {
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
+            Logger.Info("Force patch selected");
             DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
+            this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Lang, Methods.DateToString(language.LastUpdate));
 
             this.CurrentState = State.RTPatch;
             this._nextState = NextState.Download;
@@ -935,7 +1066,7 @@ namespace SWPatcherTest.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             if (language != null && Methods.HasNewTranslations(language))
-                this.labelNewTranslations.Text = String.Format(Strings.FormText.NewTranslations, language.Lang, Methods.DateToString(language.LastUpdate));
+                this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Lang, Methods.DateToString(language.LastUpdate));
             else
                 this.labelNewTranslations.Text = String.Empty;
         }
@@ -985,47 +1116,24 @@ namespace SWPatcherTest.Forms
         {
             if (!File.Exists(Strings.FileName.Log))
             {
-                MsgBox.Error("Log file does not exist.");
+                MsgBox.Error(StringLoader.GetText("exception_log_not_exist"));
 
                 return;
             }
 
-            string logText = File.ReadAllText(Strings.FileName.Log);
-            var client = new PasteBinClient(Strings.PasteBinDevKey);
+            string logTitle = $"{AssemblyAccessor.Version} ({GetSHA256(Application.ExecutablePath).Substring(0, 12)}) at {Methods.DateToString(DateTime.UtcNow)}";
+            string logText = DecryptLog(Strings.FileName.Log);
+            logText = TrimStringIfNecessary(logText);
+            var pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "text");
 
-            try
+            if (!String.IsNullOrEmpty(pasteUrl))
             {
-                client.Login(Strings.PasteBinUsername, Strings.PasteBinPassword);
-            }
-            catch (Exception ex)
-            {
-                Error.Log(ex);
-            }
-
-            var entry = new PasteBinEntry
-            {
-                Title = String.Format("{0} ({1}) at {2}", AssemblyAccessor.Version, GetSHA256(Application.ExecutablePath).Substring(0, 12), Methods.DateToString(DateTime.UtcNow)),
-                Text = logText,
-                Expiration = PasteBinExpiration.OneHour,
-                Private = true,
-                Format = "csharp"
-            };
-
-            try
-            {
-                string pasteUrl = client.Paste(entry);
-
                 Clipboard.SetText(pasteUrl);
-                MsgBox.Success("Log file was uploaded to " + pasteUrl + "\nThe link was copied to clipboard.");
+                MsgBox.Success(String.Format(StringLoader.GetText("success_log_file_upload"), pasteUrl));
             }
-            catch (Exception ex)
+            else
             {
-                Error.Log(ex);
-                MsgBox.Error("Failed to upload log file.");
-            }
-            finally
-            {
-                client.Logout();
+                MsgBox.Error(StringLoader.GetText("exception_log_file_failed"));
             }
         }
 
@@ -1037,14 +1145,24 @@ namespace SWPatcherTest.Forms
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (Methods.In(e.CloseReason, CloseReason.ApplicationExitCall, CloseReason.WindowsShutDown))
+            {
+                Logger.Debug($"{this.Text} closing abnormally. Reason=[{e.CloseReason.ToString()}]");
+                this.CurrentState = State.Idle;
+                this.RTPatcher.Cancel();
+                this.Downloader.Cancel();
+                this.Patcher.Cancel();
+                this.Worker.CancelAsync();
+            }
             if (this.CurrentState != State.Idle)
             {
-                MsgBox.Error(AssemblyAccessor.Title + " is currently busy and cannot close.");
+                MsgBox.Error(String.Format(StringLoader.GetText("exception_cannot_close"), AssemblyAccessor.Title));
 
                 e.Cancel = true;
             }
             else
             {
+                Logger.Debug($"{this.Text} closing. Reason=[{e.CloseReason.ToString()}]");
                 UserSettings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
             }
         }
@@ -1052,6 +1170,15 @@ namespace SWPatcherTest.Forms
         private void exit_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

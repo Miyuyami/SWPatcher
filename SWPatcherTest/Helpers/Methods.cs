@@ -1,12 +1,17 @@
 ﻿using Ionic.Zip;
 using MadMilkman.Ini;
-using SWPatcherTest.Helpers.GlobalVar;
 using SWPatcherTest.General;
+using SWPatcherTest.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SWPatcherTest.Helpers
@@ -14,6 +19,7 @@ namespace SWPatcherTest.Helpers
     internal static class Methods
     {
         private static string DateFormat = "dd/MMM/yyyy h:mm tt";
+        private static byte[] Entropy = Encoding.Unicode.GetBytes("C11699FC9EC2502027E0222999DA029D01DE3026");
 
         internal static DateTime ParseDate(string date)
         {
@@ -53,7 +59,15 @@ namespace SWPatcherTest.Helpers
 
         internal static bool IsSwPath(string path)
         {
-            return Directory.Exists(path) && Directory.Exists(Path.Combine(path, Strings.FolderName.Data)) && File.Exists(Path.Combine(path, Strings.FileName.GameExe)) && File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
+            bool f1 = Directory.Exists(path);
+            string dataPath = Path.Combine(path, Strings.FolderName.Data);
+            bool f2 = Directory.Exists(dataPath);
+            bool f3 = File.Exists(Path.Combine(path, Strings.FileName.GameExe));
+            bool f4 = File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
+            bool f5 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data12));
+            bool f6 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data14));
+
+            return f1 && f2 && f3 && f4 && f5 && f6;
         }
 
         internal static bool IsValidSwPatcherPath(string path)
@@ -61,7 +75,7 @@ namespace SWPatcherTest.Helpers
             return String.IsNullOrEmpty(path) || !IsSwPath(path) && IsValidSwPatcherPath(Path.GetDirectoryName(path));
         }
 
-        internal static bool IsNewerGameClientVersion()
+        /*internal static bool IsNewerGameClientVersion()
         {
             IniFile ini = new IniFile();
             ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
@@ -80,14 +94,29 @@ namespace SWPatcherTest.Helpers
         private static string GetServerVersion()
         {
             return GetServerIni().Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
-        }
+        }*/
 
         internal static IniFile GetServerIni()
         {
             using (var client = new WebClient())
             using (var zippedFile = new TempFile())
             {
-                client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
+                try
+                {
+                    client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
+                }
+                catch (WebException e)
+                {
+                    if (e.InnerException is SocketException)
+                    {
+                        var innerException = e.InnerException as SocketException;
+                        if (innerException.SocketErrorCode == SocketError.ConnectionRefused)
+                        {
+                            Logger.Error(e);
+                            MsgBox.Error(StringLoader.GetText("exception_hangame_refused_connection"));
+                        }
+                    }
+                }
 
                 using (var file = new TempFile())
                 {
@@ -111,6 +140,8 @@ namespace SWPatcherTest.Helpers
 
         internal static void PatchExeFile(string gameExePath)
         {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
             using (var client = new WebClient())
             using (var file = new TempFile())
             {
@@ -166,6 +197,155 @@ namespace SWPatcherTest.Helpers
         internal static string VersionToRTP(Version version)
         {
             return $"{version.Major}_{version.Minor}_{version.Build}_{version.Revision}.RTP";
+        }
+
+        internal static void RTPatchCleanup()
+        {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
+            string[] filters = { "RT*", "*.RTP" };
+            foreach (var filter in filters)
+                foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
+                {
+                    Logger.Debug($"Deleting file=[{file}]");
+                    File.Delete(file);
+                }
+        }
+
+        internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination, string password)
+        {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
+            using (var zip = ZipFile.Read(zipPath))
+            {
+                zip.Password = password;
+                zip.FlattenFoldersOnExtract = true;
+                zip[fileName].Extract(extractDestination, ExtractExistingFileAction.OverwriteSilently);
+            }
+        }
+
+        internal static void DoZipFile(string zipPath, string fileName, string filePath, string password)
+        {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
+            using (var zip = ZipFile.Read(zipPath))
+            {
+                zip.Password = password;
+                zip.RemoveEntry(fileName);
+                zip.AddFile(filePath, Path.GetDirectoryName(fileName));
+                zip.Save();
+            }
+        }
+
+        internal static void AddZipToZip(string zipPath, string destinationZipPath, string directoryInDestination, string password)
+        {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
+            using (var zip = ZipFile.Read(zipPath))
+            using (var destinationZip = ZipFile.Read(destinationZipPath))
+            {
+                zip.Password = password;
+                var tempFileList = zip.Entries.Select(entry => new TempFile(Path.Combine(Path.GetTempPath(), Path.GetFileName(entry.FileName)))).ToList();
+                zip.FlattenFoldersOnExtract = true;
+
+                zip.ExtractAll(Path.GetTempPath(), ExtractExistingFileAction.OverwriteSilently);
+
+                destinationZip.RemoveEntries(zip.Entries.Select(e => Path.Combine(directoryInDestination, e.FileName)).ToList());
+                destinationZip.AddFiles(tempFileList.Select(tf => tf.Path), directoryInDestination);
+                destinationZip.Save();
+
+                tempFileList.ForEach(tf => tf.Dispose());
+            }
+        }
+
+        internal static bool IsTranslationOutdated(Language language)
+        {
+            Methods.LogMethodFullName(System.Reflection.MethodBase.GetCurrentMethod());
+
+            string selectedTranslationPath = Path.Combine(language.Lang, Strings.IniName.Translation);
+            if (!File.Exists(selectedTranslationPath))
+                return true;
+
+            IniFile ini = new IniFile();
+            ini.Load(selectedTranslationPath);
+
+            if (!ini.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Patcher.KeyVer))
+                throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
+
+            Version translationVer = new Version(ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value);
+            ini.Sections.Clear();
+            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
+
+            Version clientVer = new Version(ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
+            if (clientVer > translationVer)
+                return true;
+
+            return false;
+        }
+
+        internal static string EncryptString(SecureString input)
+        {
+            byte[] encryptedData = ProtectedData.Protect(
+                Encoding.Unicode.GetBytes(ToInsecureString(input)),
+                Entropy,
+                DataProtectionScope.CurrentUser);
+
+            return Convert.ToBase64String(encryptedData);
+        }
+
+        internal static SecureString DecryptString(string encryptedData)
+        {
+            try
+            {
+                byte[] decryptedData = ProtectedData.Unprotect(
+                    Convert.FromBase64String(encryptedData),
+                    Entropy,
+                    DataProtectionScope.CurrentUser);
+
+                return ToSecureString(Encoding.Unicode.GetString(decryptedData));
+            }
+            catch
+            {
+                return new SecureString();
+            }
+        }
+
+        internal static SecureString ToSecureString(string input)
+        {
+            SecureString secure = new SecureString();
+            foreach (char c in input)
+            {
+                secure.AppendChar(c);
+            }
+            secure.MakeReadOnly();
+
+            return secure;
+        }
+
+        internal static string ToInsecureString(SecureString input)
+        {
+            string returnValue = string.Empty;
+            IntPtr ptr = Marshal.SecureStringToBSTR(input);
+            try
+            {
+                returnValue = Marshal.PtrToStringBSTR(ptr);
+            }
+            finally
+            {
+                Marshal.ZeroFreeBSTR(ptr);
+            }
+
+            return returnValue;
+        }
+
+        internal static bool In<T>(this T obj, params T[] values)
+        {
+            return values.Contains(obj);
+        }
+
+        internal static void LogMethodFullName(System.Reflection.MethodBase method)
+        {
+            Logger.Debug($"{method.ReflectedType.FullName}.{method.Name}({(String.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType} {p.Name}")))})");
         }
     }
 }

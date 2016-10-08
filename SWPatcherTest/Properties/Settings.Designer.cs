@@ -106,5 +106,29 @@ namespace SWPatcherTest.Properties {
                 this["WantToLoginWithPatcher"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte UIMode {
+            get {
+                return ((byte)(this["UIMode"]));
+            }
+            set {
+                this["UIMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string UILanguage {
+            get {
+                return ((string)(this["UILanguage"]));
+            }
+            set {
+                this["UILanguage"] = value;
+            }
+        }
     }
 }

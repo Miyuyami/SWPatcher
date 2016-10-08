@@ -1,26 +1,35 @@
-﻿using System;
+﻿using SWPatcherTest.Helpers;
+using SWPatcherTest.Helpers.GlobalVariables;
+using System;
 using System.Windows.Forms;
-using SWPatcherTest.Helpers.GlobalVar;
 
 namespace SWPatcherTest.Forms
 {
     partial class AboutBox : Form
     {
+        private int ImagesCount = 72;
+
         public AboutBox()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyAccessor.Title);
+            InitializeTextComponent();
+        }
+
+        private void InitializeTextComponent()
+        {
+            this.buttonOk.Text = StringLoader.GetText("button_ok");
+            this.Text = $"About {AssemblyAccessor.Title}";
             this.labelProductName.Text = AssemblyAccessor.Product;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyAccessor.Version);
-            this.textBoxDescription.Text = AssemblyAccessor.Description;
-            this.linkLabelWebsite.Links.Add(0, 17, Urls.SWHQWebsite);
-            this.logoPictureBox.ImageLocation = String.Format("https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/Images/{0}.png", (new Random()).Next(72) + 1);
+            this.labelVersion.Text = $"Version {AssemblyAccessor.Version}";
+            this.textBoxDescription.Text = StringLoader.GetText("patcher_description");
+            this.linkLabelWebsite.Links.Add(0, this.linkLabelWebsite.Text.Length, Urls.SoulworkerWebsite);
+            this.logoPictureBox.ImageLocation = $"https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/Images/{(new Random()).Next(ImagesCount) + 1}.png";
         }
 
         private void linkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             linkLabelWebsite.LinkVisited = true;
-            System.Diagnostics.Process.Start(Urls.SWHQWebsite);
+            System.Diagnostics.Process.Start(Urls.SoulworkerWebsite);
         }
     }
 }

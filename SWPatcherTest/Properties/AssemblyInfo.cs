@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Resources;
+using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Soulworker HQ Patcher")]
-[assembly: AssemblyDescription("Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating. It also can download latest translations from our team and apply them at any time.")]
+[assembly: AssemblyTitle("Soulworker Patcher Test")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SWHQ Patcher")]
+[assembly: AssemblyProduct("SW Patcher Test")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +20,7 @@ using System.Resources;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5da744e3-ffd8-4023-b94d-eda7e06a36a5")]
+[assembly: Guid("28ae4d25-69cb-4540-a06b-9845e0c65ec3")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,6 +32,6 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.2.5.0")]
-[assembly: AssemblyFileVersion("2.2.5.0")]
+[assembly: AssemblyVersion("2.4.0.0")]
+[assembly: AssemblyFileVersion("2.4.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("en")]

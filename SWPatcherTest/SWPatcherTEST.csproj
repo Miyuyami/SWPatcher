@@ -25,15 +25,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWHQPatcher/master/SWPatcher/SWPatcherTest/publish/</UpdateUrl>
+    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcherTest/publish/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcherTest/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
-    <PublisherName>SoulworkerHQ</PublisherName>
-    <MinimumRequiredVersion>2.2.2.0</MinimumRequiredVersion>
+    <PublisherName>MiyuPatcher</PublisherName>
+    <MinimumRequiredVersion>2.4.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.2.2.0</ApplicationVersion>
+    <ApplicationVersion>2.4.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -49,17 +49,19 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>SWPatcherTest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>SWPatcherTest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>patcher.ico</ApplicationIcon>
@@ -77,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>726DCBC7D21E335FADD69B767EE5CCE9FD93147F</ManifestCertificateThumbprint>
@@ -91,9 +93,7 @@
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup />
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
@@ -101,17 +101,49 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+    <CodeAnalysisRuleSet>SWPatcherTest.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>SWPatcherTest.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>SWPatcherTest.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>SWPatcherTest.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <Win32Resource>
+    </Win32Resource>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, processorArchitecture=MSIL">
@@ -119,23 +151,25 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="MadMilkman.Ini, Version=1.0.6.1, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>.\MadMilkman.Ini.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
-    <Compile Include="Downloading\RTPatchCompletedEventArgs.cs" />
-    <Compile Include="Downloading\RTPatchDownloadProgressChangedEventArgs.cs" />
-    <Compile Include="Downloading\RTPatchProgressChangedEventArgs.cs" />
+    <Compile Include="RTPatch\ResultException.cs" />
+    <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
+    <Compile Include="RTPatch\RTPatcherProgressChangedEventArgs.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -153,32 +187,54 @@
     <Compile Include="General\MyWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="General\ResxLanguage.cs" />
     <Compile Include="General\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\SWFile.cs" />
     <Compile Include="General\TempFile.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Helpers\Error.cs" />
-    <Compile Include="Helpers\GlobalVar\AssemblyAccessor.cs" />
-    <Compile Include="Helpers\GlobalVar\Strings.cs" />
+    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\GlobalVariables\AssemblyAccessor.cs" />
+    <Compile Include="Helpers\GlobalVariables\Strings.cs" />
     <Compile Include="Helpers\Methods.cs" />
     <Compile Include="Helpers\MsgBox.cs" />
-    <Compile Include="Helpers\GlobalVar\UserSettings.cs" />
-    <Compile Include="Helpers\GlobalVar\Urls.cs" />
+    <Compile Include="Helpers\GlobalVariables\UserSettings.cs" />
+    <Compile Include="Helpers\GlobalVariables\Urls.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.DesignerFull.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.DesignerMinimal.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Helpers\PasteBinClient.cs" />
-    <Compile Include="Downloading\RTPatcher.cs" />
+    <Compile Include="RTPatch\RTPatcher.cs" />
+    <Compile Include="Helpers\StringLoader.cs" />
     <Compile Include="Patching\Patcher.cs" />
     <Compile Include="Patching\PatcherCompletedEventArgs.cs" />
     <Compile Include="Patching\PatcherProgressChangedEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\en.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>en.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ko.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ko.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\vi.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>vi.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
@@ -191,6 +247,7 @@
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="patcher.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -201,6 +258,18 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Resources\en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ko.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ko.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\vi.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>vi.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>
@@ -215,6 +284,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="SWPatcherTest.ruleset" />
+    <None Include="SWPatcherTest_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\fadegray.png" />
@@ -223,10 +294,12 @@
     <None Include="Resources\logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="patcher.ico" />
-    <None Include="patchw32.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="patchw64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="patchw32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
@@ -250,40 +323,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="PubPluginLib">
-      <Guid>{BBA13B27-05A3-4DBC-975F-518DE762302A}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>True</Private>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PublishFile Include="Ionic.Zip.Patched.pdb">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="SWPatcher.pdb">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>File</FileType>
-    </PublishFile>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

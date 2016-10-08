@@ -33,7 +33,7 @@
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelAuthor = new System.Windows.Forms.Label();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
-            this.okButton = new System.Windows.Forms.Button();
+            this.buttonOk = new System.Windows.Forms.Button();
             this.linkLabelWebsite = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
@@ -49,7 +49,7 @@
             this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 2);
             this.tableLayoutPanel.Controls.Add(this.labelAuthor, 1, 3);
             this.tableLayoutPanel.Controls.Add(this.textBoxDescription, 1, 5);
-            this.tableLayoutPanel.Controls.Add(this.okButton, 1, 6);
+            this.tableLayoutPanel.Controls.Add(this.buttonOk, 1, 6);
             this.tableLayoutPanel.Controls.Add(this.linkLabelWebsite, 1, 4);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
@@ -127,13 +127,12 @@
             // 
             // okButton
             // 
-            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(357, 257);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 23);
-            this.okButton.TabIndex = 24;
-            this.okButton.Text = "&OK";
+            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonOk.Location = new System.Drawing.Point(357, 257);
+            this.buttonOk.Name = "okButton";
+            this.buttonOk.Size = new System.Drawing.Size(75, 23);
+            this.buttonOk.TabIndex = 24;
             // 
             // linkLabelWebsite
             // 
@@ -145,13 +144,13 @@
             this.linkLabelWebsite.Size = new System.Drawing.Size(283, 17);
             this.linkLabelWebsite.TabIndex = 25;
             this.linkLabelWebsite.TabStop = true;
-            this.linkLabelWebsite.Text = "Soul Worker HQ";
+            this.linkLabelWebsite.Text = "Patcher Webpage";
             this.linkLabelWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.linkLabelWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWebsite_LinkClicked);
             // 
             // AboutBox
             // 
-            this.AcceptButton = this.okButton;
+            this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(435, 283);
@@ -178,7 +177,7 @@
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelAuthor;
         private System.Windows.Forms.TextBox textBoxDescription;
-        private System.Windows.Forms.Button okButton;
+        private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.LinkLabel linkLabelWebsite;
     }
 }

@@ -1,12 +1,14 @@
 ﻿using SWPatcherTest.General;
-using SWPatcherTest.Helpers.GlobalVar;
+using SWPatcherTest.Helpers;
+using SWPatcherTest.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Threading;
 
-namespace SWPatcherTest.Helpers
+namespace SWPatcherTest.Downloading
 {
     public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
     public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
@@ -38,10 +40,14 @@ namespace SWPatcherTest.Helpers
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (!Methods.HasNewTranslations(this.Language))
-                throw new Exception(String.Format("You already have the latest({0} JST) translation files for this language!", Methods.DateToString(this.Language.LastUpdate)));
+            Logger.Debug($"Downloader thread ID=[{Thread.CurrentThread.ManagedThreadId}] Language=[{this.Language.ToString()}]");
 
-            Methods.SetSWFiles(this.SWFiles);
+            if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
+            {
+                Methods.SetSWFiles(this.SWFiles);
+            }
+            else
+                throw new Exception(String.Format(StringLoader.GetText("exception_already_latest_translation"), Methods.DateToString(this.Language.LastUpdate)));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -82,11 +88,13 @@ namespace SWPatcherTest.Helpers
                 path = Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path);
             else
                 path = Path.Combine(Path.GetDirectoryName(Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path)), Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Path));
-            
+
             Directory.CreateDirectory(path);
 
             string fileDestination = Path.Combine(path, Path.GetFileName(this.SWFiles[this.DownloadIndex].PathD));
             this.Client.DownloadFileAsync(uri, fileDestination);
+
+            Logger.Debug($"Downloading url=[{uri.AbsoluteUri}] path=[{fileDestination}]");
         }
 
         public void Cancel()

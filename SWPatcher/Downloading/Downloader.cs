@@ -1,11 +1,12 @@
 ﻿using SWPatcher.General;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Threading;
 
 namespace SWPatcher.Downloading
 {
@@ -39,6 +40,8 @@ namespace SWPatcher.Downloading
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            Logger.Debug(Methods.MethodFullName("Downloader", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
+
             if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
             {
                 Methods.SetSWFiles(this.SWFiles);
@@ -90,6 +93,8 @@ namespace SWPatcher.Downloading
 
             string fileDestination = Path.Combine(path, Path.GetFileName(this.SWFiles[this.DownloadIndex].PathD));
             this.Client.DownloadFileAsync(uri, fileDestination);
+            
+            Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri.AbsoluteUri, path));
         }
 
         public void Cancel()
@@ -102,7 +107,7 @@ namespace SWPatcher.Downloading
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
                 return;
-
+            
             this.Language = language;
             this.Worker.RunWorkerAsync();
         }

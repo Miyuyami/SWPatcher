@@ -1,13 +1,19 @@
 ﻿using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.General;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SWPatcher.Helpers
@@ -15,6 +21,7 @@ namespace SWPatcher.Helpers
     internal static class Methods
     {
         private static string DateFormat = "dd/MMM/yyyy h:mm tt";
+        private static byte[] Entropy = Encoding.Unicode.GetBytes("C11699FC9EC2502027E0222999DA029D01DE3026");
 
         internal static DateTime ParseDate(string date)
         {
@@ -54,7 +61,15 @@ namespace SWPatcher.Helpers
 
         internal static bool IsSwPath(string path)
         {
-            return Directory.Exists(path) && Directory.Exists(Path.Combine(path, Strings.FolderName.Data)) && File.Exists(Path.Combine(path, Strings.FileName.GameExe)) && File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
+            bool f1 = Directory.Exists(path);
+            string dataPath = Path.Combine(path, Strings.FolderName.Data);
+            bool f2 = Directory.Exists(dataPath);
+            bool f3 = File.Exists(Path.Combine(path, Strings.FileName.GameExe));
+            bool f4 = File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
+            bool f5 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data12));
+            bool f6 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data14));
+
+            return f1 && f2 && f3 && f4 && f5 && f6;
         }
 
         internal static bool IsValidSwPatcherPath(string path)
@@ -62,33 +77,27 @@ namespace SWPatcher.Helpers
             return String.IsNullOrEmpty(path) || !IsSwPath(path) && IsValidSwPatcherPath(Path.GetDirectoryName(path));
         }
 
-        internal static bool IsNewerGameClientVersion()
-        {
-            IniFile ini = new IniFile();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-
-            return VersionCompare(GetServerVersion(), ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
-        }
-
-        internal static bool VersionCompare(string ver1, string ver2)
-        {
-            Version v1 = new Version(ver1);
-            Version v2 = new Version(ver2);
-
-            return v1 > v2;
-        }
-
-        private static string GetServerVersion()
-        {
-            return GetServerIni().Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
-        }
-
         internal static IniFile GetServerIni()
         {
             using (var client = new WebClient())
             using (var zippedFile = new TempFile())
             {
-                client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
+                try
+                {
+                    client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
+                }
+                catch (WebException e)
+                {
+                    if (e.InnerException is SocketException)
+                    {
+                        var innerException = e.InnerException as SocketException;
+                        if (innerException.SocketErrorCode == SocketError.ConnectionRefused)
+                        {
+                            Logger.Error(e);
+                            MsgBox.Error(StringLoader.GetText("exception_hangame_refused_connection"));
+                        }
+                    }
+                }
 
                 using (var file = new TempFile())
                 {
@@ -112,6 +121,8 @@ namespace SWPatcher.Helpers
 
         internal static void PatchExeFile(string gameExePath)
         {
+            Logger.Debug(Methods.MethodFullName(MethodBase.GetCurrentMethod(), gameExePath));
+
             using (var client = new WebClient())
             using (var file = new TempFile())
             {
@@ -174,7 +185,10 @@ namespace SWPatcher.Helpers
             string[] filters = { "RT*", "*.RTP" };
             foreach (var filter in filters)
                 foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
+                {
+                    Logger.Info($"Deleting file=[{file}]");
                     File.Delete(file);
+                }
         }
 
         internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination, string password)
@@ -238,6 +252,94 @@ namespace SWPatcher.Helpers
                 return true;
 
             return false;
+        }
+
+        internal static string EncryptString(SecureString input)
+        {
+            byte[] encryptedData = ProtectedData.Protect(
+                Encoding.Unicode.GetBytes(ToInsecureString(input)),
+                Entropy,
+                DataProtectionScope.CurrentUser);
+
+            return Convert.ToBase64String(encryptedData);
+        }
+
+        internal static SecureString DecryptString(string encryptedData)
+        {
+            try
+            {
+                byte[] decryptedData = ProtectedData.Unprotect(
+                    Convert.FromBase64String(encryptedData),
+                    Entropy,
+                    DataProtectionScope.CurrentUser);
+
+                return ToSecureString(Encoding.Unicode.GetString(decryptedData));
+            }
+            catch
+            {
+                return new SecureString();
+            }
+        }
+
+        internal static SecureString ToSecureString(string input)
+        {
+            SecureString secure = new SecureString();
+            foreach (char c in input)
+            {
+                secure.AppendChar(c);
+            }
+            secure.MakeReadOnly();
+
+            return secure;
+        }
+
+        internal static string ToInsecureString(SecureString input)
+        {
+            string returnValue = string.Empty;
+            IntPtr ptr = Marshal.SecureStringToBSTR(input);
+            try
+            {
+                returnValue = Marshal.PtrToStringBSTR(ptr);
+            }
+            finally
+            {
+                Marshal.ZeroFreeBSTR(ptr);
+            }
+
+            return returnValue;
+        }
+
+        internal static bool In<T>(this T obj, params T[] values)
+        {
+            return values.Contains(obj);
+        }
+
+        internal static string MethodName(MethodBase method)
+        {
+            return $"{method.ReflectedType.FullName}.{method.Name}";
+        }
+
+        internal static string MethodParams(params string[] args)
+        {
+            return $"{(String.Join(", ", args))}";
+        }
+
+        internal static string MethodFullName(MethodBase method, params string[] args)
+        {
+            return $"{MethodName(method)}({MethodParams(args)})";
+        }
+
+        internal static string MethodFullName(string method, params string[] args)
+        {
+            return $"{method}({MethodParams(args)})";
+        }
+
+        internal static bool IsGameAlreadyRunning()
+        {
+            var processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe };
+            var processes = processNames.SelectMany(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p))).Where(p => processNames.Contains(p.MainModule.ModuleName)).ToArray();
+
+            return processes.Length > 0;
         }
     }
 }

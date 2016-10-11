@@ -1,9 +1,10 @@
-﻿using System;
+﻿using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVariables;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
 
 namespace SWPatcher
 {
@@ -12,33 +13,37 @@ namespace SWPatcher
         [STAThread]
         private static void Main()
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
+            var args = Environment.GetCommandLineArgs();
+            var argsList = new List<string>(args);
             if (!Directory.Exists(UserSettings.PatcherPath))
                 UserSettings.PatcherPath = "";
             Directory.SetCurrentDirectory(UserSettings.PatcherPath);
+            argsList.Insert(0, Thread.CurrentThread.ManagedThreadId.ToString());
+            Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), argsList.ToArray()));
+            Logger.Run();
 
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
             var controller = new SingleInstanceController();
-            controller.Run(Environment.GetCommandLineArgs());
+            controller.Run(args);
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Error.Log(e.ExceptionObject as Exception);
-            MsgBox.Error(Error.ExeptionParser(e.ExceptionObject as Exception));
+            Logger.Critical(e.ExceptionObject as Exception);
+            MsgBox.Error("Critical unhandled exception occured. Application will now exit.\n" + Logger.ExeptionParser(e.ExceptionObject as Exception));
 
             Application.Exit();
         }
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            Error.Log(e.Exception);
-            MsgBox.Error(Error.ExeptionParser(e.Exception));
+            Logger.Critical(e.Exception);
+            MsgBox.Error("Critical thread exception occured. Application will now exit.\n" + Logger.ExeptionParser(e.Exception));
 
             Application.Exit();
         }
@@ -53,13 +58,13 @@ namespace SWPatcher
 
             private void SingleInstanceController_StartupNextInstance(object sender, Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs e)
             {
-                var mainForm = this.MainForm as SWPatcher.Forms.MainForm;
+                var mainForm = this.MainForm as Forms.MainForm;
                 mainForm.RestoreFromTray();
             }
 
             protected override void OnCreateMainForm()
             {
-                this.MainForm = new SWPatcher.Forms.MainForm();
+                this.MainForm = new Forms.MainForm();
             }
         }
     }

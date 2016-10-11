@@ -1,10 +1,12 @@
 ﻿using SWPatcher.General;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 
 namespace SWPatcher.Forms
@@ -58,7 +60,7 @@ namespace SWPatcher.Forms
             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
             this.checkBoxPatchExe.Checked = this.WantToPatchSoulworkerExe = UserSettings.WantToPatchExe;
             this.textBoxId.Text = this.GameUserId = UserSettings.GameId;
-            this.textBoxPassword.Text = this.GameUserPassword = UserSettings.GamePw;
+            this.textBoxPassword.Text = this.GameUserPassword = MaskPassword(UserSettings.GamePw);
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
             switch (this.InterfaceMode = UserSettings.InterfaceMode)
             {
@@ -223,12 +225,12 @@ namespace SWPatcher.Forms
             {
                 try
                 {
-                    MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxStringItems());
+                    MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxItemsAsString());
                 }
                 catch (IOException ex)
                 {
-                    Error.Log(ex);
-                    MsgBox.Error(Error.ExeptionParser(ex));
+                    Logger.Error(ex);
+                    MsgBox.Error(Logger.ExeptionParser(ex));
                 }
 
                 UserSettings.PatcherPath = this.PatcherWorkingDirectory;
@@ -240,8 +242,13 @@ namespace SWPatcher.Forms
             if (UserSettings.GameId != this.GameUserId)
                 UserSettings.GameId = this.GameUserId;
 
-            if (UserSettings.GamePw != this.GameUserPassword)
-                UserSettings.GamePw = this.GameUserPassword;
+            if (MaskPassword(UserSettings.GamePw) != this.GameUserPassword)
+            {
+                using (var secure = Methods.ToSecureString(this.GameUserPassword))
+                {
+                    UserSettings.GamePw = Methods.EncryptString(secure);
+                }
+            }
 
             if (UserSettings.WantToLogin != this.WantToLogin)
                 UserSettings.WantToLogin = this.WantToLogin;
@@ -320,6 +327,28 @@ namespace SWPatcher.Forms
             }
 
             return false;
+        }
+
+        private static string SHA256String(string str)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] result = sha256.ComputeHash(Encoding.Unicode.GetBytes(str));
+                StringBuilder sb = new StringBuilder();
+
+                foreach (byte b in result)
+                    sb.Append(b.ToString("x2"));
+
+                return sb.ToString();
+            }
+        }
+
+        private static string MaskPassword(string password)
+        {
+            using (var secure = Methods.DecryptString(password))
+            {
+                return SHA256String(Methods.ToInsecureString(secure));
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

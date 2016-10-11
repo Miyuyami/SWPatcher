@@ -28,9 +28,9 @@ namespace SWPatcherTest.Helpers.GlobalVariables
                     Directory.SetCurrentDirectory(value);
                 }
 
-                Logger.Info($"Patcher path set to [{value}]");
                 Settings.Default.PatcherWorkingDirectory = value;
                 Settings.Default.Save();
+                Logger.Info($"Patcher path set to [{value}]");
             }
         }
 
@@ -42,9 +42,9 @@ namespace SWPatcherTest.Helpers.GlobalVariables
             }
             set
             {
-                Logger.Info($"Soulworker path set to [{value}]");
                 Settings.Default.GameDirectory = value;
                 Settings.Default.Save();
+                Logger.Info($"Soulworker path set to [{value}]");
             }
         }
 
@@ -125,9 +125,9 @@ namespace SWPatcherTest.Helpers.GlobalVariables
             }
             set
             {
-                Logger.Info($"UI Mode set to [{value}]");
                 Settings.Default.UIMode = value;
                 Settings.Default.Save();
+                Logger.Info($"UI Mode set to [{value}]");
             }
         }
 
@@ -139,9 +139,9 @@ namespace SWPatcherTest.Helpers.GlobalVariables
             }
             set
             {
-                Logger.Info($"UI Language set to [{value}]");
                 Settings.Default.UILanguage = value;
                 Settings.Default.Save();
+                Logger.Info($"UI Language set to [{value}]");
             }
         }
     }

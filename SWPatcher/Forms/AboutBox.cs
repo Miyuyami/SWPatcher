@@ -1,5 +1,5 @@
 ﻿using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Windows.Forms;
 

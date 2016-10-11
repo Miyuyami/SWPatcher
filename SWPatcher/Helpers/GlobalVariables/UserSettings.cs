@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace SWPatcher.Helpers.GlobalVar
+namespace SWPatcher.Helpers.GlobalVariables
 {
     public static class UserSettings
     {
@@ -11,7 +11,14 @@ namespace SWPatcher.Helpers.GlobalVar
         {
             get
             {
-                return String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory) ? PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name) : Settings.Default.PatcherWorkingDirectory;
+                if (String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory))
+                {
+                    return PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
+                }
+                else
+                {
+                    return Settings.Default.PatcherWorkingDirectory;
+                }
             }
             set
             {
@@ -23,6 +30,7 @@ namespace SWPatcher.Helpers.GlobalVar
 
                 Settings.Default.PatcherWorkingDirectory = value;
                 Settings.Default.Save();
+                Logger.Info($"Patcher path set to [{value}]");
             }
         }
 
@@ -36,6 +44,7 @@ namespace SWPatcher.Helpers.GlobalVar
             {
                 Settings.Default.GameDirectory = value;
                 Settings.Default.Save();
+                Logger.Info($"Soulworker path set to [{value}]");
             }
         }
 
@@ -118,6 +127,7 @@ namespace SWPatcher.Helpers.GlobalVar
             {
                 Settings.Default.UIMode = value;
                 Settings.Default.Save();
+                Logger.Info($"UI Mode set to [{value}]");
             }
         }
 
@@ -131,6 +141,7 @@ namespace SWPatcher.Helpers.GlobalVar
             {
                 Settings.Default.UILanguage = value;
                 Settings.Default.Save();
+                Logger.Info($"UI Language set to [{value}]");
             }
         }
     }

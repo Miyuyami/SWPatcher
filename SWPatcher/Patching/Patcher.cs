@@ -1,7 +1,7 @@
 ﻿using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace SWPatcher.Patching
 {
@@ -42,6 +43,8 @@ namespace SWPatcher.Patching
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            Logger.Debug(Methods.MethodFullName("Patcher", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
+
             this.StepCount = 3;
             var archivedSWFiles = SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA));
             var archives = archivedSWFiles.Select(f => f.Path).Distinct();
@@ -58,9 +61,11 @@ namespace SWPatcher.Patching
                     return;
                 }
 
-                string archivePath = Path.Combine(this.Language.Lang, archive);
-                File.Copy(Path.Combine(UserSettings.GamePath, archive), archivePath, true);
-                this.Xor(archivePath, 0x55);
+                string archivePathPatch = Path.Combine(this.Language.Lang, archive);
+                string archivePath = Path.Combine(UserSettings.GamePath, archive);
+                Logger.Info($"Copying archive=[{archivePath}] archivePatch=[{archivePathPatch}]");
+                File.Copy(archivePath, archivePathPatch, true);
+                this.Xor(archivePathPatch, 0x55, true);
             }
 
             this.CurrentStep = 2;
@@ -82,6 +87,7 @@ namespace SWPatcher.Patching
                 if (passwordDictionary.ContainsKey(archiveFileNameWithoutExtension))
                     archivePassword = passwordDictionary[archiveFileNameWithoutExtension];
 
+                Logger.Info($"Patching file=[{swFilePath}] archive=[{archivePath}]");
                 if (!String.IsNullOrEmpty(swFile.Format)) // if file should be patched(.res)
                 {
                     using (var swFilePathRes = new TempFile(Path.ChangeExtension(swFilePath, ".res")))
@@ -289,7 +295,7 @@ namespace SWPatcher.Patching
             }
 
             this.CurrentStep = 3;
-            foreach (var archive in archives) // copy and Xor archives
+            foreach (var archive in archives) // Xor archives
             {
                 if (this.Worker.CancellationPending)
                 {
@@ -298,7 +304,7 @@ namespace SWPatcher.Patching
                 }
 
                 string archivePath = Path.Combine(this.Language.Lang, archive);
-                this.Xor(archivePath, 0x55);
+                this.Xor(archivePath, 0x55, false);
             }
 
             if (UserSettings.WantToPatchExe)
@@ -307,7 +313,7 @@ namespace SWPatcher.Patching
                 this.Worker.ReportProgress(-1);
                 string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
                 string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
-
+                
                 File.Copy(gameExePath, gameExePatchedPath, true);
                 Methods.PatchExeFile(gameExePatchedPath);
             }
@@ -360,16 +366,21 @@ namespace SWPatcher.Patching
             return result;
         }
 
-        private void Xor(string path, byte secretByte)
+        private void Xor(string path, byte secretByte, bool check)
         {
+            Logger.Info($"Xor path=[{path}] check=[{check}]");
+
             byte[] fileBytes = File.ReadAllBytes(path);
 
-            for (int i = 0; i < fileBytes.Length; i++)
+            if (!(check && fileBytes[0] == 0x50 && fileBytes[1] == 0x4B))
             {
-                if (i % (fileBytes.Length / 8) == 0)
-                    this.Worker.ReportProgress(i == fileBytes.Length ? int.MaxValue : Convert.ToInt32(((double)i / fileBytes.Length) * int.MaxValue));
+                for (int i = 0; i < fileBytes.Length; i++)
+                {
+                    if (i % (fileBytes.Length / 8) == 0)
+                        this.Worker.ReportProgress(i == fileBytes.Length ? int.MaxValue : Convert.ToInt32(((double)i / fileBytes.Length) * int.MaxValue));
 
-                fileBytes[i] ^= secretByte;
+                    fileBytes[i] ^= secretByte;
+                }
             }
 
             File.WriteAllBytes(path, fileBytes);
@@ -386,15 +397,16 @@ namespace SWPatcher.Patching
 
         private static string GetMD5(string text)
         {
-            var md5 = new MD5CryptoServiceProvider();
-            md5.ComputeHash(Encoding.ASCII.GetBytes(text));
-            byte[] result = md5.Hash;
+            using (var md5 = MD5.Create())
+            {
+                byte[] result = md5.ComputeHash(Encoding.ASCII.GetBytes(text));
+                StringBuilder sb = new StringBuilder();
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < result.Length; i++)
-                sb.Append(result[i].ToString("x2"));
+                foreach (byte b in result)
+                    sb.Append(b.ToString("x2"));
 
-            return sb.ToString();
+                return sb.ToString();
+            }
         }
 
         private static Dictionary<string, string> LoadPasswords()
@@ -427,7 +439,7 @@ namespace SWPatcher.Patching
         {
             if (this.Worker.IsBusy)
                 return;
-
+            
             this.Language = language;
             this.Worker.RunWorkerAsync();
         }

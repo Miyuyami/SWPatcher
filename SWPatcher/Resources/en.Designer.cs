@@ -268,11 +268,20 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Directory with the file doesn&apos;t exist {0} missing. Cannot restore this folder and it will be deleted..
+        ///   Looks up a localized string similar to Directory with the file &quot;{0}&quot; doesn&apos;t exist. Cannot restore this folder and it will be deleted..
         /// </summary>
         internal static string exception_cannot_restore_file {
             get {
                 return ResourceManager.GetString("exception_cannot_restore_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many invalid logins. You must login and complete the captcha on Hangame website..
+        /// </summary>
+        internal static string exception_captcha_validation {
+            get {
+                return ResourceManager.GetString("exception_captcha_validation", resourceCulture);
             }
         }
         
@@ -297,6 +306,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot proceed because Soulworker or hangame launcher (reactor.exe) is already open..
+        /// </summary>
+        internal static string exception_game_already_open {
+            get {
+                return ResourceManager.GetString("exception_game_already_open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Soulworker installation not found..
         /// </summary>
         internal static string exception_game_install_not_found {
@@ -311,6 +329,15 @@ namespace SWPatcher.Resources {
         internal static string exception_game_maintenance {
             get {
                 return ResourceManager.GetString("exception_game_maintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soulworker/Hangame server refused the connection (server maintenance?).
+        /// </summary>
+        internal static string exception_hangame_refused_connection {
+            get {
+                return ResourceManager.GetString("exception_hangame_refused_connection", resourceCulture);
             }
         }
         
@@ -378,8 +405,53 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Corrupt patch file &quot;{0}&quot;.
+        /// </summary>
+        internal static string exception_rtpatch_corrupt {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_corrupt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File corrupted &quot;{0}&quot;.
+        /// </summary>
+        internal static string exception_rtpatch_corrupt_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_corrupt_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File does not exist &quot;{0}&quot;.
+        /// </summary>
+        internal static string exception_rtpatch_missing_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_missing_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory does not exist, check that the game directory is set properly..
+        /// </summary>
+        internal static string exception_rtpatch_not_exist_directory {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_not_exist_directory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rename file. Try again..
+        /// </summary>
+        internal static string exception_rtpatch_rename_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_rename_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown error occured while updating Soulworker, best known way to fix at this moment is a complete reinstall of Soulworker. Code=[{0}]
-        ///{1} was uploaded for improving the patcher in the future..
+        ///&quot;{1}&quot; was uploaded for improving the patcher in the future..
         /// </summary>
         internal static string exception_rtpatch_result {
             get {
@@ -654,7 +726,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log file was uploaded to {0}
+        ///   Looks up a localized string similar to Log file was uploaded to &quot;{0}&quot;
         ///The link was copied to clipboard..
         /// </summary>
         internal static string success_log_file_upload {

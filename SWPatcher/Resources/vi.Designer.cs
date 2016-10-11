@@ -268,11 +268,20 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Directory with the file doesn&apos;t exist {0} missing. Cannot restore this folder and it will be deleted..
+        ///   Looks up a localized string similar to Thư mục bao gồm tập tin &quot;{0}&quot; không tồn tại. Không thể khôi phục, thư mục sẽ bị xóa..
         /// </summary>
         internal static string exception_cannot_restore_file {
             get {
                 return ResourceManager.GetString("exception_cannot_restore_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đăng nhập thất bại quá nhiều. Xin vui lòng đăng nhập và hoàn tất captcha tại trang chủ của Hangame.
+        /// </summary>
+        internal static string exception_captcha_validation {
+            get {
+                return ResourceManager.GetString("exception_captcha_validation", resourceCulture);
             }
         }
         
@@ -297,6 +306,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Không thể tiếp tục vì SoulWorker hoặc game launcher (reactor.exe) đang chạy.
+        /// </summary>
+        internal static string exception_game_already_open {
+            get {
+                return ResourceManager.GetString("exception_game_already_open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không tìm thấy Soulworker..
         /// </summary>
         internal static string exception_game_install_not_found {
@@ -311,6 +329,15 @@ namespace SWPatcher.Resources {
         internal static string exception_game_maintenance {
             get {
                 return ResourceManager.GetString("exception_game_maintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Máy chủ SoulWorker từ chối kết nối (bảo trì ???).
+        /// </summary>
+        internal static string exception_hangame_refused_connection {
+            get {
+                return ResourceManager.GetString("exception_hangame_refused_connection", resourceCulture);
             }
         }
         
@@ -378,8 +405,53 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tập tin patch &quot;{0}&quot; đã bị hỏng.
+        /// </summary>
+        internal static string exception_rtpatch_corrupt {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_corrupt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tập tin &quot;{0}&quot; đã bị hỏng.
+        /// </summary>
+        internal static string exception_rtpatch_corrupt_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_corrupt_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tập tin &quot;{0}&quot; không tồn tại.
+        /// </summary>
+        internal static string exception_rtpatch_missing_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_missing_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thư mục không tồn tại, xin vui lòng kiểm tra lại đường dẫn.
+        /// </summary>
+        internal static string exception_rtpatch_not_exist_directory {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_not_exist_directory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đổi tên tập tin thất bại, xin hãy thử lại.
+        /// </summary>
+        internal static string exception_rtpatch_rename_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_rename_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Có lỗi xảy ra trong lúc cập nhật SoulWorker, cách tốt nhất là cài đặt lại trò chơi. Code=[{0}]
-        ///{1} đã được đăng lên để cải thiện patcher..
+        ///&quot;{1}&quot; đã được đăng lên để cải thiện patcher..
         /// </summary>
         internal static string exception_rtpatch_result {
             get {
@@ -654,7 +726,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tệp Log đã được đăng {0}
+        ///   Looks up a localized string similar to Tệp Log đã được đăng &quot;{0}&quot;
         ///Đường link đã được copy vào clipboard..
         /// </summary>
         internal static string success_log_file_upload {

@@ -268,11 +268,20 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 파일 경로가 존재하지 않습니다. {0} 가 없습니다. 파일 복구 불가능, 삭제합니다..
+        ///   Looks up a localized string similar to 파일 경로가 존재하지 않습니다. &quot;{0}&quot; 가 없습니다. 파일 복구 불가능, 삭제합니다..
         /// </summary>
         internal static string exception_cannot_restore_file {
             get {
                 return ResourceManager.GetString("exception_cannot_restore_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 로그인 시도 횟수를 초과하였습니다. 한게임 JP 사이트에 로그인을해서 캡챠를 입력하셔야합니다..
+        /// </summary>
+        internal static string exception_captcha_validation {
+            get {
+                return ResourceManager.GetString("exception_captcha_validation", resourceCulture);
             }
         }
         
@@ -297,6 +306,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 소울워커 혹은 한게임JP 런쳐가 이미 열려있으므로 실행이 불가능합니다..
+        /// </summary>
+        internal static string exception_game_already_open {
+            get {
+                return ResourceManager.GetString("exception_game_already_open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 소울워커 프로그램이 감지되지 않습니다..
         /// </summary>
         internal static string exception_game_install_not_found {
@@ -311,6 +329,15 @@ namespace SWPatcher.Resources {
         internal static string exception_game_maintenance {
             get {
                 return ResourceManager.GetString("exception_game_maintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 소울워커 혹은 한게임JP 서버가 연결을 차단하였습니다. (점검 스케줄을 체크해주세요).
+        /// </summary>
+        internal static string exception_hangame_refused_connection {
+            get {
+                return ResourceManager.GetString("exception_hangame_refused_connection", resourceCulture);
             }
         }
         
@@ -378,8 +405,53 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 오염된 패치 파일 &quot;{0}&quot;.
+        /// </summary>
+        internal static string exception_rtpatch_corrupt {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_corrupt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 오염된 파일 &quot;{0}&quot;.
+        /// </summary>
+        internal static string exception_rtpatch_corrupt_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_corrupt_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 파일이 존재하지 않습니다 &quot;{0}&quot;.
+        /// </summary>
+        internal static string exception_rtpatch_missing_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_missing_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 경로가 존재하지 않습니다. 게임 경로가 제대로 설정되어있는지 확인해주십시오..
+        /// </summary>
+        internal static string exception_rtpatch_not_exist_directory {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_not_exist_directory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 파일명을 수정하는데 실패했습니다. 재시도해주세요..
+        /// </summary>
+        internal static string exception_rtpatch_rename_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_rename_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 소울워커를 업데이트중 발생미상의 오류가 발생하였습니다. 지금으로써 알려진 고치는 방법은 소울워커를 재인스톨 하는것 뿐입니다. 코드=[{0}]
-        ///{1} 가 패쳐의 향상을 위해 업로드되었습니다..
+        ///&quot;{1}&quot; 가 패쳐의 향상을 위해 업로드되었습니다..
         /// </summary>
         internal static string exception_rtpatch_result {
             get {
@@ -654,7 +726,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 로그파일이 {0} 로 업로드되었습니다.
+        ///   Looks up a localized string similar to 로그파일이 &quot;{0}&quot; 로 업로드되었습니다.
         ///링크가 클립보드로 복사되었습니다..
         /// </summary>
         internal static string success_log_file_upload {

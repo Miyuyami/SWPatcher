@@ -3,7 +3,7 @@ using Microsoft.Win32;
 using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Helpers.GlobalVariables;
 using SWPatcher.Patching;
 using SWPatcher.RTPatch;
 using System;
@@ -17,6 +17,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Web;
 using System.Windows.Forms;
 
 namespace SWPatcher.Forms
@@ -171,7 +172,8 @@ namespace SWPatcher.Forms
                             break;
                     }
 
-                    this.comboBoxLanguages_SelectedIndexChanged(null, null);
+                    Logger.Info($"State=[{value}]");
+                    this.comboBoxLanguages_SelectedIndexChanged(this, null);
                     _state = value;
                 }
             }
@@ -198,7 +200,8 @@ namespace SWPatcher.Forms
             this.RTPatcher.RTPatcherDownloadProgressChanged += RTPatcher_DownloadProgressChanged;
             this.RTPatcher.RTPatcherProgressChanged += RTPatcher_ProgressChanged;
             this.RTPatcher.RTPatcherCompleted += RTPatcher_Completed;
-            switch (UserSettings.InterfaceMode)
+            byte uiMode = UserSettings.InterfaceMode;
+            switch (uiMode)
             {
                 case 0:
                     InitializeComponentFull();
@@ -209,6 +212,7 @@ namespace SWPatcher.Forms
             }
             InitializeTextComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
+            Logger.Info($"[{this.Text}] starting in UI Mode=[{uiMode}] UI Language=[{UserSettings.UILanguageCode}]");
         }
 
         private void InitializeTextComponent()
@@ -240,14 +244,18 @@ namespace SWPatcher.Forms
 
         private void Downloader_DownloaderCompleted(object sender, DownloaderCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled");
+            }
             else if (e.Error != null)
             {
-                Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
+                Logger.Error(e.Error);
+                MsgBox.Error(Logger.ExeptionParser(e.Error));
             }
             else
             {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
                 this.CurrentState = State.Patch;
                 this.Patcher.Run(e.Language);
 
@@ -276,15 +284,19 @@ namespace SWPatcher.Forms
 
         private void Patcher_PatcherCompleted(object sender, PatcherCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled");
+            }
             else if (e.Error != null)
             {
-                Error.Log(e.Error);
-                MsgBox.Error(Error.ExeptionParser(e.Error));
+                Logger.Error(e.Error);
+                MsgBox.Error(Logger.ExeptionParser(e.Error));
                 DeleteTmpFiles(e.Language);
             }
             else
             {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
                 IniFile ini = new IniFile(new IniOptions
                 {
                     KeyDuplicate = IniDuplication.Ignored,
@@ -331,35 +343,64 @@ namespace SWPatcher.Forms
         private void RTPatcher_Completed(object sender, AsyncCompletedEventArgs e)
         {
             Methods.RTPatchCleanup();
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled");
+            }
             else if (e.Error != null)
             {
                 if (e.Error is ResultException)
                 {
                     var ex = (ResultException)e.Error;
                     string logFileName = Path.GetFileName(ex.LogPath);
-                    string logFileText = File.ReadAllText(ex.LogPath);
-
-                    try
+                    switch (ex.Result)
                     {
-                        UploadToPasteBin(logFileName, logFileText, PasteBinExpiration.OneWeek, true, "text");
-                    }
-                    catch (PasteBinApiException)
-                    {
+                        case 4:
+                            Logger.Error(ex.Message);
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_not_exist_directory"));
+                            break;
+                        case 9:
+                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
+                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt"), ex.FileName));
+                            break;
+                        case 15:
+                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
+                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_missing_file"), ex.FileName));
+                            break;
+                        case 22:
+                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_rename_fail"));
+                            break;
+                        case 36:
+                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
+                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt_file"), ex.FileName));
+                            break;
+                        default:
+                            string logFileText = File.ReadAllText(ex.LogPath);
 
-                    }
+                            try
+                            {
+                                UploadToPasteBin(logFileName, logFileText, PasteBinExpiration.OneWeek, true, "text");
+                            }
+                            catch (PasteBinApiException)
+                            {
 
-                    Error.Log($"See {logFileName} for details. Error Code=[{ex.Result}]");
-                    MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_result"), ex.Result, logFileName));
+                            }
+
+                            Logger.Error($"See {logFileName} for details. Error Code=[{ex.Result}]");
+                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_result"), ex.Result, logFileName));
+                            break;
+                    }
                 }
                 else
                 {
-                    Error.Log(e.Error);
-                    MsgBox.Error(Error.ExeptionParser(e.Error));
+                    Logger.Error(e.Error);
+                    MsgBox.Error(Logger.ExeptionParser(e.Error));
                 }
             }
             else
             {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
                 switch (this._nextState)
                 {
                     case NextState.Download:
@@ -387,6 +428,9 @@ namespace SWPatcher.Forms
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             this.Worker.ReportProgress((int)State.Prepare);
+            if (Methods.IsGameAlreadyRunning())
+                throw new Exception(StringLoader.GetText("exception_game_already_open"));
+
             if (e.Argument != null)
             {
                 Language language = e.Argument as Language;
@@ -416,6 +460,7 @@ namespace SWPatcher.Forms
 
                     Directory.CreateDirectory(backupFileDirectory);
 
+                    Logger.Info($"Swapping .exe originalExe=[{gameExePath}] backupFile=[{backupFilePath}] patchedFile=[{gameExePatchedPath}]");
                     File.Move(gameExePath, backupFilePath);
                     File.Move(gameExePatchedPath, gameExePath);
                 }
@@ -508,10 +553,13 @@ namespace SWPatcher.Forms
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
+            if (e.Cancelled)
+            {
+                Logger.Debug($"{sender.ToString()} cancelled.");
+            }
             else if (e.Error != null)
             {
-                Error.Log(e.Error);
+                Logger.Error(e.Error);
                 MsgBox.Error(e.Error.Message);
             }
             else if (e.Result != null && Convert.ToBoolean(e.Result))
@@ -522,7 +570,10 @@ namespace SWPatcher.Forms
                 return;
             }
             else
+            {
+                Logger.Debug($"{sender.ToString()} successfuly completed");
                 this.RestoreFromTray();
+            }
 
             try
             {
@@ -534,7 +585,7 @@ namespace SWPatcher.Forms
             }
         }
 
-        public IEnumerable<string> GetComboBoxStringItems()
+        public IEnumerable<string> GetComboBoxItemsAsString()
         {
             return this.comboBoxLanguages.Items.Cast<Language>().Select(s => s.Lang);
         }
@@ -578,6 +629,7 @@ namespace SWPatcher.Forms
             {
                 string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
                 string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                Logger.Info($"Restoring .exe original=[{gameExePath}] backup=[{gameExePatchedPath}]");
 
                 if (File.Exists(gameExePath))
                     File.Move(gameExePath, gameExePatchedPath);
@@ -589,6 +641,7 @@ namespace SWPatcher.Forms
             foreach (var file in filePaths)
             {
                 string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
+                Logger.Info($"Restoring files original=[{path}] backup=[{file}]");
 
                 if (File.Exists(path))
                     File.Move(path, Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1)));
@@ -599,6 +652,7 @@ namespace SWPatcher.Forms
                 catch (DirectoryNotFoundException)
                 {
                     MsgBox.Error(String.Format("exception_cannot_restore_file", Path.GetFullPath(file)));
+                    Logger.Error($"Cannot restore file=[{file}]");
                     File.Delete(file);
                 }
             }
@@ -609,10 +663,13 @@ namespace SWPatcher.Forms
             string[] tmpFilePaths = Directory.GetFiles(language.Lang, "*.tmp", SearchOption.AllDirectories);
 
             foreach (var tmpFile in tmpFilePaths)
+            {
                 File.Delete(tmpFile);
+                Logger.Info($"Deleting tmp file=[{tmpFile}]");
+            }
         }
 
-        public static string GetSwPathFromRegistry()
+        private static string GetSwPathFromRegistry()
         {
             if (!Environment.Is64BitOperatingSystem)
             {
@@ -675,9 +732,9 @@ namespace SWPatcher.Forms
         private static string GetSHA256(string filename)
         {
             using (var sha256 = SHA256.Create())
-            using (var stream = File.OpenRead(filename))
+            using (var fs = File.OpenRead(filename))
             {
-                return BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "");
+                return BitConverter.ToString(sha256.ComputeHash(fs)).Replace("-", "");
             }
         }
 
@@ -712,14 +769,16 @@ namespace SWPatcher.Forms
             var archives = swfiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
             foreach (var archive in archives)
             {
-                string archivePath = Path.Combine(UserSettings.GamePath, archive);
+                string originalArchivePath = Path.Combine(UserSettings.GamePath, archive);
+                string patchedArchivePath = Path.Combine(language.Lang, archive);
                 string backupFilePath = Path.Combine(Strings.FolderName.Backup, archive);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
                 Directory.CreateDirectory(backupFileDirectory);
 
-                File.Move(archivePath, backupFilePath);
-                File.Move(Path.Combine(language.Lang, archive), archivePath);
+                Logger.Info($"Swap archive files originalFile=[{originalArchivePath}] backupPath=[{backupFilePath}] patchedFile=[{patchedArchivePath}]");
+                File.Move(originalArchivePath, backupFilePath);
+                File.Move(patchedArchivePath, originalArchivePath);
             }
         }
 
@@ -728,30 +787,46 @@ namespace SWPatcher.Forms
             var swFiles = swfiles.Where(f => String.IsNullOrEmpty(f.PathA));
             foreach (var swFile in swFiles)
             {
-                string swFileName = Path.Combine(swFile.Path, Path.GetFileName(swFile.PathD));
-                string swFilePath = Path.Combine(language.Lang, swFileName);
-                string filePath = Path.Combine(UserSettings.GamePath, swFileName);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, swFileName);
+                string patchedFileName = Path.Combine(swFile.Path, Path.GetFileName(swFile.PathD));
+                string patchedFilePath = Path.Combine(language.Lang, patchedFileName);
+                string originalFilePath = Path.Combine(UserSettings.GamePath, patchedFileName);
+                string backupFilePath = Path.Combine(Strings.FolderName.Backup, patchedFileName);
                 string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
                 Directory.CreateDirectory(backupFileDirectory);
 
-                File.Move(filePath, backupFilePath);
-                File.Move(swFilePath, filePath);
+                Logger.Info($"Swap other files originalFile=[{originalFilePath}] backupPath=[{backupFilePath}] patchedFile=[{patchedFilePath}]");
+                File.Move(originalFilePath, backupFilePath);
+                File.Move(patchedFilePath, originalFilePath);
             }
         }
 
         private static void HangameLogin(MyWebClient client)
         {
             var values = new NameValueCollection(2);
-            values[Strings.Web.PostId] = UserSettings.GameId;
-            values[Strings.Web.PostPw] = UserSettings.GamePw;
+            string id = HttpUtility.UrlEncode(UserSettings.GameId);
+
+            values[Strings.Web.PostEncodeId] = id;
+            values[Strings.Web.PostEncodeFlag] = Strings.Web.PostEncodeFlagDefaultValue;
+            values[Strings.Web.PostId] = id;
+            using (var secure = Methods.DecryptString(UserSettings.GamePw))
+            {
+                values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure));
+            }
+            values[Strings.Web.PostClearFlag] = Strings.Web.PostClearFlagDefaultValue;
+            values[Strings.Web.PostNextUrl] = Strings.Web.PostNextUrlDefaultValue;
+
             var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
+            if (loginResponse.Contains(Strings.Web.CaptchaValidationText))
+            {
+                Process.Start(Strings.Web.CaptchaUrl);
+                throw new Exception(StringLoader.GetText("exception_captcha_validation"));
+            }
             try
             {
                 string[] messages = GetVariableValue(loginResponse, Strings.Web.MessageVariable);
                 if (messages[0].Length > 0)
-                    throw new Exception(StringLoader.GetText("exception_incorrect_id_pw"), new Exception(String.Join("\n", messages)));
+                    throw new Exception(StringLoader.GetText("exception_incorrect_id_pw"));
             }
             catch (IndexOutOfRangeException)
             {
@@ -761,7 +836,7 @@ namespace SWPatcher.Forms
 
         private static string GetGameStartResponse(MyWebClient client)
         {
-            again:
+        again:
             string gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
             try
             {
@@ -784,7 +859,7 @@ namespace SWPatcher.Forms
 
         private static string[] GetGameStartArguments(MyWebClient client)
         {
-            again:
+        again:
             try
             {
                 client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
@@ -803,13 +878,11 @@ namespace SWPatcher.Forms
             }
 
             var reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
-            IniFile ini = new IniFile();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.GeneralClient));
 
             string[] gameStartArgs = new string[3];
             gameStartArgs[0] = GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0];
-            gameStartArgs[1] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyIP].Value;
-            gameStartArgs[2] = ini.Sections[Strings.IniName.General.SectionNetwork].Keys[Strings.IniName.General.KeyPort].Value;
+            gameStartArgs[1] = Strings.Server.IP;
+            gameStartArgs[2] = Strings.Server.Port;
 
             return gameStartArgs;
         }
@@ -830,15 +903,15 @@ namespace SWPatcher.Forms
 
         private string UploadToPasteBin(string title, string text, PasteBinExpiration expiration, bool isPrivate, string format)
         {
-            var client = new PasteBinClient(Strings.PasteBinDevKey);
+            var client = new PasteBinClient(Strings.PasteBin.DevKey);
 
             try
             {
-                client.Login(Strings.PasteBinUsername, Strings.PasteBinPassword);
+                client.Login(Strings.PasteBin.Username, Strings.PasteBin.Password);
             }
             catch (Exception ex)
             {
-                Error.Log(ex);
+                Logger.Error(ex);
             }
 
             var entry = new PasteBinEntry
@@ -856,7 +929,7 @@ namespace SWPatcher.Forms
             }
             catch (Exception ex)
             {
-                Error.Log(ex);
+                Logger.Error(ex);
                 MsgBox.Error(StringLoader.GetText("exception_log_file_failed"));
             }
             finally
@@ -865,6 +938,21 @@ namespace SWPatcher.Forms
             }
 
             return null;
+        }
+
+        private static byte[] TrimArrayIfNecessary(byte[] array)
+        {
+            int limit = 512000 / 2;
+            
+            if (array.Length > limit)
+            {
+                byte[] trimmedArray = new byte[limit];
+                Array.Copy(array, array.Length - limit, trimmedArray, 0, limit);
+
+                return trimmedArray;
+            }
+
+            return array;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -878,6 +966,8 @@ namespace SWPatcher.Forms
 
             if (this.comboBoxLanguages.DataSource != null)
             {
+                Logger.Info($"Loading languages: {String.Join(" ", languages.Select(l => l.ToString()))}");
+
                 if (String.IsNullOrEmpty(UserSettings.LanguageName))
                 {
                     UserSettings.LanguageName = (this.comboBoxLanguages.SelectedItem as Language).Lang;
@@ -895,7 +985,7 @@ namespace SWPatcher.Forms
             {
                 string error = StringLoader.GetText("exception_folder_same_path_game");
 
-                Error.Log(error);
+                Logger.Error(error);
                 MsgBox.Error(error);
             }
         }
@@ -911,19 +1001,16 @@ namespace SWPatcher.Forms
 
                     break;
                 case State.Download:
-                    this.buttonDownload.Enabled = false;
                     this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Downloader.Cancel();
 
                     break;
                 case State.Patch:
-                    this.buttonDownload.Enabled = false;
                     this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Patcher.Cancel();
 
                     break;
                 case State.RTPatch:
-                    this.buttonDownload.Enabled = false;
                     this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.RTPatcher.Cancel();
 
@@ -938,11 +1025,10 @@ namespace SWPatcher.Forms
                 case State.Idle:
                     this.CurrentState = State.RTPatch;
                     this._nextState = NextState.Play;
-                    RTPatcher.Run();
+                    this.RTPatcher.Run();
 
                     break;
                 case State.WaitClient:
-                    this.buttonPlay.Enabled = false;
                     this.buttonPlay.Text = StringLoader.GetText("button_cancelling");
                     this.Worker.CancelAsync();
 
@@ -957,7 +1043,7 @@ namespace SWPatcher.Forms
                 case State.Idle:
                     this.CurrentState = State.RTPatch;
                     this._nextState = NextState.PlayRaw;
-                    RTPatcher.Run();
+                    this.RTPatcher.Run();
 
                     break;
             }
@@ -1036,8 +1122,10 @@ namespace SWPatcher.Forms
             }
 
             string logTitle = $"{AssemblyAccessor.Version} ({GetSHA256(Application.ExecutablePath).Substring(0, 12)}) at {Methods.DateToString(DateTime.UtcNow)}";
-            string logText = File.ReadAllText(Strings.FileName.Log);
-            var pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "csharp");
+            byte[] logBytes = File.ReadAllBytes(Strings.FileName.Log);
+            logBytes = TrimArrayIfNecessary(logBytes);
+            string logText = BitConverter.ToString(logBytes).Replace("-", "");
+            var pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "text");
 
             if (!String.IsNullOrEmpty(pasteUrl))
             {
@@ -1058,6 +1146,15 @@ namespace SWPatcher.Forms
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (Methods.In(e.CloseReason, CloseReason.ApplicationExitCall, CloseReason.WindowsShutDown))
+            {
+                Logger.Info($"{this.Text} closing abnormally. Reason=[{e.CloseReason.ToString()}]");
+                this.CurrentState = State.Idle;
+                this.RTPatcher.Cancel();
+                this.Downloader.Cancel();
+                this.Patcher.Cancel();
+                this.Worker.CancelAsync();
+            }
             if (this.CurrentState != State.Idle)
             {
                 MsgBox.Error(String.Format(StringLoader.GetText("exception_cannot_close"), AssemblyAccessor.Title));
@@ -1066,6 +1163,7 @@ namespace SWPatcher.Forms
             }
             else
             {
+                Logger.Info($"{this.Text} closing. Reason=[{e.CloseReason.ToString()}]");
                 UserSettings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
             }
         }

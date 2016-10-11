@@ -233,7 +233,7 @@ It also can download latest translations from the SWHQ translation team and appl
     <value>{0} is currently busy and cannot close.</value>
   </data>
   <data name="exception_cannot_restore_file" xml:space="preserve">
-    <value>Directory with the file doesn't exist {0} missing. Cannot restore this folder and it will be deleted.</value>
+    <value>Directory with the file "{0}" doesn't exist. Cannot restore this folder and it will be deleted.</value>
   </data>
   <data name="exception_folder_not_game_folder" xml:space="preserve">
     <value>The selected folder is not a Soulworker game client folder.</value>
@@ -323,7 +323,7 @@ This will cause malfunctions or data corruption on your game client.
 Are you sure you want to set to this folder?</value>
   </data>
   <data name="success_log_file_upload" xml:space="preserve">
-    <value>Log file was uploaded to {0}
+    <value>Log file was uploaded to "{0}"
 The link was copied to clipboard.</value>
   </data>
   <data name="match_windows" xml:space="preserve">
@@ -331,6 +331,30 @@ The link was copied to clipboard.</value>
   </data>
   <data name="exception_rtpatch_result" xml:space="preserve">
     <value>Unknown error occured while updating Soulworker, best known way to fix at this moment is a complete reinstall of Soulworker. Code=[{0}]
-{1} was uploaded for improving the patcher in the future.</value>
+"{1}" was uploaded for improving the patcher in the future.</value>
+  </data>
+  <data name="exception_captcha_validation" xml:space="preserve">
+    <value>Too many invalid logins. You must login and complete the captcha on Hangame website.</value>
+  </data>
+  <data name="exception_hangame_refused_connection" xml:space="preserve">
+    <value>Soulworker/Hangame server refused the connection (server maintenance?)</value>
+  </data>
+  <data name="exception_game_already_open" xml:space="preserve">
+    <value>Cannot proceed because Soulworker or hangame launcher (reactor.exe) is already open.</value>
+  </data>
+  <data name="exception_rtpatch_corrupt" xml:space="preserve">
+    <value>Corrupt patch file "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_corrupt_file" xml:space="preserve">
+    <value>File corrupted "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_missing_file" xml:space="preserve">
+    <value>File does not exist "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_not_exist_directory" xml:space="preserve">
+    <value>Directory does not exist, check that the game directory is set properly.</value>
+  </data>
+  <data name="exception_rtpatch_rename_fail" xml:space="preserve">
+    <value>Failed to rename file. Try again.</value>
   </data>
 </root>

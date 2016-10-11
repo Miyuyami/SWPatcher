@@ -1,11 +1,12 @@
 ﻿using MadMilkman.Ini;
 using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVar;
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace SWPatcher.RTPatch
 {
@@ -25,6 +26,7 @@ namespace SWPatcher.RTPatch
         private readonly WebClient Client;
         private string CurrentLogFilePath;
         private string FileName;
+        private string LastMessage;
         private string Url;
         private Version ClientVersion;
         private Version ServerVersion;
@@ -52,6 +54,10 @@ namespace SWPatcher.RTPatch
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientVersion.ToString()));
+            if (Methods.IsGameAlreadyRunning())
+                throw new Exception(StringLoader.GetText("exception_game_already_open"));
+
             if (this.Worker.CancellationPending)
             {
                 e.Cancel = true;
@@ -66,13 +72,14 @@ namespace SWPatcher.RTPatch
             Directory.CreateDirectory(logDirectory);
             File.WriteAllText(this.CurrentLogFilePath, string.Empty);
 
+            Logger.Info($"RTPatch diffFile=[{diffFilePath}] path=[{gamePath}]");
             string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";
             ulong result = Environment.Is64BitProcess ? RTPatchApply64(command, new RTPatchCallback(RTPatchMessage), true) : RTPatchApply32(command, new RTPatchCallback(RTPatchMessage), true);
             File.Delete(diffFilePath);
             File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
-            
+
             if (result != 0)
-                throw new ResultException(result, this.CurrentLogFilePath);
+                throw new ResultException(this.LastMessage, result, this.CurrentLogFilePath, this.FileName);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -136,7 +143,10 @@ namespace SWPatcher.RTPatch
             {
                 this.ClientVersion = GetNextVersion(this.ClientVersion, this.ServerVersion);
                 string RTPFileName = Methods.VersionToRTP(this.ClientVersion);
-                Client.DownloadFileAsync(new Uri(this.Url + '/' + RTPFileName), Path.Combine(UserSettings.GamePath, RTPFileName));
+                Uri uri = new Uri(this.Url + '/' + RTPFileName);
+                string destination = Path.Combine(UserSettings.GamePath, RTPFileName);
+                Logger.Info($"Downloading url=[{uri.AbsoluteUri}] path=[{destination}]");
+                Client.DownloadFileAsync(uri, destination);
             }
             else
             {
@@ -180,8 +190,9 @@ namespace SWPatcher.RTPatch
                 case 11u:
                 case 12u: // outputs
                     {
-                        string arg = Marshal.PtrToStringAnsi(ptr);
-                        File.AppendAllText(this.CurrentLogFilePath, arg);
+                        string text = Marshal.PtrToStringAnsi(ptr);
+                        this.LastMessage = text;
+                        File.AppendAllText(this.CurrentLogFilePath, text);
 
                         break;
                     }
@@ -241,8 +252,7 @@ namespace SWPatcher.RTPatch
         {
             if (this.Client.IsBusy || this.Worker.IsBusy)
                 return;
-
-            Methods.RTPatchCleanup();
+            
             LoadVersions();
             DownloadNext();
         }

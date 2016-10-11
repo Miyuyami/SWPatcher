@@ -1,5 +1,4 @@
-﻿using SWPatcher.Helpers.GlobalVar;
-using System;
+﻿using SWPatcher.Helpers.GlobalVariables;
 using System.Globalization;
 
 namespace SWPatcher.Helpers

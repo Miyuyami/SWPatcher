@@ -360,20 +360,20 @@ namespace SWPatcher.Forms
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_not_exist_directory"));
                             break;
                         case 9:
-                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
-                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt"), ex.FileName));
+                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}] version=[{ex.ClientVersion.ToString()}]");
+                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt"), $"{ex.FileName}@Version=[{ex.ClientVersion}"));
                             break;
                         case 15:
-                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
-                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_missing_file"), ex.FileName));
+                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}] version=[{ex.ClientVersion.ToString()}]");
+                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_missing_file"), $"{ex.FileName}@Version=[{ex.ClientVersion}"));
                             break;
                         case 22:
-                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
+                            Logger.Error($"error=[{ex.Message.ToString()}] version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_rename_fail"));
                             break;
                         case 36:
-                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}]");
-                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt_file"), ex.FileName));
+                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}] version=[{ex.ClientVersion.ToString()}]");
+                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt_file"), $"{ex.FileName}@Version=[{ex.ClientVersion}"));
                             break;
                         default:
                             string logFileText = File.ReadAllText(ex.LogPath);

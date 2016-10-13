@@ -79,7 +79,7 @@ namespace SWPatcher.RTPatch
             File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
 
             if (result != 0)
-                throw new ResultException(this.LastMessage, result, this.CurrentLogFilePath, this.FileName);
+                throw new ResultException(this.LastMessage, result, this.CurrentLogFilePath, this.FileName, this.ClientVersion);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)

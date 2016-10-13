@@ -337,7 +337,7 @@
     <value>로그인 시도 횟수를 초과하였습니다. 한게임 JP 사이트에 로그인을해서 캡챠를 입력하셔야합니다.</value>
   </data>
   <data name="exception_game_already_open" xml:space="preserve">
-    <value>소울워커 혹은 한게임JP 런쳐가 이미 열려있으므로 실행이 불가능합니다.</value>
+    <value>{0}가  이미 실행중이므로 진행이 불가능합니다.</value>
   </data>
   <data name="exception_hangame_refused_connection" xml:space="preserve">
     <value>소울워커 혹은 한게임JP 서버가 연결을 차단하였습니다. (점검 스케줄을 체크해주세요)</value>

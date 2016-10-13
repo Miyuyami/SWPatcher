@@ -306,7 +306,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 소울워커 혹은 한게임JP 런쳐가 이미 열려있으므로 실행이 불가능합니다..
+        ///   Looks up a localized string similar to {0}가  이미 실행중이므로 진행이 불가능합니다..
         /// </summary>
         internal static string exception_game_already_open {
             get {

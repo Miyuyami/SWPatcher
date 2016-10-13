@@ -9,13 +9,13 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SWPatcher</RootNamespace>
-    <AssemblyName>SWPatcherTest</AssemblyName>
+    <AssemblyName>SWPatcher</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>C:\Users\Miyu\Documents\GitHub\SWPatcher\SWPatcherTest\publish\</PublishUrl>
+    <PublishUrl>C:\Users\Miyu\Documents\GitHub\SWPatcher\SWPatcher\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,11 +25,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcherTest/publish/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcherTest/publish/</UpdateUrl>
+    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
-    <ProductName>Soulworker Patcher Test</ProductName>
-    <PublisherName>MiyuPatcherTest</PublisherName>
+    <ProductName>Soulworker Patcher</ProductName>
+    <PublisherName>MiyuPatcher</PublisherName>
     <MinimumRequiredVersion>2.4.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
@@ -104,7 +104,7 @@
     <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <Optimize>false</Optimize>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -117,7 +117,7 @@
     <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <DebugSymbols>true</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>

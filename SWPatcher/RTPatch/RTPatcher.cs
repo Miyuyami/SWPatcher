@@ -16,12 +16,6 @@ namespace SWPatcher.RTPatch
 
     public class RTPatcher
     {
-        [DllImport("patchw32.dll", EntryPoint = "RTPatchApply32@12")]
-        internal static extern uint RTPatchApply32(string command, RTPatchCallback func, bool waitFlag);
-
-        [DllImport("patchw64.dll", EntryPoint = "RTPatchApply32")]
-        internal static extern uint RTPatchApply64(string command, RTPatchCallback func, bool waitFlag);
-
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
         private string CurrentLogFilePath;
@@ -55,8 +49,7 @@ namespace SWPatcher.RTPatch
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientVersion.ToString()));
-            if (Methods.IsGameAlreadyRunning())
-                throw new Exception(StringLoader.GetText("exception_game_already_open"));
+            Methods.CheckRunningPrograms();
 
             if (this.Worker.CancellationPending)
             {
@@ -74,7 +67,7 @@ namespace SWPatcher.RTPatch
 
             Logger.Info($"RTPatch diffFile=[{diffFilePath}] path=[{gamePath}]");
             string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";
-            ulong result = Environment.Is64BitProcess ? RTPatchApply64(command, new RTPatchCallback(RTPatchMessage), true) : RTPatchApply32(command, new RTPatchCallback(RTPatchMessage), true);
+            ulong result = Environment.Is64BitProcess ? NativeMethods.RTPatchApply64(command, new RTPatchCallback(RTPatchMessage), true) : NativeMethods.RTPatchApply32(command, new RTPatchCallback(RTPatchMessage), true);
             File.Delete(diffFilePath);
             File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
 
@@ -252,7 +245,7 @@ namespace SWPatcher.RTPatch
         {
             if (this.Client.IsBusy || this.Worker.IsBusy)
                 return;
-            
+
             LoadVersions();
             DownloadNext();
         }

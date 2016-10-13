@@ -14,6 +14,7 @@
             public const string GameExe = "SoulWorker100.exe";
             public const string PurpleExe = "PLauncher.exe";
             public const string ReactorExe = "reactor.exe";
+            public const string OutboundExe = "Outbound.exe";
             public const string Log = ".log";
             public const string Data12 = "data12.v";
             public const string Data14 = "data14.v";

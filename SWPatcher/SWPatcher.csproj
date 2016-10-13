@@ -169,6 +169,7 @@
   <ItemGroup>
     <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
+    <Compile Include="Helpers\NativeMethods.cs" />
     <Compile Include="RTPatch\ResultException.cs" />
     <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
     <Compile Include="RTPatch\RTPatcherProgressChangedEventArgs.cs" />

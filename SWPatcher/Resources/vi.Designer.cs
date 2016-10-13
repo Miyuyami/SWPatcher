@@ -306,7 +306,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Không thể tiếp tục vì SoulWorker hoặc game launcher (reactor.exe) đang chạy.
+        ///   Looks up a localized string similar to Không thể tiếp tục vì {0} đang chạy..
         /// </summary>
         internal static string exception_game_already_open {
             get {

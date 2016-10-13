@@ -4,6 +4,7 @@ using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -334,12 +335,41 @@ namespace SWPatcher.Helpers
             return $"{method}({MethodParams(args)})";
         }
 
-        internal static bool IsGameAlreadyRunning()
+        internal static void CheckRunningPrograms()
         {
-            var processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe };
-            var processes = processNames.SelectMany(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p))).Where(p => processNames.Contains(p.MainModule.ModuleName)).ToArray();
+            var processes = Methods.GetRunningGameProcesses();
+            if (processes.Length > 0)
+                throw new Exception(String.Format(StringLoader.GetText("exception_game_already_open"), String.Join("/", processes)));
+        }
 
-            return processes.Length > 0;
+        internal static string[] GetRunningGameProcesses()
+        {
+            var processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe, Strings.FileName.OutboundExe };
+            var processes = processNames.SelectMany(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p))).Where(p => processNames.Contains(GetProcessName(p.Id)));
+
+            return processes.Select(p => p.MainModule.ModuleName).ToArray();
+        }
+
+        private static string GetProcessName(int processId)
+        {
+            var buffer = new StringBuilder(1024);
+            IntPtr hprocess = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryLimitedInformation, false, processId);
+            if (hprocess != IntPtr.Zero)
+            {
+                try
+                {
+                    int size = buffer.Capacity;
+                    if (NativeMethods.QueryFullProcessImageName(hprocess, 0, buffer, out size))
+                    {
+                        return buffer.ToString();
+                    }
+                }
+                finally
+                {
+                    NativeMethods.CloseHandle(hprocess);
+                }
+            }
+            throw new Win32Exception(Marshal.GetLastWin32Error());
         }
     }
 }

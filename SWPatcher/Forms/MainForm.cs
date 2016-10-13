@@ -428,9 +428,7 @@ namespace SWPatcher.Forms
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             this.Worker.ReportProgress((int)State.Prepare);
-            if (Methods.IsGameAlreadyRunning())
-                throw new Exception(StringLoader.GetText("exception_game_already_open"));
-
+            Methods.CheckRunningPrograms();
             if (e.Argument != null)
             {
                 Language language = e.Argument as Language;
@@ -943,7 +941,7 @@ namespace SWPatcher.Forms
         private static byte[] TrimArrayIfNecessary(byte[] array)
         {
             int limit = 512000 / 2;
-            
+
             if (array.Length > limit)
             {
                 byte[] trimmedArray = new byte[limit];

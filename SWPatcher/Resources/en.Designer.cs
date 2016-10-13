@@ -306,7 +306,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot proceed because Soulworker or hangame launcher (reactor.exe) is already open..
+        ///   Looks up a localized string similar to Cannot proceed because {0} is already running..
         /// </summary>
         internal static string exception_game_already_open {
             get {

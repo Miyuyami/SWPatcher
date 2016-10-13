@@ -345,9 +345,8 @@ namespace SWPatcher.Helpers
         internal static string[] GetRunningGameProcesses()
         {
             var processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe, Strings.FileName.OutboundExe };
-            var processes = processNames.SelectMany(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p))).Where(p => processNames.Contains(Path.GetFileName(GetProcessPath(p.Id))));
 
-            return processes.Select(p => p.MainModule.ModuleName).ToArray();
+            return processNames.SelectMany(pn => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(pn))).Select(p => Path.GetFileName(Methods.GetProcessPath(p.Id))).Where(pn => processNames.Contains(pn)).ToArray();
         }
 
         private static string GetProcessPath(int processId)

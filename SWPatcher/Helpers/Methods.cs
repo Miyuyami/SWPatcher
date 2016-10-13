@@ -345,12 +345,12 @@ namespace SWPatcher.Helpers
         internal static string[] GetRunningGameProcesses()
         {
             var processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe, Strings.FileName.OutboundExe };
-            var processes = processNames.SelectMany(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p))).Where(p => processNames.Contains(GetProcessName(p.Id)));
+            var processes = processNames.SelectMany(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p))).Where(p => processNames.Contains(Path.GetFileName(GetProcessPath(p.Id))));
 
             return processes.Select(p => p.MainModule.ModuleName).ToArray();
         }
 
-        private static string GetProcessName(int processId)
+        private static string GetProcessPath(int processId)
         {
             var buffer = new StringBuilder(1024);
             IntPtr hprocess = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryLimitedInformation, false, processId);

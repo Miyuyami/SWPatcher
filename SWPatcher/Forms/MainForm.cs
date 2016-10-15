@@ -641,7 +641,14 @@ namespace SWPatcher.Forms
                 Logger.Info($"Restoring files original=[{path}] backup=[{file}]");
 
                 if (File.Exists(path))
-                    File.Move(path, Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1)));
+                {
+                    string langPath = Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1));
+                    if (File.Exists(langPath))
+                        File.Delete(langPath);
+
+                    File.Move(path, langPath);
+                }
+
                 try
                 {
                     File.Move(file, path);

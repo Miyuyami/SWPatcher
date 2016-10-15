@@ -357,4 +357,10 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
   <data name="exception_rtpatch_rename_fail" xml:space="preserve">
     <value>Đổi tên tập tin thất bại, xin hãy thử lại</value>
   </data>
+  <data name="exception_empty_id" xml:space="preserve">
+    <value>ID không được để trống, xin vui lòng nhập ID hoặc bỏ chọn "Đăng nhập bằng Patcher"</value>
+  </data>
+  <data name="exception_empty_pw" xml:space="preserve">
+    <value>Password không được để trống, xin vui lòng nhập Password hoặc bỏ chọn "Đăng nhập bằng Patcher"</value>
+  </data>
 </root>

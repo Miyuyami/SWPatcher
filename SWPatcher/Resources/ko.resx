@@ -357,4 +357,10 @@
   <data name="exception_rtpatch_rename_fail" xml:space="preserve">
     <value>파일명을 수정하는데 실패했습니다. 재시도해주세요.</value>
   </data>
+  <data name="exception_empty_id" xml:space="preserve">
+    <value>ID칸이 비어있습니다. 소울워커 ID를 입력하거나 패쳐에서 로그인하는 기능을 꺼주세요.</value>
+  </data>
+  <data name="exception_empty_pw" xml:space="preserve">
+    <value>비밀번호칸이 비어있습니다. 소울워커 비밀번호를 입력하거나 패쳐에서 로그인하는 기능을 꺼주세요.</value>
+  </data>
 </root>

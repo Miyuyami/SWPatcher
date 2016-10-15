@@ -286,6 +286,24 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ID cannot be empty, please set up your Soulworker ID or uncheck the login option..
+        /// </summary>
+        internal static string exception_empty_id {
+            get {
+                return ResourceManager.GetString("exception_empty_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password cannot be empty, please set up your Soulworker Password or uncheck the login option..
+        /// </summary>
+        internal static string exception_empty_pw {
+            get {
+                return ResourceManager.GetString("exception_empty_pw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected folder is not a Soulworker game client folder..
         /// </summary>
         internal static string exception_folder_not_game_folder {

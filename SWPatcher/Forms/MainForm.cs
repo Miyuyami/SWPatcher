@@ -31,7 +31,6 @@ namespace SWPatcher.Forms
             Patch,
             Prepare,
             WaitClient,
-            Apply,
             WaitClose,
             RTPatch
         }
@@ -129,19 +128,6 @@ namespace SWPatcher.Forms
                             toolStripStatusLabel.Text = StringLoader.GetText("form_status_wait_client");
                             toolStripProgressBar.Value = toolStripProgressBar.Minimum;
                             toolStripProgressBar.Style = ProgressBarStyle.Blocks;
-                            break;
-                        case State.Apply:
-                            comboBoxLanguages.Enabled = false;
-                            buttonDownload.Enabled = false;
-                            buttonDownload.Text = StringLoader.GetText("button_download_translation");
-                            buttonPlay.Enabled = false;
-                            buttonPlay.Text = StringLoader.GetText("button_play");
-                            toolStripMenuItemStartRaw.Enabled = false;
-                            forceStripMenuItem.Enabled = false;
-                            refreshToolStripMenuItem.Enabled = false;
-                            toolStripStatusLabel.Text = StringLoader.GetText("form_status_apply");
-                            toolStripProgressBar.Value = toolStripProgressBar.Minimum;
-                            toolStripProgressBar.Style = ProgressBarStyle.Marquee;
                             break;
                         case State.WaitClose:
                             comboBoxLanguages.Enabled = false;
@@ -463,10 +449,6 @@ namespace SWPatcher.Forms
                     File.Move(gameExePatchedPath, gameExePath);
                 }
 
-                this.Worker.ReportProgress((int)State.Apply);
-                BackupAndPlaceDataFiles(this.SWFiles, language);
-                BackupAndPlaceOtherFiles(this.SWFiles, language);
-
                 Process clientProcess = null;
                 ProcessStartInfo startInfo = null;
                 if (UserSettings.WantToLogin)
@@ -487,10 +469,16 @@ namespace SWPatcher.Forms
                         };
                     }
 
+                    BackupAndPlaceDataFiles(this.SWFiles, language);
+                    BackupAndPlaceOtherFiles(this.SWFiles, language);
+
                     clientProcess = Process.Start(startInfo);
                 }
                 else
                 {
+                    BackupAndPlaceDataFiles(this.SWFiles, language);
+                    BackupAndPlaceOtherFiles(this.SWFiles, language);
+
                     this.Worker.ReportProgress((int)State.WaitClient);
                     while (true)
                     {
@@ -812,10 +800,16 @@ namespace SWPatcher.Forms
 
             values[Strings.Web.PostEncodeId] = id;
             values[Strings.Web.PostEncodeFlag] = Strings.Web.PostEncodeFlagDefaultValue;
-            values[Strings.Web.PostId] = id;
+            if (String.IsNullOrEmpty(values[Strings.Web.PostId] = id))
+            {
+                throw new Exception(StringLoader.GetText("exception_empty_id"));
+            }
             using (var secure = Methods.DecryptString(UserSettings.GamePw))
             {
-                values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure));
+                if (String.IsNullOrEmpty(values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure))))
+                {
+                    throw new Exception(StringLoader.GetText("exception_empty_pw"));
+                }
             }
             values[Strings.Web.PostClearFlag] = Strings.Web.PostClearFlagDefaultValue;
             values[Strings.Web.PostNextUrl] = Strings.Web.PostNextUrlDefaultValue;

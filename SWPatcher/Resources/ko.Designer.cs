@@ -286,6 +286,24 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ID칸이 비어있습니다. 소울워커 ID를 입력하거나 패쳐에서 로그인하는 기능을 꺼주세요..
+        /// </summary>
+        internal static string exception_empty_id {
+            get {
+                return ResourceManager.GetString("exception_empty_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 비밀번호칸이 비어있습니다. 소울워커 비밀번호를 입력하거나 패쳐에서 로그인하는 기능을 꺼주세요..
+        /// </summary>
+        internal static string exception_empty_pw {
+            get {
+                return ResourceManager.GetString("exception_empty_pw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 지정된 폴더가 소울워커 게임 클라이언트 폴더가 아닙니다..
         /// </summary>
         internal static string exception_folder_not_game_folder {

@@ -286,6 +286,24 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ID không được để trống, xin vui lòng nhập ID hoặc bỏ chọn &quot;Đăng nhập bằng Patcher&quot;.
+        /// </summary>
+        internal static string exception_empty_id {
+            get {
+                return ResourceManager.GetString("exception_empty_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password không được để trống, xin vui lòng nhập Password hoặc bỏ chọn &quot;Đăng nhập bằng Patcher&quot;.
+        /// </summary>
+        internal static string exception_empty_pw {
+            get {
+                return ResourceManager.GetString("exception_empty_pw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected folder is not a Soulworker game client folder..
         /// </summary>
         internal static string exception_folder_not_game_folder {

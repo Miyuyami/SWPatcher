@@ -139,7 +139,7 @@ namespace SWPatcher.RTPatch
                 Uri uri = new Uri(this.Url + '/' + RTPFileName);
                 string destination = Path.Combine(UserSettings.GamePath, RTPFileName);
                 Logger.Info($"Downloading url=[{uri.AbsoluteUri}] path=[{destination}]");
-                Client.DownloadFileAsync(uri, destination);
+                this.Client.DownloadFileAsync(uri, destination);
             }
             else
             {

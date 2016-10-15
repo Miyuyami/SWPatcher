@@ -463,6 +463,10 @@ namespace SWPatcher.Forms
                     File.Move(gameExePatchedPath, gameExePath);
                 }
 
+                this.Worker.ReportProgress((int)State.Apply);
+                BackupAndPlaceDataFiles(this.SWFiles, language);
+                BackupAndPlaceOtherFiles(this.SWFiles, language);
+
                 Process clientProcess = null;
                 ProcessStartInfo startInfo = null;
                 if (UserSettings.WantToLogin)
@@ -482,6 +486,8 @@ namespace SWPatcher.Forms
                             FileName = Strings.FileName.GameExe
                         };
                     }
+
+                    clientProcess = Process.Start(startInfo);
                 }
                 else
                 {
@@ -502,13 +508,6 @@ namespace SWPatcher.Forms
                             break;
                     }
                 }
-
-                this.Worker.ReportProgress((int)State.Apply);
-                BackupAndPlaceDataFiles(this.SWFiles, language);
-                BackupAndPlaceOtherFiles(this.SWFiles, language);
-
-                if (startInfo != null)
-                    clientProcess = Process.Start(startInfo);
 
                 this.Worker.ReportProgress((int)State.WaitClose);
                 clientProcess.WaitForExit();

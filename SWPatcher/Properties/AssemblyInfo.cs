@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Soulworker Patcher")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Miyu")]
 [assembly: AssemblyProduct("SW Patcher")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright (C) 2016 Miyu")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

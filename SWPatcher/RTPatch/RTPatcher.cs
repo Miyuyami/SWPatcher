@@ -1,4 +1,22 @@
-﻿using MadMilkman.Ini;
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using MadMilkman.Ini;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
@@ -14,7 +32,7 @@ namespace SWPatcher.RTPatch
     public delegate void RTPatcherProgressChangedEventHandler(object sender, RTPatcherProgressChangedEventArgs e);
     public delegate string RTPatchCallback(uint id, IntPtr ptr);
 
-    public class RTPatcher
+    public class RTPatcher : IDisposable
     {
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
@@ -27,6 +45,8 @@ namespace SWPatcher.RTPatch
         private int FileCount;
         private int FileNumber;
 
+        private bool disposedValue = false;
+
         public event RTPatcherDownloadProgressChangedEventHandler RTPatcherDownloadProgressChanged;
         public event RTPatcherProgressChangedEventHandler RTPatcherProgressChanged;
         public event AsyncCompletedEventHandler RTPatcherCompleted;
@@ -38,12 +58,12 @@ namespace SWPatcher.RTPatch
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-            this.Worker.DoWork += Worker_DoWork;
-            this.Worker.ProgressChanged += Worker_ProgressChanged;
-            this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            this.Worker.DoWork += this.Worker_DoWork;
+            this.Worker.ProgressChanged += this.Worker_ProgressChanged;
+            this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
             this.Client = new WebClient();
-            this.Client.DownloadProgressChanged += Client_DownloadProgressChanged;
-            this.Client.DownloadFileCompleted += Client_DownloadFileCompleted;
+            this.Client.DownloadProgressChanged += this.Client_DownloadProgressChanged;
+            this.Client.DownloadFileCompleted += this.Client_DownloadFileCompleted;
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
@@ -67,7 +87,7 @@ namespace SWPatcher.RTPatch
 
             Logger.Info($"RTPatch diffFile=[{diffFilePath}] path=[{gamePath}]");
             string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";
-            ulong result = Environment.Is64BitProcess ? NativeMethods.RTPatchApply64(command, new RTPatchCallback(RTPatchMessage), true) : NativeMethods.RTPatchApply32(command, new RTPatchCallback(RTPatchMessage), true);
+            ulong result = Environment.Is64BitProcess ? NativeMethods.RTPatchApply64(command, new RTPatchCallback(this.RTPatchMessage), true) : NativeMethods.RTPatchApply32(command, new RTPatchCallback(this.RTPatchMessage), true);
             File.Delete(diffFilePath);
             File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
 
@@ -248,6 +268,32 @@ namespace SWPatcher.RTPatch
 
             LoadVersions();
             DownloadNext();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                if (disposing)
+                {
+                    this.Worker.Dispose();
+                    this.Client.Dispose();
+                }
+
+                this.CurrentLogFilePath = null;
+                this.FileName = null;
+                this.LastMessage = null;
+                this.Url = null;
+                this.ClientVersion = null;
+                this.ServerVersion = null;
+
+                this.disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }

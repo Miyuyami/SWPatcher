@@ -23,9 +23,6 @@
     <Setting Name="WantToLoginWithPatcher" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="UIMode" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
     <Setting Name="UILanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)">default</Value>
     </Setting>

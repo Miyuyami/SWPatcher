@@ -115,15 +115,6 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Giao diện.
-        /// </summary>
-        internal static string box_ui_style {
-            get {
-                return ResourceManager.GetString("box_ui_style", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Ngán ngẩm phải đăng nhập từ website?.
         /// </summary>
         internal static string box_want_login {
@@ -423,6 +414,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cập nhật tập tin tất bại vì thiếu quyền truy cập hoặc tập tin đang được sử dụng. Xin vui lòng thử lại..
+        /// </summary>
+        internal static string exception_rtpatch_administrator_required {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_administrator_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tập tin patch &quot;{0}&quot; đã bị hỏng.
         /// </summary>
         internal static string exception_rtpatch_corrupt {
@@ -437,6 +437,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_corrupt_file {
             get {
                 return ResourceManager.GetString("exception_rtpatch_corrupt_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cập nhật thất bại vì thiếu không gian trống trên ổ đĩa..
+        /// </summary>
+        internal static string exception_rtpatch_insufficient_storage {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_insufficient_storage", resourceCulture);
             }
         }
         
@@ -459,6 +468,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mở tập tin patch thất bại. Xin vui lòng thử lại..
+        /// </summary>
+        internal static string exception_rtpatch_open_patch_file_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_open_patch_file_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Đổi tên tập tin thất bại, xin hãy thử lại.
         /// </summary>
         internal static string exception_rtpatch_rename_fail {
@@ -474,6 +492,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_result {
             get {
                 return ResourceManager.GetString("exception_rtpatch_result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đặt mốc thời gian cho tập tin thất bại. Xin vui lòng thử lại..
+        /// </summary>
+        internal static string exception_rtpatch_time_date_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_time_date_fail", resourceCulture);
             }
         }
         
@@ -694,8 +721,12 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SoulWorker Patcher được làm ra là để áp dụng các bản dịch vào game mà không gây ra nhiều rủi ro hỏng tệp của game.
-        ///Nguồn dịch được tải từ nhóm dịch ở SoulWorker HQ..
+        ///   Looks up a localized string similar to This program comes with ABSOLUTELY NO WARRANTY
+        ///This is free software, and you are welcome to redistribute it
+        ///under certain conditions.
+        ///
+        ///Soulworker Patcher được làm ra là để áp dụng các bản dịch vào game mà không gây ra nhiều rủi ro hỏng tệp của game.
+        ///Nguồn dịch được tải từ nhóm dịch ở SWHQ..
         /// </summary>
         internal static string patcher_description {
             get {
@@ -722,24 +753,6 @@ namespace SWPatcher.Resources {
         internal static string question_folder_same_path_game {
             get {
                 return ResourceManager.GetString("question_folder_same_path_game", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Đầy đủ.
-        /// </summary>
-        internal static string radio_full {
-            get {
-                return ResourceManager.GetString("radio_full", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Đơn giản.
-        /// </summary>
-        internal static string radio_min {
-            get {
-                return ResourceManager.GetString("radio_min", resourceCulture);
             }
         }
         

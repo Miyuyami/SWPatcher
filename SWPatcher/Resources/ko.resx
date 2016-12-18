@@ -135,9 +135,6 @@
   <data name="box_pw" xml:space="preserve">
     <value>소울워커 패스워드</value>
   </data>
-  <data name="box_ui_style" xml:space="preserve">
-    <value>인터페이스 스타일</value>
-  </data>
   <data name="box_want_login" xml:space="preserve">
     <value>웹사이트에서 부터 로그인하는게 피곤한가요?</value>
   </data>
@@ -196,14 +193,12 @@
     <value>클라이언트 중단대기중...</value>
   </data>
   <data name="patcher_description" xml:space="preserve">
-    <value>소울워커 패쳐는 최신의 번역 파일들을 소울워커 클라이언트에 오류 없이 깨끗하게 업데이트 하기 위해 만들어진 프로그램 입니다.
+    <value>This program comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+
+소울워커 패쳐는 최신의 번역 파일들을 소울워커 클라이언트에 오류 없이 깨끗하게 업데이트 하기 위해 만들어진 프로그램 입니다.
 또한, SWHQ 번역팀(한국번역은 소울워커 카페 번역팀)에 의해 번역이 된 최신번역 파일들을 손쉽게 다운로드하고 적용시킬수 있습니다.</value>
-  </data>
-  <data name="radio_full" xml:space="preserve">
-    <value>Full</value>
-  </data>
-  <data name="radio_min" xml:space="preserve">
-    <value>Minimal</value>
   </data>
   <data name="tab_credentials" xml:space="preserve">
     <value>계정</value>

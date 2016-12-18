@@ -1,4 +1,22 @@
-﻿using MadMilkman.Ini;
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
@@ -17,13 +35,15 @@ namespace SWPatcher.Patching
     public delegate void PatcherProgressChangedEventHandler(object sender, PatcherProgressChangedEventArgs e);
     public delegate void PatcherCompletedEventHandler(object sender, PatcherCompletedEventArgs e);
 
-    public class Patcher
+    public class Patcher : IDisposable
     {
         private readonly BackgroundWorker Worker;
-        private readonly List<SWFile> SWFiles;
+        private List<SWFile> SWFiles;
         private Language Language;
         private int CurrentStep;
         private int StepCount;
+
+        private bool disposedValue = false;
 
         public Patcher(List<SWFile> swFiles)
         {
@@ -33,9 +53,9 @@ namespace SWPatcher.Patching
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-            this.Worker.DoWork += Worker_DoWork;
-            this.Worker.ProgressChanged += Worker_ProgressChanged;
-            this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            this.Worker.DoWork += this.Worker_DoWork;
+            this.Worker.ProgressChanged += this.Worker_ProgressChanged;
+            this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
         }
 
         public event PatcherProgressChangedEventHandler PatcherProgressChanged;
@@ -46,11 +66,11 @@ namespace SWPatcher.Patching
             Logger.Debug(Methods.MethodFullName("Patcher", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
 
             this.StepCount = 3;
-            var archivedSWFiles = SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA));
-            var archives = archivedSWFiles.Select(f => f.Path).Distinct();
+            IEnumerable<SWFile> archivedSWFiles = this.SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA));
+            IEnumerable<string> archives = archivedSWFiles.Select(f => f.Path).Distinct();
             int archivedSWFilesCount = archivedSWFiles.Count();
 
-            var passwordDictionary = LoadPasswords();
+            Dictionary<string, string> passwordDictionary = LoadPasswords();
 
             this.CurrentStep = 1;
             foreach (var archive in archives) // copy and Xor archives
@@ -70,7 +90,7 @@ namespace SWPatcher.Patching
 
             this.CurrentStep = 2;
             int count = 1;
-            foreach (var swFile in archivedSWFiles)
+            foreach (SWFile swFile in archivedSWFiles)
             {
                 if (this.Worker.CancellationPending)
                 {
@@ -115,7 +135,7 @@ namespace SWPatcher.Patching
                                     i++;
                                 }
 
-                            var inputTable = this.ReadInputFile(swFilePath, lineCount, idIndex);
+                            Dictionary<ulong, string[]> inputTable = this.ReadInputFile(swFilePath, lineCount, idIndex);
 
                             using (var br = new BinaryReader(File.Open(swFilePathOriginalRes.Path, FileMode.Open, FileAccess.Read)))
                             using (var bw = new BinaryWriter(File.Open(swFilePathRes.Path, FileMode.OpenOrCreate, FileAccess.Write)))
@@ -323,7 +343,7 @@ namespace SWPatcher.Patching
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            this.PatcherProgressChanged?.Invoke(sender, new PatcherProgressChangedEventArgs(CurrentStep, StepCount, e.ProgressPercentage));
+            this.PatcherProgressChanged?.Invoke(sender, new PatcherProgressChangedEventArgs(this.CurrentStep, this.StepCount, e.ProgressPercentage));
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -344,7 +364,7 @@ namespace SWPatcher.Patching
 
             for (int i = 0; i < fileLines.Length; i += entryLineCount)
             {
-                var currentData = new string[lineCount];
+                string[] currentData = new string[lineCount];
 
                 for (int j = 0; j < lineCount; j++)
                 {
@@ -420,8 +440,8 @@ namespace SWPatcher.Patching
                 IniFile ini = new IniFile();
                 ini.Load(file.Path);
 
-                var section = ini.Sections[Strings.IniName.Datas.SectionZipPassword];
-                foreach (var key in section.Keys)
+                IniSection section = ini.Sections[Strings.IniName.Datas.SectionZipPassword];
+                foreach (IniKey key in section.Keys)
                 {
                     result.Add(key.Name, key.Value);
                 }
@@ -442,6 +462,27 @@ namespace SWPatcher.Patching
             
             this.Language = language;
             this.Worker.RunWorkerAsync();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                if (disposing)
+                {
+                    this.Worker.Dispose();
+                }
+
+                this.SWFiles = null;
+                this.Language = null;
+
+                this.disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }

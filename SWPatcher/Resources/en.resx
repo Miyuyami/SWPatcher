@@ -135,9 +135,6 @@
   <data name="box_pw" xml:space="preserve">
     <value>Soulworker Password</value>
   </data>
-  <data name="box_ui_style" xml:space="preserve">
-    <value>Interface Style</value>
-  </data>
   <data name="box_want_login" xml:space="preserve">
     <value>Tired to login from the website?</value>
   </data>
@@ -196,14 +193,12 @@
     <value>Waiting for client termination...</value>
   </data>
   <data name="patcher_description" xml:space="preserve">
-    <value>Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating.
+    <value>This program comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+
+Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating.
 It also can download latest translations from the SWHQ translation team and apply them at any time.</value>
-  </data>
-  <data name="radio_full" xml:space="preserve">
-    <value>Full</value>
-  </data>
-  <data name="radio_min" xml:space="preserve">
-    <value>Minimal</value>
   </data>
   <data name="tab_credentials" xml:space="preserve">
     <value>Credentials</value>
@@ -362,5 +357,17 @@ The link was copied to clipboard.</value>
   </data>
   <data name="exception_empty_pw" xml:space="preserve">
     <value>Password cannot be empty, please set up your Soulworker Password or uncheck the login option.</value>
+  </data>
+  <data name="exception_rtpatch_administrator_required" xml:space="preserve">
+    <value>Failed to update because the file requires administrative rights. Maybe the file is already in use? Try again.</value>
+  </data>
+  <data name="exception_rtpatch_insufficient_storage" xml:space="preserve">
+    <value>Failed to update because there isn't enough storage space on the drive.</value>
+  </data>
+  <data name="exception_rtpatch_open_patch_file_fail" xml:space="preserve">
+    <value>Failed to open patch file. Try again.</value>
+  </data>
+  <data name="exception_rtpatch_time_date_fail" xml:space="preserve">
+    <value>Failed to set the file's time/date stamp. Try again.</value>
   </data>
 </root>

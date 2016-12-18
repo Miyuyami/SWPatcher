@@ -1,0 +1,122 @@
+Version 2.4.1.2 
+Fixed "Validation Failed" when ID or Password is empty, now it shows a descriptive error message
+
+Version 2.4.1.1
+Fixed error when restoring backup but the translated file already exists in the translation folder (basically when translation file is also in translation folder and the game folder)
+
+Version 2.4.1.0
+Improved "Ready to Play" by applying the files before it's waiting for the patcher (when direct login option is not checked)
+
+Version 2.4.0.0
+Added error message when trying to download and Soulworker/Hangame server refused the connection (server maintenance probably)
+Added some error messages to RTPatch result errors
+Added more detailed logging
+Added error messsage when trying to play and game is already open
+Fixed invalid id/pw error when credentials contain non-ASCII characters
+Fixed getting no servers on the server selection screen when starting the game with the patcher before ever starting the game normally
+
+Version 2.3.5.0
+Added better error message when an RTPatch error occurs, the log file will be automatically be uploaded
+
+Version 2.3.4.1
+Fixed the new icon not being applied to tray icon
+
+Version 2.3.4.0
+Added new patcher icon (cuter)
+
+Version 2.3.3.0
+Added "Match Windows" option in Patcher UI Language selection
+
+Version 2.3.2.1
+Fixed missing patchw32.dll and patchw64.dll
+
+Version 2.3.2.0
+Added Vietnamese language
+
+Version 2.3.1.0
+Added support for multiple languages Contact me if you want your language to be added! (you will have to translate)
+
+Version 2.3.0.1
+Fixed the "Change" button for patcher directory
+
+Version 2.3.0.0
+Added auto-update Soulworker (if necessary) before downloading or starting the game
+Added minimalistic interface (just bored, not really something useful)
+Added a "Retry" option at "IP Validation Failed" error
+
+Version 2.2.2.0
+Fixed "BadPasswordException", for now... if it ever pops again, it means Hangame changed their encryption
+
+Version 2.2.1.6
+Fixed a mistake that the last selected language was only saved by pressing the "Exit" button and not with "X"
+
+Version 2.2.1.5
+Changed to a better way of restoring backup when backup is found on Patcher startup.
+Changed to a better check when trying to "Ready to Play" but translation files are missing in a mysterious way.
+
+Version 2.2.1.4
+Added direct/raw login (without translations) button.
+Added random NPC image from Soulworker when opening the About window.
+
+Version 2.2.0.0
+Added the possibility to directly login with the Patcher, the login credentials are typed in the Settings menu! Having an outdated version will just open the game launcher that will update the game like before.
+You will still need VPN. (if you were using it without this feature)
+This is disabled by default and completely optional.
+
+Version 2.1.1.3
+Reverting everything to 2.1.0.2 basically... Running as admin automatically doesn't work properly at all by using the ".appref-ms" shortcut
+
+Version 2.1.1.1
+Removed the option to start as admin.It wasn't possible to turn it off after turning it on (only if you were to use the "shortcut" aka ".appref-ms")
+Added to always run as admin.
+
+Version 2.1.1.0
+Added an option to start the Patcher as admin automatically if the option is checked. It is disabled by default.
+
+Version 2.1.0.2
+Fixed a bug that happened if you were to do something really weird... too complex to explain.
+
+Version 2.1.0.1
+Fixed a bug that was not moving the patched (if exists) SoulWorker100.exe from the patcher folder if the patcher folder is changed
+
+Version 2.1.0.0
+Added a setting option (default disabled) that will patch the SoulWorker100.exe (main game executable) to fix a problem concerning other unicode language codepage (developers only allow japanese unicode support for non-UI text)
+Added an option to upload the log file to [url=http://www.pastebin.com/]pastebin[/url], the respective pastebin link will be copied to clipboard
+
+Version 2.0.5.3
+Fixed a bug that happened when changing the Patcher directory to another volume/drive and would fail to move the files
+
+Version 2.0.5.2
+Fixed a bug that happened when changing the Soulworker directory
+
+Version 2.0.5.1
+Added setting to change where the "working" folder of the Patcher is (backup folder, translation folders, log file)
+Shows the date of latest translation when there are new translations (helps in case you download them only once a week or something)
+
+Version 2.0.5.0
+Fixed error "Failed to read version", changed the way it reads .ini files completely (no longer uses the windows's profile reader)
+Added auto-updater, from now on new updates are checked on program startup and downloaded automatically
+Added "Settings" menu item, currently can only set Soulworker game client directory. Maybe will be used in the future for more settings
+Added auto-saving of last selected language in combo box so that it will startup on last selected language
+
+Version 2.0.4.0
+Not public version, was for testing the error, "Failed to read version". It was properly fixed in Version 2.0.5.0
+
+Version 2.0.3.0
+Fixed error: "*.PendingOverwrite" files already existing, now it properly overwrites them (3rd party .dll problem)
+Added Refresh button to check if newer translations are there(without restarting the Patcher)
+Added checks when downloading and patching in case the Patcher was kept open until server patch was applied (was only checked startup)
+Shows proper error message if somehow it failed to read the version (some people experienced this somehow, still cannot find the cause, could be connection packet loss, still investigating)
+Shows proper error message if the Patcher is open and user tries to open it again (check tray)
+
+Version 2.0.2.0
+Added a label showing if there are new translations available to download
+
+Version 2.0.1.0
+Fixed crashing at startup on 32-bit Operating Systems
+Fixed error: "*.tmp" files already existing, now it properly overwrites them (3rd party .dll problem)
+Added "Open SW Webpage" option on "Menu", which will open IE on "http://soulworker.hangame.co.jp/" (thanks for the feedback!)
+Shows proper error message after cancelling/encountering an error in patching/force patching and then pressing "Ready To Play!"
+
+Version 2.0.0.0
+Initial release of Version 2! Many performance improvements

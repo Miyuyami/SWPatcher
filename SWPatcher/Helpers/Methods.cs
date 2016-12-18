@@ -1,4 +1,22 @@
-﻿using Ionic.Zip;
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVariables;
@@ -51,7 +69,7 @@ namespace SWPatcher.Helpers
             if (!ini.Sections.Contains(Strings.IniName.Patcher.Section))
                 return true;
 
-            var section = ini.Sections[Strings.IniName.Patcher.Section];
+            IniSection section = ini.Sections[Strings.IniName.Patcher.Section];
             if (!section.Keys.Contains(Strings.IniName.Pack.KeyDate))
                 return true;
 
@@ -127,14 +145,14 @@ namespace SWPatcher.Helpers
             using (var client = new WebClient())
             using (var file = new TempFile())
             {
-                var exeBytes = File.ReadAllBytes(gameExePath);
+                byte[] exeBytes = File.ReadAllBytes(gameExePath);
                 string hexResult = BitConverter.ToString(exeBytes).Replace("-", "");
 
                 client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.BytesToPatch, file.Path);
                 IniFile ini = new IniFile();
                 ini.Load(file.Path);
 
-                foreach (var section in ini.Sections)
+                foreach (IniSection section in ini.Sections)
                 {
                     string original = section.Keys[Strings.IniName.PatchBytes.KeyOriginal].Value;
                     string patch = section.Keys[Strings.IniName.PatchBytes.KeyPatch].Value;
@@ -164,7 +182,7 @@ namespace SWPatcher.Helpers
                 IniFile ini = new IniFile();
                 ini.Load(file.Path);
 
-                foreach (var section in ini.Sections)
+                foreach (IniSection section in ini.Sections)
                 {
                     string name = section.Name;
                     string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
@@ -337,14 +355,14 @@ namespace SWPatcher.Helpers
 
         internal static void CheckRunningPrograms()
         {
-            var processes = Methods.GetRunningGameProcesses();
+            string[] processes = Methods.GetRunningGameProcesses();
             if (processes.Length > 0)
                 throw new Exception(String.Format(StringLoader.GetText("exception_game_already_open"), String.Join("/", processes)));
         }
 
         internal static string[] GetRunningGameProcesses()
         {
-            var processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe, Strings.FileName.OutboundExe };
+            string[] processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe, Strings.FileName.OutboundExe };
 
             return processNames.SelectMany(pn => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(pn))).Select(p => Path.GetFileName(Methods.GetProcessPath(p.Id))).Where(pn => processNames.Contains(pn)).ToArray();
         }

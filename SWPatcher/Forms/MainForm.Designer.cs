@@ -1,13 +1,60 @@
-﻿namespace SWPatcher.Forms
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SWPatcher.Forms
 {
     partial class MainForm
     {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+
+                this.Downloader.Dispose();
+                this.Patcher.Dispose();
+                this.Worker.Dispose();
+                this.RTPatcher.Dispose();
+            }
+
+            this.SWFiles.Clear();
+            
+            base.Dispose(disposing);
+        }
+
         #region Windows Form Designer generated code
-        private void InitializeComponentFull()
+        private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.buttonPlay = new General.SplitButton();
+            this.buttonPlay = new SWPatcher.General.SplitButton();
             this.contextMenuStripPlay = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemStartRaw = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonDownload = new System.Windows.Forms.Button();
@@ -41,26 +88,26 @@
             this.buttonPlay.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.tableLayoutPanel.SetColumnSpan(this.buttonPlay, 2);
             this.buttonPlay.ContextMenuStripSplit = this.contextMenuStripPlay;
-            this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPlay.Location = new System.Drawing.Point(117, 210);
             this.buttonPlay.Name = "buttonPlay";
             this.buttonPlay.Size = new System.Drawing.Size(130, 26);
             this.buttonPlay.TabIndex = 3;
             this.buttonPlay.UseVisualStyleBackColor = true;
-            this.buttonPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonPlay_MouseDown);
+            this.buttonPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonPlay_MouseDown);
             // 
             // contextMenuStripPlay
             // 
             this.contextMenuStripPlay.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemStartRaw});
             this.contextMenuStripPlay.Name = "contextMenuStrip";
-            this.contextMenuStripPlay.Size = new System.Drawing.Size(158, 26);
+            this.contextMenuStripPlay.Size = new System.Drawing.Size(68, 26);
             // 
             // toolStripMenuItemStartRaw
             // 
             this.toolStripMenuItemStartRaw.Name = "toolStripMenuItemStartRaw";
-            this.toolStripMenuItemStartRaw.Size = new System.Drawing.Size(157, 22);
-            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.buttonStartRaw_Click);
+            this.toolStripMenuItemStartRaw.Size = new System.Drawing.Size(67, 22);
+            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.ButtonStartRaw_Click);
             // 
             // buttonDownload
             // 
@@ -71,7 +118,7 @@
             this.buttonDownload.Size = new System.Drawing.Size(140, 24);
             this.buttonDownload.TabIndex = 2;
             this.buttonDownload.UseVisualStyleBackColor = true;
-            this.buttonDownload.Click += new System.EventHandler(this.buttonDownload_Click);
+            this.buttonDownload.Click += new System.EventHandler(this.ButtonDownload_Click);
             // 
             // comboBoxLanguages
             // 
@@ -83,17 +130,17 @@
             this.comboBoxLanguages.Name = "comboBoxLanguages";
             this.comboBoxLanguages.Size = new System.Drawing.Size(140, 21);
             this.comboBoxLanguages.TabIndex = 0;
-            this.comboBoxLanguages.SelectedIndexChanged += new System.EventHandler(this.comboBoxLanguages_SelectedIndexChanged);
+            this.comboBoxLanguages.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLanguages_SelectedIndexChanged);
             // 
             // notifyIcon
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.DoubleClick += new System.EventHandler(this.NotifyIcon_DoubleClick);
             // 
             // menuStrip
             // 
-            this.menuStrip.BackgroundImage = Properties.Resources.fadegray;
+            this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolStripMenuItem,
             this.settingsToolStripMenuItem,
@@ -111,47 +158,47 @@
             this.openSWWebpageToolStripMenuItem,
             this.uploadLogToPastebinToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
-            this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.menuToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
             // 
             // forceStripMenuItem
             // 
             this.forceStripMenuItem.Name = "forceStripMenuItem";
-            this.forceStripMenuItem.Size = new System.Drawing.Size(197, 22);
-            this.forceStripMenuItem.Click += new System.EventHandler(this.forceStripMenuItem_Click);
+            this.forceStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            this.forceStripMenuItem.Click += new System.EventHandler(this.ForceStripMenuItem_Click);
             // 
             // openSWWebpageToolStripMenuItem
             // 
             this.openSWWebpageToolStripMenuItem.Name = "openSWWebpageToolStripMenuItem";
-            this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-            this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.openSWWebpageToolStripMenuItem_Click);
+            this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.OpenSWWebpageToolStripMenuItem_Click);
             // 
             // uploadLogToPastebinToolStripMenuItem
             // 
             this.uploadLogToPastebinToolStripMenuItem.Name = "uploadLogToPastebinToolStripMenuItem";
-            this.uploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-            this.uploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.uploadLogToPastebinToolStripMenuItem_Click);
+            this.uploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            this.uploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.UploadLogToPastebinToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
-            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(200, 200, 200);
+            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
             this.statusStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar,
@@ -189,7 +236,7 @@
             // 
             // tableLayoutPanel
             // 
-            this.tableLayoutPanel.BackgroundImage = Properties.Resources.fadegray;
+            this.tableLayoutPanel.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.tableLayoutPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.tableLayoutPanel.ColumnCount = 2;
             this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -216,14 +263,14 @@
             // 
             // pictureBox
             // 
-            this.pictureBox.BackgroundImage = Properties.Resources.fadegray;
+            this.pictureBox.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
             this.tableLayoutPanel.SetColumnSpan(this.pictureBox, 2);
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox.Image = Properties.Resources.logo;
-            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox.Image = global::SWPatcher.Properties.Resources.logo;
             this.pictureBox.Location = new System.Drawing.Point(7, 7);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(350, 116);
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox.TabIndex = 7;
             this.pictureBox.TabStop = false;
             // 
@@ -236,7 +283,7 @@
             this.buttonExit.Size = new System.Drawing.Size(100, 28);
             this.buttonExit.TabIndex = 4;
             this.buttonExit.UseVisualStyleBackColor = true;
-            this.buttonExit.Click += new System.EventHandler(this.exit_Click);
+            this.buttonExit.Click += new System.EventHandler(this.Exit_Click);
             // 
             // labelNewTranslations
             // 

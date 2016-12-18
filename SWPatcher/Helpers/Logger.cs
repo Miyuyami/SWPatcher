@@ -1,4 +1,22 @@
-﻿using SWPatcher.Helpers.GlobalVariables;
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -71,7 +89,7 @@ namespace SWPatcher.Helpers
 
         private static void Log(DateTime dateTime, string logMode, string message)
         {
-            var messages = message.Split('\n');
+            string[] messages = message.Split('\n');
             for (int i = 1; i < messages.Length; i++)
             {
                 messages[i] = messages[i].Trim();
@@ -108,12 +126,14 @@ namespace SWPatcher.Helpers
         {
             Thread thread = new Thread(() =>
             {
-                foreach (var msg in _messages.GetConsumingEnumerable())
+                foreach (LogMessage msg in _messages.GetConsumingEnumerable())
                 {
                     Log(msg.DateTime, msg.LogMode, msg.Message);
                 }
-            });
-            thread.IsBackground = true;
+            })
+            {
+                IsBackground = true
+            };
             thread.Start();
 
             Logger.Debug(Methods.MethodFullName("Logger.Run", thread.ManagedThreadId.ToString()));

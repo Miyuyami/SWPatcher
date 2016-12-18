@@ -1,4 +1,22 @@
-﻿using SWPatcher.General;
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
@@ -13,14 +31,23 @@ namespace SWPatcher.Downloading
     public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
     public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
 
-    public class Downloader
+    /// <summary>
+    /// Handles the downloading of translation files.
+    /// </summary>
+    public class Downloader : IDisposable
     {
         private readonly BackgroundWorker Worker;
         private readonly WebClient Client;
-        private readonly List<SWFile> SWFiles;
+        private List<SWFile> SWFiles;
         private Language Language;
         private int DownloadIndex;
 
+        private bool disposedValue = false;
+
+        /// <summary>
+        /// Creates a new instance of <c>Downloader</c>.
+        /// </summary>
+        /// <param name="swFiles">is a list of the file that need to be downloaded</param>
         public Downloader(List<SWFile> swFiles)
         {
             this.SWFiles = swFiles;
@@ -28,11 +55,11 @@ namespace SWPatcher.Downloading
             {
                 WorkerSupportsCancellation = true
             };
-            this.Worker.DoWork += Worker_DoWork;
-            this.Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            this.Worker.DoWork += this.Worker_DoWork;
+            this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
             this.Client = new WebClient();
-            this.Client.DownloadProgressChanged += Client_DownloadProgressChanged;
-            this.Client.DownloadFileCompleted += Client_DownloadFileCompleted;
+            this.Client.DownloadProgressChanged += this.Client_DownloadProgressChanged;
+            this.Client.DownloadFileCompleted += this.Client_DownloadFileCompleted;
         }
 
         public event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
@@ -72,7 +99,7 @@ namespace SWPatcher.Downloading
                 this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
             else
             {
-                if (SWFiles.Count > ++this.DownloadIndex)
+                if (this.SWFiles.Count > ++this.DownloadIndex)
                     DownloadNext();
                 else
                     this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
@@ -110,6 +137,28 @@ namespace SWPatcher.Downloading
             
             this.Language = language;
             this.Worker.RunWorkerAsync();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                if (disposing)
+                {
+                    this.Worker.Dispose();
+                    this.Client.Dispose();
+                }
+                
+                this.SWFiles = null;
+                this.Language = null;
+
+                this.disposedValue = true;
+            }
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }

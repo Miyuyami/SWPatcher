@@ -115,15 +115,6 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interface Style.
-        /// </summary>
-        internal static string box_ui_style {
-            get {
-                return ResourceManager.GetString("box_ui_style", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Tired to login from the website?.
         /// </summary>
         internal static string box_want_login {
@@ -423,6 +414,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to update because the file requires administrative rights. Maybe the file is already in use? Try again..
+        /// </summary>
+        internal static string exception_rtpatch_administrator_required {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_administrator_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Corrupt patch file &quot;{0}&quot;.
         /// </summary>
         internal static string exception_rtpatch_corrupt {
@@ -437,6 +437,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_corrupt_file {
             get {
                 return ResourceManager.GetString("exception_rtpatch_corrupt_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update because there isn&apos;t enough storage space on the drive..
+        /// </summary>
+        internal static string exception_rtpatch_insufficient_storage {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_insufficient_storage", resourceCulture);
             }
         }
         
@@ -459,6 +468,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to open patch file. Try again..
+        /// </summary>
+        internal static string exception_rtpatch_open_patch_file_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_open_patch_file_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to rename file. Try again..
         /// </summary>
         internal static string exception_rtpatch_rename_fail {
@@ -474,6 +492,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_result {
             get {
                 return ResourceManager.GetString("exception_rtpatch_result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set the file&apos;s time/date stamp. Try again..
+        /// </summary>
+        internal static string exception_rtpatch_time_date_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_time_date_fail", resourceCulture);
             }
         }
         
@@ -694,7 +721,11 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating.
+        ///   Looks up a localized string similar to This program comes with ABSOLUTELY NO WARRANTY
+        ///This is free software, and you are welcome to redistribute it
+        ///under certain conditions.
+        ///
+        ///Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating.
         ///It also can download latest translations from the SWHQ translation team and apply them at any time..
         /// </summary>
         internal static string patcher_description {
@@ -722,24 +753,6 @@ namespace SWPatcher.Resources {
         internal static string question_folder_same_path_game {
             get {
                 return ResourceManager.GetString("question_folder_same_path_game", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Full.
-        /// </summary>
-        internal static string radio_full {
-            get {
-                return ResourceManager.GetString("radio_full", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minimal.
-        /// </summary>
-        internal static string radio_min {
-            get {
-                return ResourceManager.GetString("radio_min", resourceCulture);
             }
         }
         

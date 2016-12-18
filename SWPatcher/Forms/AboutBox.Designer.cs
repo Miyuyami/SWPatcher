@@ -1,4 +1,22 @@
-﻿namespace SWPatcher.Forms
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SWPatcher.Forms
 {
     partial class AboutBox
     {
@@ -31,7 +49,7 @@
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.labelProductName = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
-            this.labelAuthor = new System.Windows.Forms.Label();
+            this.labelCopyright = new System.Windows.Forms.Label();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
             this.buttonOk = new System.Windows.Forms.Button();
             this.linkLabelWebsite = new System.Windows.Forms.LinkLabel();
@@ -47,7 +65,7 @@
             this.tableLayoutPanel.Controls.Add(this.logoPictureBox, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.labelProductName, 1, 1);
             this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 2);
-            this.tableLayoutPanel.Controls.Add(this.labelAuthor, 1, 3);
+            this.tableLayoutPanel.Controls.Add(this.labelCopyright, 1, 3);
             this.tableLayoutPanel.Controls.Add(this.textBoxDescription, 1, 5);
             this.tableLayoutPanel.Controls.Add(this.buttonOk, 1, 6);
             this.tableLayoutPanel.Controls.Add(this.linkLabelWebsite, 1, 4);
@@ -100,17 +118,17 @@
             this.labelVersion.TabIndex = 0;
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // labelAuthor
+            // labelCopyright
             // 
-            this.labelAuthor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelAuthor.Location = new System.Drawing.Point(149, 63);
-            this.labelAuthor.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
-            this.labelAuthor.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelAuthor.Name = "labelAuthor";
-            this.labelAuthor.Size = new System.Drawing.Size(283, 17);
-            this.labelAuthor.TabIndex = 21;
-            this.labelAuthor.Text = "Miyu; Leayal";
-            this.labelAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelCopyright.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelCopyright.Location = new System.Drawing.Point(149, 63);
+            this.labelCopyright.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
+            this.labelCopyright.MaximumSize = new System.Drawing.Size(0, 17);
+            this.labelCopyright.Name = "labelCopyright";
+            this.labelCopyright.Size = new System.Drawing.Size(283, 17);
+            this.labelCopyright.TabIndex = 21;
+            this.labelCopyright.Text = "Soulworker Patcher Copyright (C) 2016 Miyu; Leayal";
+            this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBoxDescription
             // 
@@ -125,12 +143,12 @@
             this.textBoxDescription.TabIndex = 23;
             this.textBoxDescription.TabStop = false;
             // 
-            // okButton
+            // buttonOk
             // 
-            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonOk.Location = new System.Drawing.Point(357, 257);
-            this.buttonOk.Name = "okButton";
+            this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 24;
             // 
@@ -146,7 +164,7 @@
             this.linkLabelWebsite.TabStop = true;
             this.linkLabelWebsite.Text = "Patcher Webpage";
             this.linkLabelWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkLabelWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWebsite_LinkClicked);
+            this.linkLabelWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelWebsite_LinkClicked);
             // 
             // AboutBox
             // 
@@ -175,7 +193,7 @@
         private System.Windows.Forms.PictureBox logoPictureBox;
         private System.Windows.Forms.Label labelProductName;
         private System.Windows.Forms.Label labelVersion;
-        private System.Windows.Forms.Label labelAuthor;
+        private System.Windows.Forms.Label labelCopyright;
         private System.Windows.Forms.TextBox textBoxDescription;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.LinkLabel linkLabelWebsite;

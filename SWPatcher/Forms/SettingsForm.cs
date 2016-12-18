@@ -1,10 +1,29 @@
-﻿using SWPatcher.General;
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -20,7 +39,6 @@ namespace SWPatcher.Forms
         private string GameUserId;
         private string GameUserPassword;
         private bool WantToLogin;
-        private byte InterfaceMode;
         private string UILanguage;
 
         public SettingsForm()
@@ -47,9 +65,6 @@ namespace SWPatcher.Forms
             this.checkBoxWantToLogin.Text = StringLoader.GetText("check_want_login");
             this.tabPagePatcher.Text = StringLoader.GetText("tab_patcher");
             this.groupBoxPatcherDirectory.Text = StringLoader.GetText("box_patcher_dir");
-            this.groupBoxUIStyle.Text = StringLoader.GetText("box_ui_style");
-            this.radioButtonFull.Text = StringLoader.GetText("radio_full");
-            this.radioButtonMinimal.Text = StringLoader.GetText("radio_min");
             this.groupBoxUILanguagePicker.Text = StringLoader.GetText("box_language");
         }
 
@@ -60,17 +75,16 @@ namespace SWPatcher.Forms
             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = UserSettings.PatcherPath;
             this.checkBoxPatchExe.Checked = this.WantToPatchSoulworkerExe = UserSettings.WantToPatchExe;
             this.textBoxId.Text = this.GameUserId = UserSettings.GameId;
-            this.textBoxPassword.Text = this.GameUserPassword = MaskPassword(UserSettings.GamePw);
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
-            switch (this.InterfaceMode = UserSettings.InterfaceMode)
+
+            string encryptedEmptyString = String.Empty;
+            using (var secure = Methods.ToSecureString(encryptedEmptyString))
             {
-                case 0:
-                    this.radioButtonFull.Checked = true;
-                    break;
-                case 1:
-                    this.radioButtonMinimal.Checked = true;
-                    break;
+                encryptedEmptyString = Methods.EncryptString(secure);
             }
+            string encryptedGamePw = UserSettings.GamePw;
+            this.textBoxPassword.Text = this.GameUserPassword = encryptedGamePw != encryptedEmptyString ? MaskPassword(encryptedGamePw) : "";
+
             var def = new ResxLanguage(StringLoader.GetText("match_windows"), "default");
             var en = new ResxLanguage("English", "en");
             var ko = new ResxLanguage("한국어", "ko");
@@ -78,24 +92,31 @@ namespace SWPatcher.Forms
             this.comboBoxUILanguage.DataSource = new ResxLanguage[] { def, en, ko, vi };
             string savedCode = this.UILanguage = UserSettings.UILanguageCode;
             if (en.Code == savedCode)
+            {
                 this.comboBoxUILanguage.SelectedItem = en;
+            }
             else if (ko.Code == savedCode)
+            {
                 this.comboBoxUILanguage.SelectedItem = ko;
+            }
             else if (vi.Code == savedCode)
+            {
                 this.comboBoxUILanguage.SelectedItem = vi;
+            }
             else
+            {
                 this.comboBoxUILanguage.SelectedItem = def;
+            }
 
             if ((this.Owner as MainForm).CurrentState == MainForm.State.Idle)
             {
-                this.textBoxGameDirectory.TextChanged += EnableApplyButton;
-                this.textBoxPatcherDirectory.TextChanged += EnableApplyButton;
-                this.checkBoxPatchExe.CheckedChanged += EnableApplyButton;
-                this.textBoxId.TextChanged += EnableApplyButton;
-                this.textBoxPassword.TextChanged += EnableApplyButton;
-                this.checkBoxWantToLogin.CheckedChanged += EnableApplyButton;
-                this.radioButtonFull.CheckedChanged += EnableApplyButton;
-                this.comboBoxUILanguage.SelectedIndexChanged += EnableApplyButton;
+                this.textBoxGameDirectory.TextChanged += this.EnableApplyButton;
+                this.textBoxPatcherDirectory.TextChanged += this.EnableApplyButton;
+                this.checkBoxPatchExe.CheckedChanged += this.EnableApplyButton;
+                this.textBoxId.TextChanged += this.EnableApplyButton;
+                this.textBoxPassword.TextChanged += this.EnableApplyButton;
+                this.checkBoxWantToLogin.CheckedChanged += this.EnableApplyButton;
+                this.comboBoxUILanguage.SelectedIndexChanged += this.EnableApplyButton;
             }
             else
             {
@@ -105,8 +126,6 @@ namespace SWPatcher.Forms
                 this.textBoxId.ReadOnly = true;
                 this.textBoxPassword.ReadOnly = true;
                 this.checkBoxWantToLogin.Enabled = false;
-                this.radioButtonFull.Enabled = false;
-                this.radioButtonMinimal.Enabled = false;
                 this.comboBoxUILanguage.Enabled = false;
             }
         }
@@ -116,7 +135,7 @@ namespace SWPatcher.Forms
             this.buttonApply.Enabled = true;
         }
 
-        private void buttonChangeDirectory_Click(object sender, EventArgs e)
+        private void ButtonChangeDirectory_Click(object sender, EventArgs e)
         {
             using (var folderDialog = new FolderBrowserDialog
             {
@@ -132,7 +151,7 @@ namespace SWPatcher.Forms
                             this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                         else
                         {
-                            var dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
+                            DialogResult dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
 
                             if (dialogResult == DialogResult.Yes)
                                 this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
@@ -142,7 +161,7 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void buttonPatcherChangeDirectory_Click(object sender, EventArgs e)
+        private void ButtonPatcherChangeDirectory_Click(object sender, EventArgs e)
         {
             using (var folderDialog = new FolderBrowserDialog
             {
@@ -157,7 +176,7 @@ namespace SWPatcher.Forms
                         this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
                     else
                     {
-                        var dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
+                        DialogResult dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
 
                         if (dialogResult == DialogResult.Yes)
                             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
@@ -166,44 +185,32 @@ namespace SWPatcher.Forms
             }
         }
 
-        private void checkBoxPatchExe_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxPatchExe_CheckedChanged(object sender, EventArgs e)
         {
             this.WantToPatchSoulworkerExe = this.checkBoxPatchExe.Checked;
         }
 
-        private void textBoxId_TextChanged(object sender, EventArgs e)
+        private void TextBoxId_TextChanged(object sender, EventArgs e)
         {
             this.GameUserId = this.textBoxId.Text;
         }
 
-        private void textBoxPassword_TextChanged(object sender, EventArgs e)
+        private void TextBoxPassword_TextChanged(object sender, EventArgs e)
         {
             this.GameUserPassword = this.textBoxPassword.Text;
         }
 
-        private void checkBoxWantToLogin_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxWantToLogin_CheckedChanged(object sender, EventArgs e)
         {
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.WantToLogin = this.checkBoxWantToLogin.Checked;
         }
 
-        private void radioButtonFull_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radioButtonFull.Checked)
-                this.InterfaceMode = 0;
-        }
-
-        private void radioButtonMinimal_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radioButtonMinimal.Checked)
-                this.InterfaceMode = 1;
-        }
-
-        private void comboBoxUILanguage_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxUILanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.UILanguage = (this.comboBoxUILanguage.SelectedItem as ResxLanguage).Code;
         }
 
-        private void buttonOk_Click(object sender, EventArgs e)
+        private void ButtonOk_Click(object sender, EventArgs e)
         {
             if (this.buttonApply.Enabled)
                 this.ApplyChanges();
@@ -211,7 +218,7 @@ namespace SWPatcher.Forms
             this.DialogResult = DialogResult.OK;
         }
 
-        private void buttonApply_Click(object sender, EventArgs e)
+        private void ButtonApply_Click(object sender, EventArgs e)
         {
             this.ApplyChanges();
         }
@@ -248,16 +255,11 @@ namespace SWPatcher.Forms
                 {
                     UserSettings.GamePw = Methods.EncryptString(secure);
                 }
+                MsgBox.Success("PASSWORD SAVED!!!");
             }
 
             if (UserSettings.WantToLogin != this.WantToLogin)
                 UserSettings.WantToLogin = this.WantToLogin;
-
-            if (UserSettings.InterfaceMode != this.InterfaceMode)
-            {
-                UserSettings.InterfaceMode = this.InterfaceMode;
-                this.PendingRestart = true;
-            }
 
             if (UserSettings.UILanguageCode != this.UILanguage)
             {
@@ -345,13 +347,13 @@ namespace SWPatcher.Forms
 
         private static string MaskPassword(string password)
         {
-            using (var secure = Methods.DecryptString(password))
+            using (SecureString secure = Methods.DecryptString(password))
             {
                 return SHA256String(Methods.ToInsecureString(secure));
             }
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }

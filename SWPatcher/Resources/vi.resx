@@ -135,9 +135,6 @@
   <data name="box_pw" xml:space="preserve">
     <value>Soulworker Password</value>
   </data>
-  <data name="box_ui_style" xml:space="preserve">
-    <value>Giao diện</value>
-  </data>
   <data name="box_want_login" xml:space="preserve">
     <value>Ngán ngẩm phải đăng nhập từ website?</value>
   </data>
@@ -196,14 +193,12 @@
     <value>Đang chời thoát game...</value>
   </data>
   <data name="patcher_description" xml:space="preserve">
-    <value>SoulWorker Patcher được làm ra là để áp dụng các bản dịch vào game mà không gây ra nhiều rủi ro hỏng tệp của game.
-Nguồn dịch được tải từ nhóm dịch ở SoulWorker HQ.</value>
-  </data>
-  <data name="radio_full" xml:space="preserve">
-    <value>Đầy đủ</value>
-  </data>
-  <data name="radio_min" xml:space="preserve">
-    <value>Đơn giản</value>
+    <value>This program comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions.
+
+Soulworker Patcher được làm ra là để áp dụng các bản dịch vào game mà không gây ra nhiều rủi ro hỏng tệp của game.
+Nguồn dịch được tải từ nhóm dịch ở SWHQ.</value>
   </data>
   <data name="tab_credentials" xml:space="preserve">
     <value>Thông tin đăng nhập</value>
@@ -362,5 +357,17 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
   </data>
   <data name="exception_empty_pw" xml:space="preserve">
     <value>Password không được để trống, xin vui lòng nhập Password hoặc bỏ chọn "Đăng nhập bằng Patcher"</value>
+  </data>
+  <data name="exception_rtpatch_administrator_required" xml:space="preserve">
+    <value>Cập nhật tập tin tất bại vì thiếu quyền truy cập hoặc tập tin đang được sử dụng. Xin vui lòng thử lại.</value>
+  </data>
+  <data name="exception_rtpatch_insufficient_storage" xml:space="preserve">
+    <value>Cập nhật thất bại vì thiếu không gian trống trên ổ đĩa.</value>
+  </data>
+  <data name="exception_rtpatch_open_patch_file_fail" xml:space="preserve">
+    <value>Mở tập tin patch thất bại. Xin vui lòng thử lại.</value>
+  </data>
+  <data name="exception_rtpatch_time_date_fail" xml:space="preserve">
+    <value>Đặt mốc thời gian cho tập tin thất bại. Xin vui lòng thử lại.</value>
   </data>
 </root>

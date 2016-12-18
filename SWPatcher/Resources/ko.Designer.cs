@@ -115,15 +115,6 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 인터페이스 스타일.
-        /// </summary>
-        internal static string box_ui_style {
-            get {
-                return ResourceManager.GetString("box_ui_style", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 웹사이트에서 부터 로그인하는게 피곤한가요?.
         /// </summary>
         internal static string box_want_login {
@@ -694,7 +685,11 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 소울워커 패쳐는 최신의 번역 파일들을 소울워커 클라이언트에 오류 없이 깨끗하게 업데이트 하기 위해 만들어진 프로그램 입니다.
+        ///   Looks up a localized string similar to This program comes with ABSOLUTELY NO WARRANTY
+        ///This is free software, and you are welcome to redistribute it
+        ///under certain conditions.
+        ///
+        ///소울워커 패쳐는 최신의 번역 파일들을 소울워커 클라이언트에 오류 없이 깨끗하게 업데이트 하기 위해 만들어진 프로그램 입니다.
         ///또한, SWHQ 번역팀(한국번역은 소울워커 카페 번역팀)에 의해 번역이 된 최신번역 파일들을 손쉽게 다운로드하고 적용시킬수 있습니다..
         /// </summary>
         internal static string patcher_description {
@@ -722,24 +717,6 @@ namespace SWPatcher.Resources {
         internal static string question_folder_same_path_game {
             get {
                 return ResourceManager.GetString("question_folder_same_path_game", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Full.
-        /// </summary>
-        internal static string radio_full {
-            get {
-                return ResourceManager.GetString("radio_full", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minimal.
-        /// </summary>
-        internal static string radio_min {
-            get {
-                return ResourceManager.GetString("radio_min", resourceCulture);
             }
         }
         

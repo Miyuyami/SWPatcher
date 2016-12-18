@@ -29,7 +29,7 @@
     <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
-    <PublisherName>MiyuPatcher</PublisherName>
+    <PublisherName>Miyu</PublisherName>
     <MinimumRequiredVersion>2.4.1.2</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>2</ApplicationRevision>
@@ -49,7 +49,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -61,7 +62,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>patcher.ico</ApplicationIcon>
@@ -82,7 +84,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>726DCBC7D21E335FADD69B767EE5CCE9FD93147F</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>F5DFA8FBFB47124F17B8547A14895802C3F3302A</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>SWPatcher_TemporaryKey.pfx</ManifestKeyFile>
@@ -101,7 +103,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <Optimize>false</Optimize>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -114,10 +117,11 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Team Tools\Static Analysis Tools\Rule Sets\MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <DebugSymbols>true</DebugSymbols>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -127,7 +131,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -135,7 +140,8 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>SWPatcher.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
@@ -146,6 +152,12 @@
   <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>SWPatcher_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, processorArchitecture=MSIL">
@@ -169,6 +181,14 @@
   <ItemGroup>
     <Compile Include="Downloading\DownloaderCompletedEventArgs.cs" />
     <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
+    <Compile Include="Forms\MainForm.FormEvents.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Methods.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Helpers\NativeMethods.cs" />
     <Compile Include="RTPatch\ResultException.cs" />
     <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
@@ -196,7 +216,6 @@
     </Compile>
     <Compile Include="General\SWFile.cs" />
     <Compile Include="General\TempFile.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\GlobalVariables\AssemblyAccessor.cs" />
     <Compile Include="Helpers\GlobalVariables\Strings.cs" />
@@ -207,11 +226,7 @@
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainForm.DesignerFull.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MainForm.DesignerMinimal.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
@@ -287,7 +302,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SWPatcher.ruleset" />
     <None Include="SWPatcher_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

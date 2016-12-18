@@ -1,4 +1,22 @@
-﻿using System.ComponentModel;
+﻿/*
+ * This file is part of Soulworker Patcher.
+ * Copyright (C) 2016 Miyu
+ * 
+ * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Soulworker Patcher is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -17,7 +35,7 @@ namespace SWPatcher.General
 
         public SplitButton()
         {
-            SplitWidth = 20;
+            this.SplitWidth = 20;
         }
 
         protected override void OnMouseDown(MouseEventArgs mevent)
@@ -25,9 +43,9 @@ namespace SWPatcher.General
             var splitRect = new Rectangle(this.Width - this.SplitWidth, 0, this.SplitWidth, this.Height);
 
             // Figure out if the button click was on the button itself or the menu split
-            if (ContextMenuStripSplit != null && mevent.Button == MouseButtons.Left && splitRect.Contains(mevent.Location))
+            if (this.ContextMenuStripSplit != null && mevent.Button == MouseButtons.Left && splitRect.Contains(mevent.Location))
             {
-                ContextMenuStripSplit.Show(this, 0, this.Height);    // Shows menu under button
+                this.ContextMenuStripSplit.Show(this, 0, this.Height);    // Shows menu under button
                 //Menu.Show(this, mevent.Location); // Shows menu at click location
             }
             else
@@ -43,15 +61,15 @@ namespace SWPatcher.General
             if (this.ContextMenuStripSplit != null && this.SplitWidth > 0)
             {
                 // Draw the arrow glyph on the right side of the button
-                int arrowX = ClientRectangle.Width - 14;
-                int arrowY = ClientRectangle.Height / 2 - 1;
+                int arrowX = this.ClientRectangle.Width - 14;
+                int arrowY = this.ClientRectangle.Height / 2 - 1;
 
-                var arrowBrush = Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow;
-                var arrows = new[] { new Point(arrowX, arrowY), new Point(arrowX + 7, arrowY), new Point(arrowX + 3, arrowY + 4) };
+                Brush arrowBrush = this.Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow;
+                Point[] arrows = new[] { new Point(arrowX, arrowY), new Point(arrowX + 7, arrowY), new Point(arrowX + 3, arrowY + 4) };
                 pevent.Graphics.FillPolygon(arrowBrush, arrows);
 
                 // Draw a dashed separator on the left of the arrow
-                int lineX = ClientRectangle.Width - this.SplitWidth;
+                int lineX = this.ClientRectangle.Width - this.SplitWidth;
                 int lineYFrom = arrowY - 4;
                 int lineYTo = arrowY + 8;
                 using (var separatorPen = new Pen(Brushes.DarkGray) { DashStyle = DashStyle.Dot })

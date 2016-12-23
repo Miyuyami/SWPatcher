@@ -160,13 +160,12 @@
     <AssemblyOriginatorKeyFile>SWPatcher_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip.Patched, Version=1.9.1.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>.\Ionic.Zip.Patched.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Ionic.Zip.Reduced.Patched">
+      <HintPath Condition="'$(Configuration)'=='Release'">lib\Release\Ionic.Zip.Reduced.Patched.dll</HintPath>
+      <HintPath Condition="'$(Configuration)'=='Debug'">lib\Debug\Ionic.Zip.Reduced.Patched.dll</HintPath>
     </Reference>
-    <Reference Include="MadMilkman.Ini, Version=1.0.6.1, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\MadMilkman.Ini.dll</HintPath>
+    <Reference Include="MadMilkman.Ini, Version=1.0.6.2, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
+      <HintPath>lib\Debug\MadMilkman.Ini.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
@@ -189,7 +188,12 @@
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="General\ArchivedSWFile.cs" />
+    <Compile Include="General\PatchedSWFile.cs" />
+    <Compile Include="General\SWFileManager.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\NativeMethods.cs" />
+    <Compile Include="Patching\XorMemoryStream.cs" />
     <Compile Include="RTPatch\ResultException.cs" />
     <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
     <Compile Include="RTPatch\RTPatcherProgressChangedEventArgs.cs" />

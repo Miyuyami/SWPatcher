@@ -20,8 +20,8 @@ using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVariables;
+using SWPatcher.Patching;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -54,24 +54,32 @@ namespace SWPatcher.Helpers
 
         internal static bool HasNewTranslations(Language language)
         {
-            string directory = language.Lang;
+            string directory = language.Name;
 
             if (!Directory.Exists(directory))
+            {
                 return true;
+            }
 
             string filePath = Path.Combine(directory, Strings.IniName.Translation);
             if (!File.Exists(filePath))
+            {
                 return true;
+            }
 
             IniFile ini = new IniFile();
             ini.Load(filePath);
 
             if (!ini.Sections.Contains(Strings.IniName.Patcher.Section))
+            {
                 return true;
+            }
 
             IniSection section = ini.Sections[Strings.IniName.Patcher.Section];
             if (!section.Keys.Contains(Strings.IniName.Pack.KeyDate))
+            {
                 return true;
+            }
 
             string date = section.Keys[Strings.IniName.Pack.KeyDate].Value;
 
@@ -99,11 +107,21 @@ namespace SWPatcher.Helpers
         internal static IniFile GetServerIni()
         {
             using (var client = new WebClient())
-            using (var zippedFile = new TempFile())
             {
                 try
                 {
-                    client.DownloadFile(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip", zippedFile.Path);
+                    byte[] zipData = client.DownloadData(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip");
+
+                    IniFile ini = new IniFile(new IniOptions
+                    {
+                        Encoding = Encoding.Unicode
+                    });
+                    using (MemoryStream ms = Methods.GetZippedFileStream(zipData, Strings.IniName.ServerVer, null))
+                    {
+                        ini.Load(ms);
+                    }
+
+                    return ini;
                 }
                 catch (WebException e)
                 {
@@ -118,79 +136,49 @@ namespace SWPatcher.Helpers
                     }
                 }
 
-                using (var file = new TempFile())
-                {
-                    using (ZipFile zip = ZipFile.Read(zippedFile.Path))
-                    {
-                        ZipEntry entry = zip[0];
-                        entry.FileName = Path.GetFileName(file.Path);
-                        entry.Extract(Path.GetDirectoryName(file.Path), ExtractExistingFileAction.OverwriteSilently);
-                    }
-
-                    IniFile ini = new IniFile(new IniOptions
-                    {
-                        Encoding = Encoding.Unicode
-                    });
-                    ini.Load(file.Path);
-
-                    return ini;
-                }
+                return null;
             }
         }
 
-        internal static void PatchExeFile(string gameExePath)
+        internal static void PatchExeFile(byte[] exeFileBytes, string gameExePatchedPath)
         {
-            Logger.Debug(Methods.MethodFullName(MethodBase.GetCurrentMethod(), gameExePath));
+            Logger.Debug(Methods.MethodFullName(MethodBase.GetCurrentMethod(), exeFileBytes.Length.ToString(), gameExePatchedPath));
 
             using (var client = new WebClient())
-            using (var file = new TempFile())
             {
-                byte[] exeBytes = File.ReadAllBytes(gameExePath);
-                string hexResult = BitConverter.ToString(exeBytes).Replace("-", "");
+                string hexResult = BitConverter.ToString(exeFileBytes).Replace("-", "");
+                string patchedHexResult = String.Copy(hexResult);
 
-                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.BytesToPatch, file.Path);
+                byte[] fileBytes = client.DownloadData(Urls.PatcherGitHubHome + Strings.IniName.BytesToPatch);
                 IniFile ini = new IniFile();
-                ini.Load(file.Path);
+                using (var ms = new MemoryStream(fileBytes))
+                {
+                    ini.Load(ms);
+                }
 
                 foreach (IniSection section in ini.Sections)
                 {
                     string original = section.Keys[Strings.IniName.PatchBytes.KeyOriginal].Value;
                     string patch = section.Keys[Strings.IniName.PatchBytes.KeyPatch].Value;
 
-                    hexResult = hexResult.Replace(original, patch);
+                    patchedHexResult = patchedHexResult.Replace(original, patch);
+
+                    if (hexResult == patchedHexResult)
+                    {
+                        Logger.Info($"Failed .exe patch=[{section.Name}]");
+                        MsgBox.Error(".exe patch \"{0}\" was not applied because ");
+                    }
                 }
 
                 int charCount = hexResult.Length;
                 byte[] resultBytes = new byte[charCount / 2];
 
                 for (int i = 0; i < charCount; i += 2)
-                    resultBytes[i / 2] = Convert.ToByte(hexResult.Substring(i, 2), 16);
-
-                File.WriteAllBytes(gameExePath, resultBytes);
-            }
-        }
-
-        internal static void SetSWFiles(List<SWFile> swfiles)
-        {
-            if (swfiles.Count > 0)
-                return;
-
-            using (var client = new WebClient())
-            using (var file = new TempFile())
-            {
-                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.TranslationPackData, file.Path);
-                IniFile ini = new IniFile();
-                ini.Load(file.Path);
-
-                foreach (IniSection section in ini.Sections)
                 {
-                    string name = section.Name;
-                    string path = section.Keys[Strings.IniName.Pack.KeyPath].Value;
-                    string pathA = section.Keys[Strings.IniName.Pack.KeyPathInArchive].Value;
-                    string pathD = section.Keys[Strings.IniName.Pack.KeyPathOfDownload].Value;
-                    string format = section.Keys[Strings.IniName.Pack.KeyFormat].Value;
-                    swfiles.Add(new SWFile(name, path, pathA, pathD, format));
+                    resultBytes[i / 2] = Convert.ToByte(patchedHexResult.Substring(i, 2), 16);
                 }
+
+                File.WriteAllBytes(gameExePatchedPath, resultBytes);
             }
         }
 
@@ -203,64 +191,214 @@ namespace SWPatcher.Helpers
         {
             string[] filters = { "RT*", "*.RTP" };
             foreach (var filter in filters)
+            {
                 foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
                 {
                     Logger.Info($"Deleting file=[{file}]");
                     File.Delete(file);
                 }
-        }
-
-        internal static void DoUnzipFile(string zipPath, string fileName, string extractDestination, string password)
-        {
-            using (var zip = ZipFile.Read(zipPath))
-            {
-                zip.Password = password;
-                zip.FlattenFoldersOnExtract = true;
-                zip[fileName].Extract(extractDestination, ExtractExistingFileAction.OverwriteSilently);
             }
         }
 
-        internal static void DoZipFile(string zipPath, string fileName, string filePath, string password)
+        private static void CopyZipEntryAttributes(ZipEntry zipEntry, ZipEntry zipEntryToCopy)
         {
-            using (var zip = ZipFile.Read(zipPath))
+            zipEntryToCopy.Attributes = zipEntry.Attributes;
+            zipEntryToCopy.AccessedTime = zipEntry.AccessedTime;
+            zipEntryToCopy.CreationTime = zipEntry.CreationTime;
+            zipEntryToCopy.LastModified = zipEntry.LastModified;
+            zipEntryToCopy.ModifiedTime = zipEntry.ModifiedTime;
+            zipEntryToCopy.CompressionLevel = zipEntry.CompressionLevel;
+            zipEntryToCopy.CompressionMethod = zipEntry.CompressionMethod;
+            zipEntryToCopy.Encryption = zipEntry.Encryption;
+        }
+
+        internal static MemoryStream GetZippedFileStream(byte[] zipData, string fileName, string password)
+        {
+            var result = new MemoryStream();
+
+            using (var ms = new MemoryStream(zipData))
+            using (var zip = ZipFile.Read(ms))
             {
                 zip.Password = password;
-                zip.RemoveEntry(fileName);
-                zip.AddFile(filePath, Path.GetDirectoryName(fileName));
-                zip.Save();
+                zip.FlattenFoldersOnExtract = true;
+                zip[fileName].Extract(result);
+                result.Position = 0;
+            }
+
+            return result;
+        }
+
+        internal static MemoryStream GetZippedFileStream(XorMemoryStream stream, string fileName, string password)
+        {
+            var result = new MemoryStream();
+            stream.Position = 0;
+            
+            using (var zip = ZipFile.Read(stream))
+            {
+                zip.Password = password;
+                zip.FlattenFoldersOnExtract = true;
+                zip[fileName].Extract(result);
+                result.Position = 0;
+            }
+
+            return result;
+        }
+
+        internal static byte[] ZipFileStream(byte[] zipData, string fileName, MemoryStream fileStream, string password)
+        {
+            fileStream.Position = 0;
+            using (var ms = new MemoryStream(zipData))
+            using (var zip = ZipFile.Read(ms))
+            {
+                zip.Password = password;
+
+                if (zip.ContainsEntry(fileName))
+                {
+                    ZipEntry zipEntry = zip[fileName];
+                    fileName = zipEntry.FileName;
+                    zip.RemoveEntry(fileName);
+                    zip.AddEntry(fileName, fileStream);
+
+                    ZipEntry modifiedZipEntry = zip[fileName];
+                    CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
+                }
+                else
+                {
+                    Logger.Debug($"ZipFileStream does not contain fileName=[{fileName}]");
+                }
+
+                var msDst = new MemoryStream();
+                zip.Save(msDst);
+                return msDst.ToArray();
             }
         }
 
-        internal static void AddZipToZip(string zipPath, string destinationZipPath, string directoryInDestination, string password)
+        internal static XorMemoryStream ZipFileStream(XorMemoryStream stream, string fileName, MemoryStream fileStream, string password)
         {
-            using (var zip = ZipFile.Read(zipPath))
-            using (var destinationZip = ZipFile.Read(destinationZipPath))
+            stream.Position = 0;
+            fileStream.Position = 0;
+            using (var zip = ZipFile.Read(stream))
             {
                 zip.Password = password;
-                var tempFileList = zip.Entries.Select(entry => new TempFile(Path.Combine(Path.GetTempPath(), Path.GetFileName(entry.FileName)))).ToList();
-                zip.FlattenFoldersOnExtract = true;
 
-                zip.ExtractAll(Path.GetTempPath(), ExtractExistingFileAction.OverwriteSilently);
+                if (zip.ContainsEntry(fileName))
+                {
+                    ZipEntry zipEntry = zip[fileName];
+                    fileName = zipEntry.FileName;
+                    zip.RemoveEntry(fileName);
+                    zip.AddEntry(fileName, fileStream);
 
-                destinationZip.RemoveEntries(zip.Entries.Select(e => Path.Combine(directoryInDestination, e.FileName)).ToList());
-                destinationZip.AddFiles(tempFileList.Select(tf => tf.Path), directoryInDestination);
-                destinationZip.Save();
+                    ZipEntry modifiedZipEntry = zip[fileName];
+                    CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
+                }
+                else
+                {
+                    Logger.Debug($"ZipFileStream does not contain fileName=[{fileName}]");
+                }
 
-                tempFileList.ForEach(tf => tf.Dispose());
+                var msDst = new XorMemoryStream(stream.XorByte);
+                zip.Save(msDst);
+                return msDst;
+            }
+        }
+
+        internal static byte[] AddZipToZip(byte[] zipData, string directoryInDestination, MemoryStream zipStream, string password)
+        {
+            zipStream.Position = 0;
+            using (var ms = new MemoryStream(zipData))
+            using (var zip = ZipFile.Read(ms))
+            using (var zipToAdd = ZipFile.Read(zipStream))
+            {
+                zip.Password = password;
+
+                int zipToAddEntriesCount = zipToAdd.Entries.Count;
+                MemoryStream[] msArray = new MemoryStream[zipToAddEntriesCount];
+                for (int i = 0; i < zipToAddEntriesCount; i++)
+                {
+                    ZipEntry zipToAddEntry = zipToAdd[i];
+                    MemoryStream zipMemoryStream = msArray[i] = new MemoryStream();
+                    string filePathInZip = Path.Combine(directoryInDestination, zipToAddEntry.FileName);
+
+                    if (zip.ContainsEntry(filePathInZip))
+                    {
+                        ZipEntry zipEntry = zip[filePathInZip];
+                        filePathInZip = zipEntry.FileName;
+                        zip.RemoveEntry(filePathInZip);
+                        zipToAddEntry.Extract(zipMemoryStream);
+                        zipMemoryStream.Position = 0;
+                        zip.AddEntry(filePathInZip, zipMemoryStream);
+
+                        ZipEntry modifiedZipEntry = zip[filePathInZip];
+                        CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
+                    }
+                    else
+                    {
+                        Logger.Debug($"AddZipToZip does not contain filePathInZip=[{filePathInZip}]");
+                    }
+                }
+
+                var msDst = new MemoryStream();
+                zip.Save(msDst);
+                return msDst.ToArray();
+            }
+        }
+
+        internal static XorMemoryStream AddZipToZip(XorMemoryStream stream, string directoryInDestination, MemoryStream zipStream, string password)
+        {
+            stream.Position = 0;
+            zipStream.Position = 0;
+            using (var zip = ZipFile.Read(stream))
+            using (var zipToAdd = ZipFile.Read(zipStream))
+            {
+                zip.Password = password;
+
+                int zipToAddEntriesCount = zipToAdd.Entries.Count;
+                MemoryStream[] msArray = new MemoryStream[zipToAddEntriesCount];
+                for (int i = 0; i < zipToAddEntriesCount; i++)
+                {
+                    ZipEntry zipToAddEntry = zipToAdd[i];
+                    MemoryStream zipMemoryStream = msArray[i] = new MemoryStream();
+                    string filePathInZip = Path.Combine(directoryInDestination, zipToAddEntry.FileName);
+
+                    if (zip.ContainsEntry(filePathInZip))
+                    {
+                        ZipEntry zipEntry = zip[filePathInZip];
+                        filePathInZip = zipEntry.FileName;
+                        zip.RemoveEntry(filePathInZip);
+                        zipToAddEntry.Extract(zipMemoryStream);
+                        zipMemoryStream.Position = 0;
+                        zip.AddEntry(filePathInZip, zipMemoryStream);
+
+                        ZipEntry modifiedZipEntry = zip[filePathInZip];
+                        CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
+                    }
+                    else
+                    {
+                        Logger.Debug($"AddZipToZip does not contain filePathInZip=[{filePathInZip}]");
+                    }
+                }
+
+                var msDst = new XorMemoryStream(stream.XorByte);
+                zip.Save(msDst);
+                return msDst;
             }
         }
 
         internal static bool IsTranslationOutdated(Language language)
         {
-            string selectedTranslationPath = Path.Combine(language.Lang, Strings.IniName.Translation);
+            string selectedTranslationPath = Path.Combine(language.Name, Strings.IniName.Translation);
             if (!File.Exists(selectedTranslationPath))
+            {
                 return true;
+            }
 
             IniFile ini = new IniFile();
             ini.Load(selectedTranslationPath);
 
             if (!ini.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Patcher.KeyVer))
+            {
                 throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
+            }
 
             Version translationVer = new Version(ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value);
             ini.Sections.Clear();
@@ -268,7 +406,9 @@ namespace SWPatcher.Helpers
 
             Version clientVer = new Version(ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
             if (clientVer > translationVer)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -328,11 +468,6 @@ namespace SWPatcher.Helpers
             return returnValue;
         }
 
-        internal static bool In<T>(this T obj, params T[] values)
-        {
-            return values.Contains(obj);
-        }
-
         internal static string MethodName(MethodBase method)
         {
             return $"{method.ReflectedType.FullName}.{method.Name}";
@@ -386,6 +521,7 @@ namespace SWPatcher.Helpers
                     NativeMethods.CloseHandle(hprocess);
                 }
             }
+
             throw new Win32Exception(Marshal.GetLastWin32Error());
         }
     }

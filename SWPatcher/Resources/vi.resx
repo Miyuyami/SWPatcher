@@ -370,4 +370,10 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
   <data name="exception_rtpatch_time_date_fail" xml:space="preserve">
     <value>Đặt mốc thời gian cho tập tin thất bại. Xin vui lòng thử lại.</value>
   </data>
+  <data name="error_exe_patch_fail" xml:space="preserve">
+    <value>Không thể patch tập tin .exe vì lý do phương thức "{0}" chưa được cập nhật cho client hiện tại. Patch cho client đã bị vô hiệu hóa. Client vẫn sẽ được cập nhật, ngoại trừ việc một vài đoạn chữ sẽ không hiện. Xin vui lòng thử lại sau khi "{0}" đã được hoàn thiện.</value>
+  </data>
+  <data name="exception_rtpatch_read_patch_file_fail" xml:space="preserve">
+    <value>Đọc tập tin patch thất bại. Vui lòng thử lại sau.</value>
+  </data>
 </root>

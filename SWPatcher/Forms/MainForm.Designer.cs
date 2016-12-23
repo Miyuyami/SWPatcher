@@ -37,14 +37,7 @@ namespace SWPatcher.Forms
                 {
                     components.Dispose();
                 }
-
-                this.Downloader.Dispose();
-                this.Patcher.Dispose();
-                this.Worker.Dispose();
-                this.RTPatcher.Dispose();
             }
-
-            this.SWFiles.Clear();
             
             base.Dispose(disposing);
         }

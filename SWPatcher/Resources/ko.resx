@@ -358,4 +358,22 @@ under certain conditions.
   <data name="exception_empty_pw" xml:space="preserve">
     <value>비밀번호칸이 비어있습니다. 소울워커 비밀번호를 입력하거나 패쳐에서 로그인하는 기능을 꺼주세요.</value>
   </data>
+  <data name="exception_rtpatch_administrator_required" xml:space="preserve">
+    <value>관리자 권한이 필요하여 업데이트를 실패했습니다. 파일이 다른 곳에서 실행되고 있다던지...? 다시 시도해주세요.</value>
+  </data>
+  <data name="exception_rtpatch_insufficient_storage" xml:space="preserve">
+    <value>드라이브에 공간이 부족해 업데이트에 실패했습니다.</value>
+  </data>
+  <data name="exception_rtpatch_open_patch_file_fail" xml:space="preserve">
+    <value>패치 파일을 여는데 실패했습니다. 다시 시도해주세요.</value>
+  </data>
+  <data name="exception_rtpatch_time_date_fail" xml:space="preserve">
+    <value>파일 시간 설정에 실패했습니다. 다시 시도해주세요.</value>
+  </data>
+  <data name="error_exe_patch_fail" xml:space="preserve">
+    <value>클라이언트 유니코드 패치가 "{0}"가 최신 업데이트된 클라이언트에 대해 변경이 되지 않았기에 적용이 되지 않았습니다. 클라이언트 패치가 비활성화되었습니다. 번역패치를 사용하실수 있지만, 몇몇 텍스트는 물음표로 표기될수도 있습니다. "{0}" 가 적용이 된후 클라이언트 유니코드 패치를 재시도해주세요.</value>
+  </data>
+  <data name="exception_rtpatch_read_patch_file_fail" xml:space="preserve">
+    <value>패치파일을 읽는데 실패하였습니다. 재시도해주세요.</value>
+  </data>
 </root>

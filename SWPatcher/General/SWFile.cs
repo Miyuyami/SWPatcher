@@ -22,17 +22,13 @@ namespace SWPatcher.General
     {
         public string Name { get; private set; }
         public string Path { get; private set; }
-        public string PathA { get; private set; }
         public string PathD { get; private set; }
-        public string Format { get; private set; }
 
-        public SWFile(string name, string path, string pathA, string pathD, string format)
+        public SWFile(string name, string path, string pathD)
         {
             this.Name = name;
             this.Path = path;
-            this.PathA = pathA;
             this.PathD = pathD;
-            this.Format = format;
         }
     }
 }

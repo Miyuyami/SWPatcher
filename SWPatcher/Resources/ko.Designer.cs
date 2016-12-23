@@ -241,6 +241,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 클라이언트 유니코드 패치가 &quot;{0}&quot;가 최신 업데이트된 클라이언트에 대해 변경이 되지 않았기에 적용이 되지 않았습니다. 클라이언트 패치가 비활성화되었습니다. 번역패치를 사용하실수 있지만, 몇몇 텍스트는 물음표로 표기될수도 있습니다. &quot;{0}&quot; 가 적용이 된후 클라이언트 유니코드 패치를 재시도해주세요..
+        /// </summary>
+        internal static string error_exe_patch_fail {
+            get {
+                return ResourceManager.GetString("error_exe_patch_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 이미 이 언어의 최신 번역이 업데이트되있습니다!.
         /// </summary>
         internal static string exception_already_latest_translation {
@@ -414,6 +423,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 관리자 권한이 필요하여 업데이트를 실패했습니다. 파일이 다른 곳에서 실행되고 있다던지...? 다시 시도해주세요..
+        /// </summary>
+        internal static string exception_rtpatch_administrator_required {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_administrator_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 오염된 패치 파일 &quot;{0}&quot;.
         /// </summary>
         internal static string exception_rtpatch_corrupt {
@@ -428,6 +446,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_corrupt_file {
             get {
                 return ResourceManager.GetString("exception_rtpatch_corrupt_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 드라이브에 공간이 부족해 업데이트에 실패했습니다..
+        /// </summary>
+        internal static string exception_rtpatch_insufficient_storage {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_insufficient_storage", resourceCulture);
             }
         }
         
@@ -450,6 +477,24 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 패치 파일을 여는데 실패했습니다. 다시 시도해주세요..
+        /// </summary>
+        internal static string exception_rtpatch_open_patch_file_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_open_patch_file_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 패치파일을 읽는데 실패하였습니다. 재시도해주세요..
+        /// </summary>
+        internal static string exception_rtpatch_read_patch_file_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_read_patch_file_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 파일명을 수정하는데 실패했습니다. 재시도해주세요..
         /// </summary>
         internal static string exception_rtpatch_rename_fail {
@@ -465,6 +510,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_result {
             get {
                 return ResourceManager.GetString("exception_rtpatch_result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 파일 시간 설정에 실패했습니다. 다시 시도해주세요..
+        /// </summary>
+        internal static string exception_rtpatch_time_date_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_time_date_fail", resourceCulture);
             }
         }
         

@@ -241,6 +241,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .exe patch was not applied due to &quot;{0}&quot; not having been updated for the new client after a recent update. The client patch has been disabled. The game can still operate, except some texts will not be shown. Please try again later when &quot;{0}&quot; is implemented..
+        /// </summary>
+        internal static string error_exe_patch_fail {
+            get {
+                return ResourceManager.GetString("error_exe_patch_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You already have the latest ({0} JST) translation files for this language!.
         /// </summary>
         internal static string exception_already_latest_translation {
@@ -473,6 +482,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_open_patch_file_fail {
             get {
                 return ResourceManager.GetString("exception_rtpatch_open_patch_file_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to read patch file. Try again..
+        /// </summary>
+        internal static string exception_rtpatch_read_patch_file_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_read_patch_file_fail", resourceCulture);
             }
         }
         

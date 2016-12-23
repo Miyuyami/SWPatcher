@@ -84,6 +84,7 @@ namespace SWPatcher.Helpers.GlobalVariables
                 public const string KeyPathInArchive = "path_a";
                 public const string KeyPathOfDownload = "path_d";
                 public const string KeyFormat = "format";
+                public const string KeyBaseValue = "__base__";
             }
 
             public static class PatchBytes
@@ -119,6 +120,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             public const string ReactorStr = "	reactorStr = ";
             public const string GameStartArg = "\"gs\":";
             public const string ErrorCodeVariable = "var errCode = ";
+            public const string ErrorCodeArg = "\"errCode\":";
             public const string MaintenanceVariable = "var openCloseTypeCd = ";
             public const string MessageVariable = "var msg = ";
             public const string CaptchaValidationText = "画像認証";

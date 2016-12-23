@@ -22,12 +22,12 @@ namespace SWPatcher.General
 {
     public class Language
     {
-        public string Lang { get; private set; }
+        public string Name { get; private set; }
         public DateTime LastUpdate { get; private set; }
 
-        public Language(string lang, DateTime lastUpdate)
+        public Language(string name, DateTime lastUpdate)
         {
-            this.Lang = lang;
+            this.Name = name;
             this.LastUpdate = lastUpdate;
         }
 
@@ -36,17 +36,17 @@ namespace SWPatcher.General
             if (obj == null || this.GetType() != obj.GetType())
                 return false;
             Language language = obj as Language;
-            return this.Lang == language.Lang;
+            return this.Name == language.Name;
         }
 
         public override int GetHashCode()
         {
-            return this.Lang.GetHashCode();
+            return this.Name.GetHashCode();
         }
 
         public override string ToString()
         {
-            return this.Lang;
+            return this.Name;
         }
     }
 }

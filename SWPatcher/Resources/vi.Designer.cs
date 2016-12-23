@@ -241,6 +241,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Không thể patch tập tin .exe vì lý do phương thức &quot;{0}&quot; chưa được cập nhật cho client hiện tại. Patch cho client đã bị vô hiệu hóa. Client vẫn sẽ được cập nhật, ngoại trừ việc một vài đoạn chữ sẽ không hiện. Xin vui lòng thử lại sau khi &quot;{0}&quot; đã được hoàn thiện..
+        /// </summary>
+        internal static string error_exe_patch_fail {
+            get {
+                return ResourceManager.GetString("error_exe_patch_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bạn đã có phiên bản mới nhất ({0} JST) của bản dịch này!.
         /// </summary>
         internal static string exception_already_latest_translation {
@@ -473,6 +482,15 @@ namespace SWPatcher.Resources {
         internal static string exception_rtpatch_open_patch_file_fail {
             get {
                 return ResourceManager.GetString("exception_rtpatch_open_patch_file_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đọc tập tin patch thất bại. Vui lòng thử lại sau..
+        /// </summary>
+        internal static string exception_rtpatch_read_patch_file_fail {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_read_patch_file_fail", resourceCulture);
             }
         }
         

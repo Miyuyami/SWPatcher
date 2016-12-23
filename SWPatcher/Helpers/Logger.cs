@@ -97,7 +97,9 @@ namespace SWPatcher.Helpers
             }
             message = String.Join("\n", messages);
             message = String.Format(dateTime.ToString(LogFormat), logMode, message);
-
+#if DEBUG
+            File.AppendAllText(Strings.FileName.Log, message);
+#else
             byte[] messageBytes = Encoding.Unicode.GetBytes(message);
             ushort[] messageShorts = new ushort[messageBytes.Length / 2];
 
@@ -112,6 +114,7 @@ namespace SWPatcher.Helpers
                     bw.Write(messageShorts[index]);
                 }
             }
+#endif
         }
 
         public static string ExeptionParser(Exception ex)

@@ -61,7 +61,6 @@ namespace SWPatcher.Forms
         private readonly Patcher Patcher;
         private readonly BackgroundWorker Worker;
         private readonly RTPatcher RTPatcher;
-        private readonly List<SWFile> SWFiles;
 
         public State CurrentState
         {
@@ -178,11 +177,10 @@ namespace SWPatcher.Forms
 
         public MainForm()
         {
-            this.SWFiles = new List<SWFile>();
-            this.Downloader = new Downloader(this.SWFiles);
+            this.Downloader = new Downloader();
             this.Downloader.DownloaderProgressChanged += new DownloaderProgressChangedEventHandler(this.Downloader_DownloaderProgressChanged);
             this.Downloader.DownloaderCompleted += new DownloaderCompletedEventHandler(this.Downloader_DownloaderCompleted);
-            this.Patcher = new Patcher(this.SWFiles);
+            this.Patcher = new Patcher();
             this.Patcher.PatcherProgressChanged += new PatcherProgressChangedEventHandler(this.Patcher_PatcherProgressChanged);
             this.Patcher.PatcherCompleted += new PatcherCompletedEventHandler(this.Patcher_PatcherCompleted);
             this.Worker = new BackgroundWorker
@@ -249,7 +247,7 @@ namespace SWPatcher.Forms
 
                 return;
             }
-
+            
             this.CurrentState = State.Idle;
         }
 
@@ -264,7 +262,7 @@ namespace SWPatcher.Forms
                 }
                 else
                 {
-                    this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} Step {e.FileNumber}/{e.FileCount}";
+                    this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} Step {e.Step}/{e.StepCount}";
                     this.toolStripProgressBar.Value = e.Progress;
                 }
             }
@@ -293,9 +291,11 @@ namespace SWPatcher.Forms
                 ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
                 string clientVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
 
-                string iniPath = Path.Combine(e.Language.Lang, Strings.IniName.Translation);
+                string iniPath = Path.Combine(e.Language.Name, Strings.IniName.Translation);
                 if (!File.Exists(iniPath))
+                {
                     File.Create(iniPath).Dispose();
+                }
 
                 ini.Sections.Clear();
                 ini.Load(iniPath);
@@ -307,6 +307,7 @@ namespace SWPatcher.Forms
                 ini.Save(iniPath);
             }
 
+            SWFileManager.DisposeFileData();
             this.CurrentState = State.Idle;
         }
 
@@ -357,6 +358,10 @@ namespace SWPatcher.Forms
                         case 18:
                             Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_open_patch_file_fail"));
+                            break;
+                        case 20:
+                            Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_read_patch_file_fail"));
                             break;
                         case 22:
                             Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
@@ -431,16 +436,18 @@ namespace SWPatcher.Forms
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             this.Worker.ReportProgress((int)State.Prepare);
+
             Methods.CheckRunningPrograms();
             if (e.Argument != null)
             {
                 Language language = e.Argument as Language;
+                Logger.Debug(Methods.MethodFullName("GameStart", Thread.CurrentThread.ManagedThreadId.ToString(), language.ToString()));
 
-                Methods.SetSWFiles(this.SWFiles);
+                SWFileManager.LoadFileConfiguration();
 
-                if (IsTranslationOutdatedOrMissing(language, this.SWFiles))
+                if (IsTranslationOutdatedOrMissing(language))
                 {
-                    e.Result = true; // force patch = true
+                    e.Result = true; // call force patch in completed event
                     return;
                 }
 
@@ -449,21 +456,15 @@ namespace SWPatcher.Forms
                     string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
                     string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
                     string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
-                    string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
 
                     if (!File.Exists(gameExePatchedPath))
                     {
-                        File.Copy(gameExePath, gameExePatchedPath);
-                        Methods.PatchExeFile(gameExePatchedPath);
+                        byte[] gameExeBytes = File.ReadAllBytes(gameExePath);
 
-                        GC.Collect();
+                        Methods.PatchExeFile(gameExeBytes, gameExePatchedPath);
                     }
 
-                    Directory.CreateDirectory(backupFileDirectory);
-
-                    Logger.Info($"Swapping .exe originalExe=[{gameExePath}] backupFile=[{backupFilePath}] patchedFile=[{gameExePatchedPath}]");
-                    File.Move(gameExePath, backupFilePath);
-                    File.Move(gameExePatchedPath, gameExePath);
+                    BackupAndPlaceFile(gameExePath, gameExePatchedPath, backupFilePath);
                 }
 
                 Process clientProcess = null;
@@ -486,15 +487,13 @@ namespace SWPatcher.Forms
                         };
                     }
 
-                    BackupAndPlaceDataFiles(this.SWFiles, language);
-                    BackupAndPlaceOtherFiles(this.SWFiles, language);
+                    BackupAndPlaceFiles(language);
 
                     clientProcess = Process.Start(startInfo);
                 }
                 else
                 {
-                    BackupAndPlaceDataFiles(this.SWFiles, language);
-                    BackupAndPlaceOtherFiles(this.SWFiles, language);
+                    BackupAndPlaceFiles(language);
 
                     this.Worker.ReportProgress((int)State.WaitClient);
                     while (true)
@@ -519,6 +518,8 @@ namespace SWPatcher.Forms
             }
             else
             {
+                Logger.Debug(Methods.MethodFullName("GameStart", Thread.CurrentThread.ManagedThreadId.ToString()));
+
                 if (UserSettings.WantToLogin)
                 {
                     ProcessStartInfo startInfo = null;

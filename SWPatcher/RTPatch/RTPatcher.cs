@@ -40,6 +40,7 @@ namespace SWPatcher.RTPatch
         private string FileName;
         private string LastMessage;
         private string Url;
+        private Version ClientNextVersion;
         private Version ClientVersion;
         private Version ServerVersion;
         private int FileCount;
@@ -68,7 +69,7 @@ namespace SWPatcher.RTPatch
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientVersion.ToString()));
+            Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
             Methods.CheckRunningPrograms();
 
             if (this.Worker.CancellationPending)
@@ -78,7 +79,7 @@ namespace SWPatcher.RTPatch
             }
 
             string gamePath = UserSettings.GamePath;
-            string diffFilePath = Path.Combine(gamePath, Methods.VersionToRTP(this.ClientVersion));
+            string diffFilePath = Path.Combine(gamePath, Methods.VersionToRTP(this.ClientNextVersion));
 
             this.CurrentLogFilePath = Path.Combine(Strings.FolderName.RTPatchLogs, Path.GetFileName(diffFilePath) + ".log");
             string logDirectory = Path.GetDirectoryName(this.CurrentLogFilePath);
@@ -92,7 +93,9 @@ namespace SWPatcher.RTPatch
             File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
 
             if (result != 0)
+			{
                 throw new ResultException(this.LastMessage, result, this.CurrentLogFilePath, this.FileName, this.ClientVersion);
+			}
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -114,7 +117,7 @@ namespace SWPatcher.RTPatch
                 string iniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
                 ini.Load(iniPath);
                 string serverVer = ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value;
-                string clientVer = this.ClientVersion.ToString();
+                string clientVer = this.ClientNextVersion.ToString();
                 if (serverVer != clientVer)
                 {
                     ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value = clientVer;
@@ -127,7 +130,7 @@ namespace SWPatcher.RTPatch
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.RTPatcherDownloadProgressChanged?.Invoke(sender, new RTPatcherDownloadProgressChangedEventArgs(Methods.VersionToRTP(this.ClientVersion), e));
+            this.RTPatcherDownloadProgressChanged?.Invoke(sender, new RTPatcherDownloadProgressChangedEventArgs(Methods.VersionToRTP(this.ClientNextVersion), e));
         }
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
@@ -147,15 +150,16 @@ namespace SWPatcher.RTPatch
 
             IniFile clientIni = new IniFile();
             clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-            this.ClientVersion = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
+            this.ClientNextVersion = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
         }
 
         private void DownloadNext()
         {
-            if (this.ClientVersion < this.ServerVersion)
+            if (this.ClientNextVersion < this.ServerVersion)
             {
-                this.ClientVersion = GetNextVersion(this.ClientVersion, this.ServerVersion);
-                string RTPFileName = Methods.VersionToRTP(this.ClientVersion);
+                this.ClientVersion = this.ClientNextVersion;
+                this.ClientNextVersion = GetNextVersion(this.ClientNextVersion, this.ServerVersion);
+                string RTPFileName = Methods.VersionToRTP(this.ClientNextVersion);
                 Uri uri = new Uri(this.Url + '/' + RTPFileName);
                 string destination = Path.Combine(UserSettings.GamePath, RTPFileName);
                 Logger.Info($"Downloading url=[{uri.AbsoluteUri}] path=[{destination}]");
@@ -284,7 +288,7 @@ namespace SWPatcher.RTPatch
                 this.FileName = null;
                 this.LastMessage = null;
                 this.Url = null;
-                this.ClientVersion = null;
+                this.ClientNextVersion = null;
                 this.ServerVersion = null;
 
                 this.disposedValue = true;

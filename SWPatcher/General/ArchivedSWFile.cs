@@ -16,47 +16,16 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-
 namespace SWPatcher.General
 {
-    public class TempFile : IDisposable
+    public class ArchivedSWFile : SWFile
     {
-        public string Path { get; private set; }
-        private bool IsDisposed = false;
+        public string PathA { get; private set; }
+        public byte[] Data { get; set; }
 
-        public TempFile() : this(System.IO.Path.GetTempFileName())
+        public ArchivedSWFile(string name, string path, string pathD, string pathA) : base(name, path, pathD)
         {
-
-        }
-        public TempFile(string path)
-        {
-            this.Path = path;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposing)
-                {
-
-                }
-
-                System.IO.File.Delete(this.Path);
-                this.Path = null;
-            }
-        }
-
-        ~TempFile()
-        {
-            Dispose(false);
+            this.PathA = pathA;
         }
     }
 }

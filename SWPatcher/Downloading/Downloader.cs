@@ -20,7 +20,6 @@ using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
@@ -31,26 +30,14 @@ namespace SWPatcher.Downloading
     public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
     public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
 
-    /// <summary>
-    /// Handles the downloading of translation files.
-    /// </summary>
-    public class Downloader : IDisposable
+    public class Downloader
     {
-        private readonly BackgroundWorker Worker;
-        private readonly WebClient Client;
-        private List<SWFile> SWFiles;
+        private BackgroundWorker Worker;
+        private WebClient Client;
         private Language Language;
-        private int DownloadIndex;
 
-        private bool disposedValue = false;
-
-        /// <summary>
-        /// Creates a new instance of <c>Downloader</c>.
-        /// </summary>
-        /// <param name="swFiles">is a list of the file that need to be downloaded</param>
-        public Downloader(List<SWFile> swFiles)
+        public Downloader()
         {
-            this.SWFiles = swFiles;
             this.Worker = new BackgroundWorker
             {
                 WorkerSupportsCancellation = true
@@ -59,7 +46,7 @@ namespace SWPatcher.Downloading
             this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
             this.Client = new WebClient();
             this.Client.DownloadProgressChanged += this.Client_DownloadProgressChanged;
-            this.Client.DownloadFileCompleted += this.Client_DownloadFileCompleted;
+            this.Client.DownloadDataCompleted += this.Client_DownloadDataCompleted;
         }
 
         public event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
@@ -71,57 +58,72 @@ namespace SWPatcher.Downloading
 
             if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
             {
-                Methods.SetSWFiles(this.SWFiles);
+                SWFileManager.LoadFileConfiguration();
             }
             else
+            {
                 throw new Exception(String.Format(StringLoader.GetText("exception_already_latest_translation"), Methods.DateToString(this.Language.LastUpdate)));
+            }
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
+            {
                 this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
+            }
             else
             {
-                this.DownloadIndex = 0;
-                this.DownloadNext();
+                this.DownloadNext(0);
             }
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.DownloaderProgressChanged?.Invoke(sender, new DownloaderProgressChangedEventArgs(this.DownloadIndex + 1, this.SWFiles.Count, Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Name), e));
+            this.DownloaderProgressChanged?.Invoke(sender, new DownloaderProgressChangedEventArgs((int)e.UserState + 1, SWFileManager.Count, Path.GetFileNameWithoutExtension(SWFileManager.GetElementAt((int)e.UserState).Name), e));
         }
 
-        private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        private void Client_DownloadDataCompleted(object sender, DownloadDataCompletedEventArgs e)
         {
             if (e.Cancelled || e.Error != null)
+            {
                 this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(e.Cancelled, e.Error));
+            }
             else
             {
-                if (this.SWFiles.Count > ++this.DownloadIndex)
-                    DownloadNext();
+                var index = (int)e.UserState;
+                SWFile swFile = SWFileManager.GetElementAt(index);
+                if (swFile is ArchivedSWFile archivedSWFile)
+                {
+                    archivedSWFile.Data = e.Result;
+                }
                 else
+                {
+                    string swFilePath = Path.Combine(this.Language.Name, swFile.Path, Path.GetFileName(swFile.PathD));
+                    string swFileDirectory = Path.GetDirectoryName(swFilePath);
+
+                    Directory.CreateDirectory(swFileDirectory);
+                    File.WriteAllBytes(swFilePath, e.Result);
+                }
+
+                if (SWFileManager.Count > ++index)
+                {
+                    this.DownloadNext(index);
+                }
+                else
+                {
                     this.DownloaderCompleted?.Invoke(sender, new DownloaderCompletedEventArgs(this.Language, e.Cancelled, e.Error));
+                }
             }
         }
 
-        private void DownloadNext()
+        private void DownloadNext(int index)
         {
-            Uri uri = new Uri(Urls.TranslationGitHubHome + this.Language.Lang + '/' + this.SWFiles[this.DownloadIndex].PathD);
-            string path = "";
+            Uri uri = new Uri(Urls.TranslationGitHubHome + this.Language.Name + '/' + SWFileManager.GetElementAt(index).PathD);
 
-            if (String.IsNullOrEmpty(this.SWFiles[this.DownloadIndex].PathA))
-                path = Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path);
-            else
-                path = Path.Combine(Path.GetDirectoryName(Path.Combine(this.Language.Lang, this.SWFiles[this.DownloadIndex].Path)), Path.GetFileNameWithoutExtension(this.SWFiles[this.DownloadIndex].Path));
+            this.Client.DownloadDataAsync(uri, index);
 
-            Directory.CreateDirectory(path);
-
-            string fileDestination = Path.Combine(path, Path.GetFileName(this.SWFiles[this.DownloadIndex].PathD));
-            this.Client.DownloadFileAsync(uri, fileDestination);
-            
-            Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri.AbsoluteUri, path));
+            Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri.AbsoluteUri));
         }
 
         public void Cancel()
@@ -133,32 +135,12 @@ namespace SWPatcher.Downloading
         public void Run(Language language)
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
+            {
                 return;
-            
+            }
+
             this.Language = language;
             this.Worker.RunWorkerAsync();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposedValue)
-            {
-                if (disposing)
-                {
-                    this.Worker.Dispose();
-                    this.Client.Dispose();
-                }
-                
-                this.SWFiles = null;
-                this.Language = null;
-
-                this.disposedValue = true;
-            }
-        }
-        
-        public void Dispose()
-        {
-            Dispose(true);
         }
     }
 }

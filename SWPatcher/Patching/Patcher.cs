@@ -22,6 +22,7 @@ using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -35,19 +36,15 @@ namespace SWPatcher.Patching
     public delegate void PatcherProgressChangedEventHandler(object sender, PatcherProgressChangedEventArgs e);
     public delegate void PatcherCompletedEventHandler(object sender, PatcherCompletedEventArgs e);
 
-    public class Patcher : IDisposable
+    public class Patcher
     {
         private readonly BackgroundWorker Worker;
-        private List<SWFile> SWFiles;
         private Language Language;
         private int CurrentStep;
-        private int StepCount;
+        private readonly int StepCount = 1;
 
-        private bool disposedValue = false;
-
-        public Patcher(List<SWFile> swFiles)
+        public Patcher()
         {
-            this.SWFiles = swFiles;
             this.Worker = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
@@ -65,32 +62,21 @@ namespace SWPatcher.Patching
         {
             Logger.Debug(Methods.MethodFullName("Patcher", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
 
-            this.StepCount = 3;
-            IEnumerable<SWFile> archivedSWFiles = this.SWFiles.Where(f => !String.IsNullOrEmpty(f.PathA));
-            IEnumerable<string> archives = archivedSWFiles.Select(f => f.Path).Distinct();
+            IEnumerable<ArchivedSWFile> archivedSWFiles = SWFileManager.GetFiles().OfType<ArchivedSWFile>();
             int archivedSWFilesCount = archivedSWFiles.Count();
+            var archives = archivedSWFiles.Select(f => f.Path).Distinct().ToDictionary(p => p, p =>
+            {
+                string archivePath = Path.Combine(UserSettings.GamePath, p);
+                Logger.Info($"Loading archive=[{archivePath}]");
+                byte[] fileBytes = File.ReadAllBytes(archivePath);
+                return new XorMemoryStream(fileBytes, 0x55);
+            });
 
             Dictionary<string, string> passwordDictionary = LoadPasswords();
 
             this.CurrentStep = 1;
-            foreach (var archive in archives) // copy and Xor archives
-            {
-                if (this.Worker.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-
-                string archivePathPatch = Path.Combine(this.Language.Lang, archive);
-                string archivePath = Path.Combine(UserSettings.GamePath, archive);
-                Logger.Info($"Copying archive=[{archivePath}] archivePatch=[{archivePathPatch}]");
-                File.Copy(archivePath, archivePathPatch, true);
-                this.Xor(archivePathPatch, 0x55, true);
-            }
-
-            this.CurrentStep = 2;
             int count = 1;
-            foreach (SWFile swFile in archivedSWFiles)
+            foreach (ArchivedSWFile archivedSWFile in archivedSWFiles)
             {
                 if (this.Worker.CancellationPending)
                 {
@@ -99,69 +85,78 @@ namespace SWPatcher.Patching
                 }
                 this.Worker.ReportProgress(count++ == archivedSWFilesCount ? int.MaxValue : Convert.ToInt32(((double)count / archivedSWFilesCount) * int.MaxValue));
 
-                string archivePath = Path.Combine(this.Language.Lang, swFile.Path);
-                string archiveFileNameWithoutExtension = Path.GetFileNameWithoutExtension(archivePath);
-                string archivePassword = "";
-                string swFilePath = GetArchivedSWFilePath(swFile, this.Language);
+                string archiveFileNameWithoutExtension = Path.GetFileNameWithoutExtension(archivedSWFile.Path);
+                string archivePassword = null;
 
                 if (passwordDictionary.ContainsKey(archiveFileNameWithoutExtension))
-                    archivePassword = passwordDictionary[archiveFileNameWithoutExtension];
-
-                Logger.Info($"Patching file=[{swFilePath}] archive=[{archivePath}]");
-                if (!String.IsNullOrEmpty(swFile.Format)) // if file should be patched(.res)
                 {
-                    using (var swFilePathRes = new TempFile(Path.ChangeExtension(swFilePath, ".res")))
+                    archivePassword = passwordDictionary[archiveFileNameWithoutExtension];
+                }
+
+                Logger.Info($"Patching file=[{archivedSWFile.PathA}] archive=[{archivedSWFile.Path}] step=[{this.CurrentStep}]");
+                if (archivedSWFile is PatchedSWFile patchedSWFile)
+                {
+                    using (MemoryStream ms = Methods.GetZippedFileStream(archives[patchedSWFile.Path], patchedSWFile.PathA, archivePassword))
+                    using (var msDest = new MemoryStream())
                     {
-                        Methods.DoUnzipFile(archivePath, swFile.PathA, Directory.GetCurrentDirectory(), archivePassword);
+                        string[] fullFormatArray = patchedSWFile.Format.Split(' ');
+                        int idIndex = Convert.ToInt32(fullFormatArray[0]);
+                        string countFormat = fullFormatArray[1];
+                        string[] formatArray = fullFormatArray.Skip(2).ToArray(); // skip idIndex and countFormat
 
-                        using (var swFilePathOriginalRes = new TempFile(Path.GetFileName(swFile.PathA)))
+                        #region Patching the File
+                        ulong dataCount = 0;
+                        ulong dataSum = 0;
+                        ushort hashLength = 32;
+                        byte[] hash = new byte[hashLength];
+                        int lineCount = 0;
+
+                        for (int i = 0; i < formatArray.Length; i++)
                         {
-                            string[] fullFormatArray = swFile.Format.Split(' ');
-                            int idIndex = Convert.ToInt32(fullFormatArray[0]);
-                            string countFormat = fullFormatArray[1];
-                            string[] formatArray = fullFormatArray.Skip(2).ToArray(); // skip idIndex and countFormat
-
-                            #region Patching the File
-                            ulong dataCount = 0;
-                            ulong dataSum = 0;
-                            ushort hashLength = 32;
-                            byte[] hash = new byte[hashLength];
-                            int lineCount = 0;
-
-                            for (int i = 0; i < formatArray.Length; i++)
-                                if (formatArray[i] == "len")
-                                {
-                                    lineCount++;
-                                    i++;
-                                }
-
-                            Dictionary<ulong, string[]> inputTable = this.ReadInputFile(swFilePath, lineCount, idIndex);
-
-                            using (var br = new BinaryReader(File.Open(swFilePathOriginalRes.Path, FileMode.Open, FileAccess.Read)))
-                            using (var bw = new BinaryWriter(File.Open(swFilePathRes.Path, FileMode.OpenOrCreate, FileAccess.Write)))
+                            if (formatArray[i] == "len")
                             {
-                                switch (countFormat)
-                                {
-                                    case "1":
-                                        dataCount = br.ReadByte();
-                                        bw.Write(Convert.ToByte(dataCount));
-                                        break;
-                                    case "2":
-                                        dataCount = br.ReadUInt16();
-                                        bw.Write(Convert.ToUInt16(dataCount));
-                                        break;
-                                    case "4":
-                                        dataCount = br.ReadUInt32();
-                                        bw.Write(Convert.ToUInt32(dataCount));
-                                        break;
-                                    case "8":
-                                        dataCount = br.ReadUInt64();
-                                        bw.Write(Convert.ToUInt64(dataCount));
-                                        break;
-                                }
-                                ulong value = 0;
+                                lineCount++;
+                                i++;
+                            }
+                        }
 
-                                for (ulong i = 0; i < dataCount; i++)
+                        Dictionary<ulong, string[]> inputTable = this.ReadInputFile(patchedSWFile.Data, lineCount, idIndex);
+
+                        using (var br = new BinaryReader(ms))
+                        using (var bw = new BinaryWriter(msDest, new UTF8Encoding(false, true), true))
+                        {
+                            switch (countFormat)
+                            {
+                                case "1":
+                                    dataCount = br.ReadByte();
+                                    bw.Write(Convert.ToByte(dataCount));
+                                    break;
+                                case "2":
+                                    dataCount = br.ReadUInt16();
+                                    bw.Write(Convert.ToUInt16(dataCount));
+                                    break;
+                                case "4":
+                                    dataCount = br.ReadUInt32();
+                                    bw.Write(Convert.ToUInt32(dataCount));
+                                    break;
+                                case "8":
+                                    dataCount = br.ReadUInt64();
+                                    bw.Write(Convert.ToUInt64(dataCount));
+                                    break;
+                            }
+                            ulong value = 0;
+
+                            for (ulong i = 0; i < dataCount; i++)
+                            {
+                                if (this.Worker.CancellationPending)
+                                {
+                                    e.Cancel = true;
+                                    break;
+                                }
+
+                                #region Object Reading
+                                object[] current = new object[formatArray.Length];
+                                for (int j = 0; j < formatArray.Length; j++)
                                 {
                                     if (this.Worker.CancellationPending)
                                     {
@@ -169,153 +164,146 @@ namespace SWPatcher.Patching
                                         break;
                                     }
 
-                                    #region Object Reading
-                                    object[] current = new object[formatArray.Length];
-                                    for (int j = 0; j < formatArray.Length; j++)
+                                    switch (formatArray[j])
                                     {
-                                        if (this.Worker.CancellationPending)
-                                        {
-                                            e.Cancel = true;
+                                        case "1":
+                                            current[j] = Convert.ToByte(br.ReadByte());
                                             break;
-                                        }
-
-                                        switch (formatArray[j])
-                                        {
-                                            case "1":
-                                                current[j] = Convert.ToByte(br.ReadByte());
-                                                break;
-                                            case "2":
-                                                current[j] = Convert.ToUInt16(br.ReadUInt16());
-                                                break;
-                                            case "4":
-                                                current[j] = Convert.ToUInt32(br.ReadUInt32());
-                                                break;
-                                            case "8":
-                                                current[j] = Convert.ToUInt64(br.ReadUInt64());
-                                                break;
-                                            case "len":
-                                                switch (formatArray[++j])
-                                                {
-                                                    case "1":
-                                                        value = br.ReadByte();
-                                                        current[j] = Convert.ToByte(br.ReadByte());
-                                                        break;
-                                                    case "2":
-                                                        value = br.ReadUInt16();
-                                                        current[j] = Convert.ToUInt16(value);
-                                                        break;
-                                                    case "4":
-                                                        value = br.ReadUInt32();
-                                                        current[j] = Convert.ToUInt32(value);
-                                                        break;
-                                                    case "8":
-                                                        value = br.ReadUInt64();
-                                                        current[j] = Convert.ToUInt64(value);
-                                                        break;
-                                                }
-                                                ulong strBytesLength = value * 2;
-                                                byte[] strBytes = new byte[strBytesLength];
-                                                current[j] = strBytes;
-
-                                                for (ulong k = 0; k < strBytesLength; k++)
-                                                    strBytes[k] = br.ReadByte();
-                                                break;
-                                        }
-                                    }
-                                    #endregion
-
-                                    #region Object Writing
-                                    int lenPosition = 0;
-                                    for (int j = 0; j < formatArray.Length; j++)
-                                    {
-                                        if (this.Worker.CancellationPending)
-                                        {
-                                            e.Cancel = true;
+                                        case "2":
+                                            current[j] = Convert.ToUInt16(br.ReadUInt16());
                                             break;
-                                        }
+                                        case "4":
+                                            current[j] = Convert.ToUInt32(br.ReadUInt32());
+                                            break;
+                                        case "8":
+                                            current[j] = Convert.ToUInt64(br.ReadUInt64());
+                                            break;
+                                        case "len":
+                                            switch (formatArray[++j])
+                                            {
+                                                case "1":
+                                                    value = br.ReadByte();
+                                                    current[j] = Convert.ToByte(br.ReadByte());
+                                                    break;
+                                                case "2":
+                                                    value = br.ReadUInt16();
+                                                    current[j] = Convert.ToUInt16(value);
+                                                    break;
+                                                case "4":
+                                                    value = br.ReadUInt32();
+                                                    current[j] = Convert.ToUInt32(value);
+                                                    break;
+                                                case "8":
+                                                    value = br.ReadUInt64();
+                                                    current[j] = Convert.ToUInt64(value);
+                                                    break;
+                                            }
+                                            ulong strBytesLength = value * 2;
+                                            byte[] strBytes = new byte[strBytesLength];
+                                            current[j] = strBytes;
 
-                                        switch (formatArray[j])
-                                        {
-                                            case "1":
-                                                value = Convert.ToByte(current[j]);
-                                                bw.Write(Convert.ToByte(value));
-                                                break;
-                                            case "2":
-                                                value = Convert.ToUInt16(current[j]);
-                                                bw.Write(Convert.ToUInt16(value));
-                                                break;
-                                            case "4":
-                                                value = Convert.ToUInt32(current[j]);
-                                                bw.Write(Convert.ToUInt32(value));
-                                                break;
-                                            case "8":
-                                                value = Convert.ToUInt64(current[j]);
-                                                bw.Write(Convert.ToUInt64(value));
-                                                break;
-                                            case "len":
-                                                byte[] strBytes = null;
-                                                j++;
-                                                ulong id = Convert.ToUInt64(current[idIndex]);
-                                                if (inputTable.ContainsKey(id))
-                                                    strBytes = Encoding.Unicode.GetBytes(inputTable[id][lenPosition++]);
-                                                else
-                                                    strBytes = current[j] as byte[];
-                                                value = Convert.ToUInt64(strBytes.Length / 2);
-
-                                                switch (formatArray[j])
-                                                {
-                                                    case "1":
-                                                        bw.Write(Convert.ToByte(value));
-                                                        break;
-                                                    case "2":
-                                                        bw.Write(Convert.ToUInt16(value));
-                                                        break;
-                                                    case "4":
-                                                        bw.Write(Convert.ToUInt32(value));
-                                                        break;
-                                                    case "8":
-                                                        bw.Write(Convert.ToUInt64(value));
-                                                        break;
-                                                }
-
-                                                foreach (byte b in strBytes)
-                                                {
-                                                    dataSum += b;
-                                                    bw.Write(b);
-                                                }
-                                                break;
-                                        }
-
-                                        dataSum += value;
+                                            for (ulong k = 0; k < strBytesLength; k++)
+                                                strBytes[k] = br.ReadByte();
+                                            break;
                                     }
-                                    #endregion
                                 }
+                                #endregion
 
-                                bw.Write(hashLength);
-                                string hashString = GetMD5(Convert.ToString(dataSum));
-                                for (int i = 0; i < hashLength; i++)
-                                    hash[i] = Convert.ToByte(hashString[i]);
-                                bw.Write(hash);
+                                #region Object Writing
+                                int lenPosition = 0;
+                                for (int j = 0; j < formatArray.Length; j++)
+                                {
+                                    if (this.Worker.CancellationPending)
+                                    {
+                                        e.Cancel = true;
+                                        break;
+                                    }
+
+                                    switch (formatArray[j])
+                                    {
+                                        case "1":
+                                            value = Convert.ToByte(current[j]);
+                                            bw.Write(Convert.ToByte(value));
+                                            break;
+                                        case "2":
+                                            value = Convert.ToUInt16(current[j]);
+                                            bw.Write(Convert.ToUInt16(value));
+                                            break;
+                                        case "4":
+                                            value = Convert.ToUInt32(current[j]);
+                                            bw.Write(Convert.ToUInt32(value));
+                                            break;
+                                        case "8":
+                                            value = Convert.ToUInt64(current[j]);
+                                            bw.Write(Convert.ToUInt64(value));
+                                            break;
+                                        case "len":
+                                            byte[] strBytes = null;
+                                            j++;
+                                            ulong id = Convert.ToUInt64(current[idIndex]);
+                                            if (inputTable.ContainsKey(id))
+                                                strBytes = Encoding.Unicode.GetBytes(inputTable[id][lenPosition++]);
+                                            else
+                                                strBytes = current[j] as byte[];
+                                            value = Convert.ToUInt64(strBytes.Length / 2);
+
+                                            switch (formatArray[j])
+                                            {
+                                                case "1":
+                                                    bw.Write(Convert.ToByte(value));
+                                                    break;
+                                                case "2":
+                                                    bw.Write(Convert.ToUInt16(value));
+                                                    break;
+                                                case "4":
+                                                    bw.Write(Convert.ToUInt32(value));
+                                                    break;
+                                                case "8":
+                                                    bw.Write(Convert.ToUInt64(value));
+                                                    break;
+                                            }
+
+                                            foreach (byte b in strBytes)
+                                            {
+                                                dataSum += b;
+                                                bw.Write(b);
+                                            }
+                                            break;
+                                    }
+
+                                    dataSum += value;
+                                }
+                                #endregion
                             }
-                            #endregion
-                        }
 
-                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePathRes.Path, archivePassword);
+                            bw.Write(hashLength);
+                            string hashString = GetMD5(Convert.ToString(dataSum));
+                            for (int i = 0; i < hashLength; i++)
+                                hash[i] = Convert.ToByte(hashString[i]);
+                            bw.Write(hash);
+                        }
+                        #endregion
+                        
+                        archives[patchedSWFile.Path] = Methods.ZipFileStream(archives[patchedSWFile.Path], patchedSWFile.PathA, msDest, archivePassword);
                     }
                 }
-                else // just zip other files
+                else
                 {
-                    if (Path.GetExtension(swFilePath) == ".zip")
-                        Methods.AddZipToZip(swFilePath, archivePath, swFile.PathA, archivePassword);
-                    else
-                        Methods.DoZipFile(archivePath, swFile.PathA, swFilePath, archivePassword);
+                    using (var ms = new MemoryStream(archivedSWFile.Data))
+                    {
+                        if (Path.GetExtension(archivedSWFile.PathD) == ".zip")
+                        {
+                            archives[archivedSWFile.Path] = Methods.AddZipToZip(archives[archivedSWFile.Path], archivedSWFile.PathA, ms, archivePassword);
+                        }
+                        else
+                        {
+                            archives[archivedSWFile.Path] = Methods.ZipFileStream(archives[archivedSWFile.Path], archivedSWFile.PathA, ms, archivePassword);
+                        }
+                    }
                 }
-
-                File.Delete(swFilePath);
             }
-
-            this.CurrentStep = 3;
-            foreach (var archive in archives) // Xor archives
+            
+            foreach (string archive in archives.Keys)
             {
                 if (this.Worker.CancellationPending)
                 {
@@ -323,8 +311,11 @@ namespace SWPatcher.Patching
                     return;
                 }
 
-                string archivePath = Path.Combine(this.Language.Lang, archive);
-                this.Xor(archivePath, 0x55, false);
+                string archivePath = Path.Combine(this.Language.Name, archive);
+                string archivePathDirectory = Path.GetDirectoryName(archivePath);
+
+                Directory.CreateDirectory(archivePathDirectory);
+                File.WriteAllBytes(archivePath, archives[archive].GetBuffer());
             }
 
             if (UserSettings.WantToPatchExe)
@@ -332,13 +323,11 @@ namespace SWPatcher.Patching
                 this.CurrentStep = -1;
                 this.Worker.ReportProgress(-1);
                 string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
+                byte[] gameExeBytes = File.ReadAllBytes(gameExePath);
                 string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
-                
-                File.Copy(gameExePath, gameExePatchedPath, true);
-                Methods.PatchExeFile(gameExePatchedPath);
-            }
 
-            GC.Collect();
+                Methods.PatchExeFile(gameExeBytes, gameExePatchedPath);
+            }
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -351,7 +340,7 @@ namespace SWPatcher.Patching
             this.PatcherCompleted?.Invoke(sender, new PatcherCompletedEventArgs(this.Language, e.Cancelled, e.Error));
         }
 
-        private Dictionary<ulong, string[]> ReadInputFile(string path, int lineCount, int idIndex)
+        private Dictionary<ulong, string[]> ReadInputFile(byte[] fileBytes, int lineCount, int idIndex)
         {
             int idTextLength = 3;
             int emptyLineCount = 1;
@@ -360,7 +349,7 @@ namespace SWPatcher.Patching
             int entryLineCount = lineCount + emptyLineCount;
             var result = new Dictionary<ulong, string[]>();
 
-            string[] fileLines = File.ReadAllLines(path, Encoding.UTF8);
+            string[] fileLines = fileBytes.ToStringArray(Encoding.UTF8);
 
             for (int i = 0; i < fileLines.Length; i += entryLineCount)
             {
@@ -369,9 +358,13 @@ namespace SWPatcher.Patching
                 for (int j = 0; j < lineCount; j++)
                 {
                     if (i + j < fileLines.Length)
-                        currentData[j] = fileLines[i + j].Replace("\\n", "\n");
+                    {
+                        currentData[j] = fileLines[i + j].Replace("\\n ", "\n").Replace("\\n", "\n");
+                    }
                     else
+                    {
                         currentData[j] = "";
+                    }
                 }
 
                 ulong id = Convert.ToUInt64(currentData[idIndex].Substring(idTextLength));
@@ -379,40 +372,74 @@ namespace SWPatcher.Patching
                 dataList.RemoveAt(idIndex);
                 string[] data = dataList.ToArray();
 
-                if (!result.ContainsKey(id))
+                if (!result.ContainsKey(id) && data.Length <= 511)
+                {
                     result.Add(id, data);
+                }
             }
 
             return result;
         }
-
-        private void Xor(string path, byte secretByte, bool check)
+        private IEnumerable<string> ReadLines(Func<Stream> streamProvider, Encoding encoding)
         {
-            Logger.Info($"Xor path=[{path}] check=[{check}]");
+            using (Stream stream = streamProvider())
+            using (var reader = new StreamReader(stream, encoding))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    yield return line;
+                }
+            }
+        }
 
-            byte[] fileBytes = File.ReadAllBytes(path);
-
+        /// <summary>
+        /// XORs each byte in a <paramref name="fileBytes"/> with a <paramref name="secretByte"/>.
+        /// If the <paramref name="fileBytes"/> is a ZIP archive and the <paramref name="check"/> is <c>true</c>, the file won't be changed.
+        /// </summary>
+        /// <param name="fileBytes">the bytes to XOR</param>
+        /// <param name="secretByte">the <c>byte</c> used to XOR</param>
+        /// <param name="check">if true, check if the file is a ZIP archive, if not, do not check</param>
+        /// <returns>true if <paramref name="fileBytes"/> was changed, false otherwise</returns>
+        private bool Xor(byte[] fileBytes, byte secretByte, bool check)
+        {
             if (!(check && fileBytes[0] == 0x50 && fileBytes[1] == 0x4B))
             {
                 for (int i = 0; i < fileBytes.Length; i++)
                 {
                     if (i % (fileBytes.Length / 8) == 0)
+                    {
                         this.Worker.ReportProgress(i == fileBytes.Length ? int.MaxValue : Convert.ToInt32(((double)i / fileBytes.Length) * int.MaxValue));
+                    }
 
                     fileBytes[i] ^= secretByte;
                 }
+
+                return true;
             }
 
-            File.WriteAllBytes(path, fileBytes);
+            return false;
         }
 
-        private static string GetArchivedSWFilePath(SWFile swFile, Language language)
+        private void Xor(Stream stream, byte secretByte)
         {
-            string directory = Path.GetDirectoryName(Path.Combine(language.Lang, swFile.Path));
-            string archiveName = Path.GetFileNameWithoutExtension(swFile.Path);
-            string fileName = Path.GetFileName(swFile.PathD);
+            var streamLength = stream.Length;
+            stream.Position = 0;
 
-            return Path.Combine(directory, archiveName, fileName);
+            for (int i = 0; i < streamLength; i++)
+            {
+                if (i % (streamLength / 8) == 0)
+                {
+                    this.Worker.ReportProgress(i == streamLength ? int.MaxValue : Convert.ToInt32(((double)i / streamLength) * int.MaxValue));
+                }
+
+                byte b = (byte)stream.ReadByte();
+                b ^= secretByte;
+                stream.Position--;
+                stream.WriteByte(b);
+            }
+
+            stream.Position = 0;
         }
 
         private static string GetMD5(string text)
@@ -432,13 +459,15 @@ namespace SWPatcher.Patching
         private static Dictionary<string, string> LoadPasswords()
         {
             using (var client = new WebClient())
-            using (var file = new TempFile())
             {
                 var result = new Dictionary<string, string>();
 
-                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.DatasArchives, file.Path);
+                byte[] fileBytes = client.DownloadData(Urls.PatcherGitHubHome + Strings.IniName.DatasArchives);
                 IniFile ini = new IniFile();
-                ini.Load(file.Path);
+                using (var ms = new MemoryStream(fileBytes))
+                {
+                    ini.Load(ms);
+                }
 
                 IniSection section = ini.Sections[Strings.IniName.Datas.SectionZipPassword];
                 foreach (IniKey key in section.Keys)
@@ -459,30 +488,9 @@ namespace SWPatcher.Patching
         {
             if (this.Worker.IsBusy)
                 return;
-            
+
             this.Language = language;
             this.Worker.RunWorkerAsync();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposedValue)
-            {
-                if (disposing)
-                {
-                    this.Worker.Dispose();
-                }
-
-                this.SWFiles = null;
-                this.Language = null;
-
-                this.disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
         }
     }
 }

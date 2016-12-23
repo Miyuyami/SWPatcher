@@ -23,6 +23,7 @@ using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -39,7 +40,7 @@ namespace SWPatcher.Forms
     {
         public IEnumerable<string> GetComboBoxItemsAsString()
         {
-            return this.comboBoxLanguages.Items.Cast<Language>().Select(s => s.Lang);
+            return this.comboBoxLanguages.Items.Cast<Language>().Select(s => s.Name);
         }
 
         public void RestoreFromTray()
@@ -57,7 +58,7 @@ namespace SWPatcher.Forms
             {
                 if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    DialogResult result = MsgBox.Question(String.Format(StringLoader.GetText("question_backup_files_found"), language.Lang));
+                    DialogResult result = MsgBox.Question(String.Format(StringLoader.GetText("question_backup_files_found"), language.Name));
 
                     if (result == DialogResult.Yes)
                         RestoreBackup(language);
@@ -97,7 +98,7 @@ namespace SWPatcher.Forms
 
                 if (File.Exists(path))
                 {
-                    string langPath = Path.Combine(language.Lang, path.Substring(UserSettings.GamePath.Length + 1));
+                    string langPath = Path.Combine(language.Name, path.Substring(UserSettings.GamePath.Length + 1));
                     if (File.Exists(langPath))
                         File.Delete(langPath);
 
@@ -119,7 +120,7 @@ namespace SWPatcher.Forms
 
         private static void DeleteTmpFiles(Language language)
         {
-            string[] tmpFilePaths = Directory.GetFiles(language.Lang, "*.tmp", SearchOption.AllDirectories);
+            string[] tmpFilePaths = Directory.GetFiles(language.Name, "*.tmp", SearchOption.AllDirectories);
 
             foreach (var tmpFile in tmpFilePaths)
             {
@@ -135,9 +136,13 @@ namespace SWPatcher.Forms
                 using (RegistryKey key32 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
                 {
                     if (key32 != null)
-                        return Convert.ToString(key32.GetValue("folder", String.Empty));
+                    {
+                        return Convert.ToString(key32.GetValue("folder", String.Empty)).Replace("\\\\", "\\");
+                    }
                     else
+                    {
                         throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
+                    }
                 }
             }
             else
@@ -145,15 +150,21 @@ namespace SWPatcher.Forms
                 using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\HanPurple\J_SW"))
                 {
                     if (key != null)
+                    {
                         return Convert.ToString(key.GetValue("folder", String.Empty));
+                    }
                     else
                     {
                         using (RegistryKey key32 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
                         {
                             if (key32 != null)
-                                return Convert.ToString(key32.GetValue("folder", String.Empty));
+                            {
+                                return Convert.ToString(key32.GetValue("folder", String.Empty)).Replace("\\\\", "\\");
+                            }
                             else
+                            {
                                 throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
+                            }
                         }
                     }
                 }
@@ -165,17 +176,21 @@ namespace SWPatcher.Forms
             List<Language> langs = new List<Language>();
 
             using (var client = new WebClient())
-            using (var file = new TempFile())
             {
-                client.DownloadFile(Urls.PatcherGitHubHome + Strings.IniName.LanguagePack, file.Path);
+                byte[] fileBytes = client.DownloadData(Urls.TranslationGitHubHome + Strings.IniName.LanguagePack);
                 IniFile ini = new IniFile(new IniOptions
                 {
                     Encoding = Encoding.UTF8
                 });
-                ini.Load(file.Path);
+                using (var ms = new MemoryStream(fileBytes))
+                {
+                    ini.Load(ms);
+                }
 
                 foreach (IniSection section in ini.Sections)
+                {
                     langs.Add(new Language(section.Name, Methods.ParseDate(section.Keys[Strings.IniName.Pack.KeyDate].Value)));
+                }
             }
 
             return langs.ToArray();
@@ -183,7 +198,7 @@ namespace SWPatcher.Forms
 
         private static void DeleteTranslationIni(Language language)
         {
-            string iniPath = Path.Combine(language.Lang, Strings.IniName.Translation);
+            string iniPath = Path.Combine(language.Name, Strings.IniName.Translation);
             if (Directory.Exists(Path.GetDirectoryName(iniPath)))
                 File.Delete(iniPath);
         }
@@ -197,18 +212,26 @@ namespace SWPatcher.Forms
             }
         }
 
-        private static bool IsTranslationOutdatedOrMissing(Language language, List<SWFile> swFiles)
+        private static bool IsTranslationOutdatedOrMissing(Language language)
         {
             if (Methods.IsTranslationOutdated(language))
+            {
                 return true;
+            }
 
-            IEnumerable<string> otherSWFilesPaths = swFiles.Where(f => String.IsNullOrEmpty(f.PathA)).Select(f => f.Path + Path.GetFileName(f.PathD));
-            IEnumerable<string> archivesPaths = swFiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
-            IEnumerable<string> translationPaths = archivesPaths.Union(otherSWFilesPaths).Select(f => Path.Combine(language.Lang, f));
+            ReadOnlyCollection<SWFile> swFiles = SWFileManager.GetFiles();
+            ILookup<Type, SWFile> things = swFiles.ToLookup(f => f.GetType());
+            IEnumerable<string> archivesPaths = things[typeof(ArchivedSWFile)].Select(f => f.Path).Union(things[typeof(PatchedSWFile)].Select(f => f.Path));
+            IEnumerable<string> otherSWFilesPaths = things[typeof(SWFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
+            IEnumerable<string> translationFilePaths = archivesPaths.Distinct().Union(otherSWFilesPaths).Select(f => Path.Combine(language.Name, f));
 
-            foreach (var path in translationPaths)
+            foreach (var path in translationFilePaths)
+            {
                 if (!File.Exists(path))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -223,41 +246,32 @@ namespace SWPatcher.Forms
             return null;
         }
 
-        private static void BackupAndPlaceDataFiles(List<SWFile> swfiles, Language language)
+        private static void BackupAndPlaceFiles(Language language)
         {
-            IEnumerable<string> archives = swfiles.Where(f => !String.IsNullOrEmpty(f.PathA)).Select(f => f.Path).Distinct();
-            foreach (var archive in archives)
+            ReadOnlyCollection<SWFile> swFiles = SWFileManager.GetFiles();
+            ILookup<Type, SWFile> swFileTypeLookup = swFiles.ToLookup(f => f.GetType());
+            IEnumerable<string> archives = swFileTypeLookup[typeof(ArchivedSWFile)].Select(f => f.Path).Union(swFileTypeLookup[typeof(PatchedSWFile)].Select(f => f.Path));
+            IEnumerable<string> otherSWFiles = swFileTypeLookup[typeof(SWFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
+            IEnumerable<string> translationFiles = archives.Distinct().Union(otherSWFiles).Select(f => Path.Combine(language.Name, f));
+
+            foreach (var path in translationFiles)
             {
-                string originalArchivePath = Path.Combine(UserSettings.GamePath, archive);
-                string patchedArchivePath = Path.Combine(language.Lang, archive);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, archive);
-                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+                string originalFilePath = Path.Combine(UserSettings.GamePath, path);
+                string translationFilePath = Path.Combine(language.Name, path);
+                string backupFilePath = Path.Combine(Strings.FolderName.Backup, path);
 
-                Directory.CreateDirectory(backupFileDirectory);
-
-                Logger.Info($"Swap archive files originalFile=[{originalArchivePath}] backupPath=[{backupFilePath}] patchedFile=[{patchedArchivePath}]");
-                File.Move(originalArchivePath, backupFilePath);
-                File.Move(patchedArchivePath, originalArchivePath);
+                BackupAndPlaceFile(originalFilePath, translationFilePath, backupFilePath);
             }
         }
 
-        private static void BackupAndPlaceOtherFiles(List<SWFile> swfiles, Language language)
+        private static void BackupAndPlaceFile(string originalFilePath, string translationFilePath, string backupFilePath)
         {
-            IEnumerable<SWFile> swFiles = swfiles.Where(f => String.IsNullOrEmpty(f.PathA));
-            foreach (SWFile swFile in swFiles)
-            {
-                string patchedFileName = Path.Combine(swFile.Path, Path.GetFileName(swFile.PathD));
-                string patchedFilePath = Path.Combine(language.Lang, patchedFileName);
-                string originalFilePath = Path.Combine(UserSettings.GamePath, patchedFileName);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, patchedFileName);
-                string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+            string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
+            Directory.CreateDirectory(backupFileDirectory);
 
-                Directory.CreateDirectory(backupFileDirectory);
-
-                Logger.Info($"Swap other files originalFile=[{originalFilePath}] backupPath=[{backupFilePath}] patchedFile=[{patchedFilePath}]");
-                File.Move(originalFilePath, backupFilePath);
-                File.Move(patchedFilePath, originalFilePath);
-            }
+            Logger.Info($"Swapping file original=[{originalFilePath}] backup=[{backupFilePath}] translation=[{translationFilePath}]");
+            File.Move(originalFilePath, backupFilePath);
+            File.Move(translationFilePath, originalFilePath);
         }
 
         private static void HangameLogin(MyWebClient client)
@@ -306,15 +320,21 @@ namespace SWPatcher.Forms
             try
             {
                 if (GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
+                {
                     throw new Exception(StringLoader.GetText("exception_not_tos"));
+                }
                 else if (GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
+                {
                     throw new Exception(StringLoader.GetText("exception_game_maintenance"));
+                }
             }
             catch (IndexOutOfRangeException)
             {
                 DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                 if (dialog == DialogResult.Retry)
+                {
                     goto again;
+                }
 
                 throw new Exception(StringLoader.GetText("exception_validation_failed"));
             }
@@ -328,28 +348,39 @@ namespace SWPatcher.Forms
             try
             {
                 client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
+
+                string reactorStartResponse = Encoding.Default.GetString(client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { }));
+                
+                if (GetVariableValue(reactorStartResponse, Strings.Web.ErrorCodeArg)[0] == "10")
+                {
+                    throw new Exception(StringLoader.GetText("exception_game_maintenance"));
+                }
+
+                string[] gameStartArgs = new string[3];
+                gameStartArgs[0] = GetVariableValue(reactorStartResponse, Strings.Web.GameStartArg)[0];
+                gameStartArgs[1] = Strings.Server.IP;
+                gameStartArgs[2] = Strings.Server.Port;
+
+                return gameStartArgs;
             }
             catch (WebException webEx)
             {
                 DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                 if (dialog == DialogResult.Retry)
+                {
                     goto again;
+                }
 
                 var responseError = webEx.Response as HttpWebResponse;
                 if (responseError.StatusCode == HttpStatusCode.NotFound)
+                {
                     throw new WebException(StringLoader.GetText("exception_validation_failed"), webEx);
+                }
                 else
+                {
                     throw;
+                }
             }
-
-            byte[] reactorStartResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
-
-            string[] gameStartArgs = new string[3];
-            gameStartArgs[0] = GetVariableValue(Encoding.Default.GetString(reactorStartResponse), Strings.Web.GameStartArg)[0];
-            gameStartArgs[1] = Strings.Server.IP;
-            gameStartArgs[2] = Strings.Server.Port;
-
-            return gameStartArgs;
         }
 
         private static string[] GetVariableValue(string fullText, string variableName)
@@ -358,7 +389,9 @@ namespace SWPatcher.Forms
             int valueIndex = fullText.IndexOf(variableName);
 
             if (valueIndex == -1)
+            {
                 throw new IndexOutOfRangeException();
+            }
 
             result = fullText.Substring(valueIndex + variableName.Length + 1);
             result = result.Substring(0, result.IndexOf('"'));

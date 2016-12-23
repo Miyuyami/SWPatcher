@@ -22,6 +22,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace SWPatcher.General
 {
+    /// <summary>
+    /// A <c>System.Net.WebClient</c> that has a <c>System.Net.CookieCollection</c> and a <c>System.Security.Cryptography.X509Certificates.X509Certificate</c>
+    /// </summary>
     public class MyWebClient : WebClient
     {
         private readonly CookieContainer _container = new CookieContainer();

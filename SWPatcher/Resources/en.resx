@@ -370,4 +370,10 @@ The link was copied to clipboard.</value>
   <data name="exception_rtpatch_time_date_fail" xml:space="preserve">
     <value>Failed to set the file's time/date stamp. Try again.</value>
   </data>
+  <data name="error_exe_patch_fail" xml:space="preserve">
+    <value>.exe patch was not applied due to "{0}" not having been updated for the new client after a recent update. The client patch has been disabled. The game can still operate, except some texts will not be shown. Please try again later when "{0}" is implemented.</value>
+  </data>
+  <data name="exception_rtpatch_read_patch_file_fail" xml:space="preserve">
+    <value>Failed to read patch file. Try again.</value>
+  </data>
 </root>

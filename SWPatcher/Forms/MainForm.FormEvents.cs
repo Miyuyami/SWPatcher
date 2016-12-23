@@ -36,7 +36,9 @@ namespace SWPatcher.Forms
 
             var gamePath = UserSettings.GamePath;
             if (String.IsNullOrEmpty(gamePath) || !Methods.IsSwPath(gamePath))
+            {
                 UserSettings.GamePath = GetSwPathFromRegistry();
+            }
 
             if (this.comboBoxLanguages.DataSource != null)
             {
@@ -44,7 +46,7 @@ namespace SWPatcher.Forms
 
                 if (String.IsNullOrEmpty(UserSettings.LanguageName))
                 {
-                    UserSettings.LanguageName = (this.comboBoxLanguages.SelectedItem as Language).Lang;
+                    UserSettings.LanguageName = (this.comboBoxLanguages.SelectedItem as Language).Name;
                 }
                 else
                 {
@@ -128,7 +130,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Lang, Methods.DateToString(language.LastUpdate));
+            this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Name, Methods.DateToString(language.LastUpdate));
 
             this.CurrentState = State.RTPatch;
             this._nextState = NextState.Download;
@@ -138,7 +140,7 @@ namespace SWPatcher.Forms
         private void ComboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.comboBoxLanguages.SelectedItem is Language language && Methods.HasNewTranslations(language))
-                this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Lang, Methods.DateToString(language.LastUpdate));
+                this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Name, Methods.DateToString(language.LastUpdate));
             else
                 this.labelNewTranslations.Text = String.Empty;
         }
@@ -218,7 +220,7 @@ namespace SWPatcher.Forms
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (Methods.In(e.CloseReason, CloseReason.ApplicationExitCall, CloseReason.WindowsShutDown))
+            if (e.CloseReason.In(CloseReason.ApplicationExitCall, CloseReason.WindowsShutDown))
             {
                 Logger.Info($"{this.Text} closing abnormally. Reason=[{e.CloseReason.ToString()}]");
                 this.CurrentState = State.Idle;
@@ -236,7 +238,7 @@ namespace SWPatcher.Forms
             else
             {
                 Logger.Info($"{this.Text} closing. Reason=[{e.CloseReason.ToString()}]");
-                UserSettings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Lang;
+                UserSettings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Name;
             }
         }
 

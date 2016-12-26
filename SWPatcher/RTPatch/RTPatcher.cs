@@ -21,6 +21,7 @@ using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -32,21 +33,20 @@ namespace SWPatcher.RTPatch
     public delegate void RTPatcherProgressChangedEventHandler(object sender, RTPatcherProgressChangedEventArgs e);
     public delegate string RTPatchCallback(uint id, IntPtr ptr);
 
-    public class RTPatcher : IDisposable
+    public class RTPatcher
     {
+        private const int DiffBytes = 10; // how many bytes to redownload on resume, just to be safe, why not?
         private readonly BackgroundWorker Worker;
-        private readonly WebClient Client;
-        private string CurrentLogFilePath;
-        private string FileName;
-        private string LastMessage;
+        private DoWorkEventArgs WorkerDoWorkEventArgs;
+        private string CurrentLogFilePath = "";
+        private string FileName = "";
+        private string LastMessage = "";
         private string Url;
         private Version ClientNextVersion;
         private Version ClientVersion;
         private Version ServerVersion;
-        private int FileCount;
-        private int FileNumber;
-
-        private bool disposedValue = false;
+        private int FileCount = 0;
+        private int FileNumber = 0;
 
         public event RTPatcherDownloadProgressChangedEventHandler RTPatcherDownloadProgressChanged;
         public event RTPatcherProgressChangedEventHandler RTPatcherProgressChanged;
@@ -62,53 +62,114 @@ namespace SWPatcher.RTPatch
             this.Worker.DoWork += this.Worker_DoWork;
             this.Worker.ProgressChanged += this.Worker_ProgressChanged;
             this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
-            this.Client = new WebClient();
-            this.Client.DownloadProgressChanged += this.Client_DownloadProgressChanged;
-            this.Client.DownloadFileCompleted += this.Client_DownloadFileCompleted;
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
+            LoadVersions();
             Methods.CheckRunningPrograms();
+            this.WorkerDoWorkEventArgs = e;
+            Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
 
-            if (this.Worker.CancellationPending)
+            while (this.ClientNextVersion < this.ServerVersion)
             {
-                e.Cancel = true;
-                return;
-            }
+                if (this.Worker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
 
-            string gamePath = UserSettings.GamePath;
-            string diffFilePath = Path.Combine(gamePath, Methods.VersionToRTP(this.ClientNextVersion));
+                this.ClientVersion = this.ClientNextVersion;
+                this.ClientNextVersion = this.GetNextVersion(this.ClientNextVersion);
+                string RTPFileName = VersionToRTP(this.ClientNextVersion);
+                string url = this.Url + RTPFileName;
+                string destination = Path.Combine(UserSettings.GamePath, RTPFileName);
+                string gamePath = UserSettings.GamePath;
+                string diffFilePath = Path.Combine(gamePath, VersionToRTP(this.ClientNextVersion));
+                this.CurrentLogFilePath = Path.Combine(Strings.FolderName.RTPatchLogs, Path.GetFileName(diffFilePath) + ".log");
+                string logDirectory = Path.GetDirectoryName(this.CurrentLogFilePath);
+                Directory.CreateDirectory(logDirectory);
 
-            this.CurrentLogFilePath = Path.Combine(Strings.FolderName.RTPatchLogs, Path.GetFileName(diffFilePath) + ".log");
-            string logDirectory = Path.GetDirectoryName(this.CurrentLogFilePath);
-            Directory.CreateDirectory(logDirectory);
-            File.WriteAllText(this.CurrentLogFilePath, string.Empty);
+                Logger.Info($"Downloading url=[{url}] path=[{destination}]");
+                #region Download Resumable File
+                using (FileStream fs = File.OpenWrite(destination))
+                {
+                    long fileLength = fs.Length < DiffBytes ? 0 : fs.Length - DiffBytes;
+                    fs.Position = fileLength;
+                    HttpWebRequest request = WebRequest.CreateHttp(url);
+                    request.UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0;)";
+                    request.Credentials = new NetworkCredential();
+                    request.AddRange(fileLength);
 
-            Logger.Info($"RTPatch diffFile=[{diffFilePath}] path=[{gamePath}]");
-            string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";
-            ulong result = Environment.Is64BitProcess ? NativeMethods.RTPatchApply64(command, new RTPatchCallback(this.RTPatchMessage), true) : NativeMethods.RTPatchApply32(command, new RTPatchCallback(this.RTPatchMessage), true);
-            File.Delete(diffFilePath);
-            File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
+                    using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                    {
+                        long bytesToReceive = response.ContentLength;
+                        using (Stream stream = response.GetResponseStream())
+                        {
+                            byte[] buffer = new byte[1000 * 1000]; // 1MB buffer
+                            int bytesRead;
+                            long totalFileBytes = fileLength + bytesToReceive;
+                            long fileBytes = fileLength;
+                            long receivedBytes = 0;
 
-            if (result != 0)
-			{
-                throw new ResultException(this.LastMessage, result, this.CurrentLogFilePath, this.FileName, this.ClientVersion);
-			}
-        }
+                            this.Worker.ReportProgress(0, 0L);
+                            Stopwatch sw = new Stopwatch();
+                            sw.Start();
+                            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) != 0)
+                            {
+                                if (this.Worker.CancellationPending)
+                                {
+                                    e.Cancel = true;
+                                    request.Abort();
+                                    return;
+                                }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            this.RTPatcherProgressChanged?.Invoke(this, new RTPatcherProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, e.ProgressPercentage));
-        }
+                                fs.Write(buffer, 0, bytesRead);
 
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled || e.Error != null)
-                this.RTPatcherCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, null));
-            else
-            {
+                                fileBytes += bytesRead;
+                                receivedBytes += bytesRead;
+                                int progress = fileBytes >= totalFileBytes ? int.MaxValue : Convert.ToInt32(((double)fileBytes / totalFileBytes) * int.MaxValue);
+                                double elapsedTicks = sw.ElapsedTicks;
+                                long frequency = Stopwatch.Frequency;
+                                long elapsedSeconds = Convert.ToInt64(elapsedTicks / frequency);
+                                long bytesPerSecond;
+                                if (elapsedSeconds > 0)
+                                {
+                                    bytesPerSecond = receivedBytes / elapsedSeconds;
+                                }
+                                else
+                                {
+                                    bytesPerSecond = receivedBytes;
+                                }
+
+                                this.Worker.ReportProgress(progress, bytesPerSecond);
+                            }
+                            sw.Stop();
+                        }
+                    }
+                }
+                #endregion
+
+                Logger.Info($"RTPatch diffFile=[{diffFilePath}] path=[{gamePath}]");
+                #region Apply RTPatch
+                File.Delete(this.CurrentLogFilePath);
+                string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";
+                ulong result = Environment.Is64BitProcess ? NativeMethods.RTPatchApply64(command, new RTPatchCallback(this.RTPatchMessage), true) : NativeMethods.RTPatchApply32(command, new RTPatchCallback(this.RTPatchMessage), true);
+                File.Delete(diffFilePath);
+                File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
+
+                if (result != 0)
+                {
+                    if (result > 10000)
+                    {
+                        Logger.Debug($"RTPatchApply cancelled Result=[{result}] IsNormal=[{result == 32769}]");
+
+                        return; // RTPatch cancelled
+                    }
+
+                    throw new ResultException(this.LastMessage, result, this.CurrentLogFilePath, this.FileName, this.ClientVersion);
+                }
+
                 IniFile ini = new IniFile(new IniOptions
                 {
                     KeyDuplicate = IniDuplication.Ignored,
@@ -123,22 +184,35 @@ namespace SWPatcher.RTPatch
                     ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value = clientVer;
                     ini.Save(iniPath);
                 }
+                #endregion
+            }
 
-                DownloadNext();
+            this.WorkerDoWorkEventArgs = null;
+        }
+
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (this.FileCount == 0)
+            {
+                this.RTPatcherDownloadProgressChanged?.Invoke(sender, new RTPatcherDownloadProgressChangedEventArgs(VersionToRTP(this.ClientNextVersion), e.ProgressPercentage, (long)e.UserState));
+            }
+            else
+            {
+                this.RTPatcherProgressChanged?.Invoke(this, new RTPatcherProgressChangedEventArgs(this.FileNumber, this.FileCount, this.FileName, e.ProgressPercentage));
             }
         }
 
-        private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.RTPatcherDownloadProgressChanged?.Invoke(sender, new RTPatcherDownloadProgressChangedEventArgs(Methods.VersionToRTP(this.ClientNextVersion), e));
-        }
-
-        private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
+            this.WorkerDoWorkEventArgs = null;
             if (e.Cancelled || e.Error != null)
-                this.RTPatcherCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            {
+                this.RTPatcherCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, null));
+            }
             else
-                this.Worker.RunWorkerAsync();
+            {
+                RTPatcherCompleted?.Invoke(this, new AsyncCompletedEventArgs(null, false, null));
+            }
         }
 
         private void LoadVersions()
@@ -153,44 +227,65 @@ namespace SWPatcher.RTPatch
             this.ClientNextVersion = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
         }
 
-        private void DownloadNext()
+        private static bool WebFileExists(string uri)
         {
-            if (this.ClientNextVersion < this.ServerVersion)
+            if (WebRequest.CreateHttp(uri) is HttpWebRequest request)
             {
-                this.ClientVersion = this.ClientNextVersion;
-                this.ClientNextVersion = GetNextVersion(this.ClientNextVersion, this.ServerVersion);
-                string RTPFileName = Methods.VersionToRTP(this.ClientNextVersion);
-                Uri uri = new Uri(this.Url + '/' + RTPFileName);
-                string destination = Path.Combine(UserSettings.GamePath, RTPFileName);
-                Logger.Info($"Downloading url=[{uri.AbsoluteUri}] path=[{destination}]");
-                this.Client.DownloadFileAsync(uri, destination);
+                request.Method = "HEAD";
+
+                try
+                {
+                    if (request.GetResponse() is HttpWebResponse response)
+                    {
+                        using (response)
+                        {
+                            return response.StatusCode == HttpStatusCode.OK;
+                        }
+                    }
+                }
+                catch (WebException ex)
+                {
+                    if (ex.Response is HttpWebResponse response)
+                    {
+                        HttpStatusCode statusCode = response.StatusCode;
+                        if (statusCode != HttpStatusCode.NotFound)
+                        {
+                            Logger.Debug($"{Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri)}\nUnexpected status code {statusCode}\n{response.ToString()}");
+                        }
+                    }
+                }
+
+                request.Abort();
             }
-            else
-            {
-                RTPatcherCompleted?.Invoke(this, new AsyncCompletedEventArgs(null, false, null));
-            }
+
+            return false;
         }
 
-        private static Version GetNextVersion(Version clientVer, Version serverVer)
+        private Version GetNextVersion(Version clientVer)
         {
-            var result = new Version(clientVer.Major + 1, 0, 0, 0);
+            var result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build, clientVer.Revision + 1);
 
-            if (result > serverVer)
+            if (!WebFileExists(this.Url + VersionToRTP(result)))
             {
-                result = new Version(clientVer.Major, clientVer.Minor + 1, 0, 0);
+                result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build + 1, 0);
 
-                if (result > serverVer)
+                if (!WebFileExists(this.Url + VersionToRTP(result)))
                 {
-                    result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build + 1, 0);
+                    result = new Version(clientVer.Major, clientVer.Minor + 1, 0, 0);
 
-                    if (result > serverVer)
+                    if (!WebFileExists(this.Url + VersionToRTP(result)))
                     {
-                        result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build, clientVer.Revision + 1);
+                        result = new Version(clientVer.Major + 1, 0, 0, 0);
                     }
                 }
             }
 
             return result;
+        }
+
+        internal static string VersionToRTP(Version version)
+        {
+            return $"{version.Major}_{version.Minor}_{version.Build}_{version.Revision}.RTP";
         }
 
         private string RTPatchMessage(uint id, IntPtr ptr)
@@ -256,48 +351,29 @@ namespace SWPatcher.RTPatch
                     }
                 default: break; // ignore rest
             }
+
+            if (this.Worker.CancellationPending)
+            {
+                this.WorkerDoWorkEventArgs.Cancel = true;
+                return null;
+            }
+
             return "";
         }
 
         public void Cancel()
         {
-            this.Client.CancelAsync();
             this.Worker.CancelAsync();
         }
 
         public void Run()
         {
-            if (this.Client.IsBusy || this.Worker.IsBusy)
-                return;
-
-            LoadVersions();
-            DownloadNext();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposedValue)
+            if (this.Worker.IsBusy)
             {
-                if (disposing)
-                {
-                    this.Worker.Dispose();
-                    this.Client.Dispose();
-                }
-
-                this.CurrentLogFilePath = null;
-                this.FileName = null;
-                this.LastMessage = null;
-                this.Url = null;
-                this.ClientNextVersion = null;
-                this.ServerVersion = null;
-
-                this.disposedValue = true;
+                return;
             }
-        }
 
-        public void Dispose()
-        {
-            Dispose(true);
+            this.Worker.RunWorkerAsync();
         }
     }
 }

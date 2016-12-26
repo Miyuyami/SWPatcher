@@ -20,7 +20,6 @@ using Ionic.Zip;
 using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVariables;
-using SWPatcher.Patching;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -32,7 +31,9 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 
 namespace SWPatcher.Helpers
@@ -166,7 +167,11 @@ namespace SWPatcher.Helpers
                     if (hexResult == patchedHexResult)
                     {
                         Logger.Info($"Failed .exe patch=[{section.Name}]");
-                        MsgBox.Error(".exe patch \"{0}\" was not applied because ");
+                        MsgBox.Error(StringLoader.GetText("error_exe_patch_fail", section.Name));
+
+                        UserSettings.WantToPatchExe = false;
+
+                        return;
                     }
                 }
 
@@ -180,11 +185,6 @@ namespace SWPatcher.Helpers
 
                 File.WriteAllBytes(gameExePatchedPath, resultBytes);
             }
-        }
-
-        internal static string VersionToRTP(Version version)
-        {
-            return $"{version.Major}_{version.Minor}_{version.Build}_{version.Revision}.RTP";
         }
 
         internal static void RTPatchCleanup()
@@ -228,85 +228,42 @@ namespace SWPatcher.Helpers
             return result;
         }
 
-        internal static MemoryStream GetZippedFileStream(XorMemoryStream stream, string fileName, string password)
+        internal static MemoryStream GetZippedFileStream(ZipFile zip, string fileName, string password)
         {
             var result = new MemoryStream();
-            stream.Position = 0;
-            
-            using (var zip = ZipFile.Read(stream))
-            {
-                zip.Password = password;
-                zip.FlattenFoldersOnExtract = true;
-                zip[fileName].Extract(result);
-                result.Position = 0;
-            }
+
+            zip.Password = password;
+            zip.FlattenFoldersOnExtract = true;
+            zip[fileName].Extract(result);
+            result.Position = 0;
 
             return result;
         }
 
-        internal static byte[] ZipFileStream(byte[] zipData, string fileName, MemoryStream fileStream, string password)
+        internal static void ZipFileStream(ZipFile zip, string fileName, MemoryStream fileStream, string password)
         {
             fileStream.Position = 0;
-            using (var ms = new MemoryStream(zipData))
-            using (var zip = ZipFile.Read(ms))
+            zip.Password = password;
+
+            if (zip.ContainsEntry(fileName))
             {
-                zip.Password = password;
+                ZipEntry zipEntry = zip[fileName];
+                fileName = zipEntry.FileName;
+                zip.RemoveEntry(fileName);
+                zip.AddEntry(fileName, fileStream);
 
-                if (zip.ContainsEntry(fileName))
-                {
-                    ZipEntry zipEntry = zip[fileName];
-                    fileName = zipEntry.FileName;
-                    zip.RemoveEntry(fileName);
-                    zip.AddEntry(fileName, fileStream);
-
-                    ZipEntry modifiedZipEntry = zip[fileName];
-                    CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
-                }
-                else
-                {
-                    Logger.Debug($"ZipFileStream does not contain fileName=[{fileName}]");
-                }
-
-                var msDst = new MemoryStream();
-                zip.Save(msDst);
-                return msDst.ToArray();
+                ZipEntry modifiedZipEntry = zip[fileName];
+                CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
+            }
+            else
+            {
+                Logger.Debug($"ZipFileStream does not contain fileName=[{fileName}]");
             }
         }
 
-        internal static XorMemoryStream ZipFileStream(XorMemoryStream stream, string fileName, MemoryStream fileStream, string password)
-        {
-            stream.Position = 0;
-            fileStream.Position = 0;
-            using (var zip = ZipFile.Read(stream))
-            {
-                zip.Password = password;
-
-                if (zip.ContainsEntry(fileName))
-                {
-                    ZipEntry zipEntry = zip[fileName];
-                    fileName = zipEntry.FileName;
-                    zip.RemoveEntry(fileName);
-                    zip.AddEntry(fileName, fileStream);
-
-                    ZipEntry modifiedZipEntry = zip[fileName];
-                    CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
-                }
-                else
-                {
-                    Logger.Debug($"ZipFileStream does not contain fileName=[{fileName}]");
-                }
-
-                var msDst = new XorMemoryStream(stream.XorByte);
-                zip.Save(msDst);
-                return msDst;
-            }
-        }
-
-        internal static byte[] AddZipToZip(byte[] zipData, string directoryInDestination, MemoryStream zipStream, string password)
+        internal static void AddZipToZip(ZipFile zip, string directoryInDestination, MemoryStream zipStream, string password)
         {
             zipStream.Position = 0;
-            using (var ms = new MemoryStream(zipData))
-            using (var zip = ZipFile.Read(ms))
             using (var zipToAdd = ZipFile.Read(zipStream))
             {
                 zip.Password = password;
@@ -336,51 +293,6 @@ namespace SWPatcher.Helpers
                         Logger.Debug($"AddZipToZip does not contain filePathInZip=[{filePathInZip}]");
                     }
                 }
-
-                var msDst = new MemoryStream();
-                zip.Save(msDst);
-                return msDst.ToArray();
-            }
-        }
-
-        internal static XorMemoryStream AddZipToZip(XorMemoryStream stream, string directoryInDestination, MemoryStream zipStream, string password)
-        {
-            stream.Position = 0;
-            zipStream.Position = 0;
-            using (var zip = ZipFile.Read(stream))
-            using (var zipToAdd = ZipFile.Read(zipStream))
-            {
-                zip.Password = password;
-
-                int zipToAddEntriesCount = zipToAdd.Entries.Count;
-                MemoryStream[] msArray = new MemoryStream[zipToAddEntriesCount];
-                for (int i = 0; i < zipToAddEntriesCount; i++)
-                {
-                    ZipEntry zipToAddEntry = zipToAdd[i];
-                    MemoryStream zipMemoryStream = msArray[i] = new MemoryStream();
-                    string filePathInZip = Path.Combine(directoryInDestination, zipToAddEntry.FileName);
-
-                    if (zip.ContainsEntry(filePathInZip))
-                    {
-                        ZipEntry zipEntry = zip[filePathInZip];
-                        filePathInZip = zipEntry.FileName;
-                        zip.RemoveEntry(filePathInZip);
-                        zipToAddEntry.Extract(zipMemoryStream);
-                        zipMemoryStream.Position = 0;
-                        zip.AddEntry(filePathInZip, zipMemoryStream);
-
-                        ZipEntry modifiedZipEntry = zip[filePathInZip];
-                        CopyZipEntryAttributes(zipEntry, modifiedZipEntry);
-                    }
-                    else
-                    {
-                        Logger.Debug($"AddZipToZip does not contain filePathInZip=[{filePathInZip}]");
-                    }
-                }
-
-                var msDst = new XorMemoryStream(stream.XorByte);
-                zip.Save(msDst);
-                return msDst;
             }
         }
 
@@ -491,8 +403,11 @@ namespace SWPatcher.Helpers
         internal static void CheckRunningPrograms()
         {
             string[] processes = Methods.GetRunningGameProcesses();
+
             if (processes.Length > 0)
-                throw new Exception(String.Format(StringLoader.GetText("exception_game_already_open"), String.Join("/", processes)));
+            {
+                throw new Exception(StringLoader.GetText("exception_game_already_open", String.Join("/", processes)));
+            }
         }
 
         internal static string[] GetRunningGameProcesses()
@@ -523,6 +438,82 @@ namespace SWPatcher.Helpers
             }
 
             throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
+        internal static void EnsureDirectoryRights(string folderPath)
+        {
+            FileSystemRights rights = FileSystemRights.Modify;
+
+            if (!DirectoryHasRights(folderPath, rights))
+            {
+                string securityExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Strings.FileName.SecurityExe);
+
+                var startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    Arguments = $"\"{folderPath}\" \"{rights}\"",
+                    FileName = securityExePath
+                };
+
+                var process = Process.Start(startInfo);
+                process.WaitForExit();
+
+                var exitCode = process.ExitCode;
+
+                if (exitCode != 0)
+                {
+                    if (exitCode == -2)
+                    {
+                        throw new DirectoryNotFoundException(folderPath);
+                    }
+                    else
+                    {
+                        throw new Exception(StringLoader.GetText("exception_directory_rights"));
+                    }
+                }
+            }
+        }
+
+        internal static bool DirectoryHasRights(string folderPath, FileSystemRights rights)
+        {
+            var currentUserIdentity = WindowsIdentity.GetCurrent();
+            SecurityIdentifier currentUserSID = currentUserIdentity.User;
+            var allow = false;
+            var deny = false;
+            DirectorySecurity acl = Directory.GetAccessControl(folderPath);
+            if (acl == null)
+            {
+                return false;
+            }
+
+            AuthorizationRuleCollection accessRules = acl.GetAccessRules(true, true, typeof(SecurityIdentifier));
+            if (accessRules == null)
+            {
+                return false;
+            }
+
+            foreach (FileSystemAccessRule accessRule in accessRules)
+            {
+                if (currentUserSID.Equals(accessRule.IdentityReference))
+                {
+                    if ((rights & accessRule.FileSystemRights) != rights)
+                    {
+                        continue;
+                    }
+
+                    if (accessRule.AccessControlType == AccessControlType.Allow)
+                    {
+                        allow = true;
+                    }
+                    else if (accessRule.AccessControlType == AccessControlType.Deny)
+                    {
+                        deny = true;
+                    }
+                }
+            }
+
+            return allow && !deny;
         }
     }
 }

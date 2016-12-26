@@ -52,6 +52,8 @@ namespace SWPatcher.Forms
             this.buttonOk = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageGame = new System.Windows.Forms.TabPage();
+            this.groupBoxGameOptions = new System.Windows.Forms.GroupBox();
+            this.buttonGameOptions = new System.Windows.Forms.Button();
             this.groupBoxPatchExe = new System.Windows.Forms.GroupBox();
             this.checkBoxPatchExe = new System.Windows.Forms.CheckBox();
             this.groupBoxGameDirectory = new System.Windows.Forms.GroupBox();
@@ -73,6 +75,7 @@ namespace SWPatcher.Forms
             this.tableLayoutPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPageGame.SuspendLayout();
+            this.groupBoxGameOptions.SuspendLayout();
             this.groupBoxPatchExe.SuspendLayout();
             this.groupBoxGameDirectory.SuspendLayout();
             this.tabPageCredentials.SuspendLayout();
@@ -147,6 +150,7 @@ namespace SWPatcher.Forms
             // 
             // tabPageGame
             // 
+            this.tabPageGame.Controls.Add(this.groupBoxGameOptions);
             this.tabPageGame.Controls.Add(this.groupBoxPatchExe);
             this.tabPageGame.Controls.Add(this.groupBoxGameDirectory);
             this.tabPageGame.Location = new System.Drawing.Point(4, 22);
@@ -155,6 +159,26 @@ namespace SWPatcher.Forms
             this.tabPageGame.Size = new System.Drawing.Size(306, 189);
             this.tabPageGame.TabIndex = 0;
             this.tabPageGame.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxGameOptions
+            // 
+            this.groupBoxGameOptions.AutoSize = true;
+            this.groupBoxGameOptions.Controls.Add(this.buttonGameOptions);
+            this.groupBoxGameOptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxGameOptions.Location = new System.Drawing.Point(3, 122);
+            this.groupBoxGameOptions.Name = "groupBoxGameOptions";
+            this.groupBoxGameOptions.Size = new System.Drawing.Size(300, 64);
+            this.groupBoxGameOptions.TabIndex = 3;
+            this.groupBoxGameOptions.TabStop = false;
+            // 
+            // buttonGameOptions
+            // 
+            this.buttonGameOptions.Location = new System.Drawing.Point(6, 22);
+            this.buttonGameOptions.Name = "buttonGameOptions";
+            this.buttonGameOptions.Size = new System.Drawing.Size(99, 23);
+            this.buttonGameOptions.TabIndex = 2;
+            this.buttonGameOptions.UseVisualStyleBackColor = true;
+            this.buttonGameOptions.Click += new System.EventHandler(this.ButtonGameOptions_Click);
             // 
             // groupBoxPatchExe
             // 
@@ -256,6 +280,7 @@ namespace SWPatcher.Forms
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(180, 20);
             this.textBoxPassword.TabIndex = 0;
+            this.textBoxPassword.UseSystemPasswordChar = true;
             this.textBoxPassword.TextChanged += new System.EventHandler(this.TextBoxPassword_TextChanged);
             // 
             // groupBoxGameUserId
@@ -356,6 +381,7 @@ namespace SWPatcher.Forms
             this.tabControl.ResumeLayout(false);
             this.tabPageGame.ResumeLayout(false);
             this.tabPageGame.PerformLayout();
+            this.groupBoxGameOptions.ResumeLayout(false);
             this.groupBoxPatchExe.ResumeLayout(false);
             this.groupBoxPatchExe.PerformLayout();
             this.groupBoxGameDirectory.ResumeLayout(false);
@@ -403,5 +429,7 @@ namespace SWPatcher.Forms
         private System.Windows.Forms.TextBox textBoxPatcherDirectory;
         private System.Windows.Forms.GroupBox groupBoxUILanguagePicker;
         private System.Windows.Forms.ComboBox comboBoxUILanguage;
+        private System.Windows.Forms.GroupBox groupBoxGameOptions;
+        private System.Windows.Forms.Button buttonGameOptions;
     }
 }

@@ -20,7 +20,6 @@ using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Text;
 using System.Threading;
 
 namespace SWPatcher.Helpers
@@ -100,7 +99,7 @@ namespace SWPatcher.Helpers
 #if DEBUG
             File.AppendAllText(Strings.FileName.Log, message);
 #else
-            byte[] messageBytes = Encoding.Unicode.GetBytes(message);
+            byte[] messageBytes = System.Text.Encoding.Unicode.GetBytes(message);
             ushort[] messageShorts = new ushort[messageBytes.Length / 2];
 
             using (var bw = new BinaryWriter(File.Open(Strings.FileName.Log, FileMode.Append, FileAccess.Write)))

@@ -39,6 +39,7 @@ namespace SWPatcher.Forms
             {
                 UserSettings.GamePath = GetSwPathFromRegistry();
             }
+            Methods.EnsureDirectoryRights(UserSettings.GamePath);
 
             if (this.comboBoxLanguages.DataSource != null)
             {
@@ -57,7 +58,7 @@ namespace SWPatcher.Forms
 
             StartupBackupCheck(this.comboBoxLanguages.SelectedItem as Language);
 
-            if (!Methods.IsValidSwPatcherPath(Directory.GetCurrentDirectory()))
+            if (!Methods.IsValidSwPatcherPath(UserSettings.PatcherPath))
             {
                 string error = StringLoader.GetText("exception_folder_same_path_game");
 
@@ -106,7 +107,7 @@ namespace SWPatcher.Forms
                     break;
                 case State.WaitClient:
                     this.buttonPlay.Text = StringLoader.GetText("button_cancelling");
-                    this.Worker.CancelAsync();
+                    this.GameStarter.Cancel();
 
                     break;
             }
@@ -130,7 +131,7 @@ namespace SWPatcher.Forms
             Language language = this.comboBoxLanguages.SelectedItem as Language;
 
             DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Name, Methods.DateToString(language.LastUpdate));
+            this.labelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
 
             this.CurrentState = State.RTPatch;
             this._nextState = NextState.Download;
@@ -140,7 +141,7 @@ namespace SWPatcher.Forms
         private void ComboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.comboBoxLanguages.SelectedItem is Language language && Methods.HasNewTranslations(language))
-                this.labelNewTranslations.Text = String.Format(StringLoader.GetText("form_label_new_translation"), language.Name, Methods.DateToString(language.LastUpdate));
+                this.labelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
             else
                 this.labelNewTranslations.Text = String.Empty;
         }
@@ -204,7 +205,7 @@ namespace SWPatcher.Forms
             if (!String.IsNullOrEmpty(pasteUrl))
             {
                 Clipboard.SetText(pasteUrl);
-                MsgBox.Success(String.Format(StringLoader.GetText("success_log_file_upload"), pasteUrl));
+                MsgBox.Success(StringLoader.GetText("success_log_file_upload", pasteUrl));
             }
             else
             {
@@ -227,11 +228,11 @@ namespace SWPatcher.Forms
                 this.RTPatcher.Cancel();
                 this.Downloader.Cancel();
                 this.Patcher.Cancel();
-                this.Worker.CancelAsync();
+                this.GameStarter.Cancel();
             }
             if (this.CurrentState != State.Idle)
             {
-                MsgBox.Error(String.Format(StringLoader.GetText("exception_cannot_close"), AssemblyAccessor.Title));
+                MsgBox.Error(StringLoader.GetText("exception_cannot_close", AssemblyAccessor.Title));
 
                 e.Cancel = true;
             }

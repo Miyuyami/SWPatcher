@@ -17,19 +17,18 @@
  */
 
 using System;
+using static SWPatcher.Patching.Patcher;
 
 namespace SWPatcher.Patching
 {
     public class PatcherProgressChangedEventArgs : EventArgs
     {
-        public int Step { get; private set; }
-        public int StepCount { get; private set; }
+        public State PatcherState { get; private set; }
         public int Progress { get; private set; }
 
-        public PatcherProgressChangedEventArgs(int step, int stepCount, int progress)
+        public PatcherProgressChangedEventArgs(State patcherState, int progress)
         {
-            this.Step = step;
-            this.StepCount = stepCount;
+            this.PatcherState = patcherState;
             this.Progress = progress;
         }
     }

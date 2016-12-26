@@ -70,6 +70,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 게임 옵션 변경.
+        /// </summary>
+        internal static string box_game_options {
+            get {
+                return ResourceManager.GetString("box_game_options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 소울워커 ID.
         /// </summary>
         internal static string box_id {
@@ -178,6 +187,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 게임 옵션.
+        /// </summary>
+        internal static string button_game_options {
+            get {
+                return ResourceManager.GetString("button_game_options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         internal static string button_ok {
@@ -282,6 +300,15 @@ namespace SWPatcher.Resources {
         internal static string exception_captcha_validation {
             get {
                 return ResourceManager.GetString("exception_captcha_validation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 게임 폴더 &quot;{0}&quot; 경로에 권한설정을 실패하였습니다..
+        /// </summary>
+        internal static string exception_directory_rights {
+            get {
+                return ResourceManager.GetString("exception_directory_rights", resourceCulture);
             }
         }
         
@@ -636,6 +663,33 @@ namespace SWPatcher.Resources {
         internal static string form_status_patch_exe {
             get {
                 return ResourceManager.GetString("form_status_patch_exe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 로딩 중....
+        /// </summary>
+        internal static string form_status_patch_load {
+            get {
+                return ResourceManager.GetString("form_status_patch_load", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 패치 중....
+        /// </summary>
+        internal static string form_status_patch_patch {
+            get {
+                return ResourceManager.GetString("form_status_patch_patch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 저장 중....
+        /// </summary>
+        internal static string form_status_patch_save {
+            get {
+                return ResourceManager.GetString("form_status_patch_save", resourceCulture);
             }
         }
         

@@ -376,4 +376,22 @@ The link was copied to clipboard.</value>
   <data name="exception_rtpatch_read_patch_file_fail" xml:space="preserve">
     <value>Failed to read patch file. Try again.</value>
   </data>
+  <data name="form_status_patch_load" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="form_status_patch_patch" xml:space="preserve">
+    <value>Patching...</value>
+  </data>
+  <data name="form_status_patch_save" xml:space="preserve">
+    <value>Saving...</value>
+  </data>
+  <data name="box_game_options" xml:space="preserve">
+    <value>Change in-game options</value>
+  </data>
+  <data name="button_game_options" xml:space="preserve">
+    <value>Game Options</value>
+  </data>
+  <data name="exception_directory_rights" xml:space="preserve">
+    <value>Unable to set the right permissions to the game folder "{0}".</value>
+  </data>
 </root>

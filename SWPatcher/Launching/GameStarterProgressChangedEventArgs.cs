@@ -16,29 +16,18 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using SWPatcher.General;
 using System;
+using static SWPatcher.Forms.MainForm;
 
-namespace SWPatcher.Patching
+namespace SWPatcher.Launching
 {
-    public class PatcherCompletedEventArgs : EventArgs
+    public class GameStarterProgressChangedEventArgs : EventArgs
     {
-        public Language Language { get; private set; }
-        public bool Cancelled { get; private set; }
-        public Exception Error { get; private set; }
+        public State State { get; private set; }
 
-        public PatcherCompletedEventArgs(bool cancelled, Exception error)
+        public GameStarterProgressChangedEventArgs(State state)
         {
-            this.Language = null;
-            this.Cancelled = cancelled;
-            this.Error = error;
-        }
-
-        public PatcherCompletedEventArgs(Language language, bool cancelled, Exception error)
-        {
-            this.Language = language;
-            this.Cancelled = cancelled;
-            this.Error = error;
+            this.State = state;
         }
     }
 }

@@ -21,15 +21,12 @@ using SWPatcher.Downloading;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
+using SWPatcher.Launching;
 using SWPatcher.Patching;
 using SWPatcher.RTPatch;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace SWPatcher.Forms
@@ -54,13 +51,13 @@ namespace SWPatcher.Forms
             Play,
             PlayRaw
         }
-        
+
         private State _state;
         private NextState _nextState;
         private readonly Downloader Downloader;
         private readonly Patcher Patcher;
-        private readonly BackgroundWorker Worker;
         private readonly RTPatcher RTPatcher;
+        private readonly GameStarter GameStarter;
 
         public State CurrentState
         {
@@ -183,18 +180,13 @@ namespace SWPatcher.Forms
             this.Patcher = new Patcher();
             this.Patcher.PatcherProgressChanged += new PatcherProgressChangedEventHandler(this.Patcher_PatcherProgressChanged);
             this.Patcher.PatcherCompleted += new PatcherCompletedEventHandler(this.Patcher_PatcherCompleted);
-            this.Worker = new BackgroundWorker
-            {
-                WorkerReportsProgress = true,
-                WorkerSupportsCancellation = true
-            };
-            this.Worker.DoWork += this.Worker_DoWork;
-            this.Worker.ProgressChanged += this.Worker_ProgressChanged;
-            this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
             this.RTPatcher = new RTPatcher();
             this.RTPatcher.RTPatcherDownloadProgressChanged += this.RTPatcher_DownloadProgressChanged;
             this.RTPatcher.RTPatcherProgressChanged += this.RTPatcher_ProgressChanged;
             this.RTPatcher.RTPatcherCompleted += this.RTPatcher_Completed;
+            this.GameStarter = new GameStarter();
+            this.GameStarter.GameStarterProgressChanged += this.GameStarter_GameStarterProgressChanged;
+            this.GameStarter.GameStarterCompleted += this.GameStarter_GameStarterCompleted;
             InitializeComponent();
             InitializeTextComponent();
             this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
@@ -247,7 +239,7 @@ namespace SWPatcher.Forms
 
                 return;
             }
-            
+
             this.CurrentState = State.Idle;
         }
 
@@ -255,15 +247,32 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.Patch)
             {
-                if (e.Progress == -1)
+                switch (e.PatcherState)
                 {
-                    this.toolStripStatusLabel.Text = StringLoader.GetText("form_status_patch_exe");
-                    this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
-                }
-                else
-                {
-                    this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} Step {e.Step}/{e.StepCount}";
-                    this.toolStripProgressBar.Value = e.Progress;
+                    case Patcher.State.Load:
+                        this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} {StringLoader.GetText("form_status_patch_load")}";
+                        this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+
+                        break;
+                    case Patcher.State.Patch:
+                        this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} {StringLoader.GetText("form_status_patch_patch")}";
+                        this.toolStripProgressBar.Style = ProgressBarStyle.Blocks;
+                        if (e.Progress != -1)
+                        {
+                            this.toolStripProgressBar.Value = e.Progress;
+                        }
+
+                        break;
+                    case Patcher.State.Save:
+                        this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} {StringLoader.GetText("form_status_patch_save")}";
+                        this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+
+                        break;
+                    case Patcher.State.ExePatch:
+                        this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_patch")} {StringLoader.GetText("form_status_patch_exe")}";
+                        this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+
+                        break;
                 }
             }
         }
@@ -308,6 +317,7 @@ namespace SWPatcher.Forms
             }
 
             SWFileManager.DisposeFileData();
+            GC.Collect();
             this.CurrentState = State.Idle;
         }
 
@@ -315,7 +325,7 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName}";
+                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName} - {e.DownloadSpeed}";
                 this.toolStripProgressBar.Value = e.Progress;
             }
         }
@@ -331,7 +341,6 @@ namespace SWPatcher.Forms
 
         private void RTPatcher_Completed(object sender, AsyncCompletedEventArgs e)
         {
-            Methods.RTPatchCleanup();
             if (e.Cancelled)
             {
                 Logger.Debug($"{sender.ToString()} cancelled");
@@ -340,6 +349,7 @@ namespace SWPatcher.Forms
             {
                 if (e.Error is ResultException ex)
                 {
+                    Methods.RTPatchCleanup();
                     string logFileName = Path.GetFileName(ex.LogPath);
                     switch (ex.Result)
                     {
@@ -348,39 +358,39 @@ namespace SWPatcher.Forms
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_not_exist_directory"));
                             break;
                         case 9:
-                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}] version=[{ex.ClientVersion.ToString()}]");
-                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt"), $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
+                            Logger.Error($"error=[{ex.Message}] file=[{ex.FileName}] version=[{ex.ClientVersion}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_corrupt", $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
                             break;
                         case 15:
-                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}] version=[{ex.ClientVersion.ToString()}]");
-                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_missing_file"), $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
+                            Logger.Error($"error=[{ex.Message}] file=[{ex.FileName}] version=[{ex.ClientVersion}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_missing_file", $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
                             break;
                         case 18:
-                            Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
+                            Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_open_patch_file_fail"));
                             break;
                         case 20:
-                            Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
+                            Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_read_patch_file_fail"));
                             break;
                         case 22:
-                            Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
+                            Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_rename_fail"));
                             break;
                         case 29:
-                            Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
+                            Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_insufficient_storage"));
                             break;
                         case 32:
-                            Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
+                            Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_time_date_fail"));
                             break;
                         case 36:
-                            Logger.Error($"error=[{ex.Message.ToString()}] file=[{ex.FileName}] version=[{ex.ClientVersion.ToString()}]");
-                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_corrupt_file"), $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
+                            Logger.Error($"error=[{ex.Message}] file=[{ex.FileName}] version=[{ex.ClientVersion}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_corrupt_file", $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
                             break;
                         case 49:
-                            Logger.Error($"error=[{ex.Message.ToString()}]@Version=[{ex.ClientVersion.ToString()}]");
+                            Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_administrator_required"));
                             break;
                         default:
@@ -396,7 +406,7 @@ namespace SWPatcher.Forms
                             }
 
                             Logger.Error($"See {logFileName} for details. Error Code=[{ex.Result}]");
-                            MsgBox.Error(String.Format(StringLoader.GetText("exception_rtpatch_result"), ex.Result, logFileName));
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_result", ex.Result, logFileName));
                             break;
                     }
                 }
@@ -408,6 +418,7 @@ namespace SWPatcher.Forms
             }
             else
             {
+                Methods.RTPatchCleanup();
                 Logger.Debug($"{sender.ToString()} successfuly completed");
                 switch (this._nextState)
                 {
@@ -417,11 +428,11 @@ namespace SWPatcher.Forms
 
                         break;
                     case NextState.Play:
-                        this.Worker.RunWorkerAsync(this.comboBoxLanguages.SelectedItem as Language);
+                        this.GameStarter.Run(this.comboBoxLanguages.SelectedItem as Language);
 
                         break;
                     case NextState.PlayRaw:
-                        this.Worker.RunWorkerAsync();
+                        this.GameStarter.Run();
 
                         break;
                 }
@@ -433,128 +444,12 @@ namespace SWPatcher.Forms
             this.CurrentState = State.Idle;
         }
 
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        private void GameStarter_GameStarterProgressChanged(object sender, GameStarterProgressChangedEventArgs e)
         {
-            this.Worker.ReportProgress((int)State.Prepare);
-
-            Methods.CheckRunningPrograms();
-            if (e.Argument != null)
-            {
-                Language language = e.Argument as Language;
-                Logger.Debug(Methods.MethodFullName("GameStart", Thread.CurrentThread.ManagedThreadId.ToString(), language.ToString()));
-
-                SWFileManager.LoadFileConfiguration();
-
-                if (IsTranslationOutdatedOrMissing(language))
-                {
-                    e.Result = true; // call force patch in completed event
-                    return;
-                }
-
-                if (UserSettings.WantToPatchExe)
-                {
-                    string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
-                    string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
-                    string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
-
-                    if (!File.Exists(gameExePatchedPath))
-                    {
-                        byte[] gameExeBytes = File.ReadAllBytes(gameExePath);
-
-                        Methods.PatchExeFile(gameExeBytes, gameExePatchedPath);
-                    }
-
-                    BackupAndPlaceFile(gameExePath, gameExePatchedPath, backupFilePath);
-                }
-
-                Process clientProcess = null;
-                ProcessStartInfo startInfo = null;
-                if (UserSettings.WantToLogin)
-                {
-                    using (var client = new MyWebClient())
-                    {
-                        HangameLogin(client);
-                        GetGameStartResponse(client);
-                        string[] gameStartArgs = GetGameStartArguments(client);
-
-                        startInfo = new ProcessStartInfo
-                        {
-                            UseShellExecute = true,
-                            Verb = "runas",
-                            Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                            WorkingDirectory = UserSettings.GamePath,
-                            FileName = Strings.FileName.GameExe
-                        };
-                    }
-
-                    BackupAndPlaceFiles(language);
-
-                    clientProcess = Process.Start(startInfo);
-                }
-                else
-                {
-                    BackupAndPlaceFiles(language);
-
-                    this.Worker.ReportProgress((int)State.WaitClient);
-                    while (true)
-                    {
-                        if (this.Worker.CancellationPending)
-                        {
-                            e.Cancel = true;
-                            return;
-                        }
-
-                        clientProcess = GetProcess(Strings.FileName.GameExe);
-
-                        if (clientProcess == null)
-                            Thread.Sleep(1000);
-                        else
-                            break;
-                    }
-                }
-
-                this.Worker.ReportProgress((int)State.WaitClose);
-                clientProcess.WaitForExit();
-            }
-            else
-            {
-                Logger.Debug(Methods.MethodFullName("GameStart", Thread.CurrentThread.ManagedThreadId.ToString()));
-
-                if (UserSettings.WantToLogin)
-                {
-                    ProcessStartInfo startInfo = null;
-                    using (var client = new MyWebClient())
-                    {
-                        HangameLogin(client);
-                        GetGameStartResponse(client);
-                        string[] gameStartArgs = GetGameStartArguments(client);
-
-                        startInfo = new ProcessStartInfo
-                        {
-                            UseShellExecute = true,
-                            Verb = "runas",
-                            Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                            WorkingDirectory = UserSettings.GamePath,
-                            FileName = Strings.FileName.GameExe
-                        };
-                    }
-
-                    Process.Start(startInfo);
-                    e.Cancel = true;
-                }
-                else
-                {
-                    throw new Exception(StringLoader.GetText("exception_not_login_option"));
-                }
-            }
+            this.CurrentState = e.State;
         }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            this.CurrentState = (State)e.ProgressPercentage;
-        }
-
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void GameStarter_GameStarterCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {

@@ -16,6 +16,7 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 namespace SWPatcher.Helpers.GlobalVariables
 {
     public static class Strings
@@ -33,6 +34,8 @@ namespace SWPatcher.Helpers.GlobalVariables
             public const string PurpleExe = "PLauncher.exe";
             public const string ReactorExe = "reactor.exe";
             public const string OutboundExe = "Outbound.exe";
+            public const string OptionExe = "Option.exe";
+            public const string SecurityExe = "DirectoryRights.exe";
             public const string Log = ".log";
             public const string Data12 = "data12.v";
             public const string Data14 = "data14.v";
@@ -67,7 +70,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             {
                 public const string Section = "FTP";
                 public const string Key = "address";
-                public const string UpdateRepository = "update";
+                public const string UpdateRepository = "update/";
             }
 
             public static class Patcher
@@ -117,13 +120,14 @@ namespace SWPatcher.Helpers.GlobalVariables
             public const string PostClearFlagDefaultValue = "y";
             public const string PostNextUrl = "nxtURL";
             public const string PostNextUrlDefaultValue = "http://www.hangame.co.jp";
-            public const string ReactorStr = "	reactorStr = ";
+            /*public const string ReactorStr = "	reactorStr = ";
             public const string GameStartArg = "\"gs\":";
             public const string ErrorCodeVariable = "var errCode = ";
             public const string ErrorCodeArg = "\"errCode\":";
-            public const string MaintenanceVariable = "var openCloseTypeCd = ";
+            public const string MaintenanceVariable = "var openCloseTypeCd = ";*/
             public const string MessageVariable = "var msg = ";
             public const string CaptchaValidationText = "画像認証";
+            public const string CaptchaValidationText2 = "認証に連続";
             public const string CaptchaUrl = "http://top.hangame.co.jp/login/loginfailed.nhn?type=dlf";
         }
     }

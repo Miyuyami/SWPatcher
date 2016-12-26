@@ -16,8 +16,8 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using SWPatcher.General;
+using System;
 
 namespace SWPatcher.Downloading
 {

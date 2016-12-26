@@ -21,6 +21,7 @@ using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -66,6 +67,8 @@ namespace SWPatcher.Forms
             this.tabPagePatcher.Text = StringLoader.GetText("tab_patcher");
             this.groupBoxPatcherDirectory.Text = StringLoader.GetText("box_patcher_dir");
             this.groupBoxUILanguagePicker.Text = StringLoader.GetText("box_language");
+            this.groupBoxGameOptions.Text = StringLoader.GetText("box_game_options");
+            this.buttonGameOptions.Text = StringLoader.GetText("button_game_options");
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -77,13 +80,16 @@ namespace SWPatcher.Forms
             this.textBoxId.Text = this.GameUserId = UserSettings.GameId;
             this.textBoxId.Enabled = this.textBoxPassword.Enabled = this.checkBoxWantToLogin.Checked = this.WantToLogin = UserSettings.WantToLogin;
 
-            string encryptedEmptyString = String.Empty;
-            using (var secure = Methods.ToSecureString(encryptedEmptyString))
+            string maskedEmptyString = SHA256String(String.Empty);
+            string maskedGamePw = MaskPassword(UserSettings.GamePw);
+            if (maskedEmptyString == maskedGamePw)
             {
-                encryptedEmptyString = Methods.EncryptString(secure);
+                this.textBoxPassword.Text = this.GameUserPassword = String.Empty;
             }
-            string encryptedGamePw = UserSettings.GamePw;
-            this.textBoxPassword.Text = this.GameUserPassword = encryptedGamePw != encryptedEmptyString ? MaskPassword(encryptedGamePw) : "";
+            else
+            {
+                this.textBoxPassword.Text = this.GameUserPassword = maskedGamePw;
+            }
 
             var def = new ResxLanguage(StringLoader.GetText("match_windows"), "default");
             var en = new ResxLanguage("English", "en");
@@ -146,9 +152,13 @@ namespace SWPatcher.Forms
                 DialogResult result = folderDialog.ShowDialog();
 
                 if (result == DialogResult.OK)
+                {
                     if (Methods.IsSwPath(folderDialog.SelectedPath))
+                    {
                         if (Methods.IsValidSwPatcherPath(UserSettings.PatcherPath))
+                        {
                             this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
+                        }
                         else
                         {
                             DialogResult dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
@@ -156,8 +166,12 @@ namespace SWPatcher.Forms
                             if (dialogResult == DialogResult.Yes)
                                 this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
                         }
+                    }
                     else
+                    {
                         MsgBox.Error(StringLoader.GetText("exception_folder_not_game_folder"));
+                    }
+                }
             }
         }
 
@@ -173,13 +187,17 @@ namespace SWPatcher.Forms
                 if (result == DialogResult.OK)
                 {
                     if (Methods.IsValidSwPatcherPath(folderDialog.SelectedPath))
+                    {
                         this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
+                    }
                     else
                     {
                         DialogResult dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
 
                         if (dialogResult == DialogResult.Yes)
+                        {
                             this.textBoxPatcherDirectory.Text = this.PatcherWorkingDirectory = folderDialog.SelectedPath;
+                        }
                     }
                 }
             }
@@ -213,7 +231,9 @@ namespace SWPatcher.Forms
         private void ButtonOk_Click(object sender, EventArgs e)
         {
             if (this.buttonApply.Enabled)
+            {
                 this.ApplyChanges();
+            }
 
             this.DialogResult = DialogResult.OK;
         }
@@ -221,6 +241,20 @@ namespace SWPatcher.Forms
         private void ButtonApply_Click(object sender, EventArgs e)
         {
             this.ApplyChanges();
+        }
+
+        private void ButtonGameOptions_Click(object sender, EventArgs e)
+        {
+            string optionExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Strings.FileName.OptionExe);
+
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                Verb = "runas",
+                WorkingDirectory = UserSettings.GamePath,
+                FileName = optionExePath
+            };
+            Process.Start(startInfo);
         }
 
         private void ApplyChanges()
@@ -249,13 +283,12 @@ namespace SWPatcher.Forms
             if (UserSettings.GameId != this.GameUserId)
                 UserSettings.GameId = this.GameUserId;
 
-            if (MaskPassword(UserSettings.GamePw) != this.GameUserPassword)
+            if (this.GameUserPassword != MaskPassword(UserSettings.GamePw))
             {
                 using (var secure = Methods.ToSecureString(this.GameUserPassword))
                 {
                     UserSettings.GamePw = Methods.EncryptString(secure);
                 }
-                MsgBox.Success("PASSWORD SAVED!!!");
             }
 
             if (UserSettings.WantToLogin != this.WantToLogin)
@@ -317,12 +350,15 @@ namespace SWPatcher.Forms
             {
                 string newFilePath = "";
                 if (newPathHasFileName)
+                {
                     newFilePath = newPath;
+                }
                 else
+                {
                     newFilePath = Path.Combine(newPath, Path.GetFileName(file));
+                }
 
-                if (File.Exists(newFilePath))
-                    File.Delete(newFilePath);
+                File.Delete(newFilePath);
                 File.Move(file, newFilePath);
 
                 return true;

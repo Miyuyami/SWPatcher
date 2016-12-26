@@ -23,15 +23,11 @@ using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using System.Windows.Forms;
 
 namespace SWPatcher.Forms
@@ -58,7 +54,7 @@ namespace SWPatcher.Forms
             {
                 if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    DialogResult result = MsgBox.Question(String.Format(StringLoader.GetText("question_backup_files_found"), language.Name));
+                    DialogResult result = MsgBox.Question(StringLoader.GetText("question_backup_files_found", language.Name));
 
                     if (result == DialogResult.Yes)
                         RestoreBackup(language);
@@ -75,7 +71,9 @@ namespace SWPatcher.Forms
         private static void RestoreBackup(Language language)
         {
             if (!Directory.Exists(Strings.FolderName.Backup))
+            {
                 return;
+            }
 
             string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
             if (File.Exists(backupFilePath))
@@ -85,7 +83,11 @@ namespace SWPatcher.Forms
                 Logger.Info($"Restoring .exe original=[{gameExePath}] backup=[{gameExePatchedPath}]");
 
                 if (File.Exists(gameExePath))
+                {
+                    File.Delete(gameExePatchedPath);
                     File.Move(gameExePath, gameExePatchedPath);
+                }
+
                 File.Move(backupFilePath, gameExePath);
             }
 
@@ -94,14 +96,13 @@ namespace SWPatcher.Forms
             foreach (var file in filePaths)
             {
                 string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
-                Logger.Info($"Restoring files original=[{path}] backup=[{file}]");
+                Logger.Info($"Restoring file original=[{path}] backup=[{file}]");
 
                 if (File.Exists(path))
                 {
                     string langPath = Path.Combine(language.Name, path.Substring(UserSettings.GamePath.Length + 1));
-                    if (File.Exists(langPath))
-                        File.Delete(langPath);
 
+                    File.Delete(langPath);
                     File.Move(path, langPath);
                 }
 
@@ -111,7 +112,7 @@ namespace SWPatcher.Forms
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    MsgBox.Error(String.Format(StringLoader.GetText("exception_cannot_restore_file"), Path.GetFullPath(file)));
+                    MsgBox.Error(StringLoader.GetText("exception_cannot_restore_file", Path.GetFullPath(file)));
                     Logger.Error($"Cannot restore file=[{file}]");
                     File.Delete(file);
                 }
@@ -210,193 +211,6 @@ namespace SWPatcher.Forms
             {
                 return BitConverter.ToString(sha256.ComputeHash(fs)).Replace("-", "");
             }
-        }
-
-        private static bool IsTranslationOutdatedOrMissing(Language language)
-        {
-            if (Methods.IsTranslationOutdated(language))
-            {
-                return true;
-            }
-
-            ReadOnlyCollection<SWFile> swFiles = SWFileManager.GetFiles();
-            ILookup<Type, SWFile> things = swFiles.ToLookup(f => f.GetType());
-            IEnumerable<string> archivesPaths = things[typeof(ArchivedSWFile)].Select(f => f.Path).Union(things[typeof(PatchedSWFile)].Select(f => f.Path));
-            IEnumerable<string> otherSWFilesPaths = things[typeof(SWFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
-            IEnumerable<string> translationFilePaths = archivesPaths.Distinct().Union(otherSWFilesPaths).Select(f => Path.Combine(language.Name, f));
-
-            foreach (var path in translationFilePaths)
-            {
-                if (!File.Exists(path))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static Process GetProcess(string name)
-        {
-            Process[] processesByName = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(name));
-
-            if (processesByName.Length > 0)
-                return processesByName[0];
-
-            return null;
-        }
-
-        private static void BackupAndPlaceFiles(Language language)
-        {
-            ReadOnlyCollection<SWFile> swFiles = SWFileManager.GetFiles();
-            ILookup<Type, SWFile> swFileTypeLookup = swFiles.ToLookup(f => f.GetType());
-            IEnumerable<string> archives = swFileTypeLookup[typeof(ArchivedSWFile)].Select(f => f.Path).Union(swFileTypeLookup[typeof(PatchedSWFile)].Select(f => f.Path));
-            IEnumerable<string> otherSWFiles = swFileTypeLookup[typeof(SWFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
-            IEnumerable<string> translationFiles = archives.Distinct().Union(otherSWFiles).Select(f => Path.Combine(language.Name, f));
-
-            foreach (var path in translationFiles)
-            {
-                string originalFilePath = Path.Combine(UserSettings.GamePath, path);
-                string translationFilePath = Path.Combine(language.Name, path);
-                string backupFilePath = Path.Combine(Strings.FolderName.Backup, path);
-
-                BackupAndPlaceFile(originalFilePath, translationFilePath, backupFilePath);
-            }
-        }
-
-        private static void BackupAndPlaceFile(string originalFilePath, string translationFilePath, string backupFilePath)
-        {
-            string backupFileDirectory = Path.GetDirectoryName(backupFilePath);
-            Directory.CreateDirectory(backupFileDirectory);
-
-            Logger.Info($"Swapping file original=[{originalFilePath}] backup=[{backupFilePath}] translation=[{translationFilePath}]");
-            File.Move(originalFilePath, backupFilePath);
-            File.Move(translationFilePath, originalFilePath);
-        }
-
-        private static void HangameLogin(MyWebClient client)
-        {
-            var values = new NameValueCollection(2);
-            string id = HttpUtility.UrlEncode(UserSettings.GameId);
-
-            values[Strings.Web.PostEncodeId] = id;
-            values[Strings.Web.PostEncodeFlag] = Strings.Web.PostEncodeFlagDefaultValue;
-            if (String.IsNullOrEmpty(values[Strings.Web.PostId] = id))
-            {
-                throw new Exception(StringLoader.GetText("exception_empty_id"));
-            }
-            using (System.Security.SecureString secure = Methods.DecryptString(UserSettings.GamePw))
-            {
-                if (String.IsNullOrEmpty(values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure))))
-                {
-                    throw new Exception(StringLoader.GetText("exception_empty_pw"));
-                }
-            }
-            values[Strings.Web.PostClearFlag] = Strings.Web.PostClearFlagDefaultValue;
-            values[Strings.Web.PostNextUrl] = Strings.Web.PostNextUrlDefaultValue;
-
-            var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
-            if (loginResponse.Contains(Strings.Web.CaptchaValidationText))
-            {
-                Process.Start(Strings.Web.CaptchaUrl);
-                throw new Exception(StringLoader.GetText("exception_captcha_validation"));
-            }
-            try
-            {
-                string[] messages = GetVariableValue(loginResponse, Strings.Web.MessageVariable);
-                if (messages[0].Length > 0)
-                    throw new Exception(StringLoader.GetText("exception_incorrect_id_pw"));
-            }
-            catch (IndexOutOfRangeException)
-            {
-
-            }
-        }
-
-        private static string GetGameStartResponse(MyWebClient client)
-        {
-            again:
-            string gameStartResponse = client.DownloadString(Urls.SoulworkerGameStart);
-            try
-            {
-                if (GetVariableValue(gameStartResponse, Strings.Web.ErrorCodeVariable)[0] == "03")
-                {
-                    throw new Exception(StringLoader.GetText("exception_not_tos"));
-                }
-                else if (GetVariableValue(gameStartResponse, Strings.Web.MaintenanceVariable)[0] == "C")
-                {
-                    throw new Exception(StringLoader.GetText("exception_game_maintenance"));
-                }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
-                if (dialog == DialogResult.Retry)
-                {
-                    goto again;
-                }
-
-                throw new Exception(StringLoader.GetText("exception_validation_failed"));
-            }
-
-            return gameStartResponse;
-        }
-
-        private static string[] GetGameStartArguments(MyWebClient client)
-        {
-            again:
-            try
-            {
-                client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
-
-                string reactorStartResponse = Encoding.Default.GetString(client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { }));
-                
-                if (GetVariableValue(reactorStartResponse, Strings.Web.ErrorCodeArg)[0] == "10")
-                {
-                    throw new Exception(StringLoader.GetText("exception_game_maintenance"));
-                }
-
-                string[] gameStartArgs = new string[3];
-                gameStartArgs[0] = GetVariableValue(reactorStartResponse, Strings.Web.GameStartArg)[0];
-                gameStartArgs[1] = Strings.Server.IP;
-                gameStartArgs[2] = Strings.Server.Port;
-
-                return gameStartArgs;
-            }
-            catch (WebException webEx)
-            {
-                DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
-                if (dialog == DialogResult.Retry)
-                {
-                    goto again;
-                }
-
-                var responseError = webEx.Response as HttpWebResponse;
-                if (responseError.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new WebException(StringLoader.GetText("exception_validation_failed"), webEx);
-                }
-                else
-                {
-                    throw;
-                }
-            }
-        }
-
-        private static string[] GetVariableValue(string fullText, string variableName)
-        {
-            string result;
-            int valueIndex = fullText.IndexOf(variableName);
-
-            if (valueIndex == -1)
-            {
-                throw new IndexOutOfRangeException();
-            }
-
-            result = fullText.Substring(valueIndex + variableName.Length + 1);
-            result = result.Substring(0, result.IndexOf('"'));
-
-            return result.Split(' ');
         }
 
         private string UploadToPasteBin(string title, string text, PasteBinExpiration expiration, bool isPrivate, string format)

@@ -31,14 +31,17 @@ namespace SWPatcher
         [STAThread]
         private static void Main()
         {
+            if (!Directory.Exists(UserSettings.PatcherPath))
+            {
+                UserSettings.PatcherPath = "";
+            }
+            Logger.Run();
             string[] args = Environment.GetCommandLineArgs();
             var argsList = new List<string>(args);
-            if (!Directory.Exists(UserSettings.PatcherPath))
-                UserSettings.PatcherPath = "";
+
             Directory.SetCurrentDirectory(UserSettings.PatcherPath);
             argsList.Insert(0, Thread.CurrentThread.ManagedThreadId.ToString());
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), argsList.ToArray()));
-            Logger.Run();
 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Program.CurrentDomain_UnhandledException);
             Application.EnableVisualStyles();
@@ -53,7 +56,7 @@ namespace SWPatcher
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Logger.Critical(e.ExceptionObject as Exception);
-            MsgBox.Error("Critical unhandled exception occured. Application will now exit.\n" + Logger.ExeptionParser(e.ExceptionObject as Exception));
+            MsgBox.Error(Logger.ExeptionParser(e.ExceptionObject as Exception) + "\r\n\r\nApplication will now exit.");
 
             Application.Exit();
         }
@@ -61,7 +64,7 @@ namespace SWPatcher
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             Logger.Critical(e.Exception);
-            MsgBox.Error("Critical thread exception occured. Application will now exit.\n" + Logger.ExeptionParser(e.Exception));
+            MsgBox.Error(Logger.ExeptionParser(e.Exception) + "\r\n\r\nApplication will now exit.");
 
             Application.Exit();
         }

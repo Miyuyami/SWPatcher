@@ -17,6 +17,7 @@
  */
 
 using SWPatcher.Helpers.GlobalVariables;
+using System;
 using System.Globalization;
 
 namespace SWPatcher.Helpers
@@ -25,10 +26,14 @@ namespace SWPatcher.Helpers
     {
         public static string GetText(string name)
         {
-            return StringLoader.GetText(name, UserSettings.UILanguageCode);
+            return GetText(name, UserSettings.UILanguageCode);
+        }
+        public static string GetText(string name, params object[] args)
+        {
+            return String.Format(GetText(name, UserSettings.UILanguageCode), args);
         }
 
-        public static string GetText(string name, string languageCode)
+        private static string GetText(string name, string languageCode)
         {
             switchagain:
             switch (languageCode)

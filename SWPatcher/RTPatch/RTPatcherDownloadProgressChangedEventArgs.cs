@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.Net;
 
 namespace SWPatcher.RTPatch
 {
@@ -25,11 +24,38 @@ namespace SWPatcher.RTPatch
     {
         public string FileName { get; private set; }
         public int Progress { get; private set; }
+        public string DownloadSpeed { get; private set; }
 
-        public RTPatcherDownloadProgressChangedEventArgs(string fileName, DownloadProgressChangedEventArgs e)
+        public RTPatcherDownloadProgressChangedEventArgs(string fileName, int progress, long bytesPerSecond)
         {
             this.FileName = fileName;
-            this.Progress = e.BytesReceived == e.TotalBytesToReceive ? int.MaxValue : Convert.ToInt32(((double)e.BytesReceived / e.TotalBytesToReceive) * int.MaxValue);
+            this.Progress = progress;
+            this.DownloadSpeed = this.FormatDownloadSpeed(bytesPerSecond);
+        }
+
+        private string FormatDownloadSpeed(long bytesPerSecond)
+        {
+            string result;
+
+            if (bytesPerSecond < 1000L)
+            {
+                result = $"{bytesPerSecond} B/s";
+            }
+            else if (bytesPerSecond < 1000000L)
+            {
+                result = $"{bytesPerSecond / 1000d:F3} KB/s";
+            }
+            else if (bytesPerSecond < 1000000000L)
+            {
+                result = $"{bytesPerSecond / 1000000d:F3} MB/s";
+            }
+            else
+            {
+                result = $"{bytesPerSecond / 1000000000d:F3} GB/s";
+            }
+
+
+            return result;
         }
     }
 }

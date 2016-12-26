@@ -70,6 +70,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thay đổi tùy chỉnh trong game.
+        /// </summary>
+        internal static string box_game_options {
+            get {
+                return ResourceManager.GetString("box_game_options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Soulworker ID.
         /// </summary>
         internal static string box_id {
@@ -178,6 +187,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tùy chỉnh trò chơi.
+        /// </summary>
+        internal static string button_game_options {
+            get {
+                return ResourceManager.GetString("button_game_options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         internal static string button_ok {
@@ -282,6 +300,15 @@ namespace SWPatcher.Resources {
         internal static string exception_captcha_validation {
             get {
                 return ResourceManager.GetString("exception_captcha_validation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Không thể truy cập vào thư mục &quot;{0}&quot;..
+        /// </summary>
+        internal static string exception_directory_rights {
+            get {
+                return ResourceManager.GetString("exception_directory_rights", resourceCulture);
             }
         }
         
@@ -636,6 +663,33 @@ namespace SWPatcher.Resources {
         internal static string form_status_patch_exe {
             get {
                 return ResourceManager.GetString("form_status_patch_exe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading.....
+        /// </summary>
+        internal static string form_status_patch_load {
+            get {
+                return ResourceManager.GetString("form_status_patch_load", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đang cập nhật.....
+        /// </summary>
+        internal static string form_status_patch_patch {
+            get {
+                return ResourceManager.GetString("form_status_patch_patch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đang lưu lại.....
+        /// </summary>
+        internal static string form_status_patch_save {
+            get {
+                return ResourceManager.GetString("form_status_patch_save", resourceCulture);
             }
         }
         

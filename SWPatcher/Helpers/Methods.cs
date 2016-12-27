@@ -187,15 +187,35 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static void RTPatchCleanup()
+        /// <summary>
+        /// Deletes related RTPatch files from the <c>SWPatcher.Helpers.GlobalVariables.UserSettings.GamePath</c>.
+        /// </summary>
+        /// <param name="filterFlag">if true, delete both "RT*" and "*.RTP", otherwise, delete only "RT*"</param>
+        internal static void RTPatchCleanup(bool filterFlag)
         {
-            string[] filters = { "RT*", "*.RTP" };
+            string[] filters;
+            if (filterFlag)
+            {
+                filters = new string[] { "RT*", "*.RTP" };
+            }
+            else
+            {
+                filters = new string[] { "RT*" };
+            }
+
             foreach (var filter in filters)
             {
                 foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
                 {
-                    Logger.Info($"Deleting file=[{file}]");
-                    File.Delete(file);
+                    Logger.Info($"Trying to delete file=[{file}]");
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Debug($"Could not delete file=[{file}]\n\n{e.ToString()}");
+                    }
                 }
             }
         }

@@ -37,16 +37,15 @@ namespace SWPatcher.RTPatch
     {
         private const int DiffBytes = 10; // how many bytes to redownload on resume, just to be safe, why not?
         private readonly BackgroundWorker Worker;
-        private DoWorkEventArgs WorkerDoWorkEventArgs;
-        private string CurrentLogFilePath = "";
-        private string FileName = "";
-        private string LastMessage = "";
+        private string CurrentLogFilePath;
+        private string FileName;
+        private string LastMessage;
         private string Url;
         private Version ClientNextVersion;
         private Version ClientVersion;
         private Version ServerVersion;
-        private int FileCount = 0;
-        private int FileNumber = 0;
+        private int FileCount;
+        private int FileNumber;
 
         public event RTPatcherDownloadProgressChangedEventHandler RTPatcherDownloadProgressChanged;
         public event RTPatcherProgressChangedEventHandler RTPatcherProgressChanged;
@@ -68,7 +67,6 @@ namespace SWPatcher.RTPatch
         {
             LoadVersions();
             Methods.CheckRunningPrograms();
-            this.WorkerDoWorkEventArgs = e;
             Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
 
             while (this.ClientNextVersion < this.ServerVersion)
@@ -79,6 +77,10 @@ namespace SWPatcher.RTPatch
                     return;
                 }
 
+                this.FileCount = 0;
+                this.FileNumber = 0;
+                this.FileName = "";
+                this.LastMessage = "";
                 this.ClientVersion = this.ClientNextVersion;
                 this.ClientNextVersion = this.GetNextVersion(this.ClientNextVersion);
                 string RTPFileName = VersionToRTP(this.ClientNextVersion);
@@ -150,12 +152,12 @@ namespace SWPatcher.RTPatch
                 }
                 #endregion
 
-                Logger.Info($"RTPatch diffFile=[{diffFilePath}] path=[{gamePath}]");
+                Logger.Info($"RTPatchApply diffFile=[{diffFilePath}] path=[{gamePath}]");
                 #region Apply RTPatch
                 File.Delete(this.CurrentLogFilePath);
                 string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";
                 ulong result = Environment.Is64BitProcess ? NativeMethods.RTPatchApply64(command, new RTPatchCallback(this.RTPatchMessage), true) : NativeMethods.RTPatchApply32(command, new RTPatchCallback(this.RTPatchMessage), true);
-                File.Delete(diffFilePath);
+                Logger.Debug($"RTPatchApply finished with result=[{result}]");
                 File.AppendAllText(this.CurrentLogFilePath, $"Result=[{result}]");
 
                 if (result != 0)
@@ -163,12 +165,14 @@ namespace SWPatcher.RTPatch
                     if (result > 10000)
                     {
                         Logger.Debug($"RTPatchApply cancelled Result=[{result}] IsNormal=[{result == 32769}]");
+                        e.Cancel = true;
 
                         return; // RTPatch cancelled
                     }
 
                     throw new ResultException(this.LastMessage, result, this.CurrentLogFilePath, this.FileName, this.ClientVersion);
                 }
+                File.Delete(diffFilePath);
 
                 IniFile ini = new IniFile(new IniOptions
                 {
@@ -186,8 +190,6 @@ namespace SWPatcher.RTPatch
                 }
                 #endregion
             }
-
-            this.WorkerDoWorkEventArgs = null;
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -204,7 +206,6 @@ namespace SWPatcher.RTPatch
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.WorkerDoWorkEventArgs = null;
             if (e.Cancelled || e.Error != null)
             {
                 this.RTPatcherCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, null));
@@ -301,60 +302,43 @@ namespace SWPatcher.RTPatch
                 case 10u:
                 case 11u:
                 case 12u: // outputs
-                    {
-                        string text = Marshal.PtrToStringAnsi(ptr);
-                        this.LastMessage = text;
-                        File.AppendAllText(this.CurrentLogFilePath, text);
+                    string text = Marshal.PtrToStringAnsi(ptr);
+                    this.LastMessage = text;
+                    File.AppendAllText(this.CurrentLogFilePath, text);
 
-                        break;
-                    }
+                    break;
                 case 14u:
                 case 17u:
-                case 18u: // idk
+                case 18u: // abort on error
                     return null;
                 case 5u: // completion percentage
-                    {
-                        int readInt = Marshal.ReadInt32(ptr);
-                        int percentage = readInt > short.MaxValue ? int.MaxValue : readInt * 0x10000;
-                        this.Worker.ReportProgress(percentage);
-                        percentage = readInt * 100 / 0x8000;
-                        File.AppendAllText(this.CurrentLogFilePath, $"[{percentage}%]");
+                    int readInt = Marshal.ReadInt32(ptr);
+                    int percentage = readInt > short.MaxValue ? int.MaxValue : readInt * 0x10000;
+                    this.Worker.ReportProgress(percentage);
+                    percentage = readInt * 100 / 0x8000;
+                    File.AppendAllText(this.CurrentLogFilePath, $"[{percentage}%]");
 
-                        break;
-                    }
+                    break;
                 case 6u: // number of files in patch
-                    {
-                        int fileCount = Marshal.ReadInt32(ptr);
-                        this.FileNumber = 0;
-                        this.FileCount = fileCount;
-                        File.AppendAllText(this.CurrentLogFilePath, $"File Count=[{fileCount}]\n");
+                    int fileCount = Marshal.ReadInt32(ptr);
+                    this.FileCount = fileCount;
+                    File.AppendAllText(this.CurrentLogFilePath, $"File Count=[{fileCount}]\n");
 
-                        break;
-                    }
+                    break;
                 case 7u: // current file
-                    {
-                        string fileName = Marshal.PtrToStringAnsi(ptr);
-                        this.FileNumber++;
-                        this.FileName = fileName;
-                        File.AppendAllText(this.CurrentLogFilePath, $"Patching=[{fileName}]\n");
+                    string fileName = Marshal.PtrToStringAnsi(ptr);
+                    this.FileNumber++;
+                    this.FileName = fileName;
+                    this.Worker.ReportProgress(0);
+                    File.AppendAllText(this.CurrentLogFilePath, $"Patching=[{fileName}]\n");
 
-                        break;
-                    }
-                case 32u:
-                case 33u: // idk
-                    {
-                        int[] numbers = new int[2];
-                        Marshal.Copy(ptr, numbers, 0, 2);
-                        File.AppendAllText(this.CurrentLogFilePath, $"number1=[{numbers[0]}] number2=[{numbers[1]}]\n");
-
-                        break;
-                    }
-                default: break; // ignore rest
+                    break;
+                default:
+                    break; // ignore rest
             }
 
             if (this.Worker.CancellationPending)
             {
-                this.WorkerDoWorkEventArgs.Cancel = true;
                 return null;
             }
 

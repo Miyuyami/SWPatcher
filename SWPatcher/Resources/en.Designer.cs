@@ -794,8 +794,7 @@ namespace SWPatcher.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to This program comes with ABSOLUTELY NO WARRANTY
-        ///This is free software, and you are welcome to redistribute it
-        ///under certain conditions.
+        ///This is free software, and you are welcome to redistribute it under certain conditions.
         ///
         ///Soulworker Patcher was made to easily patch latest translations to your Soulworker Client without much risk of corrupting your original files when updating.
         ///It also can download latest translations from the SWHQ translation team and apply them at any time..

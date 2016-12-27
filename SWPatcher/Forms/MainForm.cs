@@ -349,7 +349,6 @@ namespace SWPatcher.Forms
             {
                 if (e.Error is ResultException ex)
                 {
-                    Methods.RTPatchCleanup();
                     string logFileName = Path.GetFileName(ex.LogPath);
                     switch (ex.Result)
                     {
@@ -394,6 +393,7 @@ namespace SWPatcher.Forms
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_administrator_required"));
                             break;
                         default:
+#if !DEBUG
                             string logFileText = File.ReadAllText(ex.LogPath);
 
                             try
@@ -407,18 +407,22 @@ namespace SWPatcher.Forms
 
                             Logger.Error($"See {logFileName} for details. Error Code=[{ex.Result}]");
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_result", ex.Result, logFileName));
+#endif
                             break;
                     }
+
+                    Methods.RTPatchCleanup(true);
                 }
                 else
                 {
+                    Methods.RTPatchCleanup(false);
                     Logger.Error(e.Error);
                     MsgBox.Error(Logger.ExeptionParser(e.Error));
                 }
             }
             else
             {
-                Methods.RTPatchCleanup();
+                Methods.RTPatchCleanup(true);
                 Logger.Debug($"{sender.ToString()} successfuly completed");
                 switch (this._nextState)
                 {

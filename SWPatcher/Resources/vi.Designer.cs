@@ -794,8 +794,7 @@ namespace SWPatcher.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to This program comes with ABSOLUTELY NO WARRANTY
-        ///This is free software, and you are welcome to redistribute it
-        ///under certain conditions.
+        ///This is free software, and you are welcome to redistribute it under certain conditions.
         ///
         ///Soulworker Patcher được làm ra là để áp dụng các bản dịch vào game mà không gây ra nhiều rủi ro hỏng tệp của game.
         ///Nguồn dịch được tải từ nhóm dịch ở SWHQ..

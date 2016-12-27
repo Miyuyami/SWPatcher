@@ -248,10 +248,6 @@ namespace SWPatcher.Launching
             {
                 throw new Exception(StringLoader.GetText("exception_empty_id"));
             }
-            if (String.IsNullOrEmpty(pw))
-            {
-                throw new Exception(StringLoader.GetText("exception_empty_pw"));
-            }
 
             var values = new NameValueCollection(2)
             {
@@ -261,7 +257,10 @@ namespace SWPatcher.Launching
             };
             using (System.Security.SecureString secure = Methods.DecryptString(pw))
             {
-                values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure));
+                if (String.IsNullOrEmpty(values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure))))
+                {
+                    throw new Exception(StringLoader.GetText("exception_empty_pw"));
+                }
             }
             values[Strings.Web.PostClearFlag] = Strings.Web.PostClearFlagDefaultValue;
             values[Strings.Web.PostNextUrl] = Strings.Web.PostNextUrlDefaultValue;

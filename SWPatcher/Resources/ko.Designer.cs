@@ -794,8 +794,7 @@ namespace SWPatcher.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to This program comes with ABSOLUTELY NO WARRANTY
-        ///This is free software, and you are welcome to redistribute it
-        ///under certain conditions.
+        ///This is free software, and you are welcome to redistribute it under certain conditions.
         ///
         ///소울워커 패쳐는 최신의 번역 파일들을 소울워커 클라이언트에 오류 없이 깨끗하게 업데이트 하기 위해 만들어진 프로그램 입니다.
         ///또한, SWHQ 번역팀(한국번역은 소울워커 카페 번역팀)에 의해 번역이 된 최신번역 파일들을 손쉽게 다운로드하고 적용시킬수 있습니다..

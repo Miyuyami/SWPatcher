@@ -4,7 +4,7 @@ Added more RTPatch error messages
 Added the possibility to change some in-game options in Settings
 Now if the user does not have rights/permissions to their soulworker folder, patcher will try to set them with an external application that comes with the patcher
 Fixed a bug when downloading RTPatches
-Added possibility to cancel RTPatch (when it's applying)
+Added the possibility to cancel RTPatch (when it's applying)
 Added download speed rate when downloading RTPatch files
 Added the possibility to resume RTPatch downloads
 

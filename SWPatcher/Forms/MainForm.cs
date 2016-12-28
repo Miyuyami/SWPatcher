@@ -334,8 +334,17 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.RTPatch)
             {
-                this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName} ({e.FileNumber}/{e.FileCount})";
-                this.toolStripProgressBar.Value = e.Progress;
+                if (e.Progress == -1)
+                {
+                    this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_prepare")} {e.FileName} ({e.FileNumber}/{e.FileCount})";
+                    this.toolStripProgressBar.Style = ProgressBarStyle.Marquee;
+                }
+                else
+                {
+                    this.toolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName} ({e.FileNumber}/{e.FileCount})";
+                    this.toolStripProgressBar.Style = ProgressBarStyle.Blocks;
+                    this.toolStripProgressBar.Value = e.Progress;
+                }
             }
         }
 
@@ -357,12 +366,12 @@ namespace SWPatcher.Forms
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_not_exist_directory"));
                             break;
                         case 9:
-                            Logger.Error($"error=[{ex.Message}] file=[{ex.FileName}] version=[{ex.ClientVersion}]");
-                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_corrupt", $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
+                            Logger.Error($"error=[{ex.Message}] file=[{Path.Combine(UserSettings.GamePath, ex.FileName)}] version=[{ex.ClientVersion}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_corrupt", $"{Path.Combine(UserSettings.GamePath, ex.FileName)}@Version=[{ex.ClientVersion}]"));
                             break;
                         case 15:
-                            Logger.Error($"error=[{ex.Message}] file=[{ex.FileName}] version=[{ex.ClientVersion}]");
-                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_missing_file", $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
+                            Logger.Error($"error=[{ex.Message}] file=[{Path.Combine(UserSettings.GamePath, ex.FileName)}] version=[{ex.ClientVersion}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_missing_file", $"{Path.Combine(UserSettings.GamePath, ex.FileName)}@Version=[{ex.ClientVersion}]"));
                             break;
                         case 18:
                             Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
@@ -385,8 +394,8 @@ namespace SWPatcher.Forms
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_time_date_fail"));
                             break;
                         case 36:
-                            Logger.Error($"error=[{ex.Message}] file=[{ex.FileName}] version=[{ex.ClientVersion}]");
-                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_corrupt_file", $"{ex.FileName}@Version=[{ex.ClientVersion}]"));
+                            Logger.Error($"error=[{ex.Message}] file=[{Path.Combine(UserSettings.GamePath, ex.FileName)}] version=[{ex.ClientVersion}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_corrupt_file", $"{Path.Combine(UserSettings.GamePath, ex.FileName)}@Version=[{ex.ClientVersion}]"));
                             break;
                         case 49:
                             Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");

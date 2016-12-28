@@ -329,7 +329,7 @@ namespace SWPatcher.RTPatch
                     string fileName = Marshal.PtrToStringAnsi(ptr);
                     this.FileNumber++;
                     this.FileName = fileName;
-                    this.Worker.ReportProgress(0);
+                    this.Worker.ReportProgress(-1);
                     File.AppendAllText(this.CurrentLogFilePath, $"Patching=[{fileName}]\n");
 
                     break;

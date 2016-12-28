@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Soulworker PatcherTest")]
+[assembly: AssemblyTitle("Soulworker Patcher")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MiyuTest")]
-[assembly: AssemblyProduct("SW PatcherTest")]
+[assembly: AssemblyCompany("Miyu")]
+[assembly: AssemblyProduct("SW Patcher")]
 [assembly: AssemblyCopyright("Copyright (C) 2016 Miyu")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("28ae4d25-69cb-4540-a06b-9845e0c65ec3")]
+[assembly: Guid("5da744e3-ffd8-4023-b94d-eda7e06a36a5")]
 
 // Version information for an assembly consists of the following four values:
 //

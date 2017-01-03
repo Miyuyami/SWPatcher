@@ -1,3 +1,6 @@
+Version 2.5.0.2
+Fixed crash on startup if the default patcher path doesn't exist
+
 Version 2.5.0.1
 Added one more RTPatch error message
 Fixed the double front slashes in game path causing many errors

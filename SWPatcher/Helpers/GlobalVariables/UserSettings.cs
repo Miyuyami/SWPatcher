@@ -29,14 +29,14 @@ namespace SWPatcher.Helpers.GlobalVariables
         {
             get
             {
-                string result = Settings.Default.PatcherWorkingDirectory;
-
-                if (String.IsNullOrEmpty(result))
+                if (String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory))
                 {
-                    result = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
+                    return PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
                 }
-
-                return result.Replace("\\\\", "\\");
+                else
+                {
+                    return Settings.Default.PatcherWorkingDirectory.Replace("\\\\", "\\");
+                }
             }
             set
             {

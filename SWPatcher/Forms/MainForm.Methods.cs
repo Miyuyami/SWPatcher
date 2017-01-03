@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of Soulworker Patcher.
- * Copyright (C) 2016 Miyu
+ * Copyright (C) 2016-2017 Miyu, Dramiel Leayal
  * 
  * Soulworker Patcher is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ namespace SWPatcher.Forms
                 {
                     if (key32 != null)
                     {
-                        return Convert.ToString(key32.GetValue("folder", String.Empty)).Replace("\\\\", "\\");
+                        return Convert.ToString(key32.GetValue("folder", String.Empty));
                     }
                     else
                     {
@@ -160,7 +160,7 @@ namespace SWPatcher.Forms
                         {
                             if (key32 != null)
                             {
-                                return Convert.ToString(key32.GetValue("folder", String.Empty)).Replace("\\\\", "\\");
+                                return Convert.ToString(key32.GetValue("folder", String.Empty));
                             }
                             else
                             {

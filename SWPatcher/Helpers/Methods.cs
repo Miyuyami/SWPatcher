@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of Soulworker Patcher.
- * Copyright (C) 2016 Miyu
+ * Copyright (C) 2016-2017 Miyu, Dramiel Leayal
  * 
  * Soulworker Patcher is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ namespace SWPatcher.Helpers
 {
     internal static class Methods
     {
-        private static string DateFormat = "dd/MMM/yyyy h:mm tt";
+        private static string DateFormat = "d/MMM/yyyy h:mm tt";
         private static byte[] Entropy = Encoding.Unicode.GetBytes("C11699FC9EC2502027E0222999DA029D01DE3026");
 
         internal static DateTime ParseDate(string date)
@@ -485,7 +485,7 @@ namespace SWPatcher.Helpers
                 {
                     if (exitCode == -2)
                     {
-                        throw new DirectoryNotFoundException(folderPath);
+						throw new DirectoryNotFoundException($"Directory does not exist: {folderPath}");
                     }
                     else
                     {

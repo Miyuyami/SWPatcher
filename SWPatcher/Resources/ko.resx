@@ -393,4 +393,7 @@ This is free software, and you are welcome to redistribute it under certain cond
   <data name="form_status_patch_save" xml:space="preserve">
     <value>저장 중...</value>
   </data>
+  <data name="exception_rtpatch_error_open_patch_file" xml:space="preserve">
+    <value>패치 파일을 여는데 실패했습니다. 다시 시도해주세요.</value>
+  </data>
 </root>

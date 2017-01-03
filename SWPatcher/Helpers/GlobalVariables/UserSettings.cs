@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of Soulworker Patcher.
- * Copyright (C) 2016 Miyu
+ * Copyright (C) 2016-2017 Miyu, Dramiel Leayal
  * 
  * Soulworker Patcher is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,19 +29,20 @@ namespace SWPatcher.Helpers.GlobalVariables
         {
             get
             {
-                if (String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory))
+                string result = Settings.Default.PatcherWorkingDirectory;
+
+                if (String.IsNullOrEmpty(result))
                 {
-                    return PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
+                    result = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
                 }
-                else
-                {
-                    return Settings.Default.PatcherWorkingDirectory;
-                }
+
+                return result.Replace("\\\\", "\\");
             }
             set
             {
                 if (!String.IsNullOrEmpty(value))
                 {
+                    value = value.Replace("\\\\", "\\");
                     Directory.CreateDirectory(value);
                     Directory.SetCurrentDirectory(value);
                 }
@@ -56,10 +57,11 @@ namespace SWPatcher.Helpers.GlobalVariables
         {
             get
             {
-                return Settings.Default.GameDirectory;
+                return Settings.Default.GameDirectory.Replace("\\\\", "\\");
             }
             set
             {
+                value = value.Replace("\\\\", "\\");
                 Settings.Default.GameDirectory = value;
                 Settings.Default.Save();
                 Logger.Info($"Soulworker path set to [{value}]");

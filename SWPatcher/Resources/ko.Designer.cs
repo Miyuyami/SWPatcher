@@ -477,6 +477,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 패치 파일을 여는데 실패했습니다. 다시 시도해주세요..
+        /// </summary>
+        internal static string exception_rtpatch_error_open_patch_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_error_open_patch_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 드라이브에 공간이 부족해 업데이트에 실패했습니다..
         /// </summary>
         internal static string exception_rtpatch_insufficient_storage {

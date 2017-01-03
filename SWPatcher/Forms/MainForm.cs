@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of Soulworker Patcher.
- * Copyright (C) 2016 Miyu
+ * Copyright (C) 2016-2017 Miyu, Dramiel Leayal
  * 
  * Soulworker Patcher is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -364,6 +364,10 @@ namespace SWPatcher.Forms
                         case 4:
                             Logger.Error(ex.Message);
                             MsgBox.Error(StringLoader.GetText("exception_rtpatch_not_exist_directory"));
+                            break;
+                        case 7:
+                            Logger.Error($"error=[{ex.Message}]@Version=[{ex.ClientVersion.ToString()}]");
+                            MsgBox.Error(StringLoader.GetText("exception_rtpatch_error_open_patch_file"));
                             break;
                         case 9:
                             Logger.Error($"error=[{ex.Message}] file=[{Path.Combine(UserSettings.GamePath, ex.FileName)}] version=[{ex.ClientVersion}]");

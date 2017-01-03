@@ -477,6 +477,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error in opening patch file. Try Again..
+        /// </summary>
+        internal static string exception_rtpatch_error_open_patch_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_error_open_patch_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to update because there isn&apos;t enough storage space on the drive..
         /// </summary>
         internal static string exception_rtpatch_insufficient_storage {

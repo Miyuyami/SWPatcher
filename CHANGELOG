@@ -1,3 +1,8 @@
+Version 2.5.0.1
+Added one more RTPatch error message
+Fixed the double front slashes in game path causing many errors
+Fixed (?) (maybe) RTPatch aborting on error instead of showing error
+
 Version 2.5.0.0
 Now it loads files into the memory and works with them there (faster)
 Added more RTPatch error messages

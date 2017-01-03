@@ -393,4 +393,7 @@ The link was copied to clipboard.</value>
   <data name="exception_directory_rights" xml:space="preserve">
     <value>Unable to set the right permissions to the game folder "{0}".</value>
   </data>
+  <data name="exception_rtpatch_error_open_patch_file" xml:space="preserve">
+    <value>Error in opening patch file. Try Again.</value>
+  </data>
 </root>

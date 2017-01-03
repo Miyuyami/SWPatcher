@@ -477,6 +477,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Có lỗi xảy ra khi mở tập tin patch. Vui lòng thử lại sau..
+        /// </summary>
+        internal static string exception_rtpatch_error_open_patch_file {
+            get {
+                return ResourceManager.GetString("exception_rtpatch_error_open_patch_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cập nhật thất bại vì thiếu không gian trống trên ổ đĩa..
         /// </summary>
         internal static string exception_rtpatch_insufficient_storage {

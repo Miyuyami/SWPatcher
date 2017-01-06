@@ -189,6 +189,7 @@ namespace SWPatcher.Forms
             this.GameStarter.GameStarterCompleted += this.GameStarter_GameStarterCompleted;
             InitializeComponent();
             InitializeTextComponent();
+            this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
             Logger.Info($"[{this.Text}] starting in UI Language=[{UserSettings.UILanguageCode}]");
         }
 
@@ -208,7 +209,6 @@ namespace SWPatcher.Forms
             this.notifyIcon.BalloonTipTitle = StringLoader.GetText("notify_balloon_title");
             this.notifyIcon.Text = StringLoader.GetText("notify_text");
             this.toolStripMenuItemStartRaw.Text = StringLoader.GetText("button_play_raw");
-            this.Text = AssemblyAccessor.Title + " " + AssemblyAccessor.Version;
         }
 
         private void Downloader_DownloaderProgressChanged(object sender, DownloaderProgressChangedEventArgs e)

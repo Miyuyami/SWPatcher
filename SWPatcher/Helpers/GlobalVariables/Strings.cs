@@ -50,6 +50,7 @@ namespace SWPatcher.Helpers.GlobalVariables
 
         public static class IniName
         {
+            public const string PatcherVersion = "version.ini";
             public const string ServerVer = "ServerVer.ini";
             public const string ClientVer = "Ver.ini";
             public const string Translation = "Translation.ini";
@@ -76,6 +77,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             {
                 public const string Section = "Patcher";
                 public const string KeyVer = "ver";
+                public const string KeyAddress = "address";
             }
 
             public static class Pack

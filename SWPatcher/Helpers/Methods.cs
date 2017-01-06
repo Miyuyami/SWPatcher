@@ -462,6 +462,11 @@ namespace SWPatcher.Helpers
 
         internal static void EnsureDirectoryRights(string folderPath)
         {
+            if (!Directory.Exists(folderPath))
+            {
+                throw new DirectoryNotFoundException($"Directory does not exist: {folderPath}");
+            }
+
             FileSystemRights rights = FileSystemRights.Modify;
 
             if (!DirectoryHasRights(folderPath, rights))

@@ -141,9 +141,13 @@ namespace SWPatcher.Forms
         private void ComboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.comboBoxLanguages.SelectedItem is Language language && Methods.HasNewTranslations(language))
+			{
                 this.labelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
+			}
             else
+			{
                 this.labelNewTranslations.Text = String.Empty;
+			}
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -230,7 +234,7 @@ namespace SWPatcher.Forms
                 this.Patcher.Cancel();
                 this.GameStarter.Cancel();
             }
-            if (this.CurrentState != State.Idle)
+            else if (this.CurrentState != State.Idle)
             {
                 MsgBox.Error(StringLoader.GetText("exception_cannot_close", AssemblyAccessor.Title));
 

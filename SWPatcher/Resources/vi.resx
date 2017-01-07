@@ -396,4 +396,7 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
   <data name="exception_rtpatch_error_open_patch_file" xml:space="preserve">
     <value>Có lỗi xảy ra khi mở tập tin patch. Vui lòng thử lại sau.</value>
   </data>
+  <data name="exception_directory_not_exist" xml:space="preserve">
+    <value>Thư mục game không tồn tại "{0}".</value>
+  </data>
 </root>

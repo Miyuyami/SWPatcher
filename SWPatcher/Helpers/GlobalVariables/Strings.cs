@@ -76,11 +76,11 @@ namespace SWPatcher.Helpers.GlobalVariables
             {
                 public const string Section = "Patcher";
                 public const string KeyVer = "ver";
+                public const string KeyDate = "date";
             }
 
             public static class Pack
             {
-                public const string KeyDate = "date";
                 public const string KeyPath = "path";
                 public const string KeyPathInArchive = "path_a";
                 public const string KeyPathOfDownload = "path_d";

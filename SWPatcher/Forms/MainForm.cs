@@ -309,8 +309,8 @@ namespace SWPatcher.Forms
                 ini.Sections.Clear();
                 ini.Load(iniPath);
                 ini.Sections.Add(Strings.IniName.Patcher.Section);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Pack.KeyDate);
-                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Pack.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Patcher.KeyDate);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
                 ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Patcher.KeyVer);
                 ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value = clientVer;
                 ini.Save(iniPath);

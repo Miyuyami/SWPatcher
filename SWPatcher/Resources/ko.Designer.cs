@@ -304,6 +304,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 게임 경로가 존재하지 않습니다 &quot;{0}&quot;..
+        /// </summary>
+        internal static string exception_directory_not_exist {
+            get {
+                return ResourceManager.GetString("exception_directory_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 게임 폴더 &quot;{0}&quot; 경로에 권한설정을 실패하였습니다..
         /// </summary>
         internal static string exception_directory_rights {

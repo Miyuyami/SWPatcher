@@ -1,3 +1,6 @@
+Version 2.5.0.3
+Fixed not showing a non-user-friendly error on startup when the game folder doesn't exist
+
 Version 2.5.0.2
 Fixed crash on startup if the default patcher path doesn't exist
 

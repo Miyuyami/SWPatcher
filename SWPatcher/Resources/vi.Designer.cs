@@ -304,6 +304,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thư mục game không tồn tại &quot;{0}&quot;..
+        /// </summary>
+        internal static string exception_directory_not_exist {
+            get {
+                return ResourceManager.GetString("exception_directory_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không thể truy cập vào thư mục &quot;{0}&quot;..
         /// </summary>
         internal static string exception_directory_rights {

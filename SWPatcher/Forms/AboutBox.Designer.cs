@@ -127,7 +127,7 @@ namespace SWPatcher.Forms
             this.labelCopyright.Name = "labelCopyright";
             this.labelCopyright.Size = new System.Drawing.Size(283, 17);
             this.labelCopyright.TabIndex = 21;
-            this.labelCopyright.Text = "Soulworker Patcher Copyright (C) 2016-2017 Miyu, Dramiel Leayal; Leayal";
+            this.labelCopyright.Text = "Soulworker Patcher Copyright (C) 2016-2017 Miyu, Leayal";
             this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBoxDescription

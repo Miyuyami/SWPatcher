@@ -304,6 +304,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game directory does not exist &quot;{0}&quot;..
+        /// </summary>
+        internal static string exception_directory_not_exist {
+            get {
+                return ResourceManager.GetString("exception_directory_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to set the right permissions to the game folder &quot;{0}&quot;..
         /// </summary>
         internal static string exception_directory_rights {

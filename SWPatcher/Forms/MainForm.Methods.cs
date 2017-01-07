@@ -190,7 +190,7 @@ namespace SWPatcher.Forms
 
                 foreach (IniSection section in ini.Sections)
                 {
-                    langs.Add(new Language(section.Name, Methods.ParseDate(section.Keys[Strings.IniName.Pack.KeyDate].Value)));
+                    langs.Add(new Language(section.Name, Methods.ParseDate(section.Keys[Strings.IniName.Patcher.KeyDate].Value)));
                 }
             }
 

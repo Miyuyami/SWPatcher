@@ -77,12 +77,12 @@ namespace SWPatcher.Helpers
             }
 
             IniSection section = ini.Sections[Strings.IniName.Patcher.Section];
-            if (!section.Keys.Contains(Strings.IniName.Pack.KeyDate))
+            if (!section.Keys.Contains(Strings.IniName.Patcher.KeyDate))
             {
                 return true;
             }
 
-            string date = section.Keys[Strings.IniName.Pack.KeyDate].Value;
+            string date = section.Keys[Strings.IniName.Patcher.KeyDate].Value;
 
             return language.LastUpdate > ParseDate(date);
         }
@@ -464,7 +464,7 @@ namespace SWPatcher.Helpers
         {
             if (!Directory.Exists(folderPath))
             {
-                throw new DirectoryNotFoundException($"Directory does not exist: {folderPath}");
+                throw new DirectoryNotFoundException(StringLoader.GetText("exception_directory_not_exist", folderPath));
             }
 
             FileSystemRights rights = FileSystemRights.Modify;
@@ -490,7 +490,7 @@ namespace SWPatcher.Helpers
                 {
                     if (exitCode == -2)
                     {
-						throw new DirectoryNotFoundException($"Directory does not exist: {folderPath}");
+						throw new DirectoryNotFoundException(StringLoader.GetText("exception_directory_not_exist", folderPath));
                     }
                     else
                     {

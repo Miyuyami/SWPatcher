@@ -1,9 +1,12 @@
+Version 2.6.0.1
+Fixed the null reference error when starting the game with direct option for JP region
+
 Version 2.6.0.0
 Added support for KR version
 Now it only checks running updaters when the game client is outdated
 Now it also sets the folder permissions when changing the game client folder
 Fixed the "unexpected character" error when the game was in maintenance instead of showing the proper error
-Fixed null reference error when an error occurs before receiving a reponse from the web server
+Fixed the null reference error when an error occurs before receiving a reponse from the web server
 
 Version 2.5.0.3
 Fixed not showing a non-user-friendly error on startup when the game folder doesn't exist

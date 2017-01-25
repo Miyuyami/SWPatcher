@@ -124,7 +124,24 @@ namespace SWPatcher.Launching
 
                             break;
                         default:
-                            LoginStartJP(clientProcess, startInfo);
+                            using (var client = new MyWebClient())
+                            {
+                                HangameLogin(client);
+                                string[] gameStartArgs = GetGameStartArguments(client);
+
+                                startInfo = new ProcessStartInfo
+                                {
+                                    UseShellExecute = true,
+                                    Verb = "runas",
+                                    Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                                    WorkingDirectory = UserSettings.GamePath,
+                                    FileName = Strings.FileName.GameExe
+                                };
+                            }
+
+                            BackupAndPlaceFiles(this.Language);
+
+                            clientProcess = Process.Start(startInfo);
 
                             break;
                     }
@@ -501,28 +518,6 @@ namespace SWPatcher.Launching
             result = result.Substring(0, result.IndexOf('"'));
 
             return result.Split(' ');
-        }
-
-        private void LoginStartJP(Process clientProcess, ProcessStartInfo startInfo)
-        {
-            using (var client = new MyWebClient())
-            {
-                HangameLogin(client);
-                string[] gameStartArgs = GetGameStartArguments(client);
-
-                startInfo = new ProcessStartInfo
-                {
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                    WorkingDirectory = UserSettings.GamePath,
-                    FileName = Strings.FileName.GameExe
-                };
-            }
-
-            BackupAndPlaceFiles(this.Language);
-
-            clientProcess = Process.Start(startInfo);
         }
 
         private void StartRawJP()

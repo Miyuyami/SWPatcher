@@ -282,6 +282,7 @@ namespace SWPatcher.Forms
             if (e.Cancelled)
             {
                 Logger.Debug($"{sender.ToString()} cancelled");
+                DeleteTmpFiles(e.Language);
             }
             else if (e.Error != null)
             {
@@ -313,6 +314,8 @@ namespace SWPatcher.Forms
                 ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyDate].Value = Methods.DateToString(e.Language.LastUpdate);
                 ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Patcher.KeyVer);
                 ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value = clientVer;
+                ini.Sections[Strings.IniName.Patcher.Section].Keys.Add(Strings.IniName.Patcher.KeyRegion);
+                ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyRegion].Value = UserSettings.ClientRegion.ToString();
                 ini.Save(iniPath);
             }
 

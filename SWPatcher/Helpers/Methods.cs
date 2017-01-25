@@ -18,9 +18,12 @@
 
 using Ionic.Zip;
 using MadMilkman.Ini;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -77,7 +80,7 @@ namespace SWPatcher.Helpers
             }
 
             IniSection section = ini.Sections[Strings.IniName.Patcher.Section];
-            if (!section.Keys.Contains(Strings.IniName.Patcher.KeyDate))
+            if (!section.Keys.Contains(Strings.IniName.Patcher.KeyDate) || !section.Keys.Contains(Strings.IniName.Patcher.KeyVer) || !section.Keys.Contains(Strings.IniName.Patcher.KeyRegion))
             {
                 return true;
             }
@@ -92,12 +95,10 @@ namespace SWPatcher.Helpers
             bool f1 = Directory.Exists(path);
             string dataPath = Path.Combine(path, Strings.FolderName.Data);
             bool f2 = Directory.Exists(dataPath);
-            bool f3 = File.Exists(Path.Combine(path, Strings.FileName.GameExe));
-            bool f4 = File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
-            bool f5 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data12));
-            bool f6 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data14));
+            bool f3 = File.Exists(Path.Combine(path, Strings.IniName.ClientVer));
+            bool f4 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data12));
 
-            return f1 && f2 && f3 && f4 && f5 && f6;
+            return f1 && f2 && f3 && f4;
         }
 
         internal static bool IsValidSwPatcherPath(string path)
@@ -105,7 +106,7 @@ namespace SWPatcher.Helpers
             return String.IsNullOrEmpty(path) || !IsSwPath(path) && IsValidSwPatcherPath(Path.GetDirectoryName(path));
         }
 
-        internal static IniFile GetServerIni()
+        internal static IniFile GetJPServerIni()
         {
             using (var client = new WebClient())
             {
@@ -138,6 +139,32 @@ namespace SWPatcher.Helpers
                 }
 
                 return null;
+            }
+        }
+
+        internal static int GetKRServerVersion()
+        {
+            using (var client = new WebClient())
+            {
+                var apiJSON = new { message = "", result = "", value = new { pid = "", service_code = Int32.MaxValue, live_version = Int32.MinValue, live_project_url = "" } };
+
+                var values = new NameValueCollection(2)
+                {
+                    [Strings.Web.KR.ServiceCode] = "11",
+                    [Strings.Web.KR.LocalVersion] = "0"
+                };
+                byte[] byteResponse = client.UploadValues(Urls.SoulworkerKRAPI, values);
+                string response = Encoding.UTF8.GetString(byteResponse);
+                var jsonResponse = JsonConvert.DeserializeAnonymousType(response, apiJSON);
+
+                // TODO: proper result handling
+                switch (jsonResponse.result ?? throw new Exception("unexpected null result"))
+                {
+                    case "0":
+                        return jsonResponse.value.live_version;
+                    default:
+                        throw new Exception($"result=[{jsonResponse.result}]\n{jsonResponse.message ?? "no error details"}");
+                }
             }
         }
 
@@ -324,20 +351,23 @@ namespace SWPatcher.Helpers
                 return true;
             }
 
-            IniFile ini = new IniFile();
-            ini.Load(selectedTranslationPath);
+            IniFile translationIni = new IniFile();
+            translationIni.Load(selectedTranslationPath);
 
-            if (!ini.Sections[Strings.IniName.Patcher.Section].Keys.Contains(Strings.IniName.Patcher.KeyVer))
+            IniSection patcherSection = translationIni.Sections[Strings.IniName.Patcher.Section];
+            if (!patcherSection.Keys.Contains(Strings.IniName.Patcher.KeyDate) || !patcherSection.Keys.Contains(Strings.IniName.Patcher.KeyVer) || !patcherSection.Keys.Contains(Strings.IniName.Patcher.KeyRegion))
             {
-                throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
+                return true; // throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
             }
+            Version translationVer = new Version(patcherSection.Keys[Strings.IniName.Patcher.KeyVer].Value);
+            byte translationRegion = Convert.ToByte(patcherSection.Keys[Strings.IniName.Patcher.KeyRegion].Value);
 
-            Version translationVer = new Version(ini.Sections[Strings.IniName.Patcher.Section].Keys[Strings.IniName.Patcher.KeyVer].Value);
-            ini.Sections.Clear();
-            ini.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
+            IniFile clientIni = new IniFile();
+            clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
 
-            Version clientVer = new Version(ini.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
-            if (clientVer > translationVer)
+            Version clientVer = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
+
+            if (clientVer != translationVer || translationRegion != UserSettings.ClientRegion)
             {
                 return true;
             }
@@ -420,7 +450,17 @@ namespace SWPatcher.Helpers
             return $"{method}({MethodParams(args)})";
         }
 
-        internal static void CheckRunningPrograms()
+        internal static void CheckRunningUpdaters()
+        {
+            string[] processes = Methods.GetRunningUpdaterProcesses();
+
+            if (processes.Length > 0)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_already_open", String.Join("/", processes)));
+            }
+        }
+
+        internal static void CheckRunningGame()
         {
             string[] processes = Methods.GetRunningGameProcesses();
 
@@ -430,9 +470,26 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static string[] GetRunningGameProcesses()
+        internal static void CheckRunningProcesses()
         {
-            string[] processNames = new[] { Strings.FileName.GameExe, Strings.FileName.PurpleExe, Strings.FileName.ReactorExe, Strings.FileName.OutboundExe };
+            string[] processes = Methods.GetRunningGameProcesses().Union(Methods.GetRunningUpdaterProcesses()).ToArray();
+
+            if (processes.Length > 0)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_already_open", String.Join("/", processes)));
+            }
+        }
+
+        private static string[] GetRunningUpdaterProcesses()
+        {
+            string[] processNames = { Strings.FileName.PurpleExe, Strings.FileName.ReactorExe, Strings.FileName.OutboundExe };
+
+            return processNames.SelectMany(pn => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(pn))).Select(p => Path.GetFileName(Methods.GetProcessPath(p.Id))).Where(pn => processNames.Contains(pn)).ToArray();
+        }
+
+        private static string[] GetRunningGameProcesses()
+        {
+            string[] processNames = { Strings.FileName.GameExe };
 
             return processNames.SelectMany(pn => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(pn))).Select(p => Path.GetFileName(Methods.GetProcessPath(p.Id))).Where(pn => processNames.Contains(pn)).ToArray();
         }
@@ -490,7 +547,7 @@ namespace SWPatcher.Helpers
                 {
                     if (exitCode == -2)
                     {
-						throw new DirectoryNotFoundException(StringLoader.GetText("exception_directory_not_exist", folderPath));
+                        throw new DirectoryNotFoundException(StringLoader.GetText("exception_directory_not_exist", folderPath));
                     }
                     else
                     {
@@ -539,6 +596,40 @@ namespace SWPatcher.Helpers
             }
 
             return allow && !deny;
+        }
+
+        internal static string GetRegistryValue(RegistryKey regKey, string path, string varName)
+        {
+            return GetRegistryValue(regKey, path, varName, String.Empty);
+        }
+
+        internal static string GetRegistryValue(RegistryKey regKey, string path, string varName, object defaultValue)
+        {
+            using (RegistryKey key = regKey.OpenSubKey(path))
+            {
+                if (key == null)
+                {
+                    return defaultValue.ToString();
+                }
+
+                return Convert.ToString(key.GetValue(varName, defaultValue));
+            }
+        }
+
+        internal static void SetRegionBasedOnExeName(string gamePath)
+        {
+            if (File.Exists(Path.Combine(gamePath, Strings.FileName.GameExeJP)))
+            {
+                UserSettings.ClientRegion = 0;
+            }
+            else if (File.Exists(Path.Combine(gamePath, Strings.FileName.GameExeKR)))
+            {
+                UserSettings.ClientRegion = 1;
+            }
+            else
+            {
+                throw new Exception(StringLoader.GetText("exception_folder_not_game_folder"));
+            }
         }
     }
 }

@@ -62,6 +62,12 @@ namespace SWPatcher.Helpers.GlobalVariables
             set
             {
                 value = value.Replace("\\\\", "\\");
+
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                File.Delete(gameExePatchedPath);
+
+                Methods.SetRegionBasedOnExeName(value);
+                Methods.EnsureDirectoryRights(value);
                 Settings.Default.GameDirectory = value;
                 Settings.Default.Save();
                 Logger.Info($"Soulworker path set to [{value}]");
@@ -76,11 +82,12 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
             set
             {
-                string gameExePatchedPath = Path.Combine(PatcherPath, Strings.FileName.GameExe);
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
                 File.Delete(gameExePatchedPath);
 
                 Settings.Default.WantToPatchSoulworkerExe = value;
                 Settings.Default.Save();
+                Logger.Info($"Patch .exe choice set to [{value}]");
             }
         }
 
@@ -120,6 +127,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             {
                 Settings.Default.WantToLoginWithPatcher = value;
                 Settings.Default.Save();
+                Logger.Info($"Direct login choice set to [{value}]");
             }
         }
 
@@ -133,6 +141,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             {
                 Settings.Default.LanguageName = value;
                 Settings.Default.Save();
+                Logger.Info($"Saved language set to [{value}]");
             }
         }
 
@@ -147,6 +156,20 @@ namespace SWPatcher.Helpers.GlobalVariables
                 Settings.Default.UILanguage = value;
                 Settings.Default.Save();
                 Logger.Info($"UI Language set to [{value}]");
+            }
+        }
+
+        public static byte ClientRegion
+        {
+            get
+            {
+                return Settings.Default.ClientRegion;
+            }
+            set
+            {
+                Settings.Default.ClientRegion = value;
+                Settings.Default.Save();
+                Logger.Info($"Client Region set to [{value}]");
             }
         }
     }

@@ -65,9 +65,21 @@ namespace SWPatcher.RTPatch
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            LoadVersions();
-            Methods.CheckRunningPrograms();
-            Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
+            Methods.CheckRunningGame();
+            switch (UserSettings.ClientRegion)
+            {
+                case 1:
+                    CheckKRVersion();
+                    //Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString()));
+                    return;
+
+                    //break;
+                default:
+                    LoadVersions();
+                    Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
+
+                    break;
+            }
 
             while (this.ClientNextVersion < this.ServerVersion)
             {
@@ -152,6 +164,7 @@ namespace SWPatcher.RTPatch
                 }
                 #endregion
 
+                Methods.CheckRunningProcesses();
                 Logger.Info($"RTPatchApply diffFile=[{diffFilePath}] path=[{gamePath}]");
                 #region Apply RTPatch
                 File.Delete(this.CurrentLogFilePath);
@@ -218,7 +231,7 @@ namespace SWPatcher.RTPatch
 
         private void LoadVersions()
         {
-            IniFile serverIni = Methods.GetServerIni();
+            IniFile serverIni = Methods.GetJPServerIni();
             this.ServerVersion = new Version(serverIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
             string address = serverIni.Sections[Strings.IniName.ServerRepository.Section].Keys[Strings.IniName.ServerRepository.Key].Value;
             this.Url = address + Strings.IniName.ServerRepository.UpdateRepository;
@@ -226,6 +239,17 @@ namespace SWPatcher.RTPatch
             IniFile clientIni = new IniFile();
             clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
             this.ClientNextVersion = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
+        }
+
+        private void CheckKRVersion()
+        {
+            int serverVersion = Methods.GetKRServerVersion();
+            int clientVersion = Convert.ToInt32(Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.Version, 0));
+
+            if (clientVersion != serverVersion)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
+            }
         }
 
         private static bool WebFileExists(string uri)
@@ -246,13 +270,17 @@ namespace SWPatcher.RTPatch
                 }
                 catch (WebException ex)
                 {
-                    if (ex.Response is HttpWebResponse response)
+                    if (ex.Response is HttpWebResponse exResponse)
                     {
-                        HttpStatusCode statusCode = response.StatusCode;
+                        HttpStatusCode statusCode = exResponse.StatusCode;
                         if (statusCode != HttpStatusCode.NotFound)
                         {
-                            Logger.Debug($"{Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri)}\nUnexpected status code {statusCode}\n{response.ToString()}");
+                            Logger.Debug($"{Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri)}\nUnexpected status code {statusCode}\n{exResponse.ToString()}");
                         }
+                    }
+                    else
+                    {
+                        throw;
                     }
                 }
 

@@ -268,6 +268,33 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Soulworker dành cho khu vực được chọn không hỗ trợ patch tập tin .exe. Patch đã bị bỏ qua. Trò chơi vẫn sẽ hoạt động ngoại trừ một số chữ có thể sẽ không hiển thị được..
+        /// </summary>
+        internal static string error_exe_region_not_supported {
+            get {
+                return ResourceManager.GetString("error_exe_region_not_supported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tài khoản chưa được kích hoạt. Xin vui lòng kích hoạt tài khoản..
+        /// </summary>
+        internal static string exception_account_not_validated {
+            get {
+                return ResourceManager.GetString("exception_account_not_validated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tài khoản này đang trong giai đoạn &quot;Đang xóa&quot;, nếu như bạn muốn hủy bỏ hành động này, xin vui lòng liên hệ &quot;Chăm sóc khách hàng&quot;.
+        /// </summary>
+        internal static string exception_account_to_be_deleted {
+            get {
+                return ResourceManager.GetString("exception_account_to_be_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bạn đã có phiên bản mới nhất ({0} JST) của bản dịch này!.
         /// </summary>
         internal static string exception_already_latest_translation {
@@ -291,6 +318,15 @@ namespace SWPatcher.Resources {
         internal static string exception_cannot_restore_file {
             get {
                 return ResourceManager.GetString("exception_cannot_restore_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Không thể đăng nhập bằng patcher vì lượt đăng nhập của bạn đòi hỏi phải điền captcha.
+        /// </summary>
+        internal static string exception_captcha_required {
+            get {
+                return ResourceManager.GetString("exception_captcha_required", resourceCulture);
             }
         }
         
@@ -360,6 +396,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Có lỗi xảy kha trong lúc đăng nhập, xin vui lòng làm theo hướng dẫn trên trang web..
+        /// </summary>
+        internal static string exception_follow_instruction_webpage {
+            get {
+                return ResourceManager.GetString("exception_follow_instruction_webpage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không thể tiếp tục vì {0} đang chạy..
         /// </summary>
         internal static string exception_game_already_open {
@@ -383,6 +428,28 @@ namespace SWPatcher.Resources {
         internal static string exception_game_maintenance {
             get {
                 return ResourceManager.GetString("exception_game_maintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soulworker chưa được cập nhật đến phiên bản mới nhất. Xin vui lòng thử lại sau khi cập nhật Soulworker..
+        /// </summary>
+        internal static string exception_game_not_latest {
+            get {
+                return ResourceManager.GetString("exception_game_not_latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soulworker hiện đang trong bảo trì {0}
+        ///Thời gian: {1}
+        ///Bảo trì sẽ kết thúc vào lúc {2}.
+        ///Danh sách đối chiếu:
+        ///{3}.
+        /// </summary>
+        internal static string exception_game_stove_maintenance {
+            get {
+                return ResourceManager.GetString("exception_game_stove_maintenance", resourceCulture);
             }
         }
         
@@ -419,6 +486,15 @@ namespace SWPatcher.Resources {
         internal static string exception_log_not_exist {
             get {
                 return ResourceManager.GetString("exception_log_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soulworker dành cho khu vực được chọn hiện không hỗ trợ chức năng đăng nhập bằng SWPatcher. Tùy chọn đăng nhập bằng SWPatcher đã sẽ bị bỏ..
+        /// </summary>
+        internal static string exception_login_option_not_supported {
+            get {
+                return ResourceManager.GetString("exception_login_option_not_supported", resourceCulture);
             }
         }
         

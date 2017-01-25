@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
@@ -30,7 +30,20 @@ namespace SWPatcher.Helpers.GlobalVariables
 
         public static class FileName
         {
-            public const string GameExe = "SoulWorker100.exe";
+            public const string GameExeJP = "SoulWorker100.exe";
+            public const string GameExeKR = "SoulWorker.exe";
+            public static string GameExe
+            {
+                get
+                {
+                    if (UserSettings.ClientRegion == 1)
+                    {
+                        return GameExeKR;
+                    }
+
+                    return GameExeJP;
+                }
+            }
             public const string PurpleExe = "PLauncher.exe";
             public const string ReactorExe = "reactor.exe";
             public const string OutboundExe = "Outbound.exe";
@@ -38,7 +51,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             public const string SecurityExe = "DirectoryRights.exe";
             public const string Log = ".log";
             public const string Data12 = "data12.v";
-            public const string Data14 = "data14.v";
+            //public const string Data14 = "data14.v";
         }
 
         public static class FolderName
@@ -54,10 +67,12 @@ namespace SWPatcher.Helpers.GlobalVariables
             public const string ClientVer = "Ver.ini";
             public const string Translation = "Translation.ini";
             public const string LanguagePack = "LanguagePacks.ini";
-            public const string TranslationPackData = "TranslationPackData.ini";
-            public const string BytesToPatch = "Sw100BytesToPatch.ini";
+
+            public static string TranslationPackData => $"TranslationPackData.{UserSettings.ClientRegion}.ini";
+            public static string BytesToPatch => $"BytePatch.{UserSettings.ClientRegion}.ini";
+            public static string DatasArchives => $"datas.{UserSettings.ClientRegion}.ini";
+
             public const string GeneralClient = "General.ini";
-            public const string DatasArchives = "datas.ini";
 
             public static class Ver
             {
@@ -77,6 +92,7 @@ namespace SWPatcher.Helpers.GlobalVariables
                 public const string Section = "Patcher";
                 public const string KeyVer = "ver";
                 public const string KeyDate = "date";
+                public const string KeyRegion = "region";
             }
 
             public static class Pack
@@ -127,6 +143,37 @@ namespace SWPatcher.Helpers.GlobalVariables
             public const string CaptchaValidationText = "画像認証";
             public const string CaptchaValidationText2 = "認証に連続";
             public const string CaptchaUrl = "http://top.hangame.co.jp/login/loginfailed.nhn?type=dlf";
+
+            public static class KR
+            {
+                public const string ServiceCode = "service_code";
+                public const string LocalVersion = "local_version";
+
+                public const string PostId = "user_id";
+                public const string PostPw = "user_pwd";
+                public const string KeepForever = "forever";
+                public const string KeepForeverDefaultValue = "false";
+            }
+        }
+
+        public static class Registry
+        {
+            public static class JP
+            {
+                public static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.LocalMachine;
+                public const string Key32Path = @"SOFTWARE\HanPurple\J_SW";
+                public const string Key64Path = @"SOFTWARE\WOW6432Node\HanPurple\J_SW";
+                public const string FolderName = "folder";
+            }
+            
+            public static class KR
+            {
+                public static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.CurrentUser;
+                public const string Key32Path = @"SOFTWARE\SGUP\Apps\11";
+                //public const string Key64Path = @"SOFTWARE\SGUP\Apps\11";
+                public const string FolderName = "GamePath";
+                public const string Version = "Version";
+            }
         }
     }
 }

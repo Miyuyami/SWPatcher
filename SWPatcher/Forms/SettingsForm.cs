@@ -153,18 +153,22 @@ namespace SWPatcher.Forms
 
                 if (result == DialogResult.OK)
                 {
-                    if (Methods.IsSwPath(folderDialog.SelectedPath))
+                    string selectedPath = folderDialog.SelectedPath;
+
+                    if (Methods.IsSwPath(selectedPath))
                     {
                         if (Methods.IsValidSwPatcherPath(UserSettings.PatcherPath))
                         {
-                            this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
+                            this.textBoxGameDirectory.Text = this.GameClientDirectory = selectedPath;
                         }
                         else
                         {
                             DialogResult dialogResult = MsgBox.Question(StringLoader.GetText("question_folder_same_path_game"));
 
                             if (dialogResult == DialogResult.Yes)
-                                this.textBoxGameDirectory.Text = this.GameClientDirectory = folderDialog.SelectedPath;
+                            {
+                                this.textBoxGameDirectory.Text = this.GameClientDirectory = selectedPath;
+                            }
                         }
                     }
                     else
@@ -259,51 +263,61 @@ namespace SWPatcher.Forms
 
         private void ApplyChanges()
         {
-            if (UserSettings.GamePath != this.GameClientDirectory)
-                UserSettings.GamePath = this.GameClientDirectory;
-
-            if (UserSettings.PatcherPath != this.PatcherWorkingDirectory)
+            try
             {
-                try
+                if (UserSettings.GamePath != this.GameClientDirectory)
+                {
+                    UserSettings.GamePath = this.GameClientDirectory;
+                }
+
+                if (UserSettings.PatcherPath != this.PatcherWorkingDirectory)
                 {
                     MoveOldPatcherFolder(UserSettings.PatcherPath, this.PatcherWorkingDirectory, (this.Owner as MainForm).GetComboBoxItemsAsString());
+
+                    UserSettings.PatcherPath = this.PatcherWorkingDirectory;
                 }
-                catch (IOException ex)
+
+                if (UserSettings.WantToPatchExe != this.WantToPatchSoulworkerExe)
                 {
-                    Logger.Error(ex);
-                    MsgBox.Error(Logger.ExeptionParser(ex));
+                    UserSettings.WantToPatchExe = this.WantToPatchSoulworkerExe;
                 }
 
-                UserSettings.PatcherPath = this.PatcherWorkingDirectory;
-            }
-
-            if (UserSettings.WantToPatchExe != this.WantToPatchSoulworkerExe)
-                UserSettings.WantToPatchExe = this.WantToPatchSoulworkerExe;
-
-            if (UserSettings.GameId != this.GameUserId)
-                UserSettings.GameId = this.GameUserId;
-
-            if (this.GameUserPassword != MaskPassword(UserSettings.GamePw))
-            {
-                using (var secure = Methods.ToSecureString(this.GameUserPassword))
+                if (UserSettings.GameId != this.GameUserId)
                 {
-                    UserSettings.GamePw = Methods.EncryptString(secure);
+                    UserSettings.GameId = this.GameUserId;
+                }
+
+                if (this.GameUserPassword != MaskPassword(UserSettings.GamePw))
+                {
+                    using (var secure = Methods.ToSecureString(this.GameUserPassword))
+                    {
+                        UserSettings.GamePw = Methods.EncryptString(secure);
+                    }
+                }
+
+                if (UserSettings.WantToLogin != this.WantToLogin)
+                {
+                    UserSettings.WantToLogin = this.WantToLogin;
+                }
+
+                if (UserSettings.UILanguageCode != this.UILanguage)
+                {
+                    UserSettings.UILanguageCode = this.UILanguage;
+                    this.PendingRestart = true;
+                }
+
+                this.buttonApply.Enabled = false;
+
+                if (this.PendingRestart)
+                {
+                    MsgBox.Notice(StringLoader.GetText("notice_pending_restart"));
                 }
             }
-
-            if (UserSettings.WantToLogin != this.WantToLogin)
-                UserSettings.WantToLogin = this.WantToLogin;
-
-            if (UserSettings.UILanguageCode != this.UILanguage)
+            catch (Exception ex)
             {
-                UserSettings.UILanguageCode = this.UILanguage;
-                this.PendingRestart = true;
+                Logger.Error(ex);
+                MsgBox.Error(Logger.ExeptionParser(ex));
             }
-
-            this.buttonApply.Enabled = false;
-
-            if (this.PendingRestart)
-                MsgBox.Notice(StringLoader.GetText("notice_pending_restart"));
         }
 
         private static void MoveOldPatcherFolder(string oldPath, string newPath, IEnumerable<string> translationFolders)

@@ -268,6 +268,34 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 현재 선택한 소울워커 서버는 .exe 파일의 변경을 지원하지 않습니다. 클라이언트 패치가 비활성화 되었습니다. 게임은 정상적으로 실행되지만, 텍스트 몇몇개가 미표기될수도 있습니다..
+        /// </summary>
+        internal static string error_exe_region_not_supported {
+            get {
+                return ResourceManager.GetString("error_exe_region_not_supported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 본인인증이 되지 않은 소울워커 계정입니다. 웹사이트에서 본인인증을 마쳐주세요..
+        /// </summary>
+        internal static string exception_account_not_validated {
+            get {
+                return ResourceManager.GetString("exception_account_not_validated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 탈퇴 신청이 완료되어 삭제될 예정입니다.
+        ///만약 취소를 원하시는 경우 고객센터로 문의해주세요..
+        /// </summary>
+        internal static string exception_account_to_be_deleted {
+            get {
+                return ResourceManager.GetString("exception_account_to_be_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 이미 이 언어의 최신 번역이 업데이트되있습니다!.
         /// </summary>
         internal static string exception_already_latest_translation {
@@ -291,6 +319,15 @@ namespace SWPatcher.Resources {
         internal static string exception_cannot_restore_file {
             get {
                 return ResourceManager.GetString("exception_cannot_restore_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 로그인에 캡챠가 필요하기에 패쳐로 로그인이 불가능합니다..
+        /// </summary>
+        internal static string exception_captcha_required {
+            get {
+                return ResourceManager.GetString("exception_captcha_required", resourceCulture);
             }
         }
         
@@ -360,6 +397,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 로그인중 오류가 발생했습니다. 웹페이지에 있는 설명에 따라주세요..
+        /// </summary>
+        internal static string exception_follow_instruction_webpage {
+            get {
+                return ResourceManager.GetString("exception_follow_instruction_webpage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}가  이미 실행중이므로 진행이 불가능합니다..
         /// </summary>
         internal static string exception_game_already_open {
@@ -387,6 +433,28 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 소울워커가 최신버전으로 업데이트 되있지 않습니다. 업데이트 이후 다시 시도해주세요..
+        /// </summary>
+        internal static string exception_game_not_latest {
+            get {
+                return ResourceManager.GetString("exception_game_not_latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 소울워커 {0} 중입니다.
+        ///점검시간: {1}
+        ///오픈예정시간: {2}
+        ///점검내용:
+        ///{3}.
+        /// </summary>
+        internal static string exception_game_stove_maintenance {
+            get {
+                return ResourceManager.GetString("exception_game_stove_maintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 소울워커 혹은 한게임JP 서버가 연결을 차단하였습니다. (점검 스케줄을 체크해주세요).
         /// </summary>
         internal static string exception_hangame_refused_connection {
@@ -396,7 +464,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ID 혹은 비밀번호가 틀렸습니다..
+        ///   Looks up a localized string similar to 아이디 또는 비밀번호를 확인해주세요..
         /// </summary>
         internal static string exception_incorrect_id_pw {
             get {
@@ -419,6 +487,15 @@ namespace SWPatcher.Resources {
         internal static string exception_log_not_exist {
             get {
                 return ResourceManager.GetString("exception_log_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 현재 선택한 소울워커 서버는 다이렉트 로그인을 지원하지 않습니다. 로그인 옵션이 비활성화 되었습니다..
+        /// </summary>
+        internal static string exception_login_option_not_supported {
+            get {
+                return ResourceManager.GetString("exception_login_option_not_supported", resourceCulture);
             }
         }
         

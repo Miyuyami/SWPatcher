@@ -399,4 +399,32 @@ The link was copied to clipboard.</value>
   <data name="exception_directory_not_exist" xml:space="preserve">
     <value>Game directory does not exist "{0}".</value>
   </data>
+  <data name="error_exe_region_not_supported" xml:space="preserve">
+    <value>Your Soulworker region does not support .exe patching. The client patch has been disabled. The game can still operate, except some texts will not be shown.</value>
+  </data>
+  <data name="exception_login_option_not_supported" xml:space="preserve">
+    <value>Your Soulworker region does not support direct login. The login option was disabled.</value>
+  </data>
+  <data name="exception_game_not_latest" xml:space="preserve">
+    <value>Soulworker is not updated to the latest version. Try again after updating soulworker.</value>
+  </data>
+  <data name="exception_game_stove_maintenance" xml:space="preserve">
+    <value>Soulworker maintenance {0}
+{1}
+Maintenance ends at {2}.
+Checklist:
+{3}</value>
+  </data>
+  <data name="exception_account_not_validated" xml:space="preserve">
+    <value>Your soulworker account is not verified. Please verify your account on the website.</value>
+  </data>
+  <data name="exception_account_to_be_deleted" xml:space="preserve">
+    <value>This account is pending for deletion, if you want to cancel this, contact the customer support.</value>
+  </data>
+  <data name="exception_captcha_required" xml:space="preserve">
+    <value>Cannot login using patcher because your login requires to fill a captcha.</value>
+  </data>
+  <data name="exception_follow_instruction_webpage" xml:space="preserve">
+    <value>An error occured during login, follow the instructions on the webpage.</value>
+  </data>
 </root>

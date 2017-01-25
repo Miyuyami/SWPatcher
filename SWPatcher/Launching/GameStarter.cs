@@ -39,7 +39,7 @@ namespace SWPatcher.Launching
 {
     public delegate void GameStarterProgressChangedEventHandler(object sender, GameStarterProgressChangedEventArgs e);
     public delegate void GameStarterCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
-    
+
     class GameStarter
     {
         private readonly BackgroundWorker Worker;
@@ -64,7 +64,6 @@ namespace SWPatcher.Launching
         {
             this.Worker.ReportProgress((int)State.Prepare);
 
-            Methods.CheckRunningPrograms();
             if (this.Language != null)
             {
                 Logger.Debug(Methods.MethodFullName("GameStart", Thread.CurrentThread.ManagedThreadId.ToString(), this.Language.ToString()));
@@ -97,24 +96,38 @@ namespace SWPatcher.Launching
                 ProcessStartInfo startInfo = null;
                 if (UserSettings.WantToLogin)
                 {
-                    using (var client = new MyWebClient())
+                    switch (UserSettings.ClientRegion)
                     {
-                        HangameLogin(client);
-                        string[] gameStartArgs = GetGameStartArguments(client);
+                        case 1:
+                            LoginStartKR();
 
-                        startInfo = new ProcessStartInfo
-                        {
-                            UseShellExecute = true,
-                            Verb = "runas",
-                            Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                            WorkingDirectory = UserSettings.GamePath,
-                            FileName = Strings.FileName.GameExe
-                        };
+                            this.Worker.ReportProgress((int)State.WaitClient);
+                            while (true)
+                            {
+                                if (this.Worker.CancellationPending)
+                                {
+                                    e.Cancel = true;
+                                    return;
+                                }
+
+                                clientProcess = GetProcess(Strings.FileName.GameExe);
+
+                                if (clientProcess == null)
+                                {
+                                    Thread.Sleep(1000);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                            break;
+                        default:
+                            LoginStartJP(clientProcess, startInfo);
+
+                            break;
                     }
-
-                    BackupAndPlaceFiles(this.Language);
-
-                    clientProcess = Process.Start(startInfo);
                 }
                 else
                 {
@@ -151,24 +164,19 @@ namespace SWPatcher.Launching
 
                 if (UserSettings.WantToLogin)
                 {
-                    ProcessStartInfo startInfo = null;
-                    using (var client = new MyWebClient())
+                    switch (UserSettings.ClientRegion)
                     {
-                        HangameLogin(client);
-                        string[] gameStartArgs = GetGameStartArguments(client);
+                        case 1:
+                            StartRawKR();
+                            e.Cancel = true;
 
-                        startInfo = new ProcessStartInfo
-                        {
-                            UseShellExecute = true,
-                            Verb = "runas",
-                            Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                            WorkingDirectory = UserSettings.GamePath,
-                            FileName = Strings.FileName.GameExe
-                        };
+                            break;
+                        default:
+                            StartRawJP();
+                            e.Cancel = true;
+
+                            break;
                     }
-
-                    Process.Start(startInfo);
-                    e.Cancel = true;
                 }
                 else
                 {
@@ -249,7 +257,7 @@ namespace SWPatcher.Launching
                 throw new Exception(StringLoader.GetText("exception_empty_id"));
             }
 
-            var values = new NameValueCollection(2)
+            var values = new NameValueCollection(5)
             {
                 [Strings.Web.PostEncodeId] = HttpUtility.UrlEncode(id),
                 [Strings.Web.PostEncodeFlag] = Strings.Web.PostEncodeFlagDefaultValue,
@@ -257,7 +265,7 @@ namespace SWPatcher.Launching
             };
             using (System.Security.SecureString secure = Methods.DecryptString(pw))
             {
-                if (String.IsNullOrEmpty(values[Strings.Web.PostPw] = HttpUtility.UrlEncode(Methods.ToInsecureString(secure))))
+                if (String.IsNullOrEmpty(values[Strings.Web.PostPw] = Methods.ToInsecureString(secure)))
                 {
                     throw new Exception(StringLoader.GetText("exception_empty_pw"));
                 }
@@ -265,7 +273,8 @@ namespace SWPatcher.Launching
             values[Strings.Web.PostClearFlag] = Strings.Web.PostClearFlagDefaultValue;
             values[Strings.Web.PostNextUrl] = Strings.Web.PostNextUrlDefaultValue;
 
-            var loginResponse = Encoding.GetEncoding("shift-jis").GetString(client.UploadValues(Urls.HangameLogin, values));
+            byte[] byteResponse = client.UploadValues(Urls.HangameLogin, values);
+            string loginResponse = Encoding.GetEncoding("shift-jis").GetString(byteResponse);
             if (loginResponse.Contains(Strings.Web.CaptchaValidationText) || loginResponse.Contains(Strings.Web.CaptchaValidationText2))
             {
                 Process.Start(Strings.Web.CaptchaUrl);
@@ -283,6 +292,82 @@ namespace SWPatcher.Launching
             catch (IndexOutOfRangeException)
             {
 
+            }
+        }
+
+        private static void StoveLogin(MyWebClient client)
+        {
+            string id = UserSettings.GameId;
+            string pw = UserSettings.GamePw;
+
+            if (String.IsNullOrEmpty(id))
+            {
+                throw new Exception(StringLoader.GetText("exception_empty_id"));
+            }
+
+            var values = new NameValueCollection(3)
+            {
+                [Strings.Web.KR.PostId] = id
+            };
+            using (System.Security.SecureString secure = Methods.DecryptString(pw))
+            {
+                if (String.IsNullOrEmpty(values[Strings.Web.KR.PostPw] = Methods.ToInsecureString(secure)))
+                {
+                    throw new Exception(StringLoader.GetText("exception_empty_pw"));
+                }
+            }
+            values[Strings.Web.KR.KeepForever] = Strings.Web.KR.KeepForeverDefaultValue;
+
+            client.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
+            byte[] byteResponse = client.UploadValues(Urls.StoveLogin, values);
+            string loginResponse = Encoding.UTF8.GetString(byteResponse);
+
+            var loginJSON = new { value = "", message = "", result = "" };
+            var jsonResponse = JsonConvert.DeserializeAnonymousType(loginResponse, loginJSON);
+
+            switch (jsonResponse.result ?? throw new Exception("unexpected null result"))
+            {
+                case "000":
+
+                    break;
+                case "589":
+                    Process.Start("https://member.onstove.com/auth/login");
+                    throw new Exception(StringLoader.GetText("exception_captcha_required"));
+                case "551":
+                case "552":
+                case "553":
+                case "554":
+                    Process.Start($"https://member.onstove.com/block?user_id={id}");
+                    throw new Exception(StringLoader.GetText("exception_follow_instruction_webpage"));
+                case "569":
+                    Process.Start($"https://member.onstove.com/register/ok?user_id={id}");
+                    throw new Exception(StringLoader.GetText("exception_follow_instruction_webpage"));
+                case "556":
+                    throw new Exception(StringLoader.GetText("exception_incorrect_id_pw"));
+                case "610":
+                    throw new Exception(StringLoader.GetText("exception_account_to_be_deleted"));
+                case "550":
+                    var onlyIdValues = new NameValueCollection(1)
+                    {
+                        [Strings.Web.KR.PostId] = id
+                    };
+                    client.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
+                    byte[] byteWakeUpResponse = client.UploadValues("https://member.onstove.com/member/wake/up", onlyIdValues);
+                    string wakeUpResponse = Encoding.UTF8.GetString(byteWakeUpResponse);
+                    var jsonWakeUpResponse = JsonConvert.DeserializeAnonymousType(wakeUpResponse, loginJSON);
+                    switch (jsonWakeUpResponse.result ?? throw new Exception("unexpected null result"))
+                    {
+                        case "000":
+                            StoveLogin(client);
+
+                            break;
+                        default:
+                            throw new Exception($"result=[{jsonResponse.result}]\n{jsonResponse.message ?? "no error details"}");
+                    }
+
+                    break;
+                default:
+                    throw new Exception($"result=[{jsonResponse.result}]\n{jsonResponse.message ?? "no error details"}");
             }
         }
 
@@ -324,13 +409,14 @@ namespace SWPatcher.Launching
                 client.DownloadString(Urls.SoulworkerGameStart);
                 client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
 
-                string reactorStartResponse = Encoding.Default.GetString(client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { }));
+                byte[] byteResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
+                string reactorStartResponse = Encoding.UTF8.GetString(byteResponse);
                 var jsonResponse = JsonConvert.DeserializeAnonymousType(reactorStartResponse, hangameJSON);
 
                 if (jsonResponse.ret == 0)
                 {
                     string[] gameStartArgs = new string[3];
-                    gameStartArgs[0] = jsonResponse.gs ?? throw new Exception("null gs");
+                    gameStartArgs[0] = jsonResponse.gs ?? throw new Exception("unexpected null gs");
                     gameStartArgs[1] = Strings.Server.IP;
                     gameStartArgs[2] = Strings.Server.Port;
 
@@ -338,22 +424,22 @@ namespace SWPatcher.Launching
                 }
                 else
                 {
-                    switch (jsonResponse.errCode ?? throw new Exception("null errCode"))
+                    switch (jsonResponse.errCode ?? throw new Exception("unexpected null errCode"))
                     {
                         case "03":
                             throw new Exception(StringLoader.GetText("exception_not_tos"));
                         case "06":
-                            throw new Exception($"error\n{jsonResponse.errMsg}");
+                            throw new Exception($"error\n{jsonResponse.errMsg ?? throw new Exception("unexpected null errMsg")}");
                         case "10":
                             throw new Exception(StringLoader.GetText("exception_game_maintenance"));
                         default:
-                            throw new Exception($"errCode=[{jsonResponse.errCode}]");
+                            throw new Exception($"errCode=[{jsonResponse.errCode}]\n{jsonResponse.errMsg ?? "no error details"}");
                     }
                 }
             }
             catch (WebException ex)
             {
-                if ((ex.Response as HttpWebResponse).StatusCode == HttpStatusCode.NotFound)
+                if (ex.Response is HttpWebResponse exResponse && exResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                     if (dialog == DialogResult.Retry)
@@ -367,6 +453,37 @@ namespace SWPatcher.Launching
                 {
                     throw;
                 }
+            }
+        }
+
+        private static string GetKRGameStartProtocol(MyWebClient client)
+        {
+            var response = Encoding.UTF8.GetString(client.UploadData(Urls.SoulworkerKRGameStart, new byte[] { }));
+            var gameStartJSON = new { code = Int32.MaxValue, message = "", memberNo = Int64.MaxValue, gameAuthToken = "", maintenenceType = "", endTime = "", maintenenceTime = "" };
+            var jsonResponse = JsonConvert.DeserializeAnonymousType(response, gameStartJSON);
+
+            switch (jsonResponse.code)
+            {
+                case 0:
+                    return $"sgup://run/11/{jsonResponse.memberNo}/{jsonResponse.gameAuthToken ?? throw new Exception("unexpected null gameAuthToken")}";
+
+                case -1:
+                    throw new Exception($"error\n{jsonResponse.message ?? throw new Exception("unexpected null message")}");
+
+                case -3:
+                    string maintType = jsonResponse.maintenenceType ?? throw new Exception("unexpected null maintenenceType");
+                    string maintTime = jsonResponse.maintenenceTime ?? throw new Exception("unexpected null maintenenceTime");
+                    string maintEndTime = jsonResponse.endTime ?? throw new Exception("unexpected null endTime");
+                    string message = jsonResponse.message ?? throw new Exception("unexpected null message");
+
+                    throw new Exception(StringLoader.GetText("exception_game_stove_maintenance", maintType, maintTime, maintEndTime, message.Replace("<p>", "").Replace("</p>", "\n")));
+
+                case -4:
+                case -5:
+
+                    throw new Exception(StringLoader.GetText("exception_account_not_validated"));
+                default:
+                    throw new Exception($"code=[{jsonResponse.code}]");
             }
         }
 
@@ -384,6 +501,73 @@ namespace SWPatcher.Launching
             result = result.Substring(0, result.IndexOf('"'));
 
             return result.Split(' ');
+        }
+
+        private void LoginStartJP(Process clientProcess, ProcessStartInfo startInfo)
+        {
+            using (var client = new MyWebClient())
+            {
+                HangameLogin(client);
+                string[] gameStartArgs = GetGameStartArguments(client);
+
+                startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                    WorkingDirectory = UserSettings.GamePath,
+                    FileName = Strings.FileName.GameExe
+                };
+            }
+
+            BackupAndPlaceFiles(this.Language);
+
+            clientProcess = Process.Start(startInfo);
+        }
+
+        private void StartRawJP()
+        {
+            ProcessStartInfo startInfo = null;
+            using (var client = new MyWebClient())
+            {
+                HangameLogin(client);
+                string[] gameStartArgs = GetGameStartArguments(client);
+
+                startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
+                    WorkingDirectory = UserSettings.GamePath,
+                    FileName = Strings.FileName.GameExe
+                };
+            }
+
+            Process.Start(startInfo);
+        }
+
+        private void LoginStartKR()
+        {
+            using (var client = new MyWebClient())
+            {
+                StoveLogin(client);
+                string stoveProtocol = GetKRGameStartProtocol(client);
+
+                BackupAndPlaceFiles(this.Language);
+
+                Process.Start(stoveProtocol);
+            }
+        }
+
+        private void StartRawKR()
+        {
+            using (var client = new MyWebClient())
+            {
+                StoveLogin(client);
+                string stoveProtocol = GetKRGameStartProtocol(client);
+
+                Process.Start(stoveProtocol);
+            }
         }
 
         private static Process GetProcess(string name)

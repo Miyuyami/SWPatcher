@@ -399,4 +399,32 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
   <data name="exception_directory_not_exist" xml:space="preserve">
     <value>Thư mục game không tồn tại "{0}".</value>
   </data>
+  <data name="error_exe_region_not_supported" xml:space="preserve">
+    <value>Soulworker dành cho khu vực được chọn không hỗ trợ patch tập tin .exe. Patch đã bị bỏ qua. Trò chơi vẫn sẽ hoạt động ngoại trừ một số chữ có thể sẽ không hiển thị được.</value>
+  </data>
+  <data name="exception_login_option_not_supported" xml:space="preserve">
+    <value>Soulworker dành cho khu vực được chọn hiện không hỗ trợ chức năng đăng nhập bằng SWPatcher. Tùy chọn đăng nhập bằng SWPatcher đã sẽ bị bỏ.</value>
+  </data>
+  <data name="exception_account_not_validated" xml:space="preserve">
+    <value>Tài khoản chưa được kích hoạt. Xin vui lòng kích hoạt tài khoản.</value>
+  </data>
+  <data name="exception_account_to_be_deleted" xml:space="preserve">
+    <value>Tài khoản này đang trong giai đoạn "Đang xóa", nếu như bạn muốn hủy bỏ hành động này, xin vui lòng liên hệ "Chăm sóc khách hàng"</value>
+  </data>
+  <data name="exception_captcha_required" xml:space="preserve">
+    <value>Không thể đăng nhập bằng patcher vì lượt đăng nhập của bạn đòi hỏi phải điền captcha</value>
+  </data>
+  <data name="exception_follow_instruction_webpage" xml:space="preserve">
+    <value>Có lỗi xảy kha trong lúc đăng nhập, xin vui lòng làm theo hướng dẫn trên trang web.</value>
+  </data>
+  <data name="exception_game_not_latest" xml:space="preserve">
+    <value>Soulworker chưa được cập nhật đến phiên bản mới nhất. Xin vui lòng thử lại sau khi cập nhật Soulworker.</value>
+  </data>
+  <data name="exception_game_stove_maintenance" xml:space="preserve">
+    <value>Soulworker hiện đang trong bảo trì {0}
+Thời gian: {1}
+Bảo trì sẽ kết thúc vào lúc {2}.
+Danh sách đối chiếu:
+{3}</value>
+  </data>
 </root>

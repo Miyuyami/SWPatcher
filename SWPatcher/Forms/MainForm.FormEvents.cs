@@ -37,9 +37,21 @@ namespace SWPatcher.Forms
             var gamePath = UserSettings.GamePath;
             if (String.IsNullOrEmpty(gamePath) || !Methods.IsSwPath(gamePath))
             {
-                UserSettings.GamePath = GetSwPathFromRegistry();
+                string newGamePath = GetJPSwPathFromRegistry();
+
+                if (newGamePath == String.Empty)
+                {
+                    newGamePath = GetKRSwPathFromRegistry();
+
+                    if (newGamePath == String.Empty)
+                    {
+                        throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
+                    }
+                }
+
+                Methods.SetRegionBasedOnExeName(newGamePath);
+                UserSettings.GamePath = newGamePath;
             }
-            Methods.EnsureDirectoryRights(UserSettings.GamePath);
 
             if (this.comboBoxLanguages.DataSource != null)
             {

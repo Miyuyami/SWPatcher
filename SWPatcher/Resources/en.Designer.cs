@@ -268,6 +268,33 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your Soulworker region does not support .exe patching. The client patch has been disabled. The game can still operate, except some texts will not be shown..
+        /// </summary>
+        internal static string error_exe_region_not_supported {
+            get {
+                return ResourceManager.GetString("error_exe_region_not_supported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your soulworker account is not verified. Please verify your account on the website..
+        /// </summary>
+        internal static string exception_account_not_validated {
+            get {
+                return ResourceManager.GetString("exception_account_not_validated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This account is pending for deletion, if you want to cancel this, contact the customer support..
+        /// </summary>
+        internal static string exception_account_to_be_deleted {
+            get {
+                return ResourceManager.GetString("exception_account_to_be_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You already have the latest ({0} JST) translation files for this language!.
         /// </summary>
         internal static string exception_already_latest_translation {
@@ -291,6 +318,15 @@ namespace SWPatcher.Resources {
         internal static string exception_cannot_restore_file {
             get {
                 return ResourceManager.GetString("exception_cannot_restore_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot login using patcher because your login requires to fill a captcha..
+        /// </summary>
+        internal static string exception_captcha_required {
+            get {
+                return ResourceManager.GetString("exception_captcha_required", resourceCulture);
             }
         }
         
@@ -360,6 +396,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occured during login, follow the instructions on the webpage..
+        /// </summary>
+        internal static string exception_follow_instruction_webpage {
+            get {
+                return ResourceManager.GetString("exception_follow_instruction_webpage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot proceed because {0} is already running..
         /// </summary>
         internal static string exception_game_already_open {
@@ -383,6 +428,28 @@ namespace SWPatcher.Resources {
         internal static string exception_game_maintenance {
             get {
                 return ResourceManager.GetString("exception_game_maintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soulworker is not updated to the latest version. Try again after updating soulworker..
+        /// </summary>
+        internal static string exception_game_not_latest {
+            get {
+                return ResourceManager.GetString("exception_game_not_latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soulworker maintenance {0}
+        ///{1}
+        ///Maintenance ends at {2}.
+        ///Checklist:
+        ///{3}.
+        /// </summary>
+        internal static string exception_game_stove_maintenance {
+            get {
+                return ResourceManager.GetString("exception_game_stove_maintenance", resourceCulture);
             }
         }
         
@@ -419,6 +486,15 @@ namespace SWPatcher.Resources {
         internal static string exception_log_not_exist {
             get {
                 return ResourceManager.GetString("exception_log_not_exist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Soulworker region does not support direct login. The login option was disabled..
+        /// </summary>
+        internal static string exception_login_option_not_supported {
+            get {
+                return ResourceManager.GetString("exception_login_option_not_supported", resourceCulture);
             }
         }
         

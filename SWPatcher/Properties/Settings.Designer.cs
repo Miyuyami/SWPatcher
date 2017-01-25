@@ -118,5 +118,17 @@ namespace SWPatcher.Properties {
                 this["UILanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte ClientRegion {
+            get {
+                return ((byte)(this["ClientRegion"]));
+            }
+            set {
+                this["ClientRegion"] = value;
+            }
+        }
     }
 }

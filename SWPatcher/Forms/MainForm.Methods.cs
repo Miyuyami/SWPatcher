@@ -130,46 +130,36 @@ namespace SWPatcher.Forms
             }
         }
 
-        private static string GetSwPathFromRegistry()
+        private static string GetJPSwPathFromRegistry()
         {
             if (!Environment.Is64BitOperatingSystem)
             {
-                using (RegistryKey key32 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
-                {
-                    if (key32 != null)
-                    {
-                        return Convert.ToString(key32.GetValue("folder", String.Empty));
-                    }
-                    else
-                    {
-                        throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
-                    }
-                }
+                string value = Methods.GetRegistryValue(Strings.Registry.JP.RegistryKey, Strings.Registry.JP.Key32Path, Strings.Registry.JP.FolderName);
+
+                return value;
             }
             else
             {
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\HanPurple\J_SW"))
+                string value = Methods.GetRegistryValue(Strings.Registry.JP.RegistryKey, Strings.Registry.JP.Key64Path, Strings.Registry.JP.FolderName);
+
+                if (value != String.Empty)
                 {
-                    if (key != null)
-                    {
-                        return Convert.ToString(key.GetValue("folder", String.Empty));
-                    }
-                    else
-                    {
-                        using (RegistryKey key32 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\HanPurple\J_SW"))
-                        {
-                            if (key32 != null)
-                            {
-                                return Convert.ToString(key32.GetValue("folder", String.Empty));
-                            }
-                            else
-                            {
-                                throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
-                            }
-                        }
-                    }
+                    return value;
+                }
+                else
+                {
+                    value = Methods.GetRegistryValue(Strings.Registry.JP.RegistryKey, Strings.Registry.JP.Key32Path, Strings.Registry.JP.FolderName);
+
+                    return value;
                 }
             }
+        }
+
+        private static string GetKRSwPathFromRegistry()
+        {
+            string value = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.FolderName);
+
+            return value;
         }
 
         private static Language[] GetAvailableLanguages()
@@ -200,8 +190,11 @@ namespace SWPatcher.Forms
         private static void DeleteTranslationIni(Language language)
         {
             string iniPath = Path.Combine(language.Name, Strings.IniName.Translation);
+
             if (Directory.Exists(Path.GetDirectoryName(iniPath)))
+            {
                 File.Delete(iniPath);
+            }
         }
 
         private static string GetSHA256(string filename)

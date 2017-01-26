@@ -456,9 +456,9 @@ namespace SWPatcher.Launching
             }
             catch (WebException ex)
             {
-                if (ex.Response is HttpWebResponse exResponse)
+                if (ex.Response is HttpWebResponse response)
                 {
-                    if (exResponse.StatusCode == HttpStatusCode.NotFound)
+                    if (response.StatusCode == HttpStatusCode.NotFound)
                     {
                         DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
                         if (dialog == DialogResult.Retry)

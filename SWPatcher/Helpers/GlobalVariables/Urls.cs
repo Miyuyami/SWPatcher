@@ -18,7 +18,7 @@
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    public static class Urls
+    static class Urls
     {
         public const string SoulworkerWebsite = "https://miyuyami.github.io/patcher.html";
 #if DEBUG

@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 namespace SWPatcher.Forms
 {
-    public partial class MainForm : Form
+    partial class MainForm : Form
     {
         public enum State
         {

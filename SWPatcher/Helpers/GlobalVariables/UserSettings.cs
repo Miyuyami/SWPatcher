@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    public static class UserSettings
+    static class UserSettings
     {
         public static string PatcherPath
         {

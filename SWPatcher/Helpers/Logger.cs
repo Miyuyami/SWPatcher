@@ -24,7 +24,7 @@ using System.Threading;
 
 namespace SWPatcher.Helpers
 {
-    public static class Logger
+    static class Logger
     {
         private class LogMessage
         {

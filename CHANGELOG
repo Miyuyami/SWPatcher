@@ -1,3 +1,6 @@
+Version 2.6.0.3
+Fixed some null reference errors when failing to connect to certain web servers instead of showing the proper error
+
 Version 2.6.0.2
 Fixed XIGNCODE detecting the patcher as "suspicious"
 

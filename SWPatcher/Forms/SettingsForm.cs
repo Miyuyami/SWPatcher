@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 namespace SWPatcher.Forms
 {
-    public partial class SettingsForm : Form
+    partial class SettingsForm : Form
     {
         private bool PendingRestart;
         private string GameClientDirectory;

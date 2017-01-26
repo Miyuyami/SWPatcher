@@ -127,18 +127,22 @@ namespace SWPatcher.Helpers
                 }
                 catch (WebException e)
                 {
-                    if (e.InnerException is SocketException)
+                    if (e.InnerException is SocketException innerException)
                     {
-                        var innerException = e.InnerException as SocketException;
                         if (innerException.SocketErrorCode == SocketError.ConnectionRefused)
                         {
-                            Logger.Error(e);
-                            MsgBox.Error(StringLoader.GetText("exception_hangame_refused_connection"));
+                            throw new Exception(StringLoader.GetText("exception_hangame_refused_connection"));
+                        }
+                        else
+                        {
+                            throw;
                         }
                     }
+                    else
+                    {
+                        throw;
+                    }
                 }
-
-                return null;
             }
         }
 

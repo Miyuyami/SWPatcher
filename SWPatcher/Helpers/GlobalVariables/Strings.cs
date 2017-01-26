@@ -15,20 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    public static class Strings
+    static class Strings
     {
-        public static class PasteBin
+        internal static class PasteBin
         {
             public const string DevKey = "2e5bee04f7455774443dd399934494bd";
             public const string Username = "SWPatcher";
             public const string Password = "pIIrwSL8lNJOjPhW";
         }
 
-        public static class FileName
+        internal static class FileName
         {
             public const string GameExeJP = "SoulWorker100.exe";
             public const string GameExeKR = "SoulWorker.exe";
@@ -54,14 +54,14 @@ namespace SWPatcher.Helpers.GlobalVariables
             //public const string Data14 = "data14.v";
         }
 
-        public static class FolderName
+        internal static class FolderName
         {
             public const string Data = "datas";
             public const string Backup = "backup";
             public const string RTPatchLogs = "RTPatchLogs";
         }
 
-        public static class IniName
+        internal static class IniName
         {
             public const string ServerVer = "ServerVer.ini";
             public const string ClientVer = "Ver.ini";
@@ -74,20 +74,20 @@ namespace SWPatcher.Helpers.GlobalVariables
 
             public const string GeneralClient = "General.ini";
 
-            public static class Ver
+            internal static class Ver
             {
                 public const string Section = "Client";
                 public const string Key = "ver";
             }
 
-            public static class ServerRepository
+            internal static class ServerRepository
             {
                 public const string Section = "FTP";
                 public const string Key = "address";
                 public const string UpdateRepository = "update/";
             }
 
-            public static class Patcher
+            internal static class Patcher
             {
                 public const string Section = "Patcher";
                 public const string KeyVer = "ver";
@@ -95,7 +95,7 @@ namespace SWPatcher.Helpers.GlobalVariables
                 public const string KeyRegion = "region";
             }
 
-            public static class Pack
+            internal static class Pack
             {
                 public const string KeyPath = "path";
                 public const string KeyPathInArchive = "path_a";
@@ -104,26 +104,26 @@ namespace SWPatcher.Helpers.GlobalVariables
                 public const string KeyBaseValue = "__base__";
             }
 
-            public static class PatchBytes
+            internal static class PatchBytes
             {
                 public const string KeyOriginal = "original";
                 public const string KeyPatch = "patch";
             }
 
-            public static class Datas
+            internal static class Datas
             {
                 public const string SectionZipPassword = "Zip Passwords";
                 public const string Data12 = "data12";
             }
         }
 
-        public static class Server
+        internal static class Server
         {
             public const string IP = "sw-auth.hangame.co.jp";
             public const string Port = "10000";
         }
 
-        public static class Web
+        internal static class Web
         {
             public const string PostEncodeId = "encodeId";
             public const string PostEncodeFlag = "encodeFlg";
@@ -144,7 +144,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             public const string CaptchaValidationText2 = "認証に連続";
             public const string CaptchaUrl = "http://top.hangame.co.jp/login/loginfailed.nhn?type=dlf";
 
-            public static class KR
+            internal static class KR
             {
                 public const string ServiceCode = "service_code";
                 public const string LocalVersion = "local_version";
@@ -156,17 +156,17 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static class Registry
+        internal static class Registry
         {
-            public static class JP
+            internal static class JP
             {
                 public static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.LocalMachine;
                 public const string Key32Path = @"SOFTWARE\HanPurple\J_SW";
                 public const string Key64Path = @"SOFTWARE\WOW6432Node\HanPurple\J_SW";
                 public const string FolderName = "folder";
             }
-            
-            public static class KR
+
+            internal static class KR
             {
                 public static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.CurrentUser;
                 public const string Key32Path = @"SOFTWARE\SGUP\Apps\11";

@@ -20,7 +20,7 @@ using System.Reflection;
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    public static class AssemblyAccessor
+    static class AssemblyAccessor
     {
         public static string Title
         {

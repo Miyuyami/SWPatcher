@@ -73,7 +73,7 @@ namespace SWPatcher.RTPatch
                     //Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString()));
                     return;
 
-                    //break;
+                //break;
                 default:
                     LoadVersions();
                     Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
@@ -275,7 +275,7 @@ namespace SWPatcher.RTPatch
                         HttpStatusCode statusCode = exResponse.StatusCode;
                         if (statusCode != HttpStatusCode.NotFound)
                         {
-                            Logger.Debug($"{Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri)}\nUnexpected status code {statusCode}\n{exResponse.ToString()}");
+                            throw;
                         }
                     }
                     else
@@ -338,7 +338,7 @@ namespace SWPatcher.RTPatch
                 case 14u:
                 case 17u:
                 case 18u: // abort on error
-				
+
                     break;//return null;
                 case 5u: // completion percentage
                     int readInt = Marshal.ReadInt32(ptr);

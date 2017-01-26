@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace SWPatcher.Helpers
 {
-    public static class MsgBox
+    static class MsgBox
     {
         public static void Error(string message)
         {

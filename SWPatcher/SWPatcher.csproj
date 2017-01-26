@@ -30,10 +30,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
-    <MinimumRequiredVersion>2.6.0.2</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.6.0.3</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>2.6.0.2</ApplicationVersion>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>2.6.0.3</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

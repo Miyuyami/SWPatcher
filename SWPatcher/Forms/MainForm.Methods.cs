@@ -17,7 +17,6 @@
  */
 
 using MadMilkman.Ini;
-using Microsoft.Win32;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
@@ -32,7 +31,7 @@ using System.Windows.Forms;
 
 namespace SWPatcher.Forms
 {
-    public partial class MainForm
+    partial class MainForm
     {
         public IEnumerable<string> GetComboBoxItemsAsString()
         {

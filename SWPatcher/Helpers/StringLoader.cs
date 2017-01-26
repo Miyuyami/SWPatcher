@@ -22,7 +22,7 @@ using System.Globalization;
 
 namespace SWPatcher.Helpers
 {
-    public static class StringLoader
+    static class StringLoader
     {
         public static string GetText(string name)
         {

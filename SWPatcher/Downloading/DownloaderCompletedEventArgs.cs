@@ -21,7 +21,7 @@ using System;
 
 namespace SWPatcher.Downloading
 {
-    public class DownloaderCompletedEventArgs : EventArgs
+    class DownloaderCompletedEventArgs : EventArgs
     {
         public Language Language { get; private set; }
         public bool Cancelled { get; private set; }

@@ -21,7 +21,7 @@ using static SWPatcher.Patching.Patcher;
 
 namespace SWPatcher.Patching
 {
-    public class PatcherProgressChangedEventArgs : EventArgs
+    class PatcherProgressChangedEventArgs : EventArgs
     {
         public State PatcherState { get; private set; }
         public int Progress { get; private set; }

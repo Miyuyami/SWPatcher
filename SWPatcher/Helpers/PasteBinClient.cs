@@ -34,7 +34,7 @@ namespace SWPatcher.Helpers
         OneMonth
     }
 
-    public class PasteBinEntry
+    class PasteBinEntry
     {
         public string Title { get; set; }
         public string Text { get; set; }
@@ -175,7 +175,7 @@ namespace SWPatcher.Helpers
     }
 
     [Serializable]
-    public class PasteBinApiException : Exception
+    class PasteBinApiException : Exception
     {
         public PasteBinApiException()
         {

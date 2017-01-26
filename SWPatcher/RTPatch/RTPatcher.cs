@@ -29,11 +29,11 @@ using System.Threading;
 
 namespace SWPatcher.RTPatch
 {
-    public delegate void RTPatcherDownloadProgressChangedEventHandler(object sender, RTPatcherDownloadProgressChangedEventArgs e);
-    public delegate void RTPatcherProgressChangedEventHandler(object sender, RTPatcherProgressChangedEventArgs e);
-    public delegate string RTPatchCallback(uint id, IntPtr ptr);
+    delegate void RTPatcherDownloadProgressChangedEventHandler(object sender, RTPatcherDownloadProgressChangedEventArgs e);
+    delegate void RTPatcherProgressChangedEventHandler(object sender, RTPatcherProgressChangedEventArgs e);
+    delegate string RTPatchCallback(uint id, IntPtr ptr);
 
-    public class RTPatcher
+    class RTPatcher
     {
         private const int DiffBytes = 10; // how many bytes to redownload on resume, just to be safe, why not?
         private readonly BackgroundWorker Worker;

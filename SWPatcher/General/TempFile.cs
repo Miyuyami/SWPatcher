@@ -20,7 +20,7 @@ using System;
 
 namespace SWPatcher.General
 {
-    public class TempFile : IDisposable
+    class TempFile : IDisposable
     {
         public string Path { get; private set; }
         private bool IsDisposed = false;

@@ -23,7 +23,7 @@ using System.Text;
 
 namespace SWPatcher.Helpers
 {
-    public class NativeMethods
+    class NativeMethods
     {
         [Flags]
         public enum ProcessAccessFlags : uint

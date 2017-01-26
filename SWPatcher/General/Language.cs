@@ -20,7 +20,7 @@ using System;
 
 namespace SWPatcher.General
 {
-    public class Language
+    class Language
     {
         public string Name { get; private set; }
         public DateTime LastUpdate { get; private set; }

@@ -20,7 +20,7 @@ using System;
 
 namespace SWPatcher.RTPatch
 {
-    public class RTPatcherDownloadProgressChangedEventArgs : EventArgs
+    class RTPatcherDownloadProgressChangedEventArgs : EventArgs
     {
         public string FileName { get; private set; }
         public int Progress { get; private set; }

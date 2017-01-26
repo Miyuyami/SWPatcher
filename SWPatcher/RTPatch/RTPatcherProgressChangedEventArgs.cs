@@ -20,7 +20,7 @@ using System;
 
 namespace SWPatcher.RTPatch
 {
-    public class RTPatcherProgressChangedEventArgs : EventArgs
+    class RTPatcherProgressChangedEventArgs : EventArgs
     {
         public int FileNumber { get; private set; }
         public int FileCount { get; private set; }

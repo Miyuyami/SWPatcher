@@ -27,10 +27,10 @@ using System.Threading;
 
 namespace SWPatcher.Downloading
 {
-    public delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
-    public delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
+    delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
+    delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
 
-    public class Downloader
+    class Downloader
     {
         private BackgroundWorker Worker;
         private WebClient Client;

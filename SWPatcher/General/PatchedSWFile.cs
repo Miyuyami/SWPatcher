@@ -18,7 +18,7 @@
 
 namespace SWPatcher.General
 {
-    public class PatchedSWFile : ArchivedSWFile
+    class PatchedSWFile : ArchivedSWFile
     {
         public string Format { get; private set; }
 

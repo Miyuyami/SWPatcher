@@ -21,7 +21,7 @@ using System.Net;
 
 namespace SWPatcher.Downloading
 {
-    public class DownloaderProgressChangedEventArgs : EventArgs
+    class DownloaderProgressChangedEventArgs : EventArgs
     {
         public int FileNumber { get; private set; }
         public int FileCount { get; private set; }

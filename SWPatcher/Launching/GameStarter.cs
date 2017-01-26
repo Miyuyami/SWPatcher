@@ -37,8 +37,8 @@ using static SWPatcher.Forms.MainForm;
 
 namespace SWPatcher.Launching
 {
-    public delegate void GameStarterProgressChangedEventHandler(object sender, GameStarterProgressChangedEventArgs e);
-    public delegate void GameStarterCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
+    delegate void GameStarterProgressChangedEventHandler(object sender, GameStarterProgressChangedEventArgs e);
+    delegate void GameStarterCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
 
     class GameStarter
     {
@@ -456,15 +456,22 @@ namespace SWPatcher.Launching
             }
             catch (WebException ex)
             {
-                if (ex.Response is HttpWebResponse exResponse && exResponse.StatusCode == HttpStatusCode.NotFound)
+                if (ex.Response is HttpWebResponse exResponse)
                 {
-                    DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
-                    if (dialog == DialogResult.Retry)
+                    if (exResponse.StatusCode == HttpStatusCode.NotFound)
                     {
-                        goto again;
-                    }
+                        DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
+                        if (dialog == DialogResult.Retry)
+                        {
+                            goto again;
+                        }
 
-                    throw new Exception(StringLoader.GetText("exception_validation_failed"), ex);
+                        throw new Exception(StringLoader.GetText("exception_validation_failed"), ex);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 else
                 {

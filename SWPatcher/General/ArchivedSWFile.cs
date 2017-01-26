@@ -18,7 +18,7 @@
 
 namespace SWPatcher.General
 {
-    public class ArchivedSWFile : SWFile
+    class ArchivedSWFile : SWFile
     {
         public string PathA { get; private set; }
         public byte[] Data { get; set; }

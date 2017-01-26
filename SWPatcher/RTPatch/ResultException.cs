@@ -23,7 +23,7 @@ using System.Security.Permissions;
 namespace SWPatcher.RTPatch
 {
     [Serializable]
-    public class ResultException : Exception
+    class ResultException : Exception
     {
         public ulong Result { get; private set; }
         public string LogPath { get; private set; }

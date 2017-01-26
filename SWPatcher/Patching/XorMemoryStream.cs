@@ -20,7 +20,7 @@ using System.IO;
 
 namespace SWPatcher.Patching
 {
-    public class XorMemoryStream : MemoryStream
+    class XorMemoryStream : MemoryStream
     {
         public byte XorByte { get; private set; }
 

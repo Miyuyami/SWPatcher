@@ -21,7 +21,7 @@ using System;
 
 namespace SWPatcher.Patching
 {
-    public class PatcherCompletedEventArgs : EventArgs
+    class PatcherCompletedEventArgs : EventArgs
     {
         public Language Language { get; private set; }
         public bool Cancelled { get; private set; }

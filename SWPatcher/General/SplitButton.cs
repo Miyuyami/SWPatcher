@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace SWPatcher.General
 {
-    public class SplitButton : Button
+    class SplitButton : Button
     {
         [DefaultValue(null), Browsable(true),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]

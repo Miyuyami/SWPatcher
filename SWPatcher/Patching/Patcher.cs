@@ -33,10 +33,10 @@ using System.Threading;
 
 namespace SWPatcher.Patching
 {
-    public delegate void PatcherProgressChangedEventHandler(object sender, PatcherProgressChangedEventArgs e);
-    public delegate void PatcherCompletedEventHandler(object sender, PatcherCompletedEventArgs e);
+    delegate void PatcherProgressChangedEventHandler(object sender, PatcherProgressChangedEventArgs e);
+    delegate void PatcherCompletedEventHandler(object sender, PatcherCompletedEventArgs e);
 
-    public class Patcher
+    class Patcher
     {
         public enum State
         {

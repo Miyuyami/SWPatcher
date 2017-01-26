@@ -18,7 +18,7 @@
 
 namespace SWPatcher.General
 {
-    public class SWFile
+    class SWFile
     {
         public string Name { get; private set; }
         public string Path { get; private set; }

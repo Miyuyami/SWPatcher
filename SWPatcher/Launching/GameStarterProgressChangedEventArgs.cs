@@ -21,7 +21,7 @@ using static SWPatcher.Forms.MainForm;
 
 namespace SWPatcher.Launching
 {
-    public class GameStarterProgressChangedEventArgs : EventArgs
+    class GameStarterProgressChangedEventArgs : EventArgs
     {
         public State State { get; private set; }
 

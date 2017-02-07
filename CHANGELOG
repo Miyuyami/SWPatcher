@@ -1,3 +1,6 @@
+Version 2.7.0.1 - Feb 7, 2017
+Fixed that changing patcher folder would not move the right directories
+
 Version 2.7.0.0 - Feb 7, 2017
 Now it opens the Terms of Service page if the user did not accept them
 Added a region picker and each translation and backup is unique for each region

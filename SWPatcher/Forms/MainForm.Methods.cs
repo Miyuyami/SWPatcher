@@ -308,7 +308,7 @@ namespace SWPatcher.Forms
 
         internal IEnumerable<string> GetTranslationFolders()
         {
-            return this.ComboBoxRegions.Items.Cast<Region>().Select(s => s.ToString());
+            return this.ComboBoxRegions.Items.Cast<Region>().Select(s => s.Id);
         }
 
         internal string GetSelectedRegionId()

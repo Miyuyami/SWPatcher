@@ -17,6 +17,7 @@
  */
 
 using MadMilkman.Ini;
+using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
@@ -27,29 +28,31 @@ using System.Net;
 
 namespace SWPatcher.General
 {
-    static class SWFileManager
+    internal static class SWFileManager
     {
         private static List<SWFile> SWFiles;
-        public static int Count => SWFiles.Count;
-        public static SWFile GetElementAt(int index) => SWFiles[index];
-        public static ReadOnlyCollection<SWFile> GetFiles() => SWFiles.AsReadOnly();
+        internal static int Count => SWFiles.Count;
+        internal static SWFile GetElementAt(int index) => SWFiles[index];
+        internal static ReadOnlyCollection<SWFile> GetFiles() => SWFiles.AsReadOnly();
 
-        internal static void LoadFileConfiguration()
+        internal static void LoadFileConfiguration(Language language)
         {
             if (SWFiles == null)
             {
-                InternalLoadFileConfiguration();
+                string packPath = Urls.TranslationGitHubHome + language.Path + '/' + Strings.IniName.TranslationPackData;
+                Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), packPath));
+                InternalLoadFileConfiguration(packPath);
             }
         }
 
-        private static void InternalLoadFileConfiguration()
+        private static void InternalLoadFileConfiguration(string url)
         {
             SWFiles = new List<SWFile>();
 
             byte[] packData;
             using (var client = new WebClient())
             {
-                packData = client.DownloadData(Urls.PatcherGitHubHome + Strings.IniName.TranslationPackData);
+                packData = client.DownloadData(url);
             }
 
             IniFile ini = new IniFile();

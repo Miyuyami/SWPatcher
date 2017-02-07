@@ -24,19 +24,19 @@ using System.Threading;
 
 namespace SWPatcher.Helpers
 {
-    static class Logger
+    internal static class Logger
     {
         private class LogMessage
         {
-            public DateTime DateTime;
-            public string LogMode;
-            public string Message;
+            internal DateTime DateTime;
+            internal string LogMode;
+            internal string Message;
         }
 
         private static readonly BlockingCollection<LogMessage> _messages = new BlockingCollection<LogMessage>(new ConcurrentQueue<LogMessage>());
         private const string LogFormat = "dd/MM/yyyy HH:mm:ss:fffffff - {0,-5} {1}\n";
 
-        public static void Debug(string message)
+        internal static void Debug(string message)
         {
             _messages.Add(new LogMessage
             {
@@ -46,7 +46,7 @@ namespace SWPatcher.Helpers
             });
         }
 
-        public static void Info(string message)
+        internal static void Info(string message)
         {
             _messages.Add(new LogMessage
             {
@@ -56,12 +56,12 @@ namespace SWPatcher.Helpers
             });
         }
 
-        public static void Critical(Exception exception)
+        internal static void Critical(Exception exception)
         {
             Critical(exception.ToString());
         }
 
-        public static void Critical(string message)
+        internal static void Critical(string message)
         {
             _messages.Add(new LogMessage
             {
@@ -71,12 +71,12 @@ namespace SWPatcher.Helpers
             });
         }
 
-        public static void Error(Exception exception)
+        internal static void Error(Exception exception)
         {
             Error(exception.ToString());
         }
 
-        public static void Error(string message)
+        internal static void Error(string message)
         {
             _messages.Add(new LogMessage
             {
@@ -116,7 +116,7 @@ namespace SWPatcher.Helpers
 #endif
         }
 
-        public static string ExeptionParser(Exception ex)
+        internal static string ExeptionParser(Exception ex)
         {
             string result = ex.Message;
             if (ex.InnerException != null)
@@ -124,7 +124,7 @@ namespace SWPatcher.Helpers
             return result;
         }
 
-        public static void Run()
+        internal static void Run()
         {
             Thread thread = new Thread(() =>
             {

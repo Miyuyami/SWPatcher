@@ -20,14 +20,14 @@ using System;
 
 namespace SWPatcher.RTPatch
 {
-    class RTPatcherProgressChangedEventArgs : EventArgs
+    internal class RTPatcherProgressChangedEventArgs : EventArgs
     {
-        public int FileNumber { get; private set; }
-        public int FileCount { get; private set; }
-        public string FileName { get; private set; }
-        public int Progress { get; private set; }
+        internal int FileNumber { get; private set; }
+        internal int FileCount { get; private set; }
+        internal string FileName { get; private set; }
+        internal int Progress { get; private set; }
 
-        public RTPatcherProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, int progress)
+        internal RTPatcherProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, int progress)
         {
             this.FileNumber = fileNumber;
             this.FileCount = fileCount;

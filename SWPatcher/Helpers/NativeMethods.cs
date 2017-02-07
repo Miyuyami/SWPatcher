@@ -23,10 +23,10 @@ using System.Text;
 
 namespace SWPatcher.Helpers
 {
-    class NativeMethods
+    internal class NativeMethods
     {
         [Flags]
-        public enum ProcessAccessFlags : uint
+        internal enum ProcessAccessFlags : uint
         {
             All = 0x001F0FFF,
             Terminate = 0x00000001,

@@ -25,10 +25,10 @@ namespace SWPatcher.General
     /// <summary>
     /// A <c>System.Net.WebClient</c> that has a <c>System.Net.CookieCollection</c> and a <c>System.Security.Cryptography.X509Certificates.X509Certificate</c>
     /// </summary>
-    class MyWebClient : WebClient
+    internal class MyWebClient : WebClient
     {
         private readonly CookieContainer _container = new CookieContainer();
-        public CookieCollection ResponseCookies { get; private set; }
+        internal CookieCollection ResponseCookies { get; private set; }
 
         protected override WebRequest GetWebRequest(Uri address)
         {

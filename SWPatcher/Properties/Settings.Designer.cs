@@ -8,126 +8,157 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SWPatcher.Properties {
-    
-    
+namespace SWPatcher.Properties
+{
+
+
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
-        
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.1.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-        
-        public static Settings Default {
-            get {
+
+        public static Settings Default
+        {
+            get
+            {
                 return defaultInstance;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string GameDirectory {
-            get {
+        public string GameDirectory
+        {
+            get
+            {
                 return ((string)(this["GameDirectory"]));
             }
-            set {
+            set
+            {
                 this["GameDirectory"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LanguageName {
-            get {
-                return ((string)(this["LanguageName"]));
-            }
-            set {
-                this["LanguageName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PatcherWorkingDirectory {
-            get {
+        public string PatcherWorkingDirectory
+        {
+            get
+            {
                 return ((string)(this["PatcherWorkingDirectory"]));
             }
-            set {
+            set
+            {
                 this["PatcherWorkingDirectory"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool WantToPatchSoulworkerExe {
-            get {
+        public bool WantToPatchSoulworkerExe
+        {
+            get
+            {
                 return ((bool)(this["WantToPatchSoulworkerExe"]));
             }
-            set {
+            set
+            {
                 this["WantToPatchSoulworkerExe"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string GameUserId {
-            get {
+        public string GameUserId
+        {
+            get
+            {
                 return ((string)(this["GameUserId"]));
             }
-            set {
+            set
+            {
                 this["GameUserId"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string GameUserPassword {
-            get {
+        public string GameUserPassword
+        {
+            get
+            {
                 return ((string)(this["GameUserPassword"]));
             }
-            set {
+            set
+            {
                 this["GameUserPassword"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool WantToLoginWithPatcher {
-            get {
+        public bool WantToLoginWithPatcher
+        {
+            get
+            {
                 return ((bool)(this["WantToLoginWithPatcher"]));
             }
-            set {
+            set
+            {
                 this["WantToLoginWithPatcher"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("default")]
-        public string UILanguage {
-            get {
+        public string UILanguage
+        {
+            get
+            {
                 return ((string)(this["UILanguage"]));
             }
-            set {
+            set
+            {
                 this["UILanguage"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public byte ClientRegion {
-            get {
-                return ((byte)(this["ClientRegion"]));
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LanguageId
+        {
+            get
+            {
+                return ((string)(this["LanguageId"]));
             }
-            set {
-                this["ClientRegion"] = value;
+            set
+            {
+                this["LanguageId"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RegionId
+        {
+            get
+            {
+                return ((string)(this["RegionId"]));
+            }
+            set
+            {
+                this["RegionId"] = value;
             }
         }
     }

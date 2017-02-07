@@ -23,17 +23,17 @@ using System.Windows.Forms;
 
 namespace SWPatcher.General
 {
-    class SplitButton : Button
+    internal class SplitButton : Button
     {
         [DefaultValue(null), Browsable(true),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public ContextMenuStrip ContextMenuStripSplit { get; set; }
+        internal ContextMenuStrip ContextMenuStripSplit { get; set; }
 
         [DefaultValue(20), Browsable(true),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public int SplitWidth { get; set; }
+        internal int SplitWidth { get; set; }
 
-        public SplitButton()
+        internal SplitButton()
         {
             this.SplitWidth = 20;
         }

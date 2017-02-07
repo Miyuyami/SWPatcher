@@ -20,13 +20,13 @@ using System;
 
 namespace SWPatcher.RTPatch
 {
-    class RTPatcherDownloadProgressChangedEventArgs : EventArgs
+    internal class RTPatcherDownloadProgressChangedEventArgs : EventArgs
     {
-        public string FileName { get; private set; }
-        public int Progress { get; private set; }
-        public string DownloadSpeed { get; private set; }
+        internal string FileName { get; private set; }
+        internal int Progress { get; private set; }
+        internal string DownloadSpeed { get; private set; }
 
-        public RTPatcherDownloadProgressChangedEventArgs(string fileName, int progress, long bytesPerSecond)
+        internal RTPatcherDownloadProgressChangedEventArgs(string fileName, int progress, long bytesPerSecond)
         {
             this.FileName = fileName;
             this.Progress = progress;

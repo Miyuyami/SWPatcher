@@ -21,20 +21,20 @@ using System;
 
 namespace SWPatcher.Patching
 {
-    class PatcherCompletedEventArgs : EventArgs
+    internal class PatcherCompletedEventArgs : EventArgs
     {
-        public Language Language { get; private set; }
-        public bool Cancelled { get; private set; }
-        public Exception Error { get; private set; }
+        internal Language Language { get; private set; }
+        internal bool Cancelled { get; private set; }
+        internal Exception Error { get; private set; }
 
-        public PatcherCompletedEventArgs(bool cancelled, Exception error)
+        internal PatcherCompletedEventArgs(bool cancelled, Exception error)
         {
             this.Language = null;
             this.Cancelled = cancelled;
             this.Error = error;
         }
 
-        public PatcherCompletedEventArgs(Language language, bool cancelled, Exception error)
+        internal PatcherCompletedEventArgs(Language language, bool cancelled, Exception error)
         {
             this.Language = language;
             this.Cancelled = cancelled;

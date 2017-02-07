@@ -30,13 +30,13 @@ namespace SWPatcher.Downloading
     delegate void DownloaderProgressChangedEventHandler(object sender, DownloaderProgressChangedEventArgs e);
     delegate void DownloaderCompletedEventHandler(object sender, DownloaderCompletedEventArgs e);
 
-    class Downloader
+    internal class Downloader
     {
         private BackgroundWorker Worker;
         private WebClient Client;
         private Language Language;
 
-        public Downloader()
+        internal Downloader()
         {
             this.Worker = new BackgroundWorker
             {
@@ -49,8 +49,8 @@ namespace SWPatcher.Downloading
             this.Client.DownloadDataCompleted += this.Client_DownloadDataCompleted;
         }
 
-        public event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
-        public event DownloaderCompletedEventHandler DownloaderCompleted;
+        internal event DownloaderProgressChangedEventHandler DownloaderProgressChanged;
+        internal event DownloaderCompletedEventHandler DownloaderCompleted;
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -58,7 +58,7 @@ namespace SWPatcher.Downloading
 
             if (Methods.HasNewTranslations(this.Language) || Methods.IsTranslationOutdated(this.Language))
             {
-                SWFileManager.LoadFileConfiguration();
+                SWFileManager.LoadFileConfiguration(this.Language);
             }
             else
             {
@@ -99,7 +99,7 @@ namespace SWPatcher.Downloading
                 }
                 else
                 {
-                    string swFilePath = Path.Combine(this.Language.Name, swFile.Path, Path.GetFileName(swFile.PathD));
+                    string swFilePath = Path.Combine(this.Language.Path, swFile.Path, Path.GetFileName(swFile.PathD));
                     string swFileDirectory = Path.GetDirectoryName(swFilePath);
 
                     Directory.CreateDirectory(swFileDirectory);
@@ -119,20 +119,20 @@ namespace SWPatcher.Downloading
 
         private void DownloadNext(int index)
         {
-            Uri uri = new Uri(Urls.TranslationGitHubHome + this.Language.Name + '/' + SWFileManager.GetElementAt(index).PathD);
+            Uri uri = new Uri(Urls.TranslationGitHubHome + this.Language.Path + '/' + SWFileManager.GetElementAt(index).PathD);
 
             this.Client.DownloadDataAsync(uri, index);
 
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), uri.AbsoluteUri));
         }
 
-        public void Cancel()
+        internal void Cancel()
         {
             this.Worker.CancelAsync();
             this.Client.CancelAsync();
         }
 
-        public void Run(Language language)
+        internal void Run(Language language)
         {
             if (this.Worker.IsBusy || this.Client.IsBusy)
             {

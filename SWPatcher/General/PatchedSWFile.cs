@@ -18,11 +18,11 @@
 
 namespace SWPatcher.General
 {
-    class PatchedSWFile : ArchivedSWFile
+    internal class PatchedSWFile : ArchivedSWFile
     {
-        public string Format { get; private set; }
+        internal string Format { get; private set; }
 
-        public PatchedSWFile(string name, string path, string pathD, string pathA, string format) : base(name, path, pathD, pathA)
+        internal PatchedSWFile(string name, string path, string pathD, string pathA, string format) : base(name, path, pathD, pathA)
         {
             this.Format = format;
         }

@@ -23,85 +23,85 @@ using System.Security.AccessControl;
 
 namespace SWPatcher.Patching
 {
-    class XorFileStream : FileStream
+    internal class XorFileStream : FileStream
     {
-        public byte XorByte { get; private set; }
+        internal byte XorByte { get; private set; }
 
-        public XorFileStream(string path, FileMode mode, byte xorByte) : base(path, mode)
+        internal XorFileStream(string path, FileMode mode, byte xorByte) : base(path, mode)
         {
             this.XorByte = xorByte;
         }
 
-        public XorFileStream(string path, FileMode mode, FileAccess access, byte xorByte) : base(path, mode, access)
+        internal XorFileStream(string path, FileMode mode, FileAccess access, byte xorByte) : base(path, mode, access)
         {
             this.XorByte = xorByte;
         }
 
-        public XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, byte xorByte) : base(path, mode, access, share)
+        internal XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, byte xorByte) : base(path, mode, access, share)
         {
             this.XorByte = xorByte;
         }
 
-        public XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, byte xorByte) : base(path, mode, access, share, bufferSize)
+        internal XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, byte xorByte) : base(path, mode, access, share, bufferSize)
         {
             this.XorByte = xorByte;
         }
 
-        public XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, FileOptions options, byte xorByte) : base(path, mode, access, share, bufferSize, options)
+        internal XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, FileOptions options, byte xorByte) : base(path, mode, access, share, bufferSize, options)
         {
             this.XorByte = xorByte;
         }
 
-        public XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool useAsync, byte xorByte) : base(path, mode, access, share, bufferSize, useAsync)
+        internal XorFileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, bool useAsync, byte xorByte) : base(path, mode, access, share, bufferSize, useAsync)
         {
             this.XorByte = xorByte;
         }
 
-        public XorFileStream(string path, FileMode mode, FileSystemRights rights, FileShare share, int bufferSize, FileOptions options, byte xorByte) : base(path, mode, rights, share, bufferSize, options)
+        internal XorFileStream(string path, FileMode mode, FileSystemRights rights, FileShare share, int bufferSize, FileOptions options, byte xorByte) : base(path, mode, rights, share, bufferSize, options)
         {
             this.XorByte = xorByte;
         }
 
-        public XorFileStream(string path, FileMode mode, FileSystemRights rights, FileShare share, int bufferSize, FileOptions options, FileSecurity fileSecurity, byte xorByte) : base(path, mode, rights, share, bufferSize, options, fileSecurity)
+        internal XorFileStream(string path, FileMode mode, FileSystemRights rights, FileShare share, int bufferSize, FileOptions options, FileSecurity fileSecurity, byte xorByte) : base(path, mode, rights, share, bufferSize, options, fileSecurity)
         {
             this.XorByte = xorByte;
         }
 
         [Obsolete("This constructor has been deprecated. Please use new XorFileStream(SafeFileHandle handle, FileAccess access, byte xorByte) instead.  http://go.microsoft.com/fwlink/?linkid=14202")]
-        public XorFileStream(IntPtr handle, FileAccess access, byte xorByte) : this(handle, access, true, 4096, false, xorByte)
+        internal XorFileStream(IntPtr handle, FileAccess access, byte xorByte) : this(handle, access, true, 4096, false, xorByte)
         {
 
         }
 
         [Obsolete("This constructor has been deprecated. Please use new XorFileStream(SafeFileHandle handle, FileAccess access, byte xorByte) instead, and optionally make a new SafeFileHandle with ownsHandle=false if needed.  http://go.microsoft.com/fwlink/?linkid=14202")]
-        public XorFileStream(IntPtr handle, FileAccess access, bool ownsHandle, byte xorByte) : this(handle, access, ownsHandle, 4096, false, xorByte)
+        internal XorFileStream(IntPtr handle, FileAccess access, bool ownsHandle, byte xorByte) : this(handle, access, ownsHandle, 4096, false, xorByte)
         {
 
         }
 
         [Obsolete("This constructor has been deprecated. Please use new XorFileStream(SafeFileHandle handle, FileAccess access, int bufferSize, byte xorByte) instead, and optionally make a new SafeFileHandle with ownsHandle=false if needed.  http://go.microsoft.com/fwlink/?linkid=14202")]
-        public XorFileStream(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, byte xorByte) : this(handle, access, ownsHandle, bufferSize, false, xorByte)
+        internal XorFileStream(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, byte xorByte) : this(handle, access, ownsHandle, bufferSize, false, xorByte)
         {
 
         }
 
         [Obsolete("This constructor has been deprecated. Please use new XorFileStream(SafeFileHandle handle, FileAccess access, int bufferSize, bool isAsync, byte xorByte) instead, and optionally make a new SafeFileHandle with ownsHandle=false if needed.  http://go.microsoft.com/fwlink/?linkid=14202")]
-        public XorFileStream(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, bool isAsync, byte xorByte) : this(new SafeFileHandle(handle, ownsHandle), access, bufferSize, isAsync, xorByte)
+        internal XorFileStream(IntPtr handle, FileAccess access, bool ownsHandle, int bufferSize, bool isAsync, byte xorByte) : this(new SafeFileHandle(handle, ownsHandle), access, bufferSize, isAsync, xorByte)
         {
 
         }
 
-        public XorFileStream(SafeFileHandle handle, FileAccess access, byte xorByte) : this(handle, access, 4096, false, xorByte)
+        internal XorFileStream(SafeFileHandle handle, FileAccess access, byte xorByte) : this(handle, access, 4096, false, xorByte)
         {
 
         }
 
-        public XorFileStream(SafeFileHandle handle, FileAccess access, int bufferSize, byte xorByte) : this(handle, access, bufferSize, false, xorByte)
+        internal XorFileStream(SafeFileHandle handle, FileAccess access, int bufferSize, byte xorByte) : this(handle, access, bufferSize, false, xorByte)
         {
 
         }
 
-        public XorFileStream(SafeFileHandle handle, FileAccess access, int bufferSize, bool isAsync, byte xorByte) : base(handle, access, bufferSize, isAsync)
+        internal XorFileStream(SafeFileHandle handle, FileAccess access, int bufferSize, bool isAsync, byte xorByte) : base(handle, access, bufferSize, isAsync)
         {
             this.XorByte = xorByte;
         }

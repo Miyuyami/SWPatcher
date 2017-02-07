@@ -18,7 +18,7 @@
 
 namespace SWPatcher.Forms
 {
-    partial class MainForm
+    internal partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -33,12 +33,12 @@ namespace SWPatcher.Forms
         {
             if (disposing)
             {
-                if (components != null)
+                if (this.components != null)
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
             }
-            
+
             base.Dispose(disposing);
         }
 
@@ -47,303 +47,347 @@ namespace SWPatcher.Forms
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.buttonPlay = new SWPatcher.General.SplitButton();
-            this.contextMenuStripPlay = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuItemStartRaw = new System.Windows.Forms.ToolStripMenuItem();
-            this.buttonDownload = new System.Windows.Forms.Button();
-            this.comboBoxLanguages = new System.Windows.Forms.ComboBox();
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.forceStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openSWWebpageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uploadLogToPastebinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripSeparator = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.buttonExit = new System.Windows.Forms.Button();
-            this.labelNewTranslations = new System.Windows.Forms.Label();
-            this.contextMenuStripPlay.SuspendLayout();
-            this.menuStrip.SuspendLayout();
-            this.statusStrip.SuspendLayout();
-            this.tableLayoutPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            this.ButtonPlay = new SWPatcher.General.SplitButton();
+            this.ContextMenuStripPlay = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ToolStripMenuItemStartRaw = new System.Windows.Forms.ToolStripMenuItem();
+            this.ButtonDownload = new System.Windows.Forms.Button();
+            this.ComboBoxLanguages = new System.Windows.Forms.ComboBox();
+            this.NotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.MenuStrip = new System.Windows.Forms.MenuStrip();
+            this.MenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenSWWebpageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.UploadLogToPastebinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.StatusStrip = new System.Windows.Forms.StatusStrip();
+            this.ToolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.ToolStripSeparator = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.TableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.PictureBox = new System.Windows.Forms.PictureBox();
+            this.ButtonExit = new System.Windows.Forms.Button();
+            this.LabelNewTranslations = new System.Windows.Forms.Label();
+            this.LabelLanguagePick = new System.Windows.Forms.Label();
+            this.LabelRegionPick = new System.Windows.Forms.Label();
+            this.ComboBoxRegions = new System.Windows.Forms.ComboBox();
+            this.ContextMenuStripPlay.SuspendLayout();
+            this.MenuStrip.SuspendLayout();
+            this.StatusStrip.SuspendLayout();
+            this.TableLayoutPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // buttonPlay
+            // ButtonPlay
             // 
-            this.buttonPlay.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tableLayoutPanel.SetColumnSpan(this.buttonPlay, 2);
-            this.buttonPlay.ContextMenuStripSplit = this.contextMenuStripPlay;
-            this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonPlay.Location = new System.Drawing.Point(117, 210);
-            this.buttonPlay.Name = "buttonPlay";
-            this.buttonPlay.Size = new System.Drawing.Size(130, 26);
-            this.buttonPlay.TabIndex = 3;
-            this.buttonPlay.UseVisualStyleBackColor = true;
-            this.buttonPlay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonPlay_MouseDown);
+            this.ButtonPlay.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.TableLayoutPanel.SetColumnSpan(this.ButtonPlay, 4);
+            this.ButtonPlay.ContextMenuStripSplit = this.ContextMenuStripPlay;
+            this.ButtonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonPlay.Location = new System.Drawing.Point(117, 210);
+            this.ButtonPlay.Name = "ButtonPlay";
+            this.ButtonPlay.Size = new System.Drawing.Size(130, 26);
+            this.ButtonPlay.TabIndex = 6;
+            this.ButtonPlay.UseVisualStyleBackColor = true;
+            this.ButtonPlay.Click += new System.EventHandler(this.ButtonPlay_Click);
             // 
-            // contextMenuStripPlay
+            // ContextMenuStripPlay
             // 
-            this.contextMenuStripPlay.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemStartRaw});
-            this.contextMenuStripPlay.Name = "contextMenuStrip";
-            this.contextMenuStripPlay.Size = new System.Drawing.Size(68, 26);
+            this.ContextMenuStripPlay.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemStartRaw});
+            this.ContextMenuStripPlay.Name = "ContextMenuStrip";
+            this.ContextMenuStripPlay.Size = new System.Drawing.Size(68, 26);
             // 
-            // toolStripMenuItemStartRaw
+            // ToolStripMenuItemStartRaw
             // 
-            this.toolStripMenuItemStartRaw.Name = "toolStripMenuItemStartRaw";
-            this.toolStripMenuItemStartRaw.Size = new System.Drawing.Size(67, 22);
-            this.toolStripMenuItemStartRaw.Click += new System.EventHandler(this.ButtonStartRaw_Click);
+            this.ToolStripMenuItemStartRaw.Name = "ToolStripMenuItemStartRaw";
+            this.ToolStripMenuItemStartRaw.Size = new System.Drawing.Size(67, 22);
+            this.ToolStripMenuItemStartRaw.Click += new System.EventHandler(this.ButtonStartRaw_Click);
             // 
-            // buttonDownload
+            // ButtonDownload
             // 
-            this.buttonDownload.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tableLayoutPanel.SetColumnSpan(this.buttonDownload, 2);
-            this.buttonDownload.Location = new System.Drawing.Point(112, 171);
-            this.buttonDownload.Name = "buttonDownload";
-            this.buttonDownload.Size = new System.Drawing.Size(140, 24);
-            this.buttonDownload.TabIndex = 2;
-            this.buttonDownload.UseVisualStyleBackColor = true;
-            this.buttonDownload.Click += new System.EventHandler(this.ButtonDownload_Click);
+            this.ButtonDownload.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.TableLayoutPanel.SetColumnSpan(this.ButtonDownload, 4);
+            this.ButtonDownload.Location = new System.Drawing.Point(112, 171);
+            this.ButtonDownload.Name = "ButtonDownload";
+            this.ButtonDownload.Size = new System.Drawing.Size(140, 24);
+            this.ButtonDownload.TabIndex = 5;
+            this.ButtonDownload.UseVisualStyleBackColor = true;
+            this.ButtonDownload.Click += new System.EventHandler(this.ButtonDownload_Click);
             // 
-            // comboBoxLanguages
+            // ComboBoxLanguages
             // 
-            this.comboBoxLanguages.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.tableLayoutPanel.SetColumnSpan(this.comboBoxLanguages, 2);
-            this.comboBoxLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxLanguages.FormattingEnabled = true;
-            this.comboBoxLanguages.Location = new System.Drawing.Point(112, 129);
-            this.comboBoxLanguages.Name = "comboBoxLanguages";
-            this.comboBoxLanguages.Size = new System.Drawing.Size(140, 21);
-            this.comboBoxLanguages.TabIndex = 0;
-            this.comboBoxLanguages.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLanguages_SelectedIndexChanged);
+            this.ComboBoxLanguages.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ComboBoxLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBoxLanguages.FormattingEnabled = true;
+            this.ComboBoxLanguages.Location = new System.Drawing.Point(248, 129);
+            this.ComboBoxLanguages.Name = "ComboBoxLanguages";
+            this.ComboBoxLanguages.Size = new System.Drawing.Size(80, 21);
+            this.ComboBoxLanguages.TabIndex = 3;
+            this.ComboBoxLanguages.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxLanguages_SelectionChangeCommitted);
             // 
-            // notifyIcon
+            // NotifyIcon
             // 
-            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.DoubleClick += new System.EventHandler(this.NotifyIcon_DoubleClick);
+            this.NotifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.NotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("NotifyIcon.Icon")));
+            this.NotifyIcon.DoubleClick += new System.EventHandler(this.NotifyIcon_DoubleClick);
             // 
-            // menuStrip
+            // MenuStrip
             // 
-            this.menuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuToolStripMenuItem,
-            this.settingsToolStripMenuItem,
-            this.refreshToolStripMenuItem,
-            this.aboutToolStripMenuItem});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(364, 24);
-            this.menuStrip.TabIndex = 0;
+            this.MenuStrip.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
+            this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuToolStripMenuItem,
+            this.SettingsToolStripMenuItem,
+            this.RefreshToolStripMenuItem,
+            this.AboutToolStripMenuItem});
+            this.MenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.MenuStrip.Name = "MenuStrip";
+            this.MenuStrip.Size = new System.Drawing.Size(364, 24);
+            this.MenuStrip.TabIndex = 0;
             // 
-            // menuToolStripMenuItem
+            // MenuToolStripMenuItem
             // 
-            this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.forceStripMenuItem,
-            this.openSWWebpageToolStripMenuItem,
-            this.uploadLogToPastebinToolStripMenuItem});
-            this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
-            this.menuToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.MenuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ForceToolStripMenuItem,
+            this.OpenSWWebpageToolStripMenuItem,
+            this.UploadLogToPastebinToolStripMenuItem});
+            this.MenuToolStripMenuItem.Name = "MenuToolStripMenuItem";
+            this.MenuToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
             // 
-            // forceStripMenuItem
+            // ForceToolStripMenuItem
             // 
-            this.forceStripMenuItem.Name = "forceStripMenuItem";
-            this.forceStripMenuItem.Size = new System.Drawing.Size(67, 22);
-            this.forceStripMenuItem.Click += new System.EventHandler(this.ForceStripMenuItem_Click);
+            this.ForceToolStripMenuItem.Name = "ForceToolStripMenuItem";
+            this.ForceToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            this.ForceToolStripMenuItem.Click += new System.EventHandler(this.ForceToolStripMenuItem_Click);
             // 
-            // openSWWebpageToolStripMenuItem
+            // OpenSWWebpageToolStripMenuItem
             // 
-            this.openSWWebpageToolStripMenuItem.Name = "openSWWebpageToolStripMenuItem";
-            this.openSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
-            this.openSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.OpenSWWebpageToolStripMenuItem_Click);
+            this.OpenSWWebpageToolStripMenuItem.Name = "OpenSWWebpageToolStripMenuItem";
+            this.OpenSWWebpageToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            this.OpenSWWebpageToolStripMenuItem.Click += new System.EventHandler(this.OpenSWWebpageToolStripMenuItem_Click);
             // 
-            // uploadLogToPastebinToolStripMenuItem
+            // UploadLogToPastebinToolStripMenuItem
             // 
-            this.uploadLogToPastebinToolStripMenuItem.Name = "uploadLogToPastebinToolStripMenuItem";
-            this.uploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
-            this.uploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.UploadLogToPastebinToolStripMenuItem_Click);
+            this.UploadLogToPastebinToolStripMenuItem.Name = "UploadLogToPastebinToolStripMenuItem";
+            this.UploadLogToPastebinToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            this.UploadLogToPastebinToolStripMenuItem.Click += new System.EventHandler(this.UploadLogToPastebinToolStripMenuItem_Click);
             // 
-            // settingsToolStripMenuItem
+            // SettingsToolStripMenuItem
             // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
+            this.SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
+            this.SettingsToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.SettingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
-            // refreshToolStripMenuItem
+            // RefreshToolStripMenuItem
             // 
-            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
-            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
+            this.RefreshToolStripMenuItem.Name = "RefreshToolStripMenuItem";
+            this.RefreshToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.RefreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
             // 
-            // aboutToolStripMenuItem
+            // AboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+            this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
+            this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
-            // statusStrip
+            // StatusStrip
             // 
-            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.statusStrip.GripMargin = new System.Windows.Forms.Padding(0);
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripProgressBar,
-            this.toolStripSeparator,
-            this.toolStripStatusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 324);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.statusStrip.Size = new System.Drawing.Size(364, 22);
-            this.statusStrip.SizingGrip = false;
-            this.statusStrip.TabIndex = 2;
+            this.StatusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
+            this.StatusStrip.GripMargin = new System.Windows.Forms.Padding(0);
+            this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripProgressBar,
+            this.ToolStripSeparator,
+            this.ToolStripStatusLabel});
+            this.StatusStrip.Location = new System.Drawing.Point(0, 324);
+            this.StatusStrip.Name = "StatusStrip";
+            this.StatusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.StatusStrip.Size = new System.Drawing.Size(364, 22);
+            this.StatusStrip.SizingGrip = false;
+            this.StatusStrip.TabIndex = 2;
             // 
-            // toolStripProgressBar
+            // ToolStripProgressBar
             // 
-            this.toolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripProgressBar.MarqueeAnimationSpeed = 40;
-            this.toolStripProgressBar.Maximum = 2147483647;
-            this.toolStripProgressBar.Name = "toolStripProgressBar";
-            this.toolStripProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.toolStripProgressBar.Size = new System.Drawing.Size(160, 16);
+            this.ToolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.ToolStripProgressBar.MarqueeAnimationSpeed = 40;
+            this.ToolStripProgressBar.Maximum = 2147483647;
+            this.ToolStripProgressBar.Name = "ToolStripProgressBar";
+            this.ToolStripProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.ToolStripProgressBar.Size = new System.Drawing.Size(160, 16);
             // 
-            // toolStripSeparator
+            // ToolStripSeparator
             // 
-            this.toolStripSeparator.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.toolStripSeparator.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
-            this.toolStripSeparator.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
-            this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(4, 22);
+            this.ToolStripSeparator.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.ToolStripSeparator.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.ToolStripSeparator.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.ToolStripSeparator.Name = "ToolStripSeparator";
+            this.ToolStripSeparator.Size = new System.Drawing.Size(4, 22);
             // 
-            // toolStripStatusLabel
+            // ToolStripStatusLabel
             // 
-            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            this.ToolStripStatusLabel.Name = "ToolStripStatusLabel";
+            this.ToolStripStatusLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            this.ToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
-            // tableLayoutPanel
+            // TableLayoutPanel
             // 
-            this.tableLayoutPanel.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
-            this.tableLayoutPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.tableLayoutPanel.ColumnCount = 2;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel.Controls.Add(this.buttonPlay, 0, 4);
-            this.tableLayoutPanel.Controls.Add(this.buttonDownload, 0, 3);
-            this.tableLayoutPanel.Controls.Add(this.comboBoxLanguages, 0, 1);
-            this.tableLayoutPanel.Controls.Add(this.pictureBox, 0, 0);
-            this.tableLayoutPanel.Controls.Add(this.buttonExit, 0, 5);
-            this.tableLayoutPanel.Controls.Add(this.labelNewTranslations, 0, 2);
-            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(0, 24);
-            this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.Padding = new System.Windows.Forms.Padding(4);
-            this.tableLayoutPanel.RowCount = 6;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 122F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(364, 300);
-            this.tableLayoutPanel.TabIndex = 1;
+            this.TableLayoutPanel.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
+            this.TableLayoutPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.TableLayoutPanel.ColumnCount = 4;
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
+            this.TableLayoutPanel.Controls.Add(this.ButtonPlay, 0, 4);
+            this.TableLayoutPanel.Controls.Add(this.ButtonDownload, 0, 3);
+            this.TableLayoutPanel.Controls.Add(this.ComboBoxLanguages, 3, 1);
+            this.TableLayoutPanel.Controls.Add(this.PictureBox, 0, 0);
+            this.TableLayoutPanel.Controls.Add(this.ButtonExit, 0, 5);
+            this.TableLayoutPanel.Controls.Add(this.LabelNewTranslations, 0, 2);
+            this.TableLayoutPanel.Controls.Add(this.LabelLanguagePick, 2, 1);
+            this.TableLayoutPanel.Controls.Add(this.LabelRegionPick, 0, 1);
+            this.TableLayoutPanel.Controls.Add(this.ComboBoxRegions, 1, 1);
+            this.TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TableLayoutPanel.Location = new System.Drawing.Point(0, 24);
+            this.TableLayoutPanel.Name = "TableLayoutPanel";
+            this.TableLayoutPanel.Padding = new System.Windows.Forms.Padding(4);
+            this.TableLayoutPanel.RowCount = 6;
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 122F));
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14F));
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28F));
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28F));
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.TableLayoutPanel.Size = new System.Drawing.Size(364, 300);
+            this.TableLayoutPanel.TabIndex = 1;
             // 
-            // pictureBox
+            // PictureBox
             // 
-            this.pictureBox.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
-            this.tableLayoutPanel.SetColumnSpan(this.pictureBox, 2);
-            this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox.Image = global::SWPatcher.Properties.Resources.logo;
-            this.pictureBox.Location = new System.Drawing.Point(7, 7);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(350, 116);
-            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox.TabIndex = 7;
-            this.pictureBox.TabStop = false;
+            this.PictureBox.BackgroundImage = global::SWPatcher.Properties.Resources.fadegray;
+            this.TableLayoutPanel.SetColumnSpan(this.PictureBox, 4);
+            this.PictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PictureBox.Image = global::SWPatcher.Properties.Resources.logo;
+            this.PictureBox.Location = new System.Drawing.Point(7, 7);
+            this.PictureBox.Name = "PictureBox";
+            this.PictureBox.Size = new System.Drawing.Size(350, 116);
+            this.PictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.PictureBox.TabIndex = 7;
+            this.PictureBox.TabStop = false;
             // 
-            // buttonExit
+            // ButtonExit
             // 
-            this.buttonExit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tableLayoutPanel.SetColumnSpan(this.buttonExit, 2);
-            this.buttonExit.Location = new System.Drawing.Point(132, 265);
-            this.buttonExit.Name = "buttonExit";
-            this.buttonExit.Size = new System.Drawing.Size(100, 28);
-            this.buttonExit.TabIndex = 4;
-            this.buttonExit.UseVisualStyleBackColor = true;
-            this.buttonExit.Click += new System.EventHandler(this.Exit_Click);
+            this.ButtonExit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.TableLayoutPanel.SetColumnSpan(this.ButtonExit, 4);
+            this.ButtonExit.Location = new System.Drawing.Point(132, 265);
+            this.ButtonExit.Name = "ButtonExit";
+            this.ButtonExit.Size = new System.Drawing.Size(100, 28);
+            this.ButtonExit.TabIndex = 7;
+            this.ButtonExit.UseVisualStyleBackColor = true;
+            this.ButtonExit.Click += new System.EventHandler(this.Exit_Click);
             // 
-            // labelNewTranslations
+            // LabelNewTranslations
             // 
-            this.labelNewTranslations.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.labelNewTranslations.AutoSize = true;
-            this.labelNewTranslations.BackColor = System.Drawing.Color.Transparent;
-            this.tableLayoutPanel.SetColumnSpan(this.labelNewTranslations, 2);
-            this.labelNewTranslations.ForeColor = System.Drawing.Color.Red;
-            this.labelNewTranslations.Location = new System.Drawing.Point(182, 151);
-            this.labelNewTranslations.Name = "labelNewTranslations";
-            this.labelNewTranslations.Size = new System.Drawing.Size(0, 13);
-            this.labelNewTranslations.TabIndex = 8;
+            this.LabelNewTranslations.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.LabelNewTranslations.AutoSize = true;
+            this.LabelNewTranslations.BackColor = System.Drawing.Color.Transparent;
+            this.TableLayoutPanel.SetColumnSpan(this.LabelNewTranslations, 4);
+            this.LabelNewTranslations.ForeColor = System.Drawing.Color.Red;
+            this.LabelNewTranslations.Location = new System.Drawing.Point(182, 151);
+            this.LabelNewTranslations.Name = "LabelNewTranslations";
+            this.LabelNewTranslations.Size = new System.Drawing.Size(0, 13);
+            this.LabelNewTranslations.TabIndex = 4;
+            // 
+            // LabelLanguagePick
+            // 
+            this.LabelLanguagePick.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.LabelLanguagePick.AutoSize = true;
+            this.LabelLanguagePick.BackColor = System.Drawing.Color.Transparent;
+            this.LabelLanguagePick.Location = new System.Drawing.Point(242, 131);
+            this.LabelLanguagePick.Name = "LabelLanguagePick";
+            this.LabelLanguagePick.Size = new System.Drawing.Size(0, 13);
+            this.LabelLanguagePick.TabIndex = 2;
+            this.LabelLanguagePick.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // LabelRegionPick
+            // 
+            this.LabelRegionPick.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.LabelRegionPick.AutoSize = true;
+            this.LabelRegionPick.BackColor = System.Drawing.Color.Transparent;
+            this.LabelRegionPick.Location = new System.Drawing.Point(65, 131);
+            this.LabelRegionPick.Name = "LabelRegionPick";
+            this.LabelRegionPick.Size = new System.Drawing.Size(0, 13);
+            this.LabelRegionPick.TabIndex = 0;
+            this.LabelRegionPick.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // ComboBoxRegions
+            // 
+            this.ComboBoxRegions.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ComboBoxRegions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBoxRegions.FormattingEnabled = true;
+            this.ComboBoxRegions.Location = new System.Drawing.Point(71, 129);
+            this.ComboBoxRegions.Name = "ComboBoxRegions";
+            this.ComboBoxRegions.Size = new System.Drawing.Size(80, 21);
+            this.ComboBoxRegions.TabIndex = 1;
+            this.ComboBoxRegions.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxRegions_SelectionChangeCommitted);
             // 
             // MainForm
             // 
-            this.AcceptButton = this.buttonPlay;
+            this.AcceptButton = this.ButtonPlay;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.ClientSize = new System.Drawing.Size(364, 346);
-            this.Controls.Add(this.tableLayoutPanel);
-            this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.menuStrip);
+            this.Controls.Add(this.TableLayoutPanel);
+            this.Controls.Add(this.StatusStrip);
+            this.Controls.Add(this.MenuStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip;
+            this.MainMenuStrip = this.MenuStrip;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            this.contextMenuStripPlay.ResumeLayout(false);
-            this.menuStrip.ResumeLayout(false);
-            this.menuStrip.PerformLayout();
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
-            this.tableLayoutPanel.ResumeLayout(false);
-            this.tableLayoutPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            this.ContextMenuStripPlay.ResumeLayout(false);
+            this.MenuStrip.ResumeLayout(false);
+            this.MenuStrip.PerformLayout();
+            this.StatusStrip.ResumeLayout(false);
+            this.StatusStrip.PerformLayout();
+            this.TableLayoutPanel.ResumeLayout(false);
+            this.TableLayoutPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-        private General.SplitButton buttonPlay;
-        private System.Windows.Forms.Button buttonDownload;
-        private System.Windows.Forms.ComboBox comboBoxLanguages;
-        private System.Windows.Forms.NotifyIcon notifyIcon;
-        private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.Button buttonExit;
-        private System.Windows.Forms.PictureBox pictureBox;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripSeparator;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem forceStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openSWWebpageToolStripMenuItem;
-        private System.Windows.Forms.Label labelNewTranslations;
-        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem uploadLogToPastebinToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripPlay;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemStartRaw;
+        private System.Windows.Forms.TableLayoutPanel TableLayoutPanel;
+        private General.SplitButton ButtonPlay;
+        private System.Windows.Forms.Button ButtonDownload;
+        private System.Windows.Forms.ComboBox ComboBoxLanguages;
+        private System.Windows.Forms.NotifyIcon NotifyIcon;
+        private System.Windows.Forms.MenuStrip MenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip StatusStrip;
+        private System.Windows.Forms.Button ButtonExit;
+        private System.Windows.Forms.PictureBox PictureBox;
+        private System.Windows.Forms.ToolStripProgressBar ToolStripProgressBar;
+        private System.Windows.Forms.ToolStripStatusLabel ToolStripSeparator;
+        private System.Windows.Forms.ToolStripStatusLabel ToolStripStatusLabel;
+        private System.Windows.Forms.ToolStripMenuItem MenuToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ForceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenSWWebpageToolStripMenuItem;
+        private System.Windows.Forms.Label LabelNewTranslations;
+        private System.Windows.Forms.ToolStripMenuItem RefreshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem UploadLogToPastebinToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip ContextMenuStripPlay;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemStartRaw;
+        private System.Windows.Forms.Label LabelLanguagePick;
+        private System.Windows.Forms.Label LabelRegionPick;
+        private System.Windows.Forms.ComboBox ComboBoxRegions;
     }
 }
 

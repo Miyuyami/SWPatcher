@@ -21,14 +21,14 @@ using System.Net;
 
 namespace SWPatcher.Downloading
 {
-    class DownloaderProgressChangedEventArgs : EventArgs
+    internal class DownloaderProgressChangedEventArgs : EventArgs
     {
-        public int FileNumber { get; private set; }
-        public int FileCount { get; private set; }
-        public string FileName { get; private set; }
-        public int Progress { get; private set; }
+        internal int FileNumber { get; private set; }
+        internal int FileCount { get; private set; }
+        internal string FileName { get; private set; }
+        internal int Progress { get; private set; }
 
-        public DownloaderProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, DownloadProgressChangedEventArgs e)
+        internal DownloaderProgressChangedEventArgs(int fileNumber, int fileCount, string fileName, DownloadProgressChangedEventArgs e)
         {
             this.FileNumber = fileNumber;
             this.FileCount = fileCount;

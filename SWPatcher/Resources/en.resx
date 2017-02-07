@@ -157,7 +157,7 @@
     <value>OK</value>
   </data>
   <data name="button_play" xml:space="preserve">
-    <value>Ready To Play!</value>
+    <value>Ready to Play!</value>
   </data>
   <data name="check_patch_exe" xml:space="preserve">
     <value>Yes, I am aware of the risks and want to patch it</value>
@@ -238,7 +238,7 @@ This will cause malfunctions or data corruption on your game client.
 Please move the patcher in another location or continue at your own risk.</value>
   </data>
   <data name="exception_game_install_not_found" xml:space="preserve">
-    <value>Soulworker installation not found.</value>
+    <value>Soulworker {0} installation not found.</value>
   </data>
   <data name="exception_game_maintenance" xml:space="preserve">
     <value>Soulworker is under maintenance.</value>
@@ -330,8 +330,8 @@ The link was copied to clipboard.</value>
   <data name="exception_captcha_validation" xml:space="preserve">
     <value>Too many invalid logins. You must login and complete the captcha on Hangame website.</value>
   </data>
-  <data name="exception_hangame_refused_connection" xml:space="preserve">
-    <value>Soulworker/Hangame server refused the connection (server maintenance?)</value>
+  <data name="exception_server_refused_connection" xml:space="preserve">
+    <value>Server has refused the connection. (server maintenance?)</value>
   </data>
   <data name="exception_game_already_open" xml:space="preserve">
     <value>Cannot proceed because {0} is already running.</value>
@@ -426,5 +426,23 @@ Checklist:
   </data>
   <data name="exception_follow_instruction_webpage" xml:space="preserve">
     <value>An error occured during login, follow the instructions on the webpage.</value>
+  </data>
+  <data name="form_region_jp" xml:space="preserve">
+    <value>Japan</value>
+  </data>
+  <data name="form_region_kr" xml:space="preserve">
+    <value>Korea</value>
+  </data>
+  <data name="exception_generic_read_error" xml:space="preserve">
+    <value>Failed to read {0}.</value>
+  </data>
+  <data name="button_open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="form_language_pick" xml:space="preserve">
+    <value>Language:</value>
+  </data>
+  <data name="form_region_pick" xml:space="preserve">
+    <value>Region:</value>
   </data>
 </root>

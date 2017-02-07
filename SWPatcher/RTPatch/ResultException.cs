@@ -23,19 +23,19 @@ using System.Security.Permissions;
 namespace SWPatcher.RTPatch
 {
     [Serializable]
-    class ResultException : Exception
+    internal class ResultException : Exception
     {
-        public ulong Result { get; private set; }
-        public string LogPath { get; private set; }
-        public string FileName { get; private set; }
-        public Version ClientVersion { get; private set; }
+        internal ulong Result { get; private set; }
+        internal string LogPath { get; private set; }
+        internal string FileName { get; private set; }
+        internal Version ClientVersion { get; private set; }
 
-        public ResultException()
+        internal ResultException()
         {
 
         }
 
-        public ResultException(string message, ulong result, string logPath, string fileName, Version version) : base(message)
+        internal ResultException(string message, ulong result, string logPath, string fileName, Version version) : base(message)
         {
             this.Result = result;
             this.LogPath = logPath;
@@ -43,7 +43,7 @@ namespace SWPatcher.RTPatch
             this.ClientVersion = version;
         }
 
-        public ResultException(string message, ulong result, string logPath, string fileName, Version version, Exception innerException) : base(message, innerException)
+        internal ResultException(string message, ulong result, string logPath, string fileName, Version version, Exception innerException) : base(message, innerException)
         {
             this.Result = result;
             this.LogPath = logPath;

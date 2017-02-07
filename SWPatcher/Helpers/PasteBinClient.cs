@@ -24,7 +24,7 @@ using System.Runtime.Serialization;
 
 namespace SWPatcher.Helpers
 {
-    public enum PasteBinExpiration
+    internal enum PasteBinExpiration
     {
         Never,
         TenMinutes,
@@ -34,32 +34,32 @@ namespace SWPatcher.Helpers
         OneMonth
     }
 
-    class PasteBinEntry
+    internal class PasteBinEntry
     {
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string Format { get; set; }
-        public bool Private { get; set; }
-        public PasteBinExpiration Expiration { get; set; }
+        internal string Title { get; set; }
+        internal string Text { get; set; }
+        internal string Format { get; set; }
+        internal bool Private { get; set; }
+        internal PasteBinExpiration Expiration { get; set; }
     }
 
-    class PasteBinClient
+    internal class PasteBinClient
     {
         private const string ApiPostUrl = "http://pastebin.com/api/api_post.php";
         private const string ApiLoginUrl = "http://pastebin.com/api/api_login.php";
 
         private readonly string ApiDevKey;
-        public string UserName { get; private set; }
-        public string ApiUserKey { get; private set; }
+        internal string UserName { get; private set; }
+        internal string ApiUserKey { get; private set; }
 
-        public PasteBinClient(string apiDevKey)
+        internal PasteBinClient(string apiDevKey)
         {
             if (String.IsNullOrEmpty(apiDevKey))
                 throw new ArgumentNullException("apiDevKey");
             this.ApiDevKey = apiDevKey;
         }
 
-        public void Login(string userName, string password)
+        internal void Login(string userName, string password)
         {
             if (String.IsNullOrEmpty(userName))
                 throw new ArgumentNullException("userName");
@@ -81,13 +81,13 @@ namespace SWPatcher.Helpers
             this.ApiUserKey = resp;
         }
 
-        public void Logout()
+        internal void Logout()
         {
             this.UserName = null;
             this.ApiUserKey = null;
         }
 
-        public string Paste(PasteBinEntry entry)
+        internal string Paste(PasteBinEntry entry)
         {
             if (entry == null)
                 throw new ArgumentNullException("entry");
@@ -161,33 +161,33 @@ namespace SWPatcher.Helpers
 
         private static class ApiParameters
         {
-            public const string DevKey = "api_dev_key";
-            public const string UserKey = "api_user_key";
-            public const string Option = "api_option";
-            public const string UserName = "api_user_name";
-            public const string UserPassword = "api_user_password";
-            public const string PasteCode = "api_paste_code";
-            public const string PasteName = "api_paste_name";
-            public const string PastePrivate = "api_paste_private";
-            public const string PasteFormat = "api_paste_format";
-            public const string PasteExpireDate = "api_paste_expire_date";
+            internal const string DevKey = "api_dev_key";
+            internal const string UserKey = "api_user_key";
+            internal const string Option = "api_option";
+            internal const string UserName = "api_user_name";
+            internal const string UserPassword = "api_user_password";
+            internal const string PasteCode = "api_paste_code";
+            internal const string PasteName = "api_paste_name";
+            internal const string PastePrivate = "api_paste_private";
+            internal const string PasteFormat = "api_paste_format";
+            internal const string PasteExpireDate = "api_paste_expire_date";
         }
     }
 
     [Serializable]
-    class PasteBinApiException : Exception
+    internal class PasteBinApiException : Exception
     {
-        public PasteBinApiException()
+        internal PasteBinApiException()
         {
 
         }
 
-        public PasteBinApiException(string message) : base(message)
+        internal PasteBinApiException(string message) : base(message)
         {
 
         }
 
-        public PasteBinApiException(string message, Exception innerException) : base(message, innerException)
+        internal PasteBinApiException(string message, Exception innerException) : base(message, innerException)
         {
 
         }

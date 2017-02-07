@@ -20,9 +20,9 @@ using System.Reflection;
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    static class AssemblyAccessor
+    internal static class AssemblyAccessor
     {
-        public static string Title
+        internal static string Title
         {
             get
             {
@@ -37,7 +37,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string Product
+        internal static string Product
         {
             get
             {
@@ -48,6 +48,6 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        internal static string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
     }
 }

@@ -22,13 +22,13 @@ using System.Globalization;
 
 namespace SWPatcher.Helpers
 {
-    static class StringLoader
+    internal static class StringLoader
     {
-        public static string GetText(string name)
+        internal static string GetText(string name)
         {
             return GetText(name, UserSettings.UILanguageCode);
         }
-        public static string GetText(string name, params object[] args)
+        internal static string GetText(string name, params object[] args)
         {
             return String.Format(GetText(name, UserSettings.UILanguageCode), args);
         }

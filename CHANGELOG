@@ -1,3 +1,9 @@
+Version 2.7.0.0 - Feb 7, 2017
+Now it opens the Terms of Service page if the user did not accept them
+Added a region picker and each translation and backup is unique for each region
+Fixed the "error: You are not logged in" when using auto start for the Korean server (they changed something regarding login)
+Now it shows a proper error when the path from registry is pointing to a non-existent directory
+
 Version 2.6.0.3 - Jan 26, 2017
 Fixed some null reference errors when failing to connect to certain web servers instead of showing the proper error
 

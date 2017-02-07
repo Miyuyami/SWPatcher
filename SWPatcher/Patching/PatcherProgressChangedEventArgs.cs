@@ -21,12 +21,12 @@ using static SWPatcher.Patching.Patcher;
 
 namespace SWPatcher.Patching
 {
-    class PatcherProgressChangedEventArgs : EventArgs
+    internal class PatcherProgressChangedEventArgs : EventArgs
     {
-        public State PatcherState { get; private set; }
-        public int Progress { get; private set; }
+        internal State PatcherState { get; private set; }
+        internal int Progress { get; private set; }
 
-        public PatcherProgressChangedEventArgs(State patcherState, int progress)
+        internal PatcherProgressChangedEventArgs(State patcherState, int progress)
         {
             this.PatcherState = patcherState;
             this.Progress = progress;

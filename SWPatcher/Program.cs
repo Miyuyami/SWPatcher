@@ -26,20 +26,17 @@ using System.Windows.Forms;
 
 namespace SWPatcher
 {
-    static class Program
+    internal static class Program
     {
         [STAThread]
         private static void Main()
         {
-            if (!Directory.Exists(UserSettings.PatcherPath))
-            {
-                UserSettings.PatcherPath = "";
-            }
+            Directory.SetCurrentDirectory(UserSettings.PatcherPath);
+            Logger.Run();
+
             string[] args = Environment.GetCommandLineArgs();
             var argsList = new List<string>(args);
 
-            Logger.Run();
-            Directory.SetCurrentDirectory(UserSettings.PatcherPath);
             argsList.Insert(0, Thread.CurrentThread.ManagedThreadId.ToString());
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), argsList.ToArray()));
 
@@ -71,7 +68,7 @@ namespace SWPatcher
 
         private class SingleInstanceController : Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase
         {
-            public SingleInstanceController()
+            internal SingleInstanceController()
             {
                 this.IsSingleInstance = true;
                 this.StartupNextInstance += new Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventHandler(this.SingleInstanceController_StartupNextInstance);

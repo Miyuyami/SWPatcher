@@ -23,11 +23,11 @@ using System.Windows.Forms;
 
 namespace SWPatcher.Forms
 {
-    partial class AboutBox : Form
+    internal partial class AboutBox : Form
     {
         private int ImagesCount = 72;
 
-        public AboutBox()
+        internal AboutBox()
         {
             InitializeComponent();
             InitializeTextComponent();
@@ -35,18 +35,18 @@ namespace SWPatcher.Forms
 
         private void InitializeTextComponent()
         {
-            this.buttonOk.Text = StringLoader.GetText("button_ok");
+            this.ButtonOk.Text = StringLoader.GetText("button_ok");
             this.Text = $"About {AssemblyAccessor.Title}";
-            this.labelProductName.Text = AssemblyAccessor.Product;
-            this.labelVersion.Text = $"Version {AssemblyAccessor.Version}";
-            this.textBoxDescription.Text = StringLoader.GetText("patcher_description");
-            this.linkLabelWebsite.Links.Add(0, this.linkLabelWebsite.Text.Length, Urls.SoulworkerWebsite);
-            this.logoPictureBox.ImageLocation = $"https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/Images/{(new Random()).Next(ImagesCount) + 1}.png";
+            this.LabelProductName.Text = AssemblyAccessor.Product;
+            this.LabelVersion.Text = $"Version {AssemblyAccessor.Version}";
+            this.TextBoxDescription.Text = StringLoader.GetText("patcher_description");
+            this.LinkLabelWebsite.Links.Add(0, this.LinkLabelWebsite.Text.Length, Urls.SoulworkerWebsite);
+            this.LogoPictureBox.ImageLocation = $"https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/Images/{(new Random()).Next(ImagesCount) + 1}.png";
         }
 
         private void LinkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            this.linkLabelWebsite.LinkVisited = true;
+            this.LinkLabelWebsite.LinkVisited = true;
             System.Diagnostics.Process.Start(Urls.SoulworkerWebsite);
         }
     }

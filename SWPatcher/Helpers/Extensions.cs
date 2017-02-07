@@ -25,11 +25,28 @@ namespace SWPatcher.Helpers
 {
     internal static class Extensions
     {
-        internal static bool In<T>(this T obj, params T[] values)
+        /// <summary>
+        /// Determines whether a specified element is part of a sequence by using the default equality comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of source.</typeparam>
+        /// <param name="value">The value to locate in the sequence.</param>
+        /// <param name="source">A sequence in which to locate a value.</param>
+        /// <returns>true if the element is located in the specified sequence; otherwise, false.</returns>
+        /// <exception cref="System.ArgumentNullException">source is null.</exception>
+        internal static bool In<T>(this T value, params T[] source)
         {
-            return values.Contains(obj);
+            return source.Contains(value);
         }
 
+        /// <summary>
+        /// Converts the byte array to a string sequence using the specified encoding.
+        /// </summary>
+        /// <param name="byteArray">The array to be converted.</param>
+        /// <param name="encoding">The encoding used for converting.</param>
+        /// <returns>The byte array converted to a string sequence using the specified encoding.</returns>
+        /// <exception cref="System.ArgumentNullException">byteArray or encoding is null.</exception>
+        /// <exception cref="System.OutOfMemoryException">There is insufficient memory to allocate a buffer for the returned string.</exception>
+        /// <exception cref="System.IO.IOException">An I/O error occurs.</exception>
         internal static string[] ToStringArray(this byte[] byteArray, Encoding encoding)
         {
             using (var reader = new StreamReader(new MemoryStream(byteArray), encoding))

@@ -205,6 +205,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 열기.
+        /// </summary>
+        internal static string button_open {
+            get {
+                return ResourceManager.GetString("button_open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ready To Play!.
         /// </summary>
         internal static string button_play {
@@ -415,7 +424,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 소울워커 프로그램이 감지되지 않습니다..
+        ///   Looks up a localized string similar to 소울워커 {0} 프로그램이 감지되지 않습니다..
         /// </summary>
         internal static string exception_game_install_not_found {
             get {
@@ -455,11 +464,11 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 소울워커 혹은 한게임JP 서버가 연결을 차단하였습니다. (점검 스케줄을 체크해주세요).
+        ///   Looks up a localized string similar to {0}을 읽는데 실패했습니다..
         /// </summary>
-        internal static string exception_hangame_refused_connection {
+        internal static string exception_generic_read_error {
             get {
-                return ResourceManager.GetString("exception_hangame_refused_connection", resourceCulture);
+                return ResourceManager.GetString("exception_generic_read_error", resourceCulture);
             }
         }
         
@@ -645,6 +654,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 소울워커 혹은 한게임JP 서버가 연결을 차단하였습니다. (점검 스케줄을 체크해주세요).
+        /// </summary>
+        internal static string exception_server_refused_connection {
+            get {
+                return ResourceManager.GetString("exception_server_refused_connection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 인증 실패하였습니다. IP/지정 나라가 차단되있는게 아닐지?.
         /// </summary>
         internal static string exception_validation_failed {
@@ -681,6 +699,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 언어:.
+        /// </summary>
+        internal static string form_language_pick {
+            get {
+                return ResourceManager.GetString("form_language_pick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 메뉴.
         /// </summary>
         internal static string form_menu {
@@ -704,6 +731,33 @@ namespace SWPatcher.Resources {
         internal static string form_refresh {
             get {
                 return ResourceManager.GetString("form_refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 일본.
+        /// </summary>
+        internal static string form_region_jp {
+            get {
+                return ResourceManager.GetString("form_region_jp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 한국.
+        /// </summary>
+        internal static string form_region_kr {
+            get {
+                return ResourceManager.GetString("form_region_kr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 지역:.
+        /// </summary>
+        internal static string form_region_pick {
+            get {
+                return ResourceManager.GetString("form_region_pick", resourceCulture);
             }
         }
         

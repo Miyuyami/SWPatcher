@@ -18,12 +18,12 @@
 
 namespace SWPatcher.General
 {
-    class ArchivedSWFile : SWFile
+    internal class ArchivedSWFile : SWFile
     {
-        public string PathA { get; private set; }
-        public byte[] Data { get; set; }
+        internal string PathA { get; private set; }
+        internal byte[] Data { get; set; }
 
-        public ArchivedSWFile(string name, string path, string pathD, string pathA) : base(name, path, pathD)
+        internal ArchivedSWFile(string name, string path, string pathD, string pathA) : base(name, path, pathD)
         {
             this.PathA = pathA;
         }

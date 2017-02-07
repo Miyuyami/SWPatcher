@@ -30,10 +30,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
-    <MinimumRequiredVersion>2.6.0.3</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.7.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>2.6.0.3</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.7.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -99,7 +99,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -185,14 +185,17 @@
     <Compile Include="Downloading\DownloaderProgressChangedEventArgs.cs" />
     <Compile Include="General\ArchivedSWFile.cs" />
     <Compile Include="General\PatchedSWFile.cs" />
+    <Compile Include="General\Region.cs" />
     <Compile Include="General\SWFileManager.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\NativeMethods.cs" />
     <Compile Include="Launching\GameStarter.cs" />
+    <Compile Include="Launching\GameStarterCompletedEventArgs.cs" />
     <Compile Include="Launching\GameStarterProgressChangedEventArgs.cs" />
     <Compile Include="Patching\XorFileStream.cs" />
     <Compile Include="Patching\XorMemoryStream.cs" />
     <Compile Include="RTPatch\ResultException.cs" />
+    <Compile Include="RTPatch\RTPatcherCompletedEventArgs.cs" />
     <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
     <Compile Include="RTPatch\RTPatcherProgressChangedEventArgs.cs" />
     <Compile Include="Forms\AboutBox.cs">
@@ -217,7 +220,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\SWFile.cs" />
-    <Compile Include="General\TempFile.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\GlobalVariables\AssemblyAccessor.cs" />
     <Compile Include="Helpers\GlobalVariables\Strings.cs" />
@@ -263,7 +265,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>vi.resx</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
       <SubType>Designer</SubType>

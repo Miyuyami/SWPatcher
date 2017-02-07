@@ -18,7 +18,7 @@
 
 namespace SWPatcher.Forms
 {
-    partial class SettingsForm
+    internal partial class SettingsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,9 +31,9 @@ namespace SWPatcher.Forms
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -46,329 +46,329 @@ namespace SWPatcher.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.buttonApply = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonOk = new System.Windows.Forms.Button();
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabPageGame = new System.Windows.Forms.TabPage();
-            this.groupBoxGameOptions = new System.Windows.Forms.GroupBox();
-            this.buttonGameOptions = new System.Windows.Forms.Button();
-            this.groupBoxPatchExe = new System.Windows.Forms.GroupBox();
-            this.checkBoxPatchExe = new System.Windows.Forms.CheckBox();
-            this.groupBoxGameDirectory = new System.Windows.Forms.GroupBox();
-            this.buttonGameChangeDirectory = new System.Windows.Forms.Button();
-            this.textBoxGameDirectory = new System.Windows.Forms.TextBox();
-            this.tabPageCredentials = new System.Windows.Forms.TabPage();
-            this.groupBoxGameWantLogin = new System.Windows.Forms.GroupBox();
-            this.checkBoxWantToLogin = new System.Windows.Forms.CheckBox();
-            this.groupBoxGameUserPassword = new System.Windows.Forms.GroupBox();
-            this.textBoxPassword = new System.Windows.Forms.TextBox();
-            this.groupBoxGameUserId = new System.Windows.Forms.GroupBox();
-            this.textBoxId = new System.Windows.Forms.TextBox();
-            this.tabPagePatcher = new System.Windows.Forms.TabPage();
-            this.groupBoxUILanguagePicker = new System.Windows.Forms.GroupBox();
-            this.comboBoxUILanguage = new System.Windows.Forms.ComboBox();
-            this.groupBoxPatcherDirectory = new System.Windows.Forms.GroupBox();
-            this.buttonPatcherChangeDirectory = new System.Windows.Forms.Button();
-            this.textBoxPatcherDirectory = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel.SuspendLayout();
-            this.tabControl.SuspendLayout();
-            this.tabPageGame.SuspendLayout();
-            this.groupBoxGameOptions.SuspendLayout();
-            this.groupBoxPatchExe.SuspendLayout();
-            this.groupBoxGameDirectory.SuspendLayout();
-            this.tabPageCredentials.SuspendLayout();
-            this.groupBoxGameWantLogin.SuspendLayout();
-            this.groupBoxGameUserPassword.SuspendLayout();
-            this.groupBoxGameUserId.SuspendLayout();
-            this.tabPagePatcher.SuspendLayout();
-            this.groupBoxUILanguagePicker.SuspendLayout();
-            this.groupBoxPatcherDirectory.SuspendLayout();
+            this.TableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.ButtonApply = new System.Windows.Forms.Button();
+            this.ButtonCancel = new System.Windows.Forms.Button();
+            this.ButtonOk = new System.Windows.Forms.Button();
+            this.TabControl = new System.Windows.Forms.TabControl();
+            this.TabPageGame = new System.Windows.Forms.TabPage();
+            this.GroupBoxGameOptions = new System.Windows.Forms.GroupBox();
+            this.ButtonOpenGameOptions = new System.Windows.Forms.Button();
+            this.GroupBoxPatchExe = new System.Windows.Forms.GroupBox();
+            this.CheckBoxPatchExe = new System.Windows.Forms.CheckBox();
+            this.GroupBoxGameDirectory = new System.Windows.Forms.GroupBox();
+            this.ButtonOpenGameDirectory = new System.Windows.Forms.Button();
+            this.TextBoxGameDirectory = new System.Windows.Forms.TextBox();
+            this.TabPageCredentials = new System.Windows.Forms.TabPage();
+            this.GroupBoxGameWantLogin = new System.Windows.Forms.GroupBox();
+            this.CheckBoxWantToLogin = new System.Windows.Forms.CheckBox();
+            this.GroupBoxGameUserPassword = new System.Windows.Forms.GroupBox();
+            this.TextBoxPassword = new System.Windows.Forms.TextBox();
+            this.GroupBoxGameUserId = new System.Windows.Forms.GroupBox();
+            this.TextBoxId = new System.Windows.Forms.TextBox();
+            this.TabPagePatcher = new System.Windows.Forms.TabPage();
+            this.GroupBoxUILanguagePicker = new System.Windows.Forms.GroupBox();
+            this.ComboBoxUILanguage = new System.Windows.Forms.ComboBox();
+            this.GroupBoxPatcherDirectory = new System.Windows.Forms.GroupBox();
+            this.ButtonChangePatcherDirectory = new System.Windows.Forms.Button();
+            this.TextBoxPatcherDirectory = new System.Windows.Forms.TextBox();
+            this.TableLayoutPanel.SuspendLayout();
+            this.TabControl.SuspendLayout();
+            this.TabPageGame.SuspendLayout();
+            this.GroupBoxGameOptions.SuspendLayout();
+            this.GroupBoxPatchExe.SuspendLayout();
+            this.GroupBoxGameDirectory.SuspendLayout();
+            this.TabPageCredentials.SuspendLayout();
+            this.GroupBoxGameWantLogin.SuspendLayout();
+            this.GroupBoxGameUserPassword.SuspendLayout();
+            this.GroupBoxGameUserId.SuspendLayout();
+            this.TabPagePatcher.SuspendLayout();
+            this.GroupBoxUILanguagePicker.SuspendLayout();
+            this.GroupBoxPatcherDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel
+            // TableLayoutPanel
             // 
-            this.tableLayoutPanel.ColumnCount = 4;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
-            this.tableLayoutPanel.Controls.Add(this.buttonApply, 3, 1);
-            this.tableLayoutPanel.Controls.Add(this.buttonCancel, 2, 1);
-            this.tableLayoutPanel.Controls.Add(this.buttonOk, 1, 1);
-            this.tableLayoutPanel.Controls.Add(this.tabControl, 0, 0);
-            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.RowCount = 2;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(320, 252);
-            this.tableLayoutPanel.TabIndex = 0;
+            this.TableLayoutPanel.ColumnCount = 4;
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
+            this.TableLayoutPanel.Controls.Add(this.ButtonApply, 3, 1);
+            this.TableLayoutPanel.Controls.Add(this.ButtonCancel, 2, 1);
+            this.TableLayoutPanel.Controls.Add(this.ButtonOk, 1, 1);
+            this.TableLayoutPanel.Controls.Add(this.TabControl, 0, 0);
+            this.TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.TableLayoutPanel.Name = "TableLayoutPanel";
+            this.TableLayoutPanel.RowCount = 2;
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.TableLayoutPanel.Size = new System.Drawing.Size(320, 252);
+            this.TableLayoutPanel.TabIndex = 0;
             // 
-            // buttonApply
+            // ButtonApply
             // 
-            this.buttonApply.Enabled = false;
-            this.buttonApply.Location = new System.Drawing.Point(242, 224);
-            this.buttonApply.Name = "buttonApply";
-            this.buttonApply.Size = new System.Drawing.Size(75, 23);
-            this.buttonApply.TabIndex = 3;
-            this.buttonApply.UseVisualStyleBackColor = true;
-            this.buttonApply.Click += new System.EventHandler(this.ButtonApply_Click);
+            this.ButtonApply.Enabled = false;
+            this.ButtonApply.Location = new System.Drawing.Point(242, 224);
+            this.ButtonApply.Name = "ButtonApply";
+            this.ButtonApply.Size = new System.Drawing.Size(75, 23);
+            this.ButtonApply.TabIndex = 3;
+            this.ButtonApply.UseVisualStyleBackColor = true;
+            this.ButtonApply.Click += new System.EventHandler(this.ButtonApply_Click);
             // 
-            // buttonCancel
+            // ButtonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(161, 224);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 2;
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
+            this.ButtonCancel.Location = new System.Drawing.Point(161, 224);
+            this.ButtonCancel.Name = "ButtonCancel";
+            this.ButtonCancel.Size = new System.Drawing.Size(75, 23);
+            this.ButtonCancel.TabIndex = 2;
+            this.ButtonCancel.UseVisualStyleBackColor = true;
+            this.ButtonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
-            // buttonOk
+            // ButtonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(80, 224);
-            this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 1;
-            this.buttonOk.UseVisualStyleBackColor = true;
-            this.buttonOk.Click += new System.EventHandler(this.ButtonOk_Click);
+            this.ButtonOk.Location = new System.Drawing.Point(80, 224);
+            this.ButtonOk.Name = "ButtonOk";
+            this.ButtonOk.Size = new System.Drawing.Size(75, 23);
+            this.ButtonOk.TabIndex = 1;
+            this.ButtonOk.UseVisualStyleBackColor = true;
+            this.ButtonOk.Click += new System.EventHandler(this.ButtonOk_Click);
             // 
-            // tabControl
+            // TabControl
             // 
-            this.tableLayoutPanel.SetColumnSpan(this.tabControl, 4);
-            this.tabControl.Controls.Add(this.tabPageGame);
-            this.tabControl.Controls.Add(this.tabPageCredentials);
-            this.tabControl.Controls.Add(this.tabPagePatcher);
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Location = new System.Drawing.Point(3, 3);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(314, 215);
-            this.tabControl.TabIndex = 0;
+            this.TableLayoutPanel.SetColumnSpan(this.TabControl, 4);
+            this.TabControl.Controls.Add(this.TabPageGame);
+            this.TabControl.Controls.Add(this.TabPageCredentials);
+            this.TabControl.Controls.Add(this.TabPagePatcher);
+            this.TabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TabControl.Location = new System.Drawing.Point(3, 3);
+            this.TabControl.Name = "TabControl";
+            this.TabControl.SelectedIndex = 0;
+            this.TabControl.Size = new System.Drawing.Size(314, 215);
+            this.TabControl.TabIndex = 0;
             // 
-            // tabPageGame
+            // TabPageGame
             // 
-            this.tabPageGame.Controls.Add(this.groupBoxGameOptions);
-            this.tabPageGame.Controls.Add(this.groupBoxPatchExe);
-            this.tabPageGame.Controls.Add(this.groupBoxGameDirectory);
-            this.tabPageGame.Location = new System.Drawing.Point(4, 22);
-            this.tabPageGame.Name = "tabPageGame";
-            this.tabPageGame.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGame.Size = new System.Drawing.Size(306, 189);
-            this.tabPageGame.TabIndex = 0;
-            this.tabPageGame.UseVisualStyleBackColor = true;
+            this.TabPageGame.Controls.Add(this.GroupBoxGameOptions);
+            this.TabPageGame.Controls.Add(this.GroupBoxPatchExe);
+            this.TabPageGame.Controls.Add(this.GroupBoxGameDirectory);
+            this.TabPageGame.Location = new System.Drawing.Point(4, 22);
+            this.TabPageGame.Name = "TabPageGame";
+            this.TabPageGame.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPageGame.Size = new System.Drawing.Size(306, 189);
+            this.TabPageGame.TabIndex = 0;
+            this.TabPageGame.UseVisualStyleBackColor = true;
             // 
-            // groupBoxGameOptions
+            // GroupBoxGameOptions
             // 
-            this.groupBoxGameOptions.AutoSize = true;
-            this.groupBoxGameOptions.Controls.Add(this.buttonGameOptions);
-            this.groupBoxGameOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxGameOptions.Location = new System.Drawing.Point(3, 122);
-            this.groupBoxGameOptions.Name = "groupBoxGameOptions";
-            this.groupBoxGameOptions.Size = new System.Drawing.Size(300, 64);
-            this.groupBoxGameOptions.TabIndex = 3;
-            this.groupBoxGameOptions.TabStop = false;
+            this.GroupBoxGameOptions.AutoSize = true;
+            this.GroupBoxGameOptions.Controls.Add(this.ButtonOpenGameOptions);
+            this.GroupBoxGameOptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GroupBoxGameOptions.Location = new System.Drawing.Point(3, 122);
+            this.GroupBoxGameOptions.Name = "GroupBoxGameOptions";
+            this.GroupBoxGameOptions.Size = new System.Drawing.Size(300, 64);
+            this.GroupBoxGameOptions.TabIndex = 3;
+            this.GroupBoxGameOptions.TabStop = false;
             // 
-            // buttonGameOptions
+            // ButtonOpenGameOptions
             // 
-            this.buttonGameOptions.Location = new System.Drawing.Point(6, 22);
-            this.buttonGameOptions.Name = "buttonGameOptions";
-            this.buttonGameOptions.Size = new System.Drawing.Size(99, 23);
-            this.buttonGameOptions.TabIndex = 2;
-            this.buttonGameOptions.UseVisualStyleBackColor = true;
-            this.buttonGameOptions.Click += new System.EventHandler(this.ButtonGameOptions_Click);
+            this.ButtonOpenGameOptions.Location = new System.Drawing.Point(6, 22);
+            this.ButtonOpenGameOptions.Name = "ButtonOpenGameOptions";
+            this.ButtonOpenGameOptions.Size = new System.Drawing.Size(99, 23);
+            this.ButtonOpenGameOptions.TabIndex = 2;
+            this.ButtonOpenGameOptions.UseVisualStyleBackColor = true;
+            this.ButtonOpenGameOptions.Click += new System.EventHandler(this.ButtonOpenGameOptions_Click);
             // 
-            // groupBoxPatchExe
+            // GroupBoxPatchExe
             // 
-            this.groupBoxPatchExe.AutoSize = true;
-            this.groupBoxPatchExe.Controls.Add(this.checkBoxPatchExe);
-            this.groupBoxPatchExe.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxPatchExe.Location = new System.Drawing.Point(3, 64);
-            this.groupBoxPatchExe.Name = "groupBoxPatchExe";
-            this.groupBoxPatchExe.Size = new System.Drawing.Size(300, 58);
-            this.groupBoxPatchExe.TabIndex = 2;
-            this.groupBoxPatchExe.TabStop = false;
+            this.GroupBoxPatchExe.AutoSize = true;
+            this.GroupBoxPatchExe.Controls.Add(this.CheckBoxPatchExe);
+            this.GroupBoxPatchExe.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupBoxPatchExe.Location = new System.Drawing.Point(3, 64);
+            this.GroupBoxPatchExe.Name = "GroupBoxPatchExe";
+            this.GroupBoxPatchExe.Size = new System.Drawing.Size(300, 58);
+            this.GroupBoxPatchExe.TabIndex = 2;
+            this.GroupBoxPatchExe.TabStop = false;
             // 
-            // checkBoxPatchExe
+            // CheckBoxPatchExe
             // 
-            this.checkBoxPatchExe.AutoSize = true;
-            this.checkBoxPatchExe.Location = new System.Drawing.Point(6, 25);
-            this.checkBoxPatchExe.Name = "checkBoxPatchExe";
-            this.checkBoxPatchExe.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxPatchExe.TabIndex = 0;
-            this.checkBoxPatchExe.UseVisualStyleBackColor = true;
-            this.checkBoxPatchExe.CheckedChanged += new System.EventHandler(this.CheckBoxPatchExe_CheckedChanged);
+            this.CheckBoxPatchExe.AutoSize = true;
+            this.CheckBoxPatchExe.Location = new System.Drawing.Point(6, 25);
+            this.CheckBoxPatchExe.Name = "CheckBoxPatchExe";
+            this.CheckBoxPatchExe.Size = new System.Drawing.Size(15, 14);
+            this.CheckBoxPatchExe.TabIndex = 0;
+            this.CheckBoxPatchExe.UseVisualStyleBackColor = true;
+            this.CheckBoxPatchExe.CheckedChanged += new System.EventHandler(this.CheckBoxPatchExe_CheckedChanged);
             // 
-            // groupBoxGameDirectory
+            // GroupBoxGameDirectory
             // 
-            this.groupBoxGameDirectory.AutoSize = true;
-            this.groupBoxGameDirectory.Controls.Add(this.buttonGameChangeDirectory);
-            this.groupBoxGameDirectory.Controls.Add(this.textBoxGameDirectory);
-            this.groupBoxGameDirectory.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxGameDirectory.Location = new System.Drawing.Point(3, 3);
-            this.groupBoxGameDirectory.Name = "groupBoxGameDirectory";
-            this.groupBoxGameDirectory.Size = new System.Drawing.Size(300, 61);
-            this.groupBoxGameDirectory.TabIndex = 0;
-            this.groupBoxGameDirectory.TabStop = false;
+            this.GroupBoxGameDirectory.AutoSize = true;
+            this.GroupBoxGameDirectory.Controls.Add(this.ButtonOpenGameDirectory);
+            this.GroupBoxGameDirectory.Controls.Add(this.TextBoxGameDirectory);
+            this.GroupBoxGameDirectory.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupBoxGameDirectory.Location = new System.Drawing.Point(3, 3);
+            this.GroupBoxGameDirectory.Name = "GroupBoxGameDirectory";
+            this.GroupBoxGameDirectory.Size = new System.Drawing.Size(300, 61);
+            this.GroupBoxGameDirectory.TabIndex = 0;
+            this.GroupBoxGameDirectory.TabStop = false;
             // 
-            // buttonGameChangeDirectory
+            // ButtonOpenGameDirectory
             // 
-            this.buttonGameChangeDirectory.Location = new System.Drawing.Point(219, 19);
-            this.buttonGameChangeDirectory.Name = "buttonGameChangeDirectory";
-            this.buttonGameChangeDirectory.Size = new System.Drawing.Size(75, 23);
-            this.buttonGameChangeDirectory.TabIndex = 1;
-            this.buttonGameChangeDirectory.UseVisualStyleBackColor = true;
-            this.buttonGameChangeDirectory.Click += new System.EventHandler(this.ButtonChangeDirectory_Click);
+            this.ButtonOpenGameDirectory.Location = new System.Drawing.Point(219, 19);
+            this.ButtonOpenGameDirectory.Name = "ButtonOpenGameDirectory";
+            this.ButtonOpenGameDirectory.Size = new System.Drawing.Size(75, 23);
+            this.ButtonOpenGameDirectory.TabIndex = 1;
+            this.ButtonOpenGameDirectory.UseVisualStyleBackColor = true;
+            this.ButtonOpenGameDirectory.Click += new System.EventHandler(this.ButtonOpenGameDirectory_Click);
             // 
-            // textBoxGameDirectory
+            // TextBoxGameDirectory
             // 
-            this.textBoxGameDirectory.Location = new System.Drawing.Point(6, 21);
-            this.textBoxGameDirectory.Name = "textBoxGameDirectory";
-            this.textBoxGameDirectory.ReadOnly = true;
-            this.textBoxGameDirectory.Size = new System.Drawing.Size(207, 20);
-            this.textBoxGameDirectory.TabIndex = 0;
+            this.TextBoxGameDirectory.Location = new System.Drawing.Point(6, 21);
+            this.TextBoxGameDirectory.Name = "TextBoxGameDirectory";
+            this.TextBoxGameDirectory.ReadOnly = true;
+            this.TextBoxGameDirectory.Size = new System.Drawing.Size(207, 20);
+            this.TextBoxGameDirectory.TabIndex = 0;
             // 
-            // tabPageCredentials
+            // TabPageCredentials
             // 
-            this.tabPageCredentials.Controls.Add(this.groupBoxGameWantLogin);
-            this.tabPageCredentials.Controls.Add(this.groupBoxGameUserPassword);
-            this.tabPageCredentials.Controls.Add(this.groupBoxGameUserId);
-            this.tabPageCredentials.Location = new System.Drawing.Point(4, 22);
-            this.tabPageCredentials.Name = "tabPageCredentials";
-            this.tabPageCredentials.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCredentials.Size = new System.Drawing.Size(306, 189);
-            this.tabPageCredentials.TabIndex = 1;
-            this.tabPageCredentials.UseVisualStyleBackColor = true;
+            this.TabPageCredentials.Controls.Add(this.GroupBoxGameWantLogin);
+            this.TabPageCredentials.Controls.Add(this.GroupBoxGameUserPassword);
+            this.TabPageCredentials.Controls.Add(this.GroupBoxGameUserId);
+            this.TabPageCredentials.Location = new System.Drawing.Point(4, 22);
+            this.TabPageCredentials.Name = "TabPageCredentials";
+            this.TabPageCredentials.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPageCredentials.Size = new System.Drawing.Size(306, 189);
+            this.TabPageCredentials.TabIndex = 1;
+            this.TabPageCredentials.UseVisualStyleBackColor = true;
             // 
-            // groupBoxGameWantLogin
+            // GroupBoxGameWantLogin
             // 
-            this.groupBoxGameWantLogin.AutoSize = true;
-            this.groupBoxGameWantLogin.Controls.Add(this.checkBoxWantToLogin);
-            this.groupBoxGameWantLogin.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxGameWantLogin.Location = new System.Drawing.Point(3, 123);
-            this.groupBoxGameWantLogin.Name = "groupBoxGameWantLogin";
-            this.groupBoxGameWantLogin.Size = new System.Drawing.Size(300, 63);
-            this.groupBoxGameWantLogin.TabIndex = 2;
-            this.groupBoxGameWantLogin.TabStop = false;
+            this.GroupBoxGameWantLogin.AutoSize = true;
+            this.GroupBoxGameWantLogin.Controls.Add(this.CheckBoxWantToLogin);
+            this.GroupBoxGameWantLogin.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GroupBoxGameWantLogin.Location = new System.Drawing.Point(3, 123);
+            this.GroupBoxGameWantLogin.Name = "GroupBoxGameWantLogin";
+            this.GroupBoxGameWantLogin.Size = new System.Drawing.Size(300, 63);
+            this.GroupBoxGameWantLogin.TabIndex = 2;
+            this.GroupBoxGameWantLogin.TabStop = false;
             // 
-            // checkBoxWantToLogin
+            // CheckBoxWantToLogin
             // 
-            this.checkBoxWantToLogin.AutoSize = true;
-            this.checkBoxWantToLogin.Location = new System.Drawing.Point(6, 25);
-            this.checkBoxWantToLogin.Name = "checkBoxWantToLogin";
-            this.checkBoxWantToLogin.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxWantToLogin.TabIndex = 0;
-            this.checkBoxWantToLogin.UseVisualStyleBackColor = true;
-            this.checkBoxWantToLogin.CheckedChanged += new System.EventHandler(this.CheckBoxWantToLogin_CheckedChanged);
+            this.CheckBoxWantToLogin.AutoSize = true;
+            this.CheckBoxWantToLogin.Location = new System.Drawing.Point(6, 25);
+            this.CheckBoxWantToLogin.Name = "CheckBoxWantToLogin";
+            this.CheckBoxWantToLogin.Size = new System.Drawing.Size(15, 14);
+            this.CheckBoxWantToLogin.TabIndex = 0;
+            this.CheckBoxWantToLogin.UseVisualStyleBackColor = true;
+            this.CheckBoxWantToLogin.CheckedChanged += new System.EventHandler(this.CheckBoxWantToLogin_CheckedChanged);
             // 
-            // groupBoxGameUserPassword
+            // GroupBoxGameUserPassword
             // 
-            this.groupBoxGameUserPassword.AutoSize = true;
-            this.groupBoxGameUserPassword.Controls.Add(this.textBoxPassword);
-            this.groupBoxGameUserPassword.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxGameUserPassword.Location = new System.Drawing.Point(3, 63);
-            this.groupBoxGameUserPassword.Name = "groupBoxGameUserPassword";
-            this.groupBoxGameUserPassword.Size = new System.Drawing.Size(300, 60);
-            this.groupBoxGameUserPassword.TabIndex = 1;
-            this.groupBoxGameUserPassword.TabStop = false;
+            this.GroupBoxGameUserPassword.AutoSize = true;
+            this.GroupBoxGameUserPassword.Controls.Add(this.TextBoxPassword);
+            this.GroupBoxGameUserPassword.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupBoxGameUserPassword.Location = new System.Drawing.Point(3, 63);
+            this.GroupBoxGameUserPassword.Name = "GroupBoxGameUserPassword";
+            this.GroupBoxGameUserPassword.Size = new System.Drawing.Size(300, 60);
+            this.GroupBoxGameUserPassword.TabIndex = 1;
+            this.GroupBoxGameUserPassword.TabStop = false;
             // 
-            // textBoxPassword
+            // TextBoxPassword
             // 
-            this.textBoxPassword.Location = new System.Drawing.Point(6, 21);
-            this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(180, 20);
-            this.textBoxPassword.TabIndex = 0;
-            this.textBoxPassword.UseSystemPasswordChar = true;
-            this.textBoxPassword.TextChanged += new System.EventHandler(this.TextBoxPassword_TextChanged);
+            this.TextBoxPassword.Location = new System.Drawing.Point(6, 21);
+            this.TextBoxPassword.Name = "TextBoxPassword";
+            this.TextBoxPassword.Size = new System.Drawing.Size(180, 20);
+            this.TextBoxPassword.TabIndex = 0;
+            this.TextBoxPassword.UseSystemPasswordChar = true;
+            this.TextBoxPassword.TextChanged += new System.EventHandler(this.TextBoxPassword_TextChanged);
             // 
-            // groupBoxGameUserId
+            // GroupBoxGameUserId
             // 
-            this.groupBoxGameUserId.AutoSize = true;
-            this.groupBoxGameUserId.Controls.Add(this.textBoxId);
-            this.groupBoxGameUserId.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxGameUserId.Location = new System.Drawing.Point(3, 3);
-            this.groupBoxGameUserId.Name = "groupBoxGameUserId";
-            this.groupBoxGameUserId.Size = new System.Drawing.Size(300, 60);
-            this.groupBoxGameUserId.TabIndex = 0;
-            this.groupBoxGameUserId.TabStop = false;
+            this.GroupBoxGameUserId.AutoSize = true;
+            this.GroupBoxGameUserId.Controls.Add(this.TextBoxId);
+            this.GroupBoxGameUserId.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupBoxGameUserId.Location = new System.Drawing.Point(3, 3);
+            this.GroupBoxGameUserId.Name = "GroupBoxGameUserId";
+            this.GroupBoxGameUserId.Size = new System.Drawing.Size(300, 60);
+            this.GroupBoxGameUserId.TabIndex = 0;
+            this.GroupBoxGameUserId.TabStop = false;
             // 
-            // textBoxId
+            // TextBoxId
             // 
-            this.textBoxId.Location = new System.Drawing.Point(6, 21);
-            this.textBoxId.Name = "textBoxId";
-            this.textBoxId.Size = new System.Drawing.Size(180, 20);
-            this.textBoxId.TabIndex = 0;
-            this.textBoxId.TextChanged += new System.EventHandler(this.TextBoxId_TextChanged);
+            this.TextBoxId.Location = new System.Drawing.Point(6, 21);
+            this.TextBoxId.Name = "TextBoxId";
+            this.TextBoxId.Size = new System.Drawing.Size(180, 20);
+            this.TextBoxId.TabIndex = 0;
+            this.TextBoxId.TextChanged += new System.EventHandler(this.TextBoxId_TextChanged);
             // 
-            // tabPagePatcher
+            // TabPagePatcher
             // 
-            this.tabPagePatcher.Controls.Add(this.groupBoxUILanguagePicker);
-            this.tabPagePatcher.Controls.Add(this.groupBoxPatcherDirectory);
-            this.tabPagePatcher.Location = new System.Drawing.Point(4, 22);
-            this.tabPagePatcher.Name = "tabPagePatcher";
-            this.tabPagePatcher.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPagePatcher.Size = new System.Drawing.Size(306, 189);
-            this.tabPagePatcher.TabIndex = 2;
-            this.tabPagePatcher.UseVisualStyleBackColor = true;
+            this.TabPagePatcher.Controls.Add(this.GroupBoxUILanguagePicker);
+            this.TabPagePatcher.Controls.Add(this.GroupBoxPatcherDirectory);
+            this.TabPagePatcher.Location = new System.Drawing.Point(4, 22);
+            this.TabPagePatcher.Name = "TabPagePatcher";
+            this.TabPagePatcher.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPagePatcher.Size = new System.Drawing.Size(306, 189);
+            this.TabPagePatcher.TabIndex = 2;
+            this.TabPagePatcher.UseVisualStyleBackColor = true;
             // 
-            // groupBoxUILanguagePicker
+            // GroupBoxUILanguagePicker
             // 
-            this.groupBoxUILanguagePicker.AutoSize = true;
-            this.groupBoxUILanguagePicker.Controls.Add(this.comboBoxUILanguage);
-            this.groupBoxUILanguagePicker.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxUILanguagePicker.Location = new System.Drawing.Point(3, 64);
-            this.groupBoxUILanguagePicker.Name = "groupBoxUILanguagePicker";
-            this.groupBoxUILanguagePicker.Size = new System.Drawing.Size(300, 59);
-            this.groupBoxUILanguagePicker.TabIndex = 4;
-            this.groupBoxUILanguagePicker.TabStop = false;
+            this.GroupBoxUILanguagePicker.AutoSize = true;
+            this.GroupBoxUILanguagePicker.Controls.Add(this.ComboBoxUILanguage);
+            this.GroupBoxUILanguagePicker.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupBoxUILanguagePicker.Location = new System.Drawing.Point(3, 64);
+            this.GroupBoxUILanguagePicker.Name = "GroupBoxUILanguagePicker";
+            this.GroupBoxUILanguagePicker.Size = new System.Drawing.Size(300, 59);
+            this.GroupBoxUILanguagePicker.TabIndex = 4;
+            this.GroupBoxUILanguagePicker.TabStop = false;
             // 
-            // comboBoxUILanguage
+            // ComboBoxUILanguage
             // 
-            this.comboBoxUILanguage.FormattingEnabled = true;
-            this.comboBoxUILanguage.Location = new System.Drawing.Point(6, 19);
-            this.comboBoxUILanguage.Name = "comboBoxUILanguage";
-            this.comboBoxUILanguage.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxUILanguage.TabIndex = 0;
-            this.comboBoxUILanguage.SelectedIndexChanged += new System.EventHandler(this.ComboBoxUILanguage_SelectedIndexChanged);
+            this.ComboBoxUILanguage.FormattingEnabled = true;
+            this.ComboBoxUILanguage.Location = new System.Drawing.Point(6, 19);
+            this.ComboBoxUILanguage.Name = "ComboBoxUILanguage";
+            this.ComboBoxUILanguage.Size = new System.Drawing.Size(121, 21);
+            this.ComboBoxUILanguage.TabIndex = 0;
+            this.ComboBoxUILanguage.SelectedIndexChanged += new System.EventHandler(this.ComboBoxUILanguage_SelectedIndexChanged);
             // 
-            // groupBoxPatcherDirectory
+            // GroupBoxPatcherDirectory
             // 
-            this.groupBoxPatcherDirectory.AutoSize = true;
-            this.groupBoxPatcherDirectory.Controls.Add(this.buttonPatcherChangeDirectory);
-            this.groupBoxPatcherDirectory.Controls.Add(this.textBoxPatcherDirectory);
-            this.groupBoxPatcherDirectory.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBoxPatcherDirectory.Location = new System.Drawing.Point(3, 3);
-            this.groupBoxPatcherDirectory.Name = "groupBoxPatcherDirectory";
-            this.groupBoxPatcherDirectory.Size = new System.Drawing.Size(300, 61);
-            this.groupBoxPatcherDirectory.TabIndex = 2;
-            this.groupBoxPatcherDirectory.TabStop = false;
+            this.GroupBoxPatcherDirectory.AutoSize = true;
+            this.GroupBoxPatcherDirectory.Controls.Add(this.ButtonChangePatcherDirectory);
+            this.GroupBoxPatcherDirectory.Controls.Add(this.TextBoxPatcherDirectory);
+            this.GroupBoxPatcherDirectory.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupBoxPatcherDirectory.Location = new System.Drawing.Point(3, 3);
+            this.GroupBoxPatcherDirectory.Name = "GroupBoxPatcherDirectory";
+            this.GroupBoxPatcherDirectory.Size = new System.Drawing.Size(300, 61);
+            this.GroupBoxPatcherDirectory.TabIndex = 2;
+            this.GroupBoxPatcherDirectory.TabStop = false;
             // 
-            // buttonPatcherChangeDirectory
+            // ButtonChangePatcherDirectory
             // 
-            this.buttonPatcherChangeDirectory.Location = new System.Drawing.Point(219, 19);
-            this.buttonPatcherChangeDirectory.Name = "buttonPatcherChangeDirectory";
-            this.buttonPatcherChangeDirectory.Size = new System.Drawing.Size(75, 23);
-            this.buttonPatcherChangeDirectory.TabIndex = 1;
-            this.buttonPatcherChangeDirectory.UseVisualStyleBackColor = true;
-            this.buttonPatcherChangeDirectory.Click += new System.EventHandler(this.ButtonPatcherChangeDirectory_Click);
+            this.ButtonChangePatcherDirectory.Location = new System.Drawing.Point(219, 19);
+            this.ButtonChangePatcherDirectory.Name = "ButtonChangePatcherDirectory";
+            this.ButtonChangePatcherDirectory.Size = new System.Drawing.Size(75, 23);
+            this.ButtonChangePatcherDirectory.TabIndex = 1;
+            this.ButtonChangePatcherDirectory.UseVisualStyleBackColor = true;
+            this.ButtonChangePatcherDirectory.Click += new System.EventHandler(this.ButtonChangePatcherDirectory_Click);
             // 
-            // textBoxPatcherDirectory
+            // TextBoxPatcherDirectory
             // 
-            this.textBoxPatcherDirectory.Location = new System.Drawing.Point(6, 21);
-            this.textBoxPatcherDirectory.Name = "textBoxPatcherDirectory";
-            this.textBoxPatcherDirectory.ReadOnly = true;
-            this.textBoxPatcherDirectory.Size = new System.Drawing.Size(207, 20);
-            this.textBoxPatcherDirectory.TabIndex = 0;
+            this.TextBoxPatcherDirectory.Location = new System.Drawing.Point(6, 21);
+            this.TextBoxPatcherDirectory.Name = "TextBoxPatcherDirectory";
+            this.TextBoxPatcherDirectory.ReadOnly = true;
+            this.TextBoxPatcherDirectory.Size = new System.Drawing.Size(207, 20);
+            this.TextBoxPatcherDirectory.TabIndex = 0;
             // 
             // SettingsForm
             // 
-            this.AcceptButton = this.buttonOk;
+            this.AcceptButton = this.ButtonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(320, 252);
-            this.Controls.Add(this.tableLayoutPanel);
+            this.Controls.Add(this.TableLayoutPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -377,59 +377,59 @@ namespace SWPatcher.Forms
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Load += new System.EventHandler(this.SettingsForm_Load);
-            this.tableLayoutPanel.ResumeLayout(false);
-            this.tabControl.ResumeLayout(false);
-            this.tabPageGame.ResumeLayout(false);
-            this.tabPageGame.PerformLayout();
-            this.groupBoxGameOptions.ResumeLayout(false);
-            this.groupBoxPatchExe.ResumeLayout(false);
-            this.groupBoxPatchExe.PerformLayout();
-            this.groupBoxGameDirectory.ResumeLayout(false);
-            this.groupBoxGameDirectory.PerformLayout();
-            this.tabPageCredentials.ResumeLayout(false);
-            this.tabPageCredentials.PerformLayout();
-            this.groupBoxGameWantLogin.ResumeLayout(false);
-            this.groupBoxGameWantLogin.PerformLayout();
-            this.groupBoxGameUserPassword.ResumeLayout(false);
-            this.groupBoxGameUserPassword.PerformLayout();
-            this.groupBoxGameUserId.ResumeLayout(false);
-            this.groupBoxGameUserId.PerformLayout();
-            this.tabPagePatcher.ResumeLayout(false);
-            this.tabPagePatcher.PerformLayout();
-            this.groupBoxUILanguagePicker.ResumeLayout(false);
-            this.groupBoxPatcherDirectory.ResumeLayout(false);
-            this.groupBoxPatcherDirectory.PerformLayout();
+            this.TableLayoutPanel.ResumeLayout(false);
+            this.TabControl.ResumeLayout(false);
+            this.TabPageGame.ResumeLayout(false);
+            this.TabPageGame.PerformLayout();
+            this.GroupBoxGameOptions.ResumeLayout(false);
+            this.GroupBoxPatchExe.ResumeLayout(false);
+            this.GroupBoxPatchExe.PerformLayout();
+            this.GroupBoxGameDirectory.ResumeLayout(false);
+            this.GroupBoxGameDirectory.PerformLayout();
+            this.TabPageCredentials.ResumeLayout(false);
+            this.TabPageCredentials.PerformLayout();
+            this.GroupBoxGameWantLogin.ResumeLayout(false);
+            this.GroupBoxGameWantLogin.PerformLayout();
+            this.GroupBoxGameUserPassword.ResumeLayout(false);
+            this.GroupBoxGameUserPassword.PerformLayout();
+            this.GroupBoxGameUserId.ResumeLayout(false);
+            this.GroupBoxGameUserId.PerformLayout();
+            this.TabPagePatcher.ResumeLayout(false);
+            this.TabPagePatcher.PerformLayout();
+            this.GroupBoxUILanguagePicker.ResumeLayout(false);
+            this.GroupBoxPatcherDirectory.ResumeLayout(false);
+            this.GroupBoxPatcherDirectory.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-        private System.Windows.Forms.Button buttonApply;
-        private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.Button buttonOk;
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tabPageGame;
-        private System.Windows.Forms.GroupBox groupBoxGameDirectory;
-        private System.Windows.Forms.Button buttonGameChangeDirectory;
-        private System.Windows.Forms.TextBox textBoxGameDirectory;
-        private System.Windows.Forms.GroupBox groupBoxPatchExe;
-        private System.Windows.Forms.CheckBox checkBoxPatchExe;
-        private System.Windows.Forms.TabPage tabPageCredentials;
-        private System.Windows.Forms.GroupBox groupBoxGameUserPassword;
-        private System.Windows.Forms.TextBox textBoxPassword;
-        private System.Windows.Forms.GroupBox groupBoxGameUserId;
-        private System.Windows.Forms.TextBox textBoxId;
-        private System.Windows.Forms.GroupBox groupBoxGameWantLogin;
-        private System.Windows.Forms.CheckBox checkBoxWantToLogin;
-        private System.Windows.Forms.TabPage tabPagePatcher;
-        private System.Windows.Forms.GroupBox groupBoxPatcherDirectory;
-        private System.Windows.Forms.Button buttonPatcherChangeDirectory;
-        private System.Windows.Forms.TextBox textBoxPatcherDirectory;
-        private System.Windows.Forms.GroupBox groupBoxUILanguagePicker;
-        private System.Windows.Forms.ComboBox comboBoxUILanguage;
-        private System.Windows.Forms.GroupBox groupBoxGameOptions;
-        private System.Windows.Forms.Button buttonGameOptions;
+        private System.Windows.Forms.TableLayoutPanel TableLayoutPanel;
+        private System.Windows.Forms.Button ButtonApply;
+        private System.Windows.Forms.Button ButtonCancel;
+        private System.Windows.Forms.Button ButtonOk;
+        private System.Windows.Forms.TabControl TabControl;
+        private System.Windows.Forms.TabPage TabPageGame;
+        private System.Windows.Forms.GroupBox GroupBoxGameDirectory;
+        private System.Windows.Forms.Button ButtonOpenGameDirectory;
+        private System.Windows.Forms.TextBox TextBoxGameDirectory;
+        private System.Windows.Forms.GroupBox GroupBoxPatchExe;
+        private System.Windows.Forms.CheckBox CheckBoxPatchExe;
+        private System.Windows.Forms.TabPage TabPageCredentials;
+        private System.Windows.Forms.GroupBox GroupBoxGameUserPassword;
+        private System.Windows.Forms.TextBox TextBoxPassword;
+        private System.Windows.Forms.GroupBox GroupBoxGameUserId;
+        private System.Windows.Forms.TextBox TextBoxId;
+        private System.Windows.Forms.GroupBox GroupBoxGameWantLogin;
+        private System.Windows.Forms.CheckBox CheckBoxWantToLogin;
+        private System.Windows.Forms.TabPage TabPagePatcher;
+        private System.Windows.Forms.GroupBox GroupBoxPatcherDirectory;
+        private System.Windows.Forms.Button ButtonChangePatcherDirectory;
+        private System.Windows.Forms.TextBox TextBoxPatcherDirectory;
+        private System.Windows.Forms.GroupBox GroupBoxUILanguagePicker;
+        private System.Windows.Forms.ComboBox ComboBoxUILanguage;
+        private System.Windows.Forms.GroupBox GroupBoxGameOptions;
+        private System.Windows.Forms.Button ButtonOpenGameOptions;
     }
 }

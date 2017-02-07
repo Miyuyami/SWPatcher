@@ -21,20 +21,20 @@ using System;
 
 namespace SWPatcher.Downloading
 {
-    class DownloaderCompletedEventArgs : EventArgs
+    internal class DownloaderCompletedEventArgs : EventArgs
     {
-        public Language Language { get; private set; }
-        public bool Cancelled { get; private set; }
-        public Exception Error { get; private set; }
+        internal Language Language { get; private set; }
+        internal bool Cancelled { get; private set; }
+        internal Exception Error { get; private set; }
 
-        public DownloaderCompletedEventArgs(bool cancelled, Exception error)
+        internal DownloaderCompletedEventArgs(bool cancelled, Exception error)
         {
             this.Language = null;
             this.Cancelled = cancelled;
             this.Error = error;
         }
 
-        public DownloaderCompletedEventArgs(Language language, bool cancelled, Exception error)
+        internal DownloaderCompletedEventArgs(Language language, bool cancelled, Exception error)
         {
             this.Language = language;
             this.Cancelled = cancelled;

@@ -18,39 +18,25 @@
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    static class Urls
+    internal static class Urls
     {
-        public const string SoulworkerWebsite = "https://miyuyami.github.io/patcher.html";
+        internal const string SoulworkerWebsite = "https://miyuyami.github.io/patcher.html";
 #if DEBUG
-        public static string PatcherGitHubHome = System.Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\GitHub\SWPatcher\");
-        public static string TranslationGitHubHome = System.Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\GitHub\SoulWorkerHQTranslations\");
+        internal static string TranslationGitHubHome = System.Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\GitHub\SoulWorkerHQTranslations\");
 #else
-        public const string PatcherGitHubHome = "https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/";
-        public const string TranslationGitHubHome = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";
+        internal const string TranslationGitHubHome = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";
 #endif
-        public const string SoulworkerSettingsHome = "http://down.hangame.co.jp/jp/purple/plii/j_sw/";
-        public const string SoulworkerJPHome = "http://soulworker.jp/";
-        public const string SoulworkerKRHome = "http://soulworker.co.kr/";
-        public static string SoulworkerHome
-        {
-            get
-            {
-                if (UserSettings.ClientRegion == 1)
-                {
-                    return SoulworkerKRHome;
-                }
+        internal const string SoulworkerSettingsHome = "http://down.hangame.co.jp/jp/purple/plii/j_sw/";
+        internal const string SoulworkerJPHome = "http://soulworker.jp/";
+        internal const string SoulworkerKRHome = "http://soulworker.co.kr/";
+        internal const string HangameLogin = "https://id.hangame.co.jp/login.nhn";
+        internal const string SoulworkerGameStart = "http://soulworker.hangame.co.jp/gamestart.nhn";
+        internal const string SoulworkerReactorGameStart = "http://soulworker.hangame.co.jp/reactor/gameStart.nhn";
+        internal const string SoulworkerReactor = "http://soulworker.hangame.co.jp/reactor/reactor.nhn";
+        internal const string SoulworkerRegistCheck = "http://soulworker.hangame.co.jp/reactor/registCheck.nhn";
 
-                return SoulworkerJPHome;
-            }
-        }
-        public const string HangameLogin = "https://id.hangame.co.jp/login.nhn";
-        public const string SoulworkerGameStart = "http://soulworker.hangame.co.jp/gamestart.nhn";
-        public const string SoulworkerReactorGameStart = "http://soulworker.hangame.co.jp/reactor/gameStart.nhn";
-        public const string SoulworkerReactor = "http://soulworker.hangame.co.jp/reactor/reactor.nhn";
-        public const string SoulworkerRegistCheck = "http://soulworker.hangame.co.jp/reactor/registCheck.nhn";
-
-        public const string SoulworkerKRAPI = "http://patchapi.onstove.com:80/apiv1/get_live_version";
-        public const string StoveLogin = "https://member.onstove.com/auth/login/request";
-        public const string SoulworkerKRGameStart = "http://soulworker.game.onstove.com/Game/GameStart";
+        internal const string SoulworkerKRAPI = "http://patchapi.onstove.com:80/apiv1/get_live_version";
+        internal const string StoveLogin = "https://member.onstove.com/auth/login/request";
+        internal const string SoulworkerKRGameStart = "http://soulworker.game.onstove.com/Game/GameStart";
     }
 }

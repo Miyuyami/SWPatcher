@@ -58,39 +58,25 @@ namespace SWPatcher.Helpers
 
         internal static bool HasNewTranslations(Language language)
         {
-            string directory = language.Name;
+            string translationFolder = language.Path;
 
-            if (!Directory.Exists(directory))
+            if (!Directory.Exists(translationFolder))
             {
                 return true;
             }
 
-            string filePath = Path.Combine(directory, Strings.IniName.Translation);
-            if (!File.Exists(filePath))
+            string selectedTranslationIniPath = Path.Combine(translationFolder, Strings.IniName.Translation);
+            if (!LoadPatcherIni(out IniFile translationIni, selectedTranslationIniPath))
             {
-                return true;
+                return false;
             }
-
-            IniFile ini = new IniFile();
-            ini.Load(filePath);
-
-            if (!ini.Sections.Contains(Strings.IniName.Patcher.Section))
-            {
-                return true;
-            }
-
-            IniSection section = ini.Sections[Strings.IniName.Patcher.Section];
-            if (!section.Keys.Contains(Strings.IniName.Patcher.KeyDate) || !section.Keys.Contains(Strings.IniName.Patcher.KeyVer) || !section.Keys.Contains(Strings.IniName.Patcher.KeyRegion))
-            {
-                return true;
-            }
-
-            string date = section.Keys[Strings.IniName.Patcher.KeyDate].Value;
+            IniSection translationPatcherSection = translationIni.Sections[Strings.IniName.Patcher.Section];
+            string date = translationPatcherSection.Keys[Strings.IniName.Patcher.KeyDate].Value;
 
             return language.LastUpdate > ParseDate(date);
         }
 
-        internal static bool IsSwPath(string path)
+        private static bool IsSwPath(string path)
         {
             bool f1 = Directory.Exists(path);
             string dataPath = Path.Combine(path, Strings.FolderName.Data);
@@ -99,6 +85,77 @@ namespace SWPatcher.Helpers
             bool f4 = File.Exists(Path.Combine(dataPath, Strings.FileName.Data12));
 
             return f1 && f2 && f3 && f4;
+        }
+
+        internal static bool LoadIni(out IniFile iniFile, string iniPath)
+        {
+            return LoadIni(out iniFile, new IniOptions(), iniPath);
+        }
+
+        internal static bool LoadIni(out IniFile iniFile, IniOptions iniOptions, string iniPath)
+        {
+            if (!File.Exists(iniPath))
+            {
+                iniFile = null;
+                return false;
+            }
+
+            iniFile = new IniFile(iniOptions);
+            iniFile.Load(iniPath);
+
+            return true;
+        }
+
+        internal static bool LoadVerIni(out IniFile verIni, string verIniPath)
+        {
+            return LoadVerIni(out verIni, new IniOptions(), verIniPath);
+        }
+
+        internal static bool LoadVerIni(out IniFile verIni, IniOptions verIniOptions, string verIniPath)
+        {
+            if (!LoadIni(out verIni, verIniOptions, verIniPath))
+            {
+                return false;
+            }
+
+            if (!verIni.Sections.Contains(Strings.IniName.Ver.Section))
+            {
+                return false;
+            }
+
+            IniSection clientVerSection = verIni.Sections[Strings.IniName.Ver.Section];
+            if (!clientVerSection.Keys.Contains(Strings.IniName.Ver.Key))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static bool LoadPatcherIni(out IniFile patcherIni, string patcherIniPath)
+        {
+            return LoadPatcherIni(out patcherIni, new IniOptions(), patcherIniPath);
+        }
+
+        internal static bool LoadPatcherIni(out IniFile patcherIni, IniOptions patcherIniOptions, string patcherIniPath)
+        {
+            if (!LoadVerIni(out patcherIni, patcherIniOptions, patcherIniPath))
+            {
+                return false;
+            }
+
+            if (!patcherIni.Sections.Contains(Strings.IniName.Patcher.Section))
+            {
+                return false;
+            }
+
+            IniSection clientVerSection = patcherIni.Sections[Strings.IniName.Patcher.Section];
+            if (!clientVerSection.Keys.Contains(Strings.IniName.Patcher.KeyDate))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         internal static bool IsValidSwPatcherPath(string path)
@@ -131,7 +188,7 @@ namespace SWPatcher.Helpers
                     {
                         if (innerException.SocketErrorCode == SocketError.ConnectionRefused)
                         {
-                            throw new Exception(StringLoader.GetText("exception_hangame_refused_connection"));
+                            throw new Exception(StringLoader.GetText("exception_server_refused_connection"));
                         }
                         else
                         {
@@ -172,16 +229,16 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static void PatchExeFile(byte[] exeFileBytes, string gameExePatchedPath)
+        internal static void PatchExeFile(byte[] exeFileBytes, string gameExePatchedPath, string patchInstructionFilePath)
         {
-            Logger.Debug(Methods.MethodFullName(MethodBase.GetCurrentMethod(), exeFileBytes.Length.ToString(), gameExePatchedPath));
+            Logger.Debug(Methods.MethodFullName(MethodBase.GetCurrentMethod(), exeFileBytes.Length.ToString(), gameExePatchedPath, patchInstructionFilePath));
 
             using (var client = new WebClient())
             {
                 string hexResult = BitConverter.ToString(exeFileBytes).Replace("-", "");
                 string patchedHexResult = String.Copy(hexResult);
 
-                byte[] fileBytes = client.DownloadData(Urls.PatcherGitHubHome + Strings.IniName.BytesToPatch);
+                byte[] fileBytes = client.DownloadData(patchInstructionFilePath);
                 IniFile ini = new IniFile();
                 using (var ms = new MemoryStream(fileBytes))
                 {
@@ -199,6 +256,11 @@ namespace SWPatcher.Helpers
                     {
                         Logger.Info($"Failed .exe patch=[{section.Name}]");
                         MsgBox.Error(StringLoader.GetText("error_exe_patch_fail", section.Name));
+
+                        if (File.Exists(gameExePatchedPath))
+                        {
+                            File.Delete(gameExePatchedPath);
+                        }
 
                         UserSettings.WantToPatchExe = false;
 
@@ -349,29 +411,24 @@ namespace SWPatcher.Helpers
 
         internal static bool IsTranslationOutdated(Language language)
         {
-            string selectedTranslationPath = Path.Combine(language.Name, Strings.IniName.Translation);
-            if (!File.Exists(selectedTranslationPath))
+            string selectedTranslationIniPath = Path.Combine(language.Path, Strings.IniName.Translation);
+            if (!LoadPatcherIni(out IniFile translationIni, selectedTranslationIniPath))
             {
                 return true;
             }
+            IniSection translationPatcherSection = translationIni.Sections[Strings.IniName.Patcher.Section];
+            IniSection translationVerSection = translationIni.Sections[Strings.IniName.Ver.Section];
 
-            IniFile translationIni = new IniFile();
-            translationIni.Load(selectedTranslationPath);
-
-            IniSection patcherSection = translationIni.Sections[Strings.IniName.Patcher.Section];
-            if (!patcherSection.Keys.Contains(Strings.IniName.Patcher.KeyDate) || !patcherSection.Keys.Contains(Strings.IniName.Patcher.KeyVer) || !patcherSection.Keys.Contains(Strings.IniName.Patcher.KeyRegion))
+            string clientIniPath = Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer);
+            if (!LoadVerIni(out IniFile clientIni, clientIniPath))
             {
-                return true; // throw new Exception(StringLoader.GetText("exception_read_translation_ini"));
+                throw new Exception(StringLoader.GetText("exception_generic_read_error", clientIniPath));
             }
-            Version translationVer = new Version(patcherSection.Keys[Strings.IniName.Patcher.KeyVer].Value);
-            byte translationRegion = Convert.ToByte(patcherSection.Keys[Strings.IniName.Patcher.KeyRegion].Value);
+            IniSection clientVerSection = clientIni.Sections[Strings.IniName.Ver.Section];
 
-            IniFile clientIni = new IniFile();
-            clientIni.Load(Path.Combine(UserSettings.GamePath, Strings.IniName.ClientVer));
-
-            Version clientVer = new Version(clientIni.Sections[Strings.IniName.Ver.Section].Keys[Strings.IniName.Ver.Key].Value);
-
-            if (clientVer != translationVer || translationRegion != UserSettings.ClientRegion)
+            string translationVer = translationVerSection.Keys[Strings.IniName.Ver.Key].Value;
+            string clientVer = clientVerSection.Keys[Strings.IniName.Ver.Key].Value;
+            if (clientVer != translationVer)
             {
                 return true;
             }
@@ -464,9 +521,9 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static void CheckRunningGame()
+        internal static void CheckRunningGame(string regionId)
         {
-            string[] processes = Methods.GetRunningGameProcesses();
+            string[] processes = Methods.GetRunningGameProcesses(regionId);
 
             if (processes.Length > 0)
             {
@@ -474,9 +531,9 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static void CheckRunningProcesses()
+        internal static void CheckRunningProcesses(string regionId)
         {
-            string[] processes = Methods.GetRunningGameProcesses().Union(Methods.GetRunningUpdaterProcesses()).ToArray();
+            string[] processes = Methods.GetRunningGameProcesses(regionId).Union(Methods.GetRunningUpdaterProcesses()).ToArray();
 
             if (processes.Length > 0)
             {
@@ -491,9 +548,9 @@ namespace SWPatcher.Helpers
             return processNames.SelectMany(pn => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(pn))).Select(p => Path.GetFileName(Methods.GetProcessPath(p.Id))).Where(pn => processNames.Contains(pn)).ToArray();
         }
 
-        private static string[] GetRunningGameProcesses()
+        private static string[] GetRunningGameProcesses(string regionId)
         {
-            string[] processNames = { Strings.FileName.GameExe };
+            string[] processNames = { Methods.GetGameExeName(regionId) };
 
             return processNames.SelectMany(pn => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(pn))).Select(p => Path.GetFileName(Methods.GetProcessPath(p.Id))).Where(pn => processNames.Contains(pn)).ToArray();
         }
@@ -619,20 +676,16 @@ namespace SWPatcher.Helpers
                 return Convert.ToString(key.GetValue(varName, defaultValue));
             }
         }
-
-        internal static void SetRegionBasedOnExeName(string gamePath)
+        internal static string GetGameExeName(string regionId)
         {
-            if (File.Exists(Path.Combine(gamePath, Strings.FileName.GameExeJP)))
+            switch (regionId)
             {
-                UserSettings.ClientRegion = 0;
-            }
-            else if (File.Exists(Path.Combine(gamePath, Strings.FileName.GameExeKR)))
-            {
-                UserSettings.ClientRegion = 1;
-            }
-            else
-            {
-                throw new Exception(StringLoader.GetText("exception_folder_not_game_folder"));
+                case "jp":
+                    return Strings.FileName.GameExeJP;
+                case "kr":
+                    return Strings.FileName.GameExeKR;
+                default:
+                    return null;
             }
         }
     }

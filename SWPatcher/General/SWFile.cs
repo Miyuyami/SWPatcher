@@ -18,13 +18,13 @@
 
 namespace SWPatcher.General
 {
-    class SWFile
+    internal class SWFile
     {
-        public string Name { get; private set; }
-        public string Path { get; private set; }
-        public string PathD { get; private set; }
+        internal string Name { get; private set; }
+        internal string Path { get; private set; }
+        internal string PathD { get; private set; }
 
-        public SWFile(string name, string path, string pathD)
+        internal SWFile(string name, string path, string pathD)
         {
             this.Name = name;
             this.Path = path;

@@ -1,47 +1,74 @@
 ﻿/*
- * This file is part of Soulworker Patcher.
+ * This file is part of Closers Patcher.
  * Copyright (C) 2016-2017 Miyu, Dramiel Leayal
  * 
- * Soulworker Patcher is free software: you can redistribute it and/or modify
+ * Closers Patcher is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * Soulworker Patcher is distributed in the hope that it will be useful,
+ * Closers Patcher is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
+ * along with Closers Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using SWPatcher.Helpers.GlobalVariables;
 using System;
 
 namespace SWPatcher.General
 {
-    class Language
+    internal class Language
     {
-        public string Name { get; private set; }
-        public DateTime LastUpdate { get; private set; }
+        internal string Id { get; }
+        internal string Name { get; }
+        internal DateTime LastUpdate { get; }
+        internal string ApplyingRegionId { get; }
+        internal string Path => System.IO.Path.Combine(this.ApplyingRegionId, this.Name);
+        internal string BackupPath => System.IO.Path.Combine(this.ApplyingRegionId, Strings.FolderName.Backup);
 
-        public Language(string name, DateTime lastUpdate)
+        internal Language(string id)
         {
+            this.Id = id;
+        }
+
+        private Language(string id, string name, string applyingRegionId)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.ApplyingRegionId = applyingRegionId;
+        }
+
+        internal Language(string id, string name, DateTime lastUpdate, string applyingRegionId)
+        {
+            this.Id = id;
             this.Name = name;
             this.LastUpdate = lastUpdate;
+            this.ApplyingRegionId = applyingRegionId;
+        }
+
+        internal static Language BackupLanguage(string applyingRegionId)
+        {
+            return new Language("bak", Strings.FolderName.Backup, applyingRegionId);
         }
 
         public override bool Equals(object obj)
         {
             if (obj == null || this.GetType() != obj.GetType())
+            {
                 return false;
+            }
+
             Language language = obj as Language;
-            return this.Name == language.Name;
+            return this.Id == language.Id;
         }
 
         public override int GetHashCode()
         {
-            return this.Name.GetHashCode();
+            return this.Id.GetHashCode();
         }
 
         public override string ToString()

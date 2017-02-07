@@ -36,9 +36,9 @@ namespace SWPatcher.Patching
     delegate void PatcherProgressChangedEventHandler(object sender, PatcherProgressChangedEventArgs e);
     delegate void PatcherCompletedEventHandler(object sender, PatcherCompletedEventArgs e);
 
-    class Patcher
+    internal class Patcher
     {
-        public enum State
+        internal enum State
         {
             Idle = 0,
             Load,
@@ -51,7 +51,7 @@ namespace SWPatcher.Patching
         private readonly BackgroundWorker Worker;
         private Language Language;
         private const byte SecretByte = 0x55;
-        public State CurrentState
+        internal State CurrentState
         {
             get
             {
@@ -69,7 +69,7 @@ namespace SWPatcher.Patching
             }
         }
 
-        public Patcher()
+        internal Patcher()
         {
             this.Worker = new BackgroundWorker
             {
@@ -81,8 +81,8 @@ namespace SWPatcher.Patching
             this.Worker.RunWorkerCompleted += this.Worker_RunWorkerCompleted;
         }
 
-        public event PatcherProgressChangedEventHandler PatcherProgressChanged;
-        public event PatcherCompletedEventHandler PatcherCompleted;
+        internal event PatcherProgressChangedEventHandler PatcherProgressChanged;
+        internal event PatcherCompletedEventHandler PatcherCompleted;
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -90,7 +90,9 @@ namespace SWPatcher.Patching
 
             this.CurrentState = State.Load;
             IEnumerable<ArchivedSWFile> archivedSWFiles = SWFileManager.GetFiles().OfType<ArchivedSWFile>();
-            Dictionary<string, string> passwordDictionary = LoadPasswords();
+            string datasArchivesPath = Urls.TranslationGitHubHome + this.Language.ApplyingRegionId + '/' + Strings.IniName.DatasArchives;
+            Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), datasArchivesPath));
+            Dictionary<string, string> passwordDictionary = LoadPasswords(datasArchivesPath);
             int archivedSWFilesCount = archivedSWFiles.Count();
             var archives = archivedSWFiles.Select(f => f.Path).Distinct().ToDictionary(p => p, p =>
             {
@@ -342,7 +344,7 @@ namespace SWPatcher.Patching
 
                 string zipFileName = archive.Key;
                 ZipFile zipFile = archive.Value;
-                string archivePath = Path.Combine(this.Language.Name, zipFileName);
+                string archivePath = Path.Combine(this.Language.Path, zipFileName);
                 string archivePathDirectory = Path.GetDirectoryName(archivePath);
 
                 Directory.CreateDirectory(archivePathDirectory);
@@ -357,11 +359,13 @@ namespace SWPatcher.Patching
             if (UserSettings.WantToPatchExe)
             {
                 this.CurrentState = State.ExePatch;
-                string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
-                byte[] gameExeBytes = File.ReadAllBytes(gameExePath);
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
 
-                Methods.PatchExeFile(gameExeBytes, gameExePatchedPath);
+                string regionId = this.Language.ApplyingRegionId;
+                string gameExePath = Path.Combine(UserSettings.GamePath, Methods.GetGameExeName(regionId));
+                byte[] gameExeBytes = File.ReadAllBytes(gameExePath);
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionId, Methods.GetGameExeName(regionId));
+
+                Methods.PatchExeFile(gameExeBytes, gameExePatchedPath, Urls.TranslationGitHubHome + regionId + '/' + Strings.IniName.BytesToPatch);
             }
         }
 
@@ -431,13 +435,13 @@ namespace SWPatcher.Patching
             }
         }
 
-        private static Dictionary<string, string> LoadPasswords()
+        private static Dictionary<string, string> LoadPasswords(string url)
         {
             using (var client = new WebClient())
             {
                 var result = new Dictionary<string, string>();
 
-                byte[] fileBytes = client.DownloadData(Urls.PatcherGitHubHome + Strings.IniName.DatasArchives);
+                byte[] fileBytes = client.DownloadData(url);
                 IniFile ini = new IniFile();
                 using (var ms = new MemoryStream(fileBytes))
                 {
@@ -454,12 +458,12 @@ namespace SWPatcher.Patching
             }
         }
 
-        public void Cancel()
+        internal void Cancel()
         {
             this.Worker.CancelAsync();
         }
 
-        public void Run(Language language)
+        internal void Run(Language language)
         {
             if (this.Worker.IsBusy)
             {

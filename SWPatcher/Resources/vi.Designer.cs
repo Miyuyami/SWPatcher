@@ -205,6 +205,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mở.
+        /// </summary>
+        internal static string button_open {
+            get {
+                return ResourceManager.GetString("button_open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ready To Play!.
         /// </summary>
         internal static string button_play {
@@ -414,7 +423,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Không tìm thấy Soulworker..
+        ///   Looks up a localized string similar to Không tìm thấy Soulworker {0}..
         /// </summary>
         internal static string exception_game_install_not_found {
             get {
@@ -454,11 +463,11 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Máy chủ SoulWorker từ chối kết nối (bảo trì ???).
+        ///   Looks up a localized string similar to Đọc {0} thất bại..
         /// </summary>
-        internal static string exception_hangame_refused_connection {
+        internal static string exception_generic_read_error {
             get {
-                return ResourceManager.GetString("exception_hangame_refused_connection", resourceCulture);
+                return ResourceManager.GetString("exception_generic_read_error", resourceCulture);
             }
         }
         
@@ -644,6 +653,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Máy chủ SoulWorker từ chối kết nối (bảo trì ???).
+        /// </summary>
+        internal static string exception_server_refused_connection {
+            get {
+                return ResourceManager.GetString("exception_server_refused_connection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kiểm tra thất bại. Bạn có chắc rằng bạn không bị chặn?.
         /// </summary>
         internal static string exception_validation_failed {
@@ -680,6 +698,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ngôn ngữ:.
+        /// </summary>
+        internal static string form_language_pick {
+            get {
+                return ResourceManager.GetString("form_language_pick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Menu.
         /// </summary>
         internal static string form_menu {
@@ -703,6 +730,33 @@ namespace SWPatcher.Resources {
         internal static string form_refresh {
             get {
                 return ResourceManager.GetString("form_refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nhật Bản.
+        /// </summary>
+        internal static string form_region_jp {
+            get {
+                return ResourceManager.GetString("form_region_jp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hàn Quốc.
+        /// </summary>
+        internal static string form_region_kr {
+            get {
+                return ResourceManager.GetString("form_region_kr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Khu vực:.
+        /// </summary>
+        internal static string form_region_pick {
+            get {
+                return ResourceManager.GetString("form_region_pick", resourceCulture);
             }
         }
         

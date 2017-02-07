@@ -23,13 +23,13 @@ using System.Reflection;
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    static class UserSettings
+    internal static class UserSettings
     {
-        public static string PatcherPath
+        internal static string PatcherPath
         {
             get
             {
-                if (String.IsNullOrEmpty(Settings.Default.PatcherWorkingDirectory))
+                if (!Directory.Exists(Settings.Default.PatcherWorkingDirectory))
                 {
                     return PatcherPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Assembly.GetExecutingAssembly().GetName().Name);
                 }
@@ -53,7 +53,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string GamePath
+        internal static string GamePath
         {
             get
             {
@@ -63,18 +63,14 @@ namespace SWPatcher.Helpers.GlobalVariables
             {
                 value = value.Replace("\\\\", "\\");
 
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
-                File.Delete(gameExePatchedPath);
-
-                Methods.SetRegionBasedOnExeName(value);
                 Methods.EnsureDirectoryRights(value);
                 Settings.Default.GameDirectory = value;
                 Settings.Default.Save();
-                Logger.Info($"Soulworker path set to [{value}]");
+                Logger.Info($"Game path set to [{value}]");
             }
         }
 
-        public static bool WantToPatchExe
+        internal static bool WantToPatchExe
         {
             get
             {
@@ -82,16 +78,13 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
             set
             {
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
-                File.Delete(gameExePatchedPath);
-
                 Settings.Default.WantToPatchSoulworkerExe = value;
                 Settings.Default.Save();
                 Logger.Info($"Patch .exe choice set to [{value}]");
             }
         }
 
-        public static string GameId
+        internal static string GameId
         {
             get
             {
@@ -104,7 +97,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string GamePw
+        internal static string GamePw
         {
             get
             {
@@ -117,7 +110,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static bool WantToLogin
+        internal static bool WantToLogin
         {
             get
             {
@@ -131,21 +124,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static string LanguageName
-        {
-            get
-            {
-                return Settings.Default.LanguageName;
-            }
-            set
-            {
-                Settings.Default.LanguageName = value;
-                Settings.Default.Save();
-                Logger.Info($"Saved language set to [{value}]");
-            }
-        }
-
-        public static string UILanguageCode
+        internal static string UILanguageCode
         {
             get
             {
@@ -159,17 +138,29 @@ namespace SWPatcher.Helpers.GlobalVariables
             }
         }
 
-        public static byte ClientRegion
+        internal static string LanguageId
         {
             get
             {
-                return Settings.Default.ClientRegion;
+                return Settings.Default.LanguageId;
             }
             set
             {
-                Settings.Default.ClientRegion = value;
+                Settings.Default.LanguageId = value;
                 Settings.Default.Save();
-                Logger.Info($"Client Region set to [{value}]");
+            }
+        }
+
+        internal static string RegionId
+        {
+            get
+            {
+                return Settings.Default.RegionId;
+            }
+            set
+            {
+                Settings.Default.RegionId = value;
+                Settings.Default.Save();
             }
         }
     }

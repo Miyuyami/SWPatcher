@@ -22,53 +22,17 @@ using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace SWPatcher.Forms
 {
-    partial class MainForm
+    internal partial class MainForm
     {
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Language[] languages = GetAvailableLanguages();
-            this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
+            this.InitRegionsConfigData();
 
-            var gamePath = UserSettings.GamePath;
-            if (String.IsNullOrEmpty(gamePath) || !Methods.IsSwPath(gamePath))
-            {
-                string newGamePath = GetJPSwPathFromRegistry();
-
-                if (newGamePath == String.Empty)
-                {
-                    newGamePath = GetKRSwPathFromRegistry();
-
-                    if (newGamePath == String.Empty)
-                    {
-                        throw new Exception(StringLoader.GetText("exception_game_install_not_found"));
-                    }
-                }
-
-                Methods.SetRegionBasedOnExeName(newGamePath);
-                UserSettings.GamePath = newGamePath;
-            }
-
-            if (this.comboBoxLanguages.DataSource != null)
-            {
-                Logger.Info($"Loading languages: {String.Join(" ", languages.Select(l => l.ToString()))}");
-
-                if (String.IsNullOrEmpty(UserSettings.LanguageName))
-                {
-                    UserSettings.LanguageName = (this.comboBoxLanguages.SelectedItem as Language).Name;
-                }
-                else
-                {
-                    int index = this.comboBoxLanguages.Items.IndexOf(new Language(UserSettings.LanguageName, DateTime.UtcNow));
-                    this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
-                }
-            }
-
-            StartupBackupCheck(this.comboBoxLanguages.SelectedItem as Language);
+            StartupBackupCheck(this.ComboBoxLanguages.SelectedItem as Language);
 
             if (!Methods.IsValidSwPatcherPath(UserSettings.PatcherPath))
             {
@@ -86,39 +50,39 @@ namespace SWPatcher.Forms
                 case State.Idle:
                     this.CurrentState = State.RTPatch;
                     this._nextState = NextState.Download;
-                    this.RTPatcher.Run();
+                    this.RTPatcher.Run(this.ComboBoxLanguages.SelectedItem as Language);
 
                     break;
                 case State.Download:
-                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
+                    this.ButtonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Downloader.Cancel();
 
                     break;
                 case State.Patch:
-                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
+                    this.ButtonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.Patcher.Cancel();
 
                     break;
                 case State.RTPatch:
-                    this.buttonDownload.Text = StringLoader.GetText("button_cancelling");
+                    this.ButtonDownload.Text = StringLoader.GetText("button_cancelling");
                     this.RTPatcher.Cancel();
 
                     break;
             }
         }
 
-        private void ButtonPlay_MouseDown(object sender, MouseEventArgs e)
+        private void ButtonPlay_Click(object sender, EventArgs e)
         {
             switch (this.CurrentState)
             {
                 case State.Idle:
                     this.CurrentState = State.RTPatch;
                     this._nextState = NextState.Play;
-                    this.RTPatcher.Run();
+                    this.RTPatcher.Run(this.ComboBoxLanguages.SelectedItem as Language);
 
                     break;
                 case State.WaitClient:
-                    this.buttonPlay.Text = StringLoader.GetText("button_cancelling");
+                    this.ButtonPlay.Text = StringLoader.GetText("button_cancelling");
                     this.GameStarter.Cancel();
 
                     break;
@@ -132,33 +96,110 @@ namespace SWPatcher.Forms
                 case State.Idle:
                     this.CurrentState = State.RTPatch;
                     this._nextState = NextState.PlayRaw;
-                    this.RTPatcher.Run();
+                    this.RTPatcher.Run(this.ComboBoxLanguages.SelectedItem as Language);
 
                     break;
             }
         }
 
-        private void ForceStripMenuItem_Click(object sender, EventArgs e)
+        private void ForceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Language language = this.comboBoxLanguages.SelectedItem as Language;
+            Language language = this.ComboBoxLanguages.SelectedItem as Language;
 
-            DeleteTranslationIni(language);
-            this.labelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
+            ResetTranslation(language);
 
             this.CurrentState = State.RTPatch;
             this._nextState = NextState.Download;
-            this.RTPatcher.Run();
+            this.RTPatcher.Run(language);
         }
 
-        private void ComboBoxLanguages_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxLanguages_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (this.comboBoxLanguages.SelectedItem is Language language && Methods.HasNewTranslations(language))
+            if (this.ComboBoxLanguages.SelectedItem is Language language)
             {
-                this.labelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.Name, Methods.DateToString(language.LastUpdate));
+                Logger.Info($"Selected language '{language}'");
+                UserSettings.LanguageId = this.ComboBoxLanguages.SelectedIndex == -1 ? null : (this.ComboBoxLanguages.SelectedItem as Language).Id;
+
+                if (Methods.HasNewTranslations(language))
+                {
+                    this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language, Methods.DateToString(language.LastUpdate));
+                }
+                else
+                {
+                    this.LabelNewTranslations.Text = String.Empty;
+                }
             }
-            else
+        }
+
+        private void ComboBoxRegions_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (this.ComboBoxRegions.SelectedItem is Region region)
             {
-                this.labelNewTranslations.Text = String.Empty;
+                Logger.Info($"Selected region '{region}'");
+                UserSettings.RegionId = this.ComboBoxRegions.SelectedIndex == -1 ? null : (this.ComboBoxRegions.SelectedItem as Region).Id;
+
+                Language[] languages = region.AppliedLanguages;
+
+                this.ComboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
+
+                if (this.ComboBoxLanguages.DataSource != null)
+                {
+                    if (String.IsNullOrEmpty(UserSettings.LanguageId))
+                    {
+                        UserSettings.LanguageId = (this.ComboBoxLanguages.SelectedItem as Language).Id;
+                    }
+                    else
+                    {
+                        int index = this.ComboBoxLanguages.Items.IndexOf(new Language(UserSettings.LanguageId));
+                        this.ComboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
+                    }
+
+                    this.ComboBoxLanguages_SelectionChangeCommitted(sender, e);
+                }
+
+                string newGamePath;
+
+                switch (region.Id)
+                {
+                    case "jp":
+                        newGamePath = GetJPSwPathFromRegistry();
+
+                        break;
+                    case "kr":
+                        newGamePath = GetKRSwPathFromRegistry();
+
+                        break;
+                    default:
+                        newGamePath = String.Empty;
+
+                        break;
+                }
+
+                if (newGamePath == String.Empty)
+                {
+                    this.CurrentState = State.RegionNotInstalled;
+                    MsgBox.Error(StringLoader.GetText("exception_game_install_not_found", region.ToString()));
+                }
+                else if (!Directory.Exists(newGamePath))
+                {
+                    this.CurrentState = State.RegionNotInstalled;
+                    MsgBox.Error(StringLoader.GetText("exception_directory_not_exist", newGamePath));
+                }
+                else
+                {
+                    if (newGamePath != UserSettings.GamePath)
+                    {
+                        string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, region.Id, Methods.GetGameExeName(region.Id));
+                        if (File.Exists(gameExePatchedPath))
+                        {
+                            File.Delete(gameExePatchedPath);
+                        }
+
+                        UserSettings.GamePath = newGamePath;
+                    }
+
+                    this.CurrentState = State.Idle;
+                }
             }
         }
 
@@ -166,8 +207,8 @@ namespace SWPatcher.Forms
         {
             if (this.WindowState == FormWindowState.Minimized)
             {
-                this.notifyIcon.Visible = true;
-                this.notifyIcon.ShowBalloonTip(500);
+                this.NotifyIcon.Visible = true;
+                this.NotifyIcon.ShowBalloonTip(500);
 
                 this.ShowInTaskbar = false;
                 this.Hide();
@@ -187,20 +228,26 @@ namespace SWPatcher.Forms
 
         private void RefreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Language language = this.comboBoxLanguages.SelectedItem as Language;
-            Language[] languages = GetAvailableLanguages();
-            this.comboBoxLanguages.DataSource = languages.Length > 0 ? languages : null;
-
-            if (language != null && this.comboBoxLanguages.DataSource != null)
-            {
-                int index = this.comboBoxLanguages.Items.IndexOf(language);
-                this.comboBoxLanguages.SelectedIndex = index == -1 ? 0 : index;
-            }
+            this.InitRegionsConfigData();
         }
 
         private void OpenSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("iexplore.exe", Urls.SoulworkerHome);
+            switch ((this.ComboBoxRegions.SelectedItem as Region).Id)
+            {
+                case "jp":
+                    Process.Start("iexplore.exe", Urls.SoulworkerJPHome);
+
+                    break;
+                case "kr":
+                    Process.Start(Urls.SoulworkerKRHome);
+
+                    break;
+                default:
+                    Process.Start("https://www.google.com/");
+
+                    break;
+            }
         }
 
         private void UploadLogToPastebinToolStripMenuItem_Click(object sender, EventArgs e)
@@ -211,7 +258,9 @@ namespace SWPatcher.Forms
 
                 return;
             }
-
+#if DEBUG
+            Process.Start(Strings.FileName.Log);
+#else
             string logTitle = $"{AssemblyAccessor.Version} ({GetSHA256(Application.ExecutablePath).Substring(0, 12)}) at {Methods.DateToString(DateTime.UtcNow)}";
             byte[] logBytes = File.ReadAllBytes(Strings.FileName.Log);
             logBytes = TrimArrayIfNecessary(logBytes);
@@ -227,6 +276,7 @@ namespace SWPatcher.Forms
             {
                 MsgBox.Error(StringLoader.GetText("exception_log_file_failed"));
             }
+#endif
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -246,7 +296,7 @@ namespace SWPatcher.Forms
                 this.Patcher.Cancel();
                 this.GameStarter.Cancel();
             }
-            else if (this.CurrentState != State.Idle)
+            else if (!this.CurrentState.In(State.Idle, State.RegionNotInstalled))
             {
                 MsgBox.Error(StringLoader.GetText("exception_cannot_close", AssemblyAccessor.Title));
 
@@ -255,7 +305,6 @@ namespace SWPatcher.Forms
             else
             {
                 Logger.Info($"{this.Text} closing. Reason=[{e.CloseReason.ToString()}]");
-                UserSettings.LanguageName = this.comboBoxLanguages.SelectedIndex == -1 ? null : (this.comboBoxLanguages.SelectedItem as Language).Name;
             }
         }
 

@@ -16,7 +16,6 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using MadMilkman.Ini;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
@@ -24,84 +23,96 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace SWPatcher.Forms
 {
-    partial class MainForm
+    internal partial class MainForm
     {
-        public IEnumerable<string> GetComboBoxItemsAsString()
-        {
-            return this.comboBoxLanguages.Items.Cast<Language>().Select(s => s.Name);
-        }
-
-        public void RestoreFromTray()
+        internal void RestoreFromTray()
         {
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
             this.Show();
 
-            this.notifyIcon.Visible = false;
+            this.NotifyIcon.Visible = false;
         }
 
         private static void StartupBackupCheck(Language language)
         {
-            if (Directory.Exists(Strings.FolderName.Backup))
+            if (Directory.Exists(language.BackupPath))
             {
-                if (Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories).Length > 0)
+                if (Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories).Length > 0)
                 {
-                    DialogResult result = MsgBox.Question(StringLoader.GetText("question_backup_files_found", language.Name));
+                    DialogResult result = MsgBox.Question(StringLoader.GetText("question_backup_files_found", language.ToString()));
 
                     if (result == DialogResult.Yes)
+                    {
                         RestoreBackup(language);
+                    }
                     else
-                        Directory.Delete(Strings.FolderName.Backup, true);
+                    {
+                        string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
+
+                        foreach (var file in filePaths)
+                        {
+                            File.Delete(file);
+                        }
+                    }
                 }
             }
             else
             {
-                Directory.CreateDirectory(Strings.FolderName.Backup);
+                Directory.CreateDirectory(language.BackupPath);
             }
         }
 
         private static void RestoreBackup(Language language)
         {
-            if (!Directory.Exists(Strings.FolderName.Backup))
+            if (!Directory.Exists(language.BackupPath))
             {
                 return;
             }
 
-            string backupFilePath = Path.Combine(Strings.FolderName.Backup, Strings.FileName.GameExe);
+            string regionId = language.ApplyingRegionId;
+            string backupFilePath = Path.Combine(language.BackupPath, Methods.GetGameExeName(regionId));
             if (File.Exists(backupFilePath))
             {
-                string gameExePath = Path.Combine(UserSettings.GamePath, Strings.FileName.GameExe);
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, Strings.FileName.GameExe);
+                string gameExePath = Path.Combine(UserSettings.GamePath, Methods.GetGameExeName(regionId));
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionId, Methods.GetGameExeName(regionId));
                 Logger.Info($"Restoring .exe original=[{gameExePath}] backup=[{gameExePatchedPath}]");
 
                 if (File.Exists(gameExePath))
                 {
-                    File.Delete(gameExePatchedPath);
+                    if (File.Exists(gameExePatchedPath))
+                    {
+                        File.Delete(gameExePatchedPath);
+                    }
+
                     File.Move(gameExePath, gameExePatchedPath);
                 }
 
                 File.Move(backupFilePath, gameExePath);
             }
 
-            string[] filePaths = Directory.GetFiles(Strings.FolderName.Backup, "*", SearchOption.AllDirectories);
+            string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
             foreach (var file in filePaths)
             {
-                string path = Path.Combine(UserSettings.GamePath, file.Substring(Strings.FolderName.Backup.Length + 1));
+                string path = Path.Combine(UserSettings.GamePath, file.Substring(language.BackupPath.Length + 1));
                 Logger.Info($"Restoring file original=[{path}] backup=[{file}]");
 
                 if (File.Exists(path))
                 {
-                    string langPath = Path.Combine(language.Name, path.Substring(UserSettings.GamePath.Length + 1));
+                    string langPath = Path.Combine(language.Path, path.Substring(UserSettings.GamePath.Length + 1));
 
-                    File.Delete(langPath);
+                    if (File.Exists(langPath))
+                    {
+                        File.Delete(langPath);
+                    }
+
                     File.Move(path, langPath);
                 }
 
@@ -120,7 +131,7 @@ namespace SWPatcher.Forms
 
         private static void DeleteTmpFiles(Language language)
         {
-            string[] tmpFilePaths = Directory.GetFiles(language.Name, "*.tmp", SearchOption.AllDirectories);
+            string[] tmpFilePaths = Directory.GetFiles(language.Path, "*.tmp", SearchOption.AllDirectories);
 
             foreach (var tmpFile in tmpFilePaths)
             {
@@ -161,38 +172,74 @@ namespace SWPatcher.Forms
             return value;
         }
 
-        private static Language[] GetAvailableLanguages()
+        internal void ResetTranslation(Language language)
         {
-            List<Language> langs = new List<Language>();
-
-            using (var client = new WebClient())
-            {
-                byte[] fileBytes = client.DownloadData(Urls.TranslationGitHubHome + Strings.IniName.LanguagePack);
-                IniFile ini = new IniFile(new IniOptions
-                {
-                    Encoding = Encoding.UTF8
-                });
-                using (var ms = new MemoryStream(fileBytes))
-                {
-                    ini.Load(ms);
-                }
-
-                foreach (IniSection section in ini.Sections)
-                {
-                    langs.Add(new Language(section.Name, Methods.ParseDate(section.Keys[Strings.IniName.Patcher.KeyDate].Value)));
-                }
-            }
-
-            return langs.ToArray();
+            DeleteTranslationIni(language);
+            this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.ToString(), Methods.DateToString(language.LastUpdate));
         }
 
         private static void DeleteTranslationIni(Language language)
         {
-            string iniPath = Path.Combine(language.Name, Strings.IniName.Translation);
+            string iniPath = Path.Combine(language.Path, Strings.IniName.Translation);
 
-            if (Directory.Exists(Path.GetDirectoryName(iniPath)))
+            if (File.Exists(iniPath))
             {
                 File.Delete(iniPath);
+            }
+        }
+
+        private void InitRegionsConfigData()
+        {
+            var doc = new XmlDocument();
+            string xmlPath = Urls.TranslationGitHubHome + Strings.IniName.LanguagePack;
+            Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), xmlPath));
+            doc.Load(xmlPath);
+
+            XmlElement configRoot = doc.DocumentElement;
+            XmlElement xmlRegions = configRoot[Strings.Xml.Regions];
+            int regionCount = xmlRegions.ChildNodes.Count;
+            Region[] regions = new Region[regionCount];
+
+            for (int i = 0; i < regionCount; i++)
+            {
+                XmlNode regionNode = xmlRegions.ChildNodes[i];
+
+                string regionId = regionNode.Name;
+                string regionName = StringLoader.GetText(regionNode.Attributes[Strings.Xml.Attributes.Name].Value);
+                XmlElement xmlLanguages = regionNode[Strings.Xml.Languages];
+                int languageCount = xmlLanguages.ChildNodes.Count;
+                Language[] regionLanguages = new Language[languageCount];
+
+                for (int j = 0; j < languageCount; j++)
+                {
+                    XmlNode languageNode = xmlLanguages.ChildNodes[j];
+
+                    string languageId = languageNode.Name;
+                    string languageName = languageNode.Attributes[Strings.Xml.Attributes.Name].Value;
+                    string languageDateString = languageNode[Strings.Xml.Value].InnerText;
+                    DateTime languageDate = Methods.ParseDate(languageDateString);
+
+                    regionLanguages[j] = new Language(languageId, languageName, languageDate, regionId);
+                }
+
+                regions[i] = new Region(regionId, regionName, regionLanguages);
+            }
+
+            this.ComboBoxRegions.DataSource = regions.Length > 0 ? regions : null;
+
+            if (this.ComboBoxRegions.DataSource != null)
+            {
+                if (String.IsNullOrEmpty(UserSettings.RegionId))
+                {
+                    UserSettings.RegionId = (this.ComboBoxRegions.SelectedItem as Region).Id;
+                }
+                else
+                {
+                    int index = this.ComboBoxRegions.Items.IndexOf(new Region(UserSettings.RegionId));
+                    this.ComboBoxRegions.SelectedIndex = index == -1 ? 0 : index;
+                }
+
+                this.ComboBoxRegions_SelectionChangeCommitted(this, EventArgs.Empty);
             }
         }
 
@@ -257,6 +304,16 @@ namespace SWPatcher.Forms
             }
 
             return array;
+        }
+
+        internal IEnumerable<string> GetTranslationFolders()
+        {
+            return this.ComboBoxRegions.Items.Cast<Region>().Select(s => s.ToString());
+        }
+
+        internal string GetSelectedRegionId()
+        {
+            return (this.ComboBoxRegions.SelectedItem as Region).Id;
         }
     }
 }

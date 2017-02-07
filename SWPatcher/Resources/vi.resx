@@ -238,7 +238,7 @@ Nguồn dịch được tải từ nhóm dịch ở SWHQ.</value>
 Xin vui lòng di chuyển thư mục đến địa điểm khác hoặc chấp nhận rủi ro và tiếp tục dùng.</value>
   </data>
   <data name="exception_game_install_not_found" xml:space="preserve">
-    <value>Không tìm thấy Soulworker.</value>
+    <value>Không tìm thấy Soulworker {0}.</value>
   </data>
   <data name="exception_game_maintenance" xml:space="preserve">
     <value>Máy chủ Soulworker đang trong bảo trì.</value>
@@ -333,7 +333,7 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
   <data name="exception_game_already_open" xml:space="preserve">
     <value>Không thể tiếp tục vì {0} đang chạy.</value>
   </data>
-  <data name="exception_hangame_refused_connection" xml:space="preserve">
+  <data name="exception_server_refused_connection" xml:space="preserve">
     <value>Máy chủ SoulWorker từ chối kết nối (bảo trì ???)</value>
   </data>
   <data name="exception_rtpatch_corrupt" xml:space="preserve">
@@ -426,5 +426,23 @@ Thời gian: {1}
 Bảo trì sẽ kết thúc vào lúc {2}.
 Danh sách đối chiếu:
 {3}</value>
+  </data>
+  <data name="button_open" xml:space="preserve">
+    <value>Mở</value>
+  </data>
+  <data name="exception_generic_read_error" xml:space="preserve">
+    <value>Đọc {0} thất bại.</value>
+  </data>
+  <data name="form_language_pick" xml:space="preserve">
+    <value>Ngôn ngữ:</value>
+  </data>
+  <data name="form_region_jp" xml:space="preserve">
+    <value>Nhật Bản</value>
+  </data>
+  <data name="form_region_kr" xml:space="preserve">
+    <value>Hàn Quốc</value>
+  </data>
+  <data name="form_region_pick" xml:space="preserve">
+    <value>Khu vực:</value>
   </data>
 </root>

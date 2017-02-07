@@ -17,6 +17,7 @@
  */
 
 using MadMilkman.Ini;
+using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 using System;
@@ -31,9 +32,10 @@ namespace SWPatcher.RTPatch
 {
     delegate void RTPatcherDownloadProgressChangedEventHandler(object sender, RTPatcherDownloadProgressChangedEventArgs e);
     delegate void RTPatcherProgressChangedEventHandler(object sender, RTPatcherProgressChangedEventArgs e);
+    delegate void RTPatcherCompletedEventHandler(object sender, RTPatcherCompletedEventArgs e);
     delegate string RTPatchCallback(uint id, IntPtr ptr);
 
-    class RTPatcher
+    internal class RTPatcher
     {
         private const int DiffBytes = 10; // how many bytes to redownload on resume, just to be safe, why not?
         private readonly BackgroundWorker Worker;
@@ -46,12 +48,13 @@ namespace SWPatcher.RTPatch
         private Version ServerVersion;
         private int FileCount;
         private int FileNumber;
+        private Language Language;
 
-        public event RTPatcherDownloadProgressChangedEventHandler RTPatcherDownloadProgressChanged;
-        public event RTPatcherProgressChangedEventHandler RTPatcherProgressChanged;
-        public event AsyncCompletedEventHandler RTPatcherCompleted;
+        internal event RTPatcherDownloadProgressChangedEventHandler RTPatcherDownloadProgressChanged;
+        internal event RTPatcherProgressChangedEventHandler RTPatcherProgressChanged;
+        internal event RTPatcherCompletedEventHandler RTPatcherCompleted;
 
-        public RTPatcher()
+        internal RTPatcher()
         {
             this.Worker = new BackgroundWorker()
             {
@@ -65,20 +68,21 @@ namespace SWPatcher.RTPatch
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Methods.CheckRunningGame();
-            switch (UserSettings.ClientRegion)
+            string regionId = this.Language.ApplyingRegionId;
+            Methods.CheckRunningGame(regionId);
+            switch (regionId)
             {
-                case 1:
-                    CheckKRVersion();
-                    //Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString()));
-                    return;
-
-                //break;
-                default:
+                case "jp":
                     LoadVersions();
                     Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
 
                     break;
+                case "kr":
+                    CheckKRVersion();
+                    //Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString()));
+                    return;
+
+                    //break;
             }
 
             while (this.ClientNextVersion < this.ServerVersion)
@@ -164,7 +168,7 @@ namespace SWPatcher.RTPatch
                 }
                 #endregion
 
-                Methods.CheckRunningProcesses();
+                Methods.CheckRunningProcesses(regionId);
                 Logger.Info($"RTPatchApply diffFile=[{diffFilePath}] path=[{gamePath}]");
                 #region Apply RTPatch
                 File.Delete(this.CurrentLogFilePath);
@@ -219,14 +223,7 @@ namespace SWPatcher.RTPatch
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Cancelled || e.Error != null)
-            {
-                this.RTPatcherCompleted?.Invoke(sender, new AsyncCompletedEventArgs(e.Error, e.Cancelled, null));
-            }
-            else
-            {
-                RTPatcherCompleted?.Invoke(this, new AsyncCompletedEventArgs(null, false, null));
-            }
+            this.RTPatcherCompleted?.Invoke(this, new RTPatcherCompletedEventArgs(e.Cancelled, e.Error, this.Language));
         }
 
         private void LoadVersions()
@@ -374,18 +371,19 @@ namespace SWPatcher.RTPatch
             return "";
         }
 
-        public void Cancel()
+        internal void Cancel()
         {
             this.Worker.CancelAsync();
         }
 
-        public void Run()
+        internal void Run(Language language)
         {
             if (this.Worker.IsBusy)
             {
                 return;
             }
 
+            this.Language = language;
             this.Worker.RunWorkerAsync();
         }
     }

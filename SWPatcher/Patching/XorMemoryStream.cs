@@ -20,41 +20,41 @@ using System.IO;
 
 namespace SWPatcher.Patching
 {
-    class XorMemoryStream : MemoryStream
+    internal class XorMemoryStream : MemoryStream
     {
-        public byte XorByte { get; private set; }
+        internal byte XorByte { get; private set; }
 
-        public XorMemoryStream(byte xorByte) : this(0, xorByte)
+        internal XorMemoryStream(byte xorByte) : this(0, xorByte)
         {
 
         }
 
-        public XorMemoryStream(int capacity, byte xorByte) : base(capacity)
-        {
-            this.XorByte = xorByte;
-        }
-
-        public XorMemoryStream(byte[] buffer, byte xorByte) : this(buffer, true, xorByte)
-        {
-
-        }
-
-        public XorMemoryStream(byte[] buffer, bool writable, byte xorByte) : base(buffer, writable)
+        internal XorMemoryStream(int capacity, byte xorByte) : base(capacity)
         {
             this.XorByte = xorByte;
         }
 
-        public XorMemoryStream(byte[] buffer, int index, int count, byte xorByte) : this(buffer, index, count, true, false, xorByte)
+        internal XorMemoryStream(byte[] buffer, byte xorByte) : this(buffer, true, xorByte)
         {
 
         }
 
-        public XorMemoryStream(byte[] buffer, int index, int count, bool writable, byte xorByte) : this(buffer, index, count, writable, false, xorByte)
+        internal XorMemoryStream(byte[] buffer, bool writable, byte xorByte) : base(buffer, writable)
+        {
+            this.XorByte = xorByte;
+        }
+
+        internal XorMemoryStream(byte[] buffer, int index, int count, byte xorByte) : this(buffer, index, count, true, false, xorByte)
         {
 
         }
 
-        public XorMemoryStream(byte[] buffer, int index, int count, bool writable, bool publiclyVisible, byte xorByte) : base(buffer, index, count, writable, publiclyVisible)
+        internal XorMemoryStream(byte[] buffer, int index, int count, bool writable, byte xorByte) : this(buffer, index, count, writable, false, xorByte)
+        {
+
+        }
+
+        internal XorMemoryStream(byte[] buffer, int index, int count, bool writable, bool publiclyVisible, byte xorByte) : base(buffer, index, count, writable, publiclyVisible)
         {
             this.XorByte = xorByte;
         }

@@ -18,12 +18,12 @@
 
 namespace SWPatcher.General
 {
-    class ResxLanguage
+    internal class ResxLanguage
     {
-        public string Language { get; private set; }
-        public string Code { get; private set; }
+        internal string Language { get; private set; }
+        internal string Code { get; private set; }
 
-        public ResxLanguage(string language, string code)
+        internal ResxLanguage(string language, string code)
         {
             this.Language = language;
             this.Code = code;

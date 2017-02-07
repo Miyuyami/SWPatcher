@@ -21,11 +21,11 @@ using static SWPatcher.Forms.MainForm;
 
 namespace SWPatcher.Launching
 {
-    class GameStarterProgressChangedEventArgs : EventArgs
+    internal class GameStarterProgressChangedEventArgs : EventArgs
     {
-        public State State { get; private set; }
+        internal State State { get; private set; }
 
-        public GameStarterProgressChangedEventArgs(State state)
+        internal GameStarterProgressChangedEventArgs(State state)
         {
             this.State = state;
         }

@@ -1,3 +1,6 @@
+Version 2.7.1.0 - Feb 10, 2017
+Added the status message "Preparing... *.RTP" when loading after downloading an RTPatch file so that it won't keep showing that it's downloading when it's actually loading it
+
 Version 2.7.0.1 - Feb 7, 2017
 Fixed that changing patcher folder would not move the right directories
 

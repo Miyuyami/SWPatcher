@@ -170,6 +170,7 @@ namespace SWPatcher.RTPatch
 
                 Methods.CheckRunningProcesses(regionId);
                 Logger.Info($"RTPatchApply diffFile=[{diffFilePath}] path=[{gamePath}]");
+                this.Worker.ReportProgress(-1, 0L);
                 #region Apply RTPatch
                 File.Delete(this.CurrentLogFilePath);
                 string command = $"/u /nos \"{gamePath}\" \"{diffFilePath}\"";

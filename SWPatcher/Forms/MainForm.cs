@@ -357,8 +357,16 @@ namespace SWPatcher.Forms
         {
             if (this.CurrentState == State.RTPatch)
             {
-                this.ToolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName} - {e.DownloadSpeed}";
-                this.ToolStripProgressBar.Value = e.Progress;
+                if (e.Progress == -1)
+                {
+                    this.ToolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_prepare")} {e.FileName}";
+                    this.ToolStripProgressBar.Style = ProgressBarStyle.Marquee;
+                }
+                else
+                {
+                    this.ToolStripStatusLabel.Text = $"{StringLoader.GetText("form_status_update_client")} {e.FileName} - {e.DownloadSpeed}";
+                    this.ToolStripProgressBar.Value = e.Progress;
+                }
             }
         }
 

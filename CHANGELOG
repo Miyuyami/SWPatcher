@@ -1,6 +1,9 @@
-Version 2.7.0.0 - Feb 25, 2017
+Version 2.8.1.0 - Feb 26, 2017
+Fixed that Korea Kaver region was checking the wrong version and would always say that the client is not up to date
+
+Version 2.8.0.0 - Feb 25, 2017
 Fixed that the error showed when the patcher helper was unable to set the required folder permissions to the soulworker folder wasn't showing the path to the folder
-Added support for Naver Korea region
+Added support for Korea Naver region
 
 Version 2.7.1.0 - Feb 10, 2017
 Added the status message "Preparing... *.RTP" when loading after downloading an RTPatch file so that it won't keep showing that it's downloading when it's actually loading it

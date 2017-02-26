@@ -203,7 +203,7 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static int GetKRServerVersion(string serviceCode)
+        internal static int GetKRServerVersion()
         {
             using (var client = new WebClient())
             {
@@ -211,7 +211,7 @@ namespace SWPatcher.Helpers
 
                 var values = new NameValueCollection(2)
                 {
-                    [Strings.Web.KR.ServiceCode] = serviceCode,
+                    [Strings.Web.KR.ServiceCode] = "11",
                     [Strings.Web.KR.LocalVersion] = "0"
                 };
                 byte[] byteResponse = client.UploadValues(Urls.SoulworkerKRAPI, values);

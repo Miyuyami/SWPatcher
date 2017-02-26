@@ -131,18 +131,12 @@ namespace SWPatcher.Helpers.GlobalVariables
             internal static class KR
             {
                 internal const string ServiceCode = "service_code";
-                internal const string GameCode = "11";
                 internal const string LocalVersion = "local_version";
 
                 internal const string PostId = "user_id";
                 internal const string PostPw = "user_pwd";
                 internal const string KeepForever = "forever";
                 internal const string KeepForeverDefaultValue = "false";
-            }
-
-            internal static class NaverKR
-            {
-                internal const string GameCode = "10009";
             }
         }
 

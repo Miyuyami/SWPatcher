@@ -1,3 +1,7 @@
+Version 2.7.0.0 - Feb 25, 2017
+Fixed that the error showed when the patcher helper was unable to set the required folder permissions to the soulworker folder wasn't showing the path to the folder
+Added support for Naver Korea region
+
 Version 2.7.1.0 - Feb 10, 2017
 Added the status message "Preparing... *.RTP" when loading after downloading an RTPatch file so that it won't keep showing that it's downloading when it's actually loading it
 

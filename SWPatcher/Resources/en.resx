@@ -445,4 +445,7 @@ Checklist:
   <data name="form_region_pick" xml:space="preserve">
     <value>Region:</value>
   </data>
+  <data name="form_region_nkr" xml:space="preserve">
+    <value>Korea Naver</value>
+  </data>
 </root>

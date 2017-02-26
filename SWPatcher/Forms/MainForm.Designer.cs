@@ -123,7 +123,7 @@ namespace SWPatcher.Forms
             this.ComboBoxLanguages.FormattingEnabled = true;
             this.ComboBoxLanguages.Location = new System.Drawing.Point(248, 129);
             this.ComboBoxLanguages.Name = "ComboBoxLanguages";
-            this.ComboBoxLanguages.Size = new System.Drawing.Size(80, 21);
+            this.ComboBoxLanguages.Size = new System.Drawing.Size(85, 21);
             this.ComboBoxLanguages.TabIndex = 3;
             this.ComboBoxLanguages.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxLanguages_SelectionChangeCommitted);
             // 
@@ -327,7 +327,7 @@ namespace SWPatcher.Forms
             this.ComboBoxRegions.FormattingEnabled = true;
             this.ComboBoxRegions.Location = new System.Drawing.Point(71, 129);
             this.ComboBoxRegions.Name = "ComboBoxRegions";
-            this.ComboBoxRegions.Size = new System.Drawing.Size(80, 21);
+            this.ComboBoxRegions.Size = new System.Drawing.Size(85, 21);
             this.ComboBoxRegions.TabIndex = 1;
             this.ComboBoxRegions.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxRegions_SelectionChangeCommitted);
             // 

@@ -29,6 +29,7 @@ namespace SWPatcher.Helpers.GlobalVariables
         internal const string SoulworkerSettingsHome = "http://down.hangame.co.jp/jp/purple/plii/j_sw/";
         internal const string SoulworkerJPHome = "http://soulworker.jp/";
         internal const string SoulworkerKRHome = "http://soulworker.co.kr/";
+        internal const string SoulworkerNaverKRHome = "http://soulworker.game.naver.com/";
         internal const string HangameLogin = "https://id.hangame.co.jp/login.nhn";
         internal const string SoulworkerGameStart = "http://soulworker.hangame.co.jp/gamestart.nhn";
         internal const string SoulworkerReactorGameStart = "http://soulworker.hangame.co.jp/reactor/gameStart.nhn";

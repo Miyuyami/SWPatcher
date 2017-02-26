@@ -172,6 +172,13 @@ namespace SWPatcher.Forms
             return value;
         }
 
+        private static string GetNaverKRSwPathFromRegistry()
+        {
+            string value = Methods.GetRegistryValue(Strings.Registry.NaverKR.RegistryKey, Strings.Registry.NaverKR.Key32Path, Strings.Registry.NaverKR.FolderName);
+
+            return value;
+        }
+
         internal void ResetTranslation(Language language)
         {
             DeleteTranslationIni(language);

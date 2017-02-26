@@ -169,6 +169,10 @@ namespace SWPatcher.Forms
                         newGamePath = GetKRSwPathFromRegistry();
 
                         break;
+                    case "nkr":
+                        newGamePath = GetNaverKRSwPathFromRegistry();
+
+                        break;
                     default:
                         newGamePath = String.Empty;
 
@@ -241,6 +245,10 @@ namespace SWPatcher.Forms
                     break;
                 case "kr":
                     Process.Start(Urls.SoulworkerKRHome);
+
+                    break;
+                case "nkr":
+                    Process.Start(Urls.SoulworkerNaverKRHome);
 
                     break;
                 default:

@@ -147,6 +147,9 @@ namespace SWPatcher.Launching
                             }
 
                             break;
+                        case "nkr":
+                            Methods.RegionDoesNotSupportLogin();
+                            break;
                     }
                 }
                 else
@@ -195,6 +198,9 @@ namespace SWPatcher.Launching
                             StartRawKR();
                             e.Cancel = true;
 
+                            break;
+                        case "nkr":
+                            Methods.RegionDoesNotSupportLogin();
                             break;
                     }
                 }

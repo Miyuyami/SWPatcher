@@ -445,4 +445,7 @@ Danh sách đối chiếu:
   <data name="form_region_pick" xml:space="preserve">
     <value>Khu vực:</value>
   </data>
+  <data name="form_region_nkr" xml:space="preserve">
+    <value>Hàn Quốc Naver</value>
+  </data>
 </root>

@@ -752,6 +752,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hàn Quốc Naver.
+        /// </summary>
+        internal static string form_region_nkr {
+            get {
+                return ResourceManager.GetString("form_region_nkr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Khu vực:.
         /// </summary>
         internal static string form_region_pick {

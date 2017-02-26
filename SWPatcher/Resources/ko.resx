@@ -446,4 +446,7 @@ This is free software, and you are welcome to redistribute it under certain cond
   <data name="form_region_pick" xml:space="preserve">
     <value>지역:</value>
   </data>
+  <data name="form_region_nkr" xml:space="preserve">
+    <value>한국 Naver</value>
+  </data>
 </root>

@@ -83,6 +83,9 @@ namespace SWPatcher.RTPatch
                     return;
 
                     //break;
+                case "nkr":
+                    CheckNaverKRVersion();
+                    return;
             }
 
             while (this.ClientNextVersion < this.ServerVersion)
@@ -241,8 +244,19 @@ namespace SWPatcher.RTPatch
 
         private void CheckKRVersion()
         {
-            int serverVersion = Methods.GetKRServerVersion();
+            int serverVersion = Methods.GetKRServerVersion(Strings.Web.KR.GameCode);
             int clientVersion = Convert.ToInt32(Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.Version, 0));
+
+            if (clientVersion != serverVersion)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
+            }
+        }
+
+        private void CheckNaverKRVersion()
+        {
+            int serverVersion = Methods.GetKRServerVersion(Strings.Web.NaverKR.GameCode);
+            int clientVersion = Convert.ToInt32(Methods.GetRegistryValue(Strings.Registry.NaverKR.RegistryKey, Strings.Registry.NaverKR.Key32Path, Strings.Registry.NaverKR.Version, 0));
 
             if (clientVersion != serverVersion)
             {

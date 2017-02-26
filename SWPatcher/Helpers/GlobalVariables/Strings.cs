@@ -131,12 +131,18 @@ namespace SWPatcher.Helpers.GlobalVariables
             internal static class KR
             {
                 internal const string ServiceCode = "service_code";
+                internal const string GameCode = "11";
                 internal const string LocalVersion = "local_version";
 
                 internal const string PostId = "user_id";
                 internal const string PostPw = "user_pwd";
                 internal const string KeepForever = "forever";
                 internal const string KeepForeverDefaultValue = "false";
+            }
+
+            internal static class NaverKR
+            {
+                internal const string GameCode = "10009";
             }
         }
 
@@ -158,6 +164,15 @@ namespace SWPatcher.Helpers.GlobalVariables
                 internal const string FolderName = "GamePath";
                 internal const string Version = "Version";
             }
+
+            internal static class NaverKR
+            {
+                internal static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.CurrentUser;
+                internal const string Key32Path = @"SOFTWARE\SGSWOSCHANNEL\Apps\11";
+                //public const string Key64Path = @"SOFTWARE\SGSWOSCHANNEL\Apps\11";
+                internal const string FolderName = "GamePath";
+                internal const string Version = "Version";
+            }
         }
 
         internal static class Xml
@@ -165,7 +180,7 @@ namespace SWPatcher.Helpers.GlobalVariables
             internal const string Value = "value";
             internal const string Regions = "regions";
             internal const string Languages = "languages";
-            internal const string Supports = "supports";
+            //internal const string Supports = "supports";
 
             internal static class Attributes
             {

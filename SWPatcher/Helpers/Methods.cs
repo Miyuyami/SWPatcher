@@ -203,7 +203,7 @@ namespace SWPatcher.Helpers
             }
         }
 
-        internal static int GetKRServerVersion()
+        internal static int GetKRServerVersion(string serviceCode)
         {
             using (var client = new WebClient())
             {
@@ -211,7 +211,7 @@ namespace SWPatcher.Helpers
 
                 var values = new NameValueCollection(2)
                 {
-                    [Strings.Web.KR.ServiceCode] = "11",
+                    [Strings.Web.KR.ServiceCode] = serviceCode,
                     [Strings.Web.KR.LocalVersion] = "0"
                 };
                 byte[] byteResponse = client.UploadValues(Urls.SoulworkerKRAPI, values);
@@ -612,7 +612,7 @@ namespace SWPatcher.Helpers
                     }
                     else
                     {
-                        throw new Exception(StringLoader.GetText("exception_directory_rights"));
+                        throw new Exception(StringLoader.GetText("exception_directory_rights", folderPath));
                     }
                 }
             }
@@ -683,10 +683,23 @@ namespace SWPatcher.Helpers
                 case "jp":
                     return Strings.FileName.GameExeJP;
                 case "kr":
+                case "nkr":
                     return Strings.FileName.GameExeKR;
                 default:
                     return null;
             }
+        }
+
+        internal static void RegionDoesNotSupportLogin()
+        {
+            UserSettings.WantToLogin = false;
+            throw new Exception(StringLoader.GetText("exception_login_option_not_supported"));
+        }
+
+        internal static void RegionDoesNotSupportExePatch()
+        {
+            UserSettings.WantToPatchExe = false;
+            throw new Exception(StringLoader.GetText("error_exe_region_not_supported"));
         }
     }
 }

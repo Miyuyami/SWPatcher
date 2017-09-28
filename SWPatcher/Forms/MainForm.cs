@@ -16,6 +16,9 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.IO;
+using System.Windows.Forms;
 using MadMilkman.Ini;
 using SWPatcher.Downloading;
 using SWPatcher.General;
@@ -24,9 +27,6 @@ using SWPatcher.Helpers.GlobalVariables;
 using SWPatcher.Launching;
 using SWPatcher.Patching;
 using SWPatcher.RTPatch;
-using System;
-using System.IO;
-using System.Windows.Forms;
 
 namespace SWPatcher.Forms
 {
@@ -264,7 +264,7 @@ namespace SWPatcher.Forms
             else if (e.Error != null)
             {
                 Logger.Error(e.Error);
-                MsgBox.Error(Logger.ExeptionParser(e.Error));
+                MsgBox.Error(Methods.ExeptionParser(e.Error));
             }
             else
             {
@@ -322,7 +322,7 @@ namespace SWPatcher.Forms
             else if (e.Error != null)
             {
                 Logger.Error(e.Error);
-                MsgBox.Error(Logger.ExeptionParser(e.Error));
+                MsgBox.Error(Methods.ExeptionParser(e.Error));
                 DeleteTmpFiles(e.Language);
             }
             else
@@ -470,7 +470,7 @@ namespace SWPatcher.Forms
                 {
                     Methods.RTPatchCleanup(false);
                     Logger.Error(e.Error);
-                    MsgBox.Error(Logger.ExeptionParser(e.Error));
+                    MsgBox.Error(Methods.ExeptionParser(e.Error));
                 }
             }
             else

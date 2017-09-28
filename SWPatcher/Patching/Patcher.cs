@@ -352,7 +352,7 @@ namespace SWPatcher.Patching
                 using (var xfs = new XorFileStream(archivePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, SecretByte))
                 {
                     zipFile.Save(xfs);
-                    zipFile.Dispose();
+                    zipFile.Dispose(); // TODO: using () { }
                 }
             }
 

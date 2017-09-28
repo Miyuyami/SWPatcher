@@ -58,7 +58,6 @@ namespace SWPatcher.Helpers.GlobalVariables
             internal const string TranslationPackData = "TranslationPackData.ini";
             internal const string BytesToPatch = "BytePatch.ini";
             internal const string DatasArchives = "datas.ini";
-            internal const string GeneralClient = "General.ini";
 
             internal static class Ver
             {
@@ -145,9 +144,9 @@ namespace SWPatcher.Helpers.GlobalVariables
             internal static class JP
             {
                 internal static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.LocalMachine;
-                internal const string Key32Path = @"SOFTWARE\HanPurple\J_SW";
-                internal const string Key64Path = @"SOFTWARE\WOW6432Node\HanPurple\J_SW";
-                internal const string FolderName = "folder";
+                internal const string Key32Path = @"SOFTWARE\WeMade Online\Soulworker";
+                internal const string Key64Path = @"SOFTWARE\WOW6432Node\WeMade Online\Soulworker";
+                internal const string FolderName = "InstallPath";
             }
 
             internal static class KR

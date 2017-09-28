@@ -26,7 +26,7 @@ namespace SWPatcher.Helpers.GlobalVariables
 #else
         internal const string TranslationGitHubHome = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";
 #endif
-        internal const string SoulworkerSettingsHome = "http://down.hangame.co.jp/jp/purple/plii/j_sw/";
+        internal const string SoulworkerSettingsHome = "http://patch-cdn.soulworker.gamecom.jp/SWK/update/";
         internal const string SoulworkerJPHome = "http://soulworker.jp/";
         internal const string SoulworkerKRHome = "http://soulworker.co.kr/";
         internal const string SoulworkerNaverKRHome = "http://soulworker.game.naver.com/";

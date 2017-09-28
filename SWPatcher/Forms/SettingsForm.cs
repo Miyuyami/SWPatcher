@@ -16,9 +16,6 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +25,9 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
+using SWPatcher.General;
+using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVariables;
 
 namespace SWPatcher.Forms
 {
@@ -289,7 +289,7 @@ namespace SWPatcher.Forms
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                MsgBox.Error(Logger.ExeptionParser(ex));
+                MsgBox.Error(Methods.ExeptionParser(ex));
             }
         }
 

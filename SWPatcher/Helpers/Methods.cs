@@ -56,6 +56,17 @@ namespace SWPatcher.Helpers
             return date.ToString(DateFormat, CultureInfo.InvariantCulture);
         }
 
+        internal static string ExeptionParser(Exception ex)
+        {
+            string result = ex.Message;
+            if (ex.InnerException != null)
+            {
+                result += "\n\n" + ex.InnerException.Message;
+            }
+
+            return result;
+        }
+
         internal static bool HasNewTranslations(Language language)
         {
             string translationFolder = language.Path;
@@ -169,13 +180,10 @@ namespace SWPatcher.Helpers
             {
                 try
                 {
-                    byte[] zipData = client.DownloadData(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer + ".zip");
+                    byte[] iniBytes = client.DownloadData(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer);
 
-                    IniFile ini = new IniFile(new IniOptions
-                    {
-                        Encoding = Encoding.Unicode
-                    });
-                    using (MemoryStream ms = Methods.GetZippedFileStream(zipData, Strings.IniName.ServerVer, null))
+                    var ini = new IniFile();
+                    using (var ms = new MemoryStream(iniBytes))
                     {
                         ini.Load(ms);
                     }
@@ -239,7 +247,7 @@ namespace SWPatcher.Helpers
                 string patchedHexResult = String.Copy(hexResult);
 
                 byte[] fileBytes = client.DownloadData(patchInstructionFilePath);
-                IniFile ini = new IniFile();
+                var ini = new IniFile();
                 using (var ms = new MemoryStream(fileBytes))
                 {
                     ini.Load(ms);
@@ -296,9 +304,9 @@ namespace SWPatcher.Helpers
                 filters = new string[] { "RT*" };
             }
 
-            foreach (var filter in filters)
+            foreach (string filter in filters)
             {
-                foreach (var file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
+                foreach (string file in Directory.GetFiles(UserSettings.GamePath, filter, SearchOption.AllDirectories))
                 {
                     Logger.Info($"Trying to delete file=[{file}]");
                     try
@@ -465,7 +473,7 @@ namespace SWPatcher.Helpers
 
         internal static SecureString ToSecureString(string input)
         {
-            SecureString secure = new SecureString();
+            var secure = new SecureString();
             foreach (char c in input)
             {
                 secure.AppendChar(c);
@@ -477,7 +485,7 @@ namespace SWPatcher.Helpers
 
         internal static string ToInsecureString(SecureString input)
         {
-            string returnValue = string.Empty;
+            string returnValue = String.Empty;
             IntPtr ptr = Marshal.SecureStringToBSTR(input);
             try
             {
@@ -602,7 +610,7 @@ namespace SWPatcher.Helpers
                 var process = Process.Start(startInfo);
                 process.WaitForExit();
 
-                var exitCode = process.ExitCode;
+                int exitCode = process.ExitCode;
 
                 if (exitCode != 0)
                 {
@@ -622,8 +630,8 @@ namespace SWPatcher.Helpers
         {
             var currentUserIdentity = WindowsIdentity.GetCurrent();
             SecurityIdentifier currentUserSID = currentUserIdentity.User;
-            var allow = false;
-            var deny = false;
+            bool allow = false;
+            bool deny = false;
             DirectorySecurity acl = Directory.GetAccessControl(folderPath);
             if (acl == null)
             {

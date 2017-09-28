@@ -102,6 +102,8 @@ namespace SWPatcher.Launching
                     switch (regionId)
                     {
                         case "jp":
+                            Methods.RegionDoesNotSupportLogin(); // TODO: jp login?
+                            break;
                             using (var client = new MyWebClient())
                             {
                                 HangameLogin(client);
@@ -190,6 +192,8 @@ namespace SWPatcher.Launching
                     switch (this.Language.ApplyingRegionId)
                     {
                         case "jp":
+                            Methods.RegionDoesNotSupportLogin(); // TODO: jp login?
+                            break;
                             StartRawJP();
                             e.Cancel = true;
 
@@ -241,7 +245,7 @@ namespace SWPatcher.Launching
             IEnumerable<string> otherSWFilesPaths = things[typeof(SWFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
             IEnumerable<string> translationFilePaths = archivesPaths.Distinct().Union(otherSWFilesPaths).Select(f => Path.Combine(language.Path, f));
 
-            foreach (var path in translationFilePaths)
+            foreach (string path in translationFilePaths)
             {
                 if (!File.Exists(path))
                 {
@@ -260,7 +264,7 @@ namespace SWPatcher.Launching
             IEnumerable<string> otherSWFiles = swFileTypeLookup[typeof(SWFile)].Select(f => f.Path + Path.GetFileName(f.PathD));
             IEnumerable<string> translationFiles = archives.Distinct().Union(otherSWFiles);
 
-            foreach (var path in translationFiles)
+            foreach (string path in translationFiles)
             {
                 string originalFilePath = Path.Combine(UserSettings.GamePath, path);
                 string translationFilePath = Path.Combine(language.Path, path);
@@ -423,8 +427,19 @@ namespace SWPatcher.Launching
                 {
                     string[] gameStartArgs = new string[3];
                     gameStartArgs[0] = jsonResponse.gs ?? throw new Exception("unexpected null gs");
+#if DEBUG
+                    string generalIniPath = Path.Combine(UserSettings.GamePath, "General.ini");
+                    if (!Methods.LoadIni(out MadMilkman.Ini.IniFile generalIni, generalIniPath))
+                    {
+                        throw new Exception(StringLoader.GetText("exception_generic_read_error", generalIniPath));
+                    }
+                    MadMilkman.Ini.IniKeyCollection networkSectionKeys = generalIni.Sections["Network Info"].Keys;
+                    gameStartArgs[1] = networkSectionKeys["IP"].Value;
+                    gameStartArgs[2] = networkSectionKeys["PORT"].Value;
+#else
                     gameStartArgs[1] = Strings.Server.IP;
                     gameStartArgs[2] = Strings.Server.Port;
+#endif
 
                     return gameStartArgs;
                 }
@@ -472,7 +487,7 @@ namespace SWPatcher.Launching
 
         private static string GetKRGameStartProtocol(MyWebClient client)
         {
-            var response = Encoding.UTF8.GetString(client.UploadData(Urls.SoulworkerKRGameStart, new byte[] { }));
+            string response = Encoding.UTF8.GetString(client.UploadData(Urls.SoulworkerKRGameStart, new byte[] { }));
             var gameStartJSON = new { code = Int32.MaxValue, message = "", memberNo = Int64.MaxValue, gameAuthToken = "", maintenenceType = "", endTime = "", maintenenceTime = "" };
             var jsonResponse = JsonConvert.DeserializeAnonymousType(response, gameStartJSON);
 

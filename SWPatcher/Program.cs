@@ -16,13 +16,13 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVariables;
 
 namespace SWPatcher
 {
@@ -32,7 +32,7 @@ namespace SWPatcher
         private static void Main()
         {
             Directory.SetCurrentDirectory(UserSettings.PatcherPath);
-            Logger.Run();
+            Logger.Start();
 
             string[] args = Environment.GetCommandLineArgs();
             var argsList = new List<string>(args);
@@ -53,7 +53,7 @@ namespace SWPatcher
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Logger.Critical(e.ExceptionObject as Exception);
-            MsgBox.Error(Logger.ExeptionParser(e.ExceptionObject as Exception) + "\r\n\r\nApplication will now exit.");
+            MsgBox.Error(Methods.ExeptionParser(e.ExceptionObject as Exception) + "\r\n\r\nApplication will now exit.");
 
             Application.Exit();
         }
@@ -61,7 +61,7 @@ namespace SWPatcher
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             Logger.Critical(e.Exception);
-            MsgBox.Error(Logger.ExeptionParser(e.Exception) + "\r\n\r\nApplication will now exit.");
+            MsgBox.Error(Methods.ExeptionParser(e.Exception) + "\r\n\r\nApplication will now exit.");
 
             Application.Exit();
         }

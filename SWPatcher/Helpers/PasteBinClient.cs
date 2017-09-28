@@ -45,8 +45,8 @@ namespace SWPatcher.Helpers
 
     internal class PasteBinClient
     {
-        private const string ApiPostUrl = "http://pastebin.com/api/api_post.php";
-        private const string ApiLoginUrl = "http://pastebin.com/api/api_login.php";
+        private const string ApiPostUrl = "https://pastebin.com/api/api_post.php";
+        private const string ApiLoginUrl = "https://pastebin.com/api/api_login.php";
 
         private readonly string ApiDevKey;
         internal string UserName { get; private set; }

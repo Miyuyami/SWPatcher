@@ -25,15 +25,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/</UpdateUrl>
+    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/publish-test/SWPatcher/publish/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/publish-test/SWPatcher/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
-    <MinimumRequiredVersion>2.8.2.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.9.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.8.2.0</ApplicationVersion>
+    <ApplicationVersion>2.9.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -84,10 +84,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>F5DFA8FBFB47124F17B8547A14895802C3F3302A</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>49ACE897EC4A3A5ACBDE25149BB207C0897808C7</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>SWPatcher_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Certificate\SWPatcher_TemporaryKey_new.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
@@ -157,7 +157,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>SWPatcher_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Certificate\SWPatcher_TemporaryKey_new.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Reduced.Patched">
@@ -276,6 +276,7 @@
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Certificate\SWPatcher_TemporaryKey_new.pfx" />
     <None Include="packages.config" />
     <None Include="patcher.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -314,7 +315,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SWPatcher_TemporaryKey.pfx" />
+    <None Include="Certificate\SWPatcher_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\fadegray.png" />
@@ -375,6 +376,7 @@
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

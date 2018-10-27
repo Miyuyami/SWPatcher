@@ -8,7 +8,7 @@
         <beforeApplicationStartup />
       </update>
     </subscription>
-    <deploymentProvider codebase="https://raw.githubusercontent.com/Miyuyami/SWPatcher/publish-test/SWPatcher/publish/SWPatcher.application" />
+    <deploymentProvider codebase="https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/SWPatcher.application" />
   </deployment>
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
     <framework targetVersion="4.6.2" profile="Full" supportedRuntime="4.0.30319" />

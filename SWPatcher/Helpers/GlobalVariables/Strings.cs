@@ -156,6 +156,9 @@ namespace SWPatcher.Helpers.GlobalVariables
                 //public const string Key64Path = @"SOFTWARE\SGUP\Apps\11";
                 internal const string FolderName = "GamePath";
                 internal const string Version = "Version";
+
+                internal const string StoveKeyPath = @"SOFTWARE\SGUP\ActiveProcess";
+                internal const string StoveWorkingDir = "WorkingDir";
             }
 
             internal static class NaverKR

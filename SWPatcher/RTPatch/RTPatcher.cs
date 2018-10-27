@@ -17,6 +17,8 @@
  */
 
 using MadMilkman.Ini;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
@@ -82,7 +84,7 @@ namespace SWPatcher.RTPatch
                     //Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString()));
                     return;
 
-                    //break;
+                //break;
                 case "nkr":
                     CheckNaverKRVersion();
                     return;
@@ -245,7 +247,12 @@ namespace SWPatcher.RTPatch
         private void CheckKRVersion()
         {
             int serverVersion = Methods.GetKRServerVersion();
-            int clientVersion = Convert.ToInt32(Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.Version, 0));
+            string stovePath = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.StoveKeyPath, Strings.Registry.KR.StoveWorkingDir, String.Empty);
+            //int clientVersion = Convert.ToInt32(Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.Version, 0));
+            string smilegatePath = Path.GetDirectoryName(stovePath);
+            string soulworkerManifestPath = Path.Combine(smilegatePath, @"WebLauncher\gamemanifest\gamemanifest_11_live.upf");
+            var manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifestPath));
+            int clientVersion = Convert.ToInt32(manifestJson["gameinfo"]["version"].Value<string>());
 
             if (clientVersion != serverVersion)
             {

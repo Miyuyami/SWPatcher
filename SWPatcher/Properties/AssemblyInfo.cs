@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Miyu")]
 [assembly: AssemblyProduct("SW Patcher")]
-[assembly: AssemblyCopyright("Copyright (C) 2016-2017")]
+[assembly: AssemblyCopyright("Copyright (C) 2016-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

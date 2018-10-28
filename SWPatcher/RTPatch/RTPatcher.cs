@@ -247,12 +247,33 @@ namespace SWPatcher.RTPatch
         private void CheckKRVersion()
         {
             int serverVersion = Methods.GetKRServerVersion();
-            string stovePath = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.StoveKeyPath, Strings.Registry.KR.StoveWorkingDir, String.Empty);
             //int clientVersion = Convert.ToInt32(Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.Version, 0));
+            string stovePath = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.StoveKeyPath, Strings.Registry.KR.StoveWorkingDir, String.Empty);
             string smilegatePath = Path.GetDirectoryName(stovePath);
             string soulworkerManifestPath = Path.Combine(smilegatePath, @"WebLauncher\gamemanifest\gamemanifest_11_live.upf");
-            var manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifestPath));
-            int clientVersion = Convert.ToInt32(manifestJson["gameinfo"]["version"].Value<string>());
+            int clientVersion1 = -1;
+            string soulworkerPath = Methods.GetRegistryValue(Strings.Registry.KR.RegistryKey, Strings.Registry.KR.Key32Path, Strings.Registry.KR.FolderName, String.Empty);
+            string soulworkerManifest2Path = Path.Combine(soulworkerPath, @"combinedata_manifest\gamemanifest_11_live.upf");
+            int clientVersion2 = -1;
+
+            if (File.Exists(soulworkerManifestPath))
+            {
+                var manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifestPath));
+                clientVersion1 = Convert.ToInt32(manifestJson["gameinfo"]["version"].Value<string>());
+            }
+
+            if (File.Exists(soulworkerManifest2Path))
+            {
+                var manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifest2Path));
+                clientVersion2 = Convert.ToInt32(manifestJson["gameinfo"]["version"].Value<string>());
+            }
+
+            if (clientVersion1 == -1 && clientVersion2 == -1)
+            {
+                throw new Exception($"Could not find manifest file. Please contact Miyu#9404 on discord.\nManifest1 Path: \"{soulworkerManifestPath}\"\nManifest2 Path: \"{soulworkerManifest2Path}\"");
+            }
+
+            int clientVersion = clientVersion1 > clientVersion2 ? clientVersion1 : clientVersion2;
 
             if (clientVersion != serverVersion)
             {

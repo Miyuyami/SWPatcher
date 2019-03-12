@@ -693,8 +693,10 @@ namespace SWPatcher.Helpers
                 case "kr":
                 case "nkr":
                     return Strings.FileName.GameExeKR;
+                case "gf":
+                    return Strings.FileName.GameExeGF;
                 default:
-                    return null;
+                    throw new Exception(StringLoader.GetText("exception_region_unknown", regionId));
             }
         }
 

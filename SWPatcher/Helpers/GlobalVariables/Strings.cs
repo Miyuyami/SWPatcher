@@ -32,6 +32,7 @@ namespace SWPatcher.Helpers.GlobalVariables
         {
             internal const string GameExeJP = "SoulWorker100.exe";
             internal const string GameExeKR = "SoulWorker.exe";
+            internal const string GameExeGF = "SoulWorker.exe";
             internal const string PurpleExe = "PLauncher.exe";
             internal const string ReactorExe = "reactor.exe";
             internal const string OutboundExe = "Outbound.exe";
@@ -168,6 +169,14 @@ namespace SWPatcher.Helpers.GlobalVariables
                 //public const string Key64Path = @"SOFTWARE\SGSWOSCHANNEL\Apps\11";
                 internal const string FolderName = "GamePath";
                 internal const string Version = "Version";
+            }
+
+            internal static class Steam
+            {
+                internal static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.LocalMachine;
+                internal const string Key32Path = @"SOFTWARE\Valve\Steam";
+                internal const string Key64Path = @"SOFTWARE\Wow6432Node\Valve\Steam";
+                internal const string InstallPath = "InstallPath";
             }
         }
 

@@ -19,6 +19,7 @@
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
+using SWPatcher.Helpers.Steam;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -177,6 +178,62 @@ namespace SWPatcher.Forms
             string value = Methods.GetRegistryValue(Strings.Registry.NaverKR.RegistryKey, Strings.Registry.NaverKR.Key32Path, Strings.Registry.NaverKR.FolderName);
 
             return value;
+        }
+
+        private static string GetGameforgeSwPath()
+        {
+            const string SteamGameId = "630100";
+            string steamInstallPath;
+            if (!Environment.Is64BitOperatingSystem)
+            {
+                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
+            }
+            else
+            {
+                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key64Path, Strings.Registry.Steam.InstallPath);
+
+                if (steamInstallPath == String.Empty)
+                {
+                    steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
+                }
+            }
+
+            if (steamInstallPath == String.Empty)
+            {
+                return String.Empty;
+            }
+
+            List<string> libraryPaths = new List<string>();
+            string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
+            libraryPaths.Add(mainSteamLibrary);
+            string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
+
+            var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+            int i = 1;
+            while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
+            {
+                libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
+            }
+            
+            foreach (string libraryPath in libraryPaths)
+            {
+                string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
+                if (File.Exists(acf))
+                {
+                    var smacf = SteamManifest.Load(acf);
+                    if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
+                    {
+                        string swFolder = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
+                        if (Directory.Exists(swFolder) &&
+                            Directory.GetFiles(swFolder).Length > 0)
+                        {
+                            return swFolder;
+                        }
+                    }
+                }
+            }
+
+            return String.Empty;
         }
 
         internal void ResetTranslation(Language language)

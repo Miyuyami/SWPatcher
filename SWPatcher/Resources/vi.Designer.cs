@@ -19,7 +19,7 @@ namespace SWPatcher.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class vi {
@@ -535,6 +535,15 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Region &quot;{0}&quot; is unknown..
+        /// </summary>
+        internal static string exception_region_unknown {
+            get {
+                return ResourceManager.GetString("exception_region_unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kiểm tra thất bại..
         /// </summary>
         internal static string exception_retry_validation_failed {
@@ -730,6 +739,15 @@ namespace SWPatcher.Resources {
         internal static string form_refresh {
             get {
                 return ResourceManager.GetString("form_refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gameforge.
+        /// </summary>
+        internal static string form_region_gf {
+            get {
+                return ResourceManager.GetString("form_region_gf", resourceCulture);
             }
         }
         

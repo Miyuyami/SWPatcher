@@ -22,7 +22,9 @@ using Newtonsoft.Json.Linq;
 using SWPatcher.General;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
+using SWPatcher.Helpers.Steam;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -87,7 +89,14 @@ namespace SWPatcher.RTPatch
                 //break;
                 case "nkr":
                     CheckNaverKRVersion();
+
                     return;
+                case "gf":
+                    CheckGFVersion();
+
+                    return;
+                default:
+                    throw new Exception(StringLoader.GetText("exception_region_unknown", regionId));
             }
 
             while (this.ClientNextVersion < this.ServerVersion)
@@ -287,6 +296,72 @@ namespace SWPatcher.RTPatch
             int clientVersion = Convert.ToInt32(Methods.GetRegistryValue(Strings.Registry.NaverKR.RegistryKey, Strings.Registry.NaverKR.Key32Path, Strings.Registry.NaverKR.Version, 0));
 
             if (clientVersion != serverVersion)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
+            }
+        }
+
+        private void CheckGFVersion()
+        {
+            const string SteamGameId = "630100";
+            string steamInstallPath;
+            if (!Environment.Is64BitOperatingSystem)
+            {
+                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
+            }
+            else
+            {
+                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key64Path, Strings.Registry.Steam.InstallPath);
+
+                if (steamInstallPath == String.Empty)
+                {
+                    steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
+                }
+            }
+
+            if (steamInstallPath == String.Empty)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
+            }
+
+            List<string> libraryPaths = new List<string>();
+            string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
+            libraryPaths.Add(mainSteamLibrary);
+            string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
+
+            var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+            int i = 1;
+            while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
+            {
+                libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
+            }
+
+            bool success = false;
+            foreach (string libraryPath in libraryPaths)
+            {
+                string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
+                if (File.Exists(acf))
+                {
+                    var smacf = SteamManifest.Load(acf);
+                    if (smacf.Elements.TryGetValue("StateFlags", out SteamManifestElement sme))
+                    {
+                        if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
+                        {
+                            var appState = (AppState)stateFlagInt;
+                            if (appState == AppState.StateFullyInstalled)
+                            {
+                                success = true;
+                            }
+                            else
+                            {
+                                success = false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!success)
             {
                 throw new Exception(StringLoader.GetText("exception_game_not_latest"));
             }

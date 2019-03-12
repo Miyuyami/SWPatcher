@@ -30,10 +30,10 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
-    <MinimumRequiredVersion>2.9.0.1</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.10.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>2.9.0.1</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.10.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -189,6 +189,11 @@
     <Compile Include="General\SWFileManager.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\NativeMethods.cs" />
+    <Compile Include="Helpers\Steam\AppState.cs" />
+    <Compile Include="Helpers\Steam\SteamManifest.cs" />
+    <Compile Include="Helpers\Steam\SteamManifestElement.cs" />
+    <Compile Include="Helpers\Steam\SteamManifestEntry.cs" />
+    <Compile Include="Helpers\Steam\SteamManifestSection.cs" />
     <Compile Include="Launching\GameStarter.cs" />
     <Compile Include="Launching\GameStarterCompletedEventArgs.cs" />
     <Compile Include="Launching\GameStarterProgressChangedEventArgs.cs" />

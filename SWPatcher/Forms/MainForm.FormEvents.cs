@@ -173,13 +173,15 @@ namespace SWPatcher.Forms
                         newGamePath = GetNaverKRSwPathFromRegistry();
 
                         break;
-                    default:
-                        newGamePath = String.Empty;
+                    case "gf":
+                        newGamePath = GetGameforgeSwPath();
 
                         break;
+                    default:
+                        throw new Exception(StringLoader.GetText("exception_region_unknown", region.Id));
                 }
 
-                if (newGamePath == String.Empty)
+                if (String.IsNullOrWhiteSpace(newGamePath))
                 {
                     this.CurrentState = State.RegionNotInstalled;
                     MsgBox.Error(StringLoader.GetText("exception_game_install_not_found", region.ToString()));
@@ -237,7 +239,8 @@ namespace SWPatcher.Forms
 
         private void OpenSWWebpageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            switch ((this.ComboBoxRegions.SelectedItem as Region).Id)
+            Region region = (this.ComboBoxRegions.SelectedItem as Region);
+            switch (region.Id)
             {
                 case "jp":
                     Process.Start("iexplore.exe", Urls.SoulworkerJPHome);
@@ -251,10 +254,12 @@ namespace SWPatcher.Forms
                     Process.Start(Urls.SoulworkerNaverKRHome);
 
                     break;
-                default:
-                    Process.Start("https://www.google.com/");
+                case "gf":
+                    Process.Start(Urls.SoulworkerGFHome);
 
                     break;
+                default:
+                    throw new Exception(StringLoader.GetText("exception_region_unknown", region.Id));
             }
         }
 

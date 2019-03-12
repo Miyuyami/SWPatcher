@@ -449,4 +449,10 @@ This is free software, and you are welcome to redistribute it under certain cond
   <data name="form_region_nkr" xml:space="preserve">
     <value>한국 Naver</value>
   </data>
+  <data name="form_region_gf" xml:space="preserve">
+    <value>Gameforge</value>
+  </data>
+  <data name="exception_region_unknown" xml:space="preserve">
+    <value>Region "{0}" is unknown.</value>
+  </data>
 </root>

@@ -151,7 +151,14 @@ namespace SWPatcher.Launching
                             break;
                         case "nkr":
                             Methods.RegionDoesNotSupportLogin();
+
                             break;
+                        case "gf":
+                            Methods.RegionDoesNotSupportLogin();
+
+                            break;
+                        default:
+                            throw new Exception(StringLoader.GetText("exception_region_unknown", regionId));
                     }
                 }
                 else
@@ -189,7 +196,8 @@ namespace SWPatcher.Launching
 
                 if (UserSettings.WantToLogin)
                 {
-                    switch (this.Language.ApplyingRegionId)
+                    var regionId = this.Language.ApplyingRegionId;
+                    switch (regionId)
                     {
                         case "jp":
                             Methods.RegionDoesNotSupportLogin(); // TODO: jp login?
@@ -205,7 +213,14 @@ namespace SWPatcher.Launching
                             break;
                         case "nkr":
                             Methods.RegionDoesNotSupportLogin();
+
                             break;
+                        case "gf":
+                            Methods.RegionDoesNotSupportLogin();
+
+                            break;
+                        default:
+                            throw new Exception(StringLoader.GetText("exception_region_unknown", regionId));
                     }
                 }
                 else

@@ -448,4 +448,10 @@ Danh sách đối chiếu:
   <data name="form_region_nkr" xml:space="preserve">
     <value>Hàn Quốc Naver</value>
   </data>
+  <data name="form_region_gf" xml:space="preserve">
+    <value>Gameforge</value>
+  </data>
+  <data name="exception_region_unknown" xml:space="preserve">
+    <value>Region "{0}" is unknown.</value>
+  </data>
 </root>

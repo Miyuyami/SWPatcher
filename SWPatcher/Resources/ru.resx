@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="box_game_dir" xml:space="preserve">
+    <value>Расположение игры</value>
+  </data>
+  <data name="box_game_options" xml:space="preserve">
+    <value>Изменить настройки игры</value>
+  </data>
+  <data name="box_id" xml:space="preserve">
+    <value>Soulworker ID</value>
+  </data>
+  <data name="box_language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="box_patcher_dir" xml:space="preserve">
+    <value>Расположение патчера</value>
+  </data>
+  <data name="box_patch_exe" xml:space="preserve">
+    <value>Пропатчить .exe для поддержки других юникод языков</value>
+  </data>
+  <data name="box_pw" xml:space="preserve">
+    <value>Soulworker пароль</value>
+  </data>
+  <data name="box_want_login" xml:space="preserve">
+    <value>Устали входить с сайта?</value>
+  </data>
+  <data name="button_apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="button_cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="button_cancelling" xml:space="preserve">
+    <value>Отменяется...</value>
+  </data>
+  <data name="button_change" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="button_download_translation" xml:space="preserve">
+    <value>Загрузить перевод</value>
+  </data>
+  <data name="button_exit" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
+  <data name="button_game_options" xml:space="preserve">
+    <value>Настройки игры</value>
+  </data>
+  <data name="button_ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="button_open" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="button_play" xml:space="preserve">
+    <value>Готов играть!</value>
+  </data>
+  <data name="button_play_raw" xml:space="preserve">
+    <value>Начать игру Raw</value>
+  </data>
+  <data name="check_patch_exe" xml:space="preserve">
+    <value>Да, я знаю о рисках и хочу это пропатчить</value>
+  </data>
+  <data name="check_want_login" xml:space="preserve">
+    <value>Авторизация при помощи патчера</value>
+  </data>
+  <data name="dialog_folder_change_game_dir" xml:space="preserve">
+    <value>Выберите папку с игровым клиентом Soulworker.</value>
+  </data>
+  <data name="dialog_folder_change_patcher_dir" xml:space="preserve">
+    <value>Выберите новую папку для патчера.</value>
+  </data>
+  <data name="error_exe_patch_fail" xml:space="preserve">
+    <value>.exe патч не был применен из-за  "{0} " не был обновлен для нового клиента после последнего обновления. Клиентское исправление было отключено. Игра все еще может работать, за исключением некоторых текстов не будет показано. Повторите попытку позже, когда реализуется  "{0} ".</value>
+  </data>
+  <data name="error_exe_region_not_supported" xml:space="preserve">
+    <value>Ваш регион Soulworker не поддерживает исправления .exe. Клиентский патч отключен. Игра все еще может работать, за исключением некоторых текстов, которые не будут показаны.</value>
+  </data>
+  <data name="exception_account_not_validated" xml:space="preserve">
+    <value>Ваша учетная запись soulworker не подтверждена. Пожалуйста, подтвердите свой аккаунт на сайте.</value>
+  </data>
+  <data name="exception_account_to_be_deleted" xml:space="preserve">
+    <value>Эта учетная запись ожидает удаления, если вы хотите отменить это, обратитесь в службу поддержки.</value>
+  </data>
+  <data name="exception_already_latest_translation" xml:space="preserve">
+    <value>У вас уже есть последние ({0} JST) файлы перевода для этого языка!</value>
+  </data>
+  <data name="exception_cannot_close" xml:space="preserve">
+    <value>{0} сейчас занят и не может быть закрыт.</value>
+  </data>
+  <data name="exception_cannot_restore_file" xml:space="preserve">
+    <value>Каталог с файлом "{0}" не существует. Невозможно восстановить эту папку, и она будет удалена.</value>
+  </data>
+  <data name="exception_captcha_required" xml:space="preserve">
+    <value>Не возможно авторизоваться с помощью патчера, требуется ввод кпчи.</value>
+  </data>
+  <data name="exception_captcha_validation" xml:space="preserve">
+    <value>Слишком много неправильных входов.. Вы должны войти в систему и заполнить капчу на сайте Hangame.</value>
+  </data>
+  <data name="exception_directory_not_exist" xml:space="preserve">
+    <value>Папка игры не существует "{0}".</value>
+  </data>
+  <data name="exception_directory_rights" xml:space="preserve">
+    <value>Невозможно установить правильные разрешения для папки с игрой "{0}".</value>
+  </data>
+  <data name="exception_empty_id" xml:space="preserve">
+    <value>Идентификатор не может быть пустым, пожалуйста, настройте свой идентификатор Soulworker ID или снимите флажок для входа в систему.</value>
+  </data>
+  <data name="exception_empty_pw" xml:space="preserve">
+    <value>Пароль не может быть пустым, установите пароль Soulworker или снимите флажок для входа.</value>
+  </data>
+  <data name="exception_folder_not_game_folder" xml:space="preserve">
+    <value>Выбранная папка не является папкой игрового клиента Soulworker.</value>
+  </data>
+  <data name="exception_folder_same_path_game" xml:space="preserve">
+    <value>Программа находится в той же или в подпапке, что и ваш игровой клиент.</value>
+  </data>
+  <data name="exception_follow_instruction_webpage" xml:space="preserve">
+    <value>При входе в систему произошла ошибка, следуйте инструкциям на веб-странице.</value>
+  </data>
+  <data name="exception_game_already_open" xml:space="preserve">
+    <value>Не удается продолжить, так как {0} уже запущен.</value>
+  </data>
+  <data name="exception_game_install_not_found" xml:space="preserve">
+    <value>Установленный Soulworker {0} не найден.</value>
+  </data>
+  <data name="exception_game_maintenance" xml:space="preserve">
+    <value>Soulworker сейчас на тех. обслуживании.</value>
+  </data>
+  <data name="exception_game_not_latest" xml:space="preserve">
+    <value>Soulworker не обновлty до последней версии. Повторите попытку после обновления soulworker.</value>
+  </data>
+  <data name="exception_game_stove_maintenance" xml:space="preserve">
+    <value>Обслуживание Soulworker {0}
+{1}
+Обслуживание заканчивается на {2}.
+Контрольный список:
+{3}</value>
+  </data>
+  <data name="exception_generic_read_error" xml:space="preserve">
+    <value>Не удалось прочитать {0}.</value>
+  </data>
+  <data name="exception_incorrect_id_pw" xml:space="preserve">
+    <value>Неверный ID или пароль.</value>
+  </data>
+  <data name="exception_login_option_not_supported" xml:space="preserve">
+    <value>Ваш регион Soulworker не поддерживает прямой вход. Опция входа была отключена.</value>
+  </data>
+  <data name="exception_log_file_failed" xml:space="preserve">
+    <value>Не удалось отправить файл логов.</value>
+  </data>
+  <data name="exception_log_not_exist" xml:space="preserve">
+    <value>Файл с логами не существует.</value>
+  </data>
+  <data name="exception_not_login_option" xml:space="preserve">
+    <value>Опция прямого входа не активна.</value>
+  </data>
+  <data name="exception_not_tos" xml:space="preserve">
+    <value>Чтобы играть в игру, вы должны принять Условия использования.</value>
+  </data>
+  <data name="exception_read_translation_ini" xml:space="preserve">
+    <value>Ошибка чтения версии перевода, попробуйте Меню -&gt; Принудительное исправление</value>
+  </data>
+  <data name="exception_region_unknown" xml:space="preserve">
+    <value>Регион "{0}" не известен.</value>
+  </data>
+  <data name="exception_retry_validation_failed" xml:space="preserve">
+    <value>Проверка не удалась.</value>
+  </data>
+  <data name="exception_rtpatch_administrator_required" xml:space="preserve">
+    <value>Не удалось обновить, поскольку для файла требуются права администратора. Возможно файл уже используется? Попробуйте снова.</value>
+  </data>
+  <data name="exception_rtpatch_corrupt" xml:space="preserve">
+    <value>Поврежденный файл патча "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_corrupt_file" xml:space="preserve">
+    <value>Файл поврежден "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_error_open_patch_file" xml:space="preserve">
+    <value>Ошибка при открытии файла патча. Попробуйте снова.</value>
+  </data>
+  <data name="exception_rtpatch_insufficient_storage" xml:space="preserve">
+    <value>Не удалось обновить, т.к. на диске недостаточно свободного места.</value>
+  </data>
+  <data name="exception_rtpatch_missing_file" xml:space="preserve">
+    <value>Файл не существует "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_not_exist_directory" xml:space="preserve">
+    <value>Каталог не существует, убедитесь, что каталог игры установлен правильно.</value>
+  </data>
+  <data name="exception_rtpatch_open_patch_file_fail" xml:space="preserve">
+    <value>Не удалось открыть файл патча. Попробуйте снова.</value>
+  </data>
+  <data name="exception_rtpatch_read_patch_file_fail" xml:space="preserve">
+    <value>Не удалось прочитать файл исправления. Попробуйте снова.</value>
+  </data>
+  <data name="exception_rtpatch_rename_fail" xml:space="preserve">
+    <value>Не удалось переименовать файл. Попробуйте снова.</value>
+  </data>
+  <data name="exception_rtpatch_result" xml:space="preserve">
+    <value>Произошла неизвестная ошибка при обновлении Soulworker. Самый известный способ исправить это полная переустановка Soulworker. Код = [{0}]</value>
+  </data>
+  <data name="exception_rtpatch_time_date_fail" xml:space="preserve">
+    <value>Не удалось установить метку времени / даты файла. Попробуйте снова.</value>
+  </data>
+  <data name="exception_server_refused_connection" xml:space="preserve">
+    <value>Сервер отказал в соединении. (Обслуживание сервера?)</value>
+  </data>
+  <data name="exception_validation_failed" xml:space="preserve">
+    <value>Проверка не удалась. Может быть, ваш IP / регион заблокирован?</value>
+  </data>
+  <data name="form_about" xml:space="preserve">
+    <value>О нас</value>
+  </data>
+  <data name="form_force_patch" xml:space="preserve">
+    <value>Принудительный патч</value>
+  </data>
+  <data name="form_label_new_translation" xml:space="preserve">
+    <value>Новый перевод для {0} - ({1})</value>
+  </data>
+  <data name="form_language_pick" xml:space="preserve">
+    <value>Язык:</value>
+  </data>
+  <data name="form_menu" xml:space="preserve">
+    <value>Меню</value>
+  </data>
+  <data name="form_open_sw_webpage" xml:space="preserve">
+    <value>Открыть SW веб сайт</value>
+  </data>
+  <data name="form_refresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="form_region_gf" xml:space="preserve">
+    <value>Gameforge</value>
+  </data>
+  <data name="form_region_jp" xml:space="preserve">
+    <value>Япония</value>
+  </data>
+  <data name="form_region_kr" xml:space="preserve">
+    <value>Корея</value>
+  </data>
+  <data name="form_region_nkr" xml:space="preserve">
+    <value>Корея Naver</value>
+  </data>
+  <data name="form_region_pick" xml:space="preserve">
+    <value>Регион:</value>
+  </data>
+  <data name="form_settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="form_status_apply" xml:space="preserve">
+    <value>Применяется...</value>
+  </data>
+  <data name="form_status_download" xml:space="preserve">
+    <value>Загружается...</value>
+  </data>
+  <data name="form_status_idle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="form_status_patch" xml:space="preserve">
+    <value>Обработка...</value>
+  </data>
+  <data name="form_status_patch_exe" xml:space="preserve">
+    <value>Пропатчивание .exe...</value>
+  </data>
+  <data name="form_status_patch_load" xml:space="preserve">
+    <value>Загрузка...</value>
+  </data>
+  <data name="form_status_patch_patch" xml:space="preserve">
+    <value>Пропатчивание...</value>
+  </data>
+  <data name="form_status_patch_save" xml:space="preserve">
+    <value>Сохранение...</value>
+  </data>
+  <data name="form_status_prepare" xml:space="preserve">
+    <value>Подготовка...</value>
+  </data>
+  <data name="form_status_update_client" xml:space="preserve">
+    <value />
+  </data>
+  <data name="form_status_wait_client" xml:space="preserve">
+    <value>Ожидание игры...</value>
+  </data>
+  <data name="form_status_wait_close" xml:space="preserve">
+    <value>Ожидание завершения игры...</value>
+  </data>
+  <data name="form_upload_log" xml:space="preserve">
+    <value>Загрузить логи в Pastebin</value>
+  </data>
+  <data name="match_windows" xml:space="preserve">
+    <value>Как в Windows</value>
+  </data>
+  <data name="notice_outdated_translation" xml:space="preserve">
+    <value>Устаревшие файлы перевода, сейчас начнется принудительное исправление.</value>
+  </data>
+  <data name="notice_pending_restart" xml:space="preserve">
+    <value>Некоторые изменения будут применены только после перезапуска приложения.</value>
+  </data>
+  <data name="notify_balloon_text" xml:space="preserve">
+    <value>Нажмите дважды, что бы восстоновить...</value>
+  </data>
+  <data name="notify_balloon_title" xml:space="preserve">
+    <value>Патчер был свернут в панель уведомлений</value>
+  </data>
+  <data name="notify_text" xml:space="preserve">
+    <value>Soulworker Патчер</value>
+  </data>
+  <data name="patcher_description" xml:space="preserve">
+    <value>Эта программа поставляется без КАКИХ-ЛИБО ГАРАНТИЙ.
+
+Это бесплатное программное обеспечение, и вы можете распространять его при определенных условиях.
+
+Soulworker Patcher был сделан, чтобы легко исправлять последние переводы вашему клиенту Soulworker без особого риска повреждения ваших исходных файлов при обновлении.
+Он также может загружать последние переводы из команды перевода SWHQ и применять их в любое время.</value>
+  </data>
+  <data name="question_backup_files_found" xml:space="preserve">
+    <value>Найдены резервные копии файлов. Вы хотите восстановить их в своем клиенте?
+Существующие из вашего клиента будут заменены на перевод {0}.
+Выбор Нет приведет к удалению этих файлов резервных копий.</value>
+  </data>
+  <data name="question_folder_same_path_game" xml:space="preserve">
+    <value>Программа находится в той же или в подпапке, что и ваш игровой клиент.</value>
+  </data>
+  <data name="success_log_file_upload" xml:space="preserve">
+    <value>Лог был загружен в: "{0}"</value>
+  </data>
+  <data name="tab_credentials" xml:space="preserve">
+    <value>Учетные данные</value>
+  </data>
+  <data name="tab_game" xml:space="preserve">
+    <value>Soulworker</value>
+  </data>
+  <data name="tab_patcher" xml:space="preserve">
+    <value>Патчер</value>
+  </data>
+</root>

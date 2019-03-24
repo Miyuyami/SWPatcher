@@ -199,6 +199,11 @@
     <Compile Include="Launching\GameStarterProgressChangedEventArgs.cs" />
     <Compile Include="Patching\XorFileStream.cs" />
     <Compile Include="Patching\XorMemoryStream.cs" />
+    <Compile Include="Resources\ru.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ru.resx</DependentUpon>
+    </Compile>
     <Compile Include="RTPatch\ResultException.cs" />
     <Compile Include="RTPatch\RTPatcherCompletedEventArgs.cs" />
     <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
@@ -301,6 +306,10 @@
     <EmbeddedResource Include="Resources\ko.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ko.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\vi.resx">
       <Generator>ResXFileCodeGenerator</Generator>

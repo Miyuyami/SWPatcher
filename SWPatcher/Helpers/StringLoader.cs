@@ -47,6 +47,8 @@ namespace SWPatcher.Helpers
                     return Resources.ko.ResourceManager.GetString(name);
                 case "vi":
                     return Resources.vi.ResourceManager.GetString(name);
+                case "ru":
+                    return Resources.ru.ResourceManager.GetString(name);
                 default:
                     return Resources.en.ResourceManager.GetString(name);
             }

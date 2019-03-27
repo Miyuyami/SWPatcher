@@ -15,7 +15,7 @@
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>C:\Users\Miyu\Documents\GitHub\SWPatcher\SWPatcher\publish\</PublishUrl>
+    <PublishUrl>C:\Users\devbi\Documents\GitHub\SWPatcher\SWPatcher\SWPatcher\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,15 +25,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/Miyuyami/SWPatcher/master/SWPatcher/publish/</UpdateUrl>
+    <InstallUrl>https://raw.githubusercontent.com/dev-iCEY/SWPatcher/master/SWPatcher/SWPatcher/publish/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/dev-iCEY/SWPatcher/master/SWPatcher/SWPatcher/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
     <MinimumRequiredVersion>2.11.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.11.0.0</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>2.11.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -151,21 +151,23 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Certificate\SWPatcher_TemporaryKey_new.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>iCEY_Key.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>49ACE897EC4A3A5ACBDE25149BB207C0897808C7</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>AD4EE48CC52E8CF93A614B797C1BA5D953136EC8</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Certificate\SWPatcher_TemporaryKey_new.pfx</ManifestKeyFile>
+    <ManifestKeyFile>SWPatcher_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Reduced.Patched">
-      <HintPath Condition="'$(Configuration)'=='Release'">lib\Release\Ionic.Zip.Reduced.Patched.dll</HintPath>
-      <HintPath Condition="'$(Configuration)'=='Debug'">lib\Debug\Ionic.Zip.Reduced.Patched.dll</HintPath>
+      <HintPath>..\lib\Ionic.Zip.Reduced.Patched.dll</HintPath>
     </Reference>
     <Reference Include="MadMilkman.Ini, Version=1.0.6.2, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
-      <HintPath>lib\Debug\MadMilkman.Ini.dll</HintPath>
+      <HintPath>..\lib\MadMilkman.Ini.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -287,6 +289,7 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Certificate\SWPatcher_TemporaryKey_new.pfx" />
+    <None Include="iCEY_Key.pfx" />
     <None Include="packages.config" />
     <None Include="patcher.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -329,6 +332,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="SWPatcher_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\fadegray.png" />
@@ -353,7 +357,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.2 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.6.2 %28x86 и x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -368,16 +372,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <PublishFile Include="Ionic.Zip.Reduced.Patched.pdb">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Include</PublishState>
-      <IncludeHash>True</IncludeHash>
-      <FileType>File</FileType>
-    </PublishFile>
     <PublishFile Include="SWPatcher.pdb">
       <Visible>False</Visible>
       <Group>

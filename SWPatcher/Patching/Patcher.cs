@@ -99,7 +99,7 @@ namespace SWPatcher.Patching
                 string archivePath = Path.Combine(UserSettings.GamePath, p);
                 Logger.Info($"Loading archive=[{archivePath}]");
                 byte[] fileBytes = File.ReadAllBytes(archivePath);
-                var xms = new XorMemoryStream(fileBytes, SecretByte);
+                XorMemoryStream xms = new XorMemoryStream(fileBytes, SecretByte);
                 return ZipFile.Read(xms);
             });
 
@@ -151,8 +151,8 @@ namespace SWPatcher.Patching
 
                     Dictionary<ulong, string[]> inputTable = this.ReadInputFile(patchedSWFile.Data, lineCount, idIndex);
 
-                    using (var br = new BinaryReader(ms))
-                    using (var bw = new BinaryWriter(msDest, new UTF8Encoding(false, true), true))
+                    using (BinaryReader br = new BinaryReader(ms))
+                    using (BinaryWriter bw = new BinaryWriter(msDest, new UTF8Encoding(false, true), true))
                     {
                         switch (countFormat)
                         {
@@ -320,7 +320,7 @@ namespace SWPatcher.Patching
                 }
                 else
                 {
-                    var ms = new MemoryStream(archivedSWFile.Data);
+                    MemoryStream ms = new MemoryStream(archivedSWFile.Data);
 
                     if (Path.GetExtension(archivedSWFile.PathD) == ".zip")
                     {
@@ -349,7 +349,7 @@ namespace SWPatcher.Patching
 
                 Directory.CreateDirectory(archivePathDirectory);
 
-                using (var xfs = new XorFileStream(archivePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, SecretByte))
+                using (XorFileStream xfs = new XorFileStream(archivePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, SecretByte))
                 {
                     zipFile.Save(xfs);
                     zipFile.Dispose(); // TODO: using () { }
@@ -386,7 +386,7 @@ namespace SWPatcher.Patching
             int idLineCount = 1;
             lineCount += idLineCount;
             int entryLineCount = lineCount + emptyLineCount;
-            var result = new Dictionary<ulong, string[]>();
+            Dictionary<ulong, string[]> result = new Dictionary<ulong, string[]>();
 
             string[] fileLines = fileBytes.ToStringArray(Encoding.UTF8);
 
@@ -423,7 +423,7 @@ namespace SWPatcher.Patching
 
         private static string GetMD5(string text)
         {
-            using (var md5 = MD5.Create())
+            using (MD5 md5 = MD5.Create())
             {
                 byte[] result = md5.ComputeHash(Encoding.ASCII.GetBytes(text));
                 StringBuilder sb = new StringBuilder();
@@ -437,13 +437,13 @@ namespace SWPatcher.Patching
 
         private static Dictionary<string, string> LoadPasswords(string url)
         {
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
             {
-                var result = new Dictionary<string, string>();
+                Dictionary<string, string> result = new Dictionary<string, string>();
 
                 byte[] fileBytes = client.DownloadData(url);
                 IniFile ini = new IniFile();
-                using (var ms = new MemoryStream(fileBytes))
+                using (MemoryStream ms = new MemoryStream(fileBytes))
                 {
                     ini.Load(ms);
                 }

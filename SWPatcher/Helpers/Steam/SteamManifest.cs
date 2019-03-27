@@ -17,7 +17,7 @@ namespace SWPatcher.Helpers.Steam
 
         public static SteamManifest Load(string path)
         {
-            using (var sr = new StreamReader(path))
+            using (StreamReader sr = new StreamReader(path))
             {
                 string nameLine = sr.ReadLine();
                 SteamManifestSection mainSection = ReadSection(nameLine, sr);
@@ -29,7 +29,7 @@ namespace SWPatcher.Helpers.Steam
         private static SteamManifestSection ReadSection(string nameLine, StreamReader sr)
         {
             string name = nameLine.TrimStart('"').TrimEnd('"');
-            var elements = new Dictionary<string, SteamManifestElement>();
+            Dictionary<string, SteamManifestElement> elements = new Dictionary<string, SteamManifestElement>();
 
             string sectionStart = sr.ReadLine();
             sectionStart = sectionStart.TrimStart('\t').TrimEnd('\t');
@@ -75,7 +75,7 @@ namespace SWPatcher.Helpers.Steam
 
         public static async Task<SteamManifest> LoadAsync(string path)
         {
-            using (var sr = new StreamReader(path))
+            using (StreamReader sr = new StreamReader(path))
             {
                 string nameLine = await sr.ReadLineAsync().ConfigureAwait(false);
                 SteamManifestSection mainSection = await ReadSectionAsync(nameLine, sr);
@@ -87,7 +87,7 @@ namespace SWPatcher.Helpers.Steam
         private static async Task<SteamManifestSection> ReadSectionAsync(string nameLine, StreamReader sr)
         {
             string name = nameLine.TrimStart('"').TrimEnd('"');
-            var elements = new Dictionary<string, SteamManifestElement>();
+            Dictionary<string, SteamManifestElement> elements = new Dictionary<string, SteamManifestElement>();
 
             string sectionStart = await sr.ReadLineAsync().ConfigureAwait(false);
             sectionStart = sectionStart.TrimStart('\t').TrimEnd('\t');

@@ -337,7 +337,7 @@ namespace SWPatcher.Forms
                 IniSection clientVerSection = clientIni.Sections[Strings.IniName.Ver.Section];
 
                 string translationIniPath = Path.Combine(e.Language.Path, Strings.IniName.Translation);
-                var translationIni = new IniFile();
+                IniFile translationIni = new IniFile();
 
                 IniKey translationDateKey = new IniKey(translationIni, Strings.IniName.Patcher.KeyDate, Methods.DateToString(e.Language.LastUpdate));
                 IniSection translationPatcherSection = new IniSection(translationIni, Strings.IniName.Patcher.Section, translationDateKey);

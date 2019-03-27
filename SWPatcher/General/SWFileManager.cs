@@ -50,13 +50,13 @@ namespace SWPatcher.General
             SWFiles = new List<SWFile>();
 
             byte[] packData;
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
             {
                 packData = client.DownloadData(url);
             }
 
             IniFile ini = new IniFile();
-            using (var stream = new MemoryStream(packData))
+            using (MemoryStream stream = new MemoryStream(packData))
             {
                 ini.Load(stream);
             }

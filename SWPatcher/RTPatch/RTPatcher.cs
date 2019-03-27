@@ -267,13 +267,13 @@ namespace SWPatcher.RTPatch
 
             if (File.Exists(soulworkerManifestPath))
             {
-                var manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifestPath));
+                JObject manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifestPath));
                 clientVersion1 = Convert.ToInt32(manifestJson["gameinfo"]["version"].Value<string>());
             }
 
             if (File.Exists(soulworkerManifest2Path))
             {
-                var manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifest2Path));
+                JObject manifestJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(soulworkerManifest2Path));
                 clientVersion2 = Convert.ToInt32(manifestJson["gameinfo"]["version"].Value<string>());
             }
 
@@ -329,7 +329,7 @@ namespace SWPatcher.RTPatch
             libraryPaths.Add(mainSteamLibrary);
             string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
 
-            var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+            SteamManifest libraryManifest = SteamManifest.Load(libraryFoldersFile);
             int i = 1;
             while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
             {
@@ -342,12 +342,12 @@ namespace SWPatcher.RTPatch
                 string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
                 if (File.Exists(acf))
                 {
-                    var smacf = SteamManifest.Load(acf);
+                    SteamManifest smacf = SteamManifest.Load(acf);
                     if (smacf.Elements.TryGetValue("StateFlags", out SteamManifestElement sme))
                     {
                         if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
                         {
-                            var appState = (AppState)stateFlagInt;
+                            AppState appState = (AppState)stateFlagInt;
                             if (appState == AppState.StateFullyInstalled)
                             {
                                 success = true;
@@ -407,7 +407,7 @@ namespace SWPatcher.RTPatch
 
         private Version GetNextVersion(Version clientVer)
         {
-            var result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build, clientVer.Revision + 1);
+            Version result = new Version(clientVer.Major, clientVer.Minor, clientVer.Build, clientVer.Revision + 1);
 
             if (!WebFileExists(this.Url + VersionToRTP(result)))
             {

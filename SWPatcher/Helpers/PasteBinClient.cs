@@ -71,7 +71,7 @@ namespace SWPatcher.Helpers
             parameters[ApiParameters.UserPassword] = password;
 
             byte[] bytes;
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
                 bytes = client.UploadValues(ApiLoginUrl, parameters);
             string resp = GetResponseText(bytes);
             if (resp.StartsWith("Bad API request"))
@@ -104,7 +104,7 @@ namespace SWPatcher.Helpers
             SetIfNotEmpty(parameters, ApiParameters.UserKey, this.ApiUserKey);
 
             byte[] bytes;
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
                 bytes = client.UploadValues(ApiPostUrl, parameters);
             string resp = GetResponseText(bytes);
             if (resp.StartsWith("Bad API request"))
@@ -144,7 +144,7 @@ namespace SWPatcher.Helpers
 
         private NameValueCollection GetBaseParameters()
         {
-            var parameters = new NameValueCollection
+            NameValueCollection parameters = new NameValueCollection
             {
                 [ApiParameters.DevKey] = this.ApiDevKey
             };
@@ -153,7 +153,7 @@ namespace SWPatcher.Helpers
 
         private static string GetResponseText(byte[] bytes)
         {
-            using (var reader = new StreamReader(new MemoryStream(bytes)))
+            using (StreamReader reader = new StreamReader(new MemoryStream(bytes)))
             {
                 return reader.ReadToEnd();
             }

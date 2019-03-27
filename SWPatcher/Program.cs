@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using SWPatcher.Forms;
 using SWPatcher.Helpers;
 using SWPatcher.Helpers.GlobalVariables;
 
@@ -35,7 +36,7 @@ namespace SWPatcher
             Logger.Start();
 
             string[] args = Environment.GetCommandLineArgs();
-            var argsList = new List<string>(args);
+            List<string> argsList = new List<string>(args);
 
             argsList.Insert(0, Thread.CurrentThread.ManagedThreadId.ToString());
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), argsList.ToArray()));
@@ -46,7 +47,7 @@ namespace SWPatcher
             Application.ThreadException += new ThreadExceptionEventHandler(Program.Application_ThreadException);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
-            var controller = new SingleInstanceController();
+            SingleInstanceController controller = new SingleInstanceController();
             controller.Run(args);
         }
 
@@ -76,7 +77,7 @@ namespace SWPatcher
 
             private void SingleInstanceController_StartupNextInstance(object sender, Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs e)
             {
-                var mainForm = this.MainForm as Forms.MainForm;
+                MainForm mainForm = this.MainForm as Forms.MainForm;
                 mainForm.RestoreFromTray();
             }
 

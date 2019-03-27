@@ -57,7 +57,7 @@ namespace SWPatcher.Forms
                     {
                         string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
-                        foreach (var file in filePaths)
+                        foreach (string file in filePaths)
                         {
                             File.Delete(file);
                         }
@@ -100,7 +100,7 @@ namespace SWPatcher.Forms
 
             string[] filePaths = Directory.GetFiles(language.BackupPath, "*", SearchOption.AllDirectories);
 
-            foreach (var file in filePaths)
+            foreach (string file in filePaths)
             {
                 string path = Path.Combine(UserSettings.GamePath, file.Substring(language.BackupPath.Length + 1));
                 Logger.Info($"Restoring file original=[{path}] backup=[{file}]");
@@ -134,7 +134,7 @@ namespace SWPatcher.Forms
         {
             string[] tmpFilePaths = Directory.GetFiles(language.Path, "*.tmp", SearchOption.AllDirectories);
 
-            foreach (var tmpFile in tmpFilePaths)
+            foreach (string tmpFile in tmpFilePaths)
             {
                 File.Delete(tmpFile);
                 Logger.Info($"Deleting tmp file=[{tmpFile}]");
@@ -208,7 +208,7 @@ namespace SWPatcher.Forms
             libraryPaths.Add(mainSteamLibrary);
             string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
 
-            var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+            SteamManifest libraryManifest = SteamManifest.Load(libraryFoldersFile);
             int i = 1;
             while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
             {
@@ -220,7 +220,7 @@ namespace SWPatcher.Forms
                 string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
                 if (File.Exists(acf))
                 {
-                    var smacf = SteamManifest.Load(acf);
+                    SteamManifest smacf = SteamManifest.Load(acf);
                     if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
                     {
                         string swFolder = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
@@ -254,7 +254,7 @@ namespace SWPatcher.Forms
 
         private void InitRegionsConfigData()
         {
-            var doc = new XmlDocument();
+            XmlDocument doc = new XmlDocument();
             string xmlPath = Urls.TranslationGitHubHome + Strings.IniName.LanguagePack;
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), xmlPath));
             doc.Load(xmlPath);
@@ -309,7 +309,7 @@ namespace SWPatcher.Forms
 
         private static string GetSHA256(string filename)
         {
-            using (var sha256 = SHA256.Create())
+            using (SHA256 sha256 = SHA256.Create())
             using (FileStream fs = File.OpenRead(filename))
             {
                 return BitConverter.ToString(sha256.ComputeHash(fs)).Replace("-", "");
@@ -318,7 +318,7 @@ namespace SWPatcher.Forms
 
         private string UploadToPasteBin(string title, string text, PasteBinExpiration expiration, bool isPrivate, string format)
         {
-            var client = new PasteBinClient(Strings.PasteBin.DevKey);
+            PasteBinClient client = new PasteBinClient(Strings.PasteBin.DevKey);
 
             try
             {
@@ -329,7 +329,7 @@ namespace SWPatcher.Forms
                 Logger.Error(ex);
             }
 
-            var entry = new PasteBinEntry
+            PasteBinEntry entry = new PasteBinEntry
             {
                 Title = title,
                 Text = text,

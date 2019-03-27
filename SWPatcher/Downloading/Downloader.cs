@@ -91,7 +91,7 @@ namespace SWPatcher.Downloading
             }
             else
             {
-                var index = (int)e.UserState;
+                int index = (int)e.UserState;
                 SWFile swFile = SWFileManager.GetElementAt(index);
                 if (swFile is ArchivedSWFile archivedSWFile)
                 {

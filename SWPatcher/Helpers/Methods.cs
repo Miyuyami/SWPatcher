@@ -176,14 +176,14 @@ namespace SWPatcher.Helpers
 
         internal static IniFile GetJPServerIni()
         {
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
             {
                 try
                 {
                     byte[] iniBytes = client.DownloadData(Urls.SoulworkerSettingsHome + Strings.IniName.ServerVer);
 
-                    var ini = new IniFile();
-                    using (var ms = new MemoryStream(iniBytes))
+                    IniFile ini = new IniFile();
+                    using (MemoryStream ms = new MemoryStream(iniBytes))
                     {
                         ini.Load(ms);
                     }
@@ -213,11 +213,11 @@ namespace SWPatcher.Helpers
 
         internal static int GetKRServerVersion()
         {
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
             {
                 var apiJSON = new { message = "", result = "", value = new { pid = "", service_code = Int32.MaxValue, live_version = Int32.MinValue, live_project_url = "" } };
 
-                var values = new NameValueCollection(2)
+                NameValueCollection values = new NameValueCollection(2)
                 {
                     [Strings.Web.KR.ServiceCode] = "11",
                     [Strings.Web.KR.LocalVersion] = "0"
@@ -241,14 +241,14 @@ namespace SWPatcher.Helpers
         {
             Logger.Debug(Methods.MethodFullName(MethodBase.GetCurrentMethod(), exeFileBytes.Length.ToString(), gameExePatchedPath, patchInstructionFilePath));
 
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
             {
                 string hexResult = BitConverter.ToString(exeFileBytes).Replace("-", "");
                 string patchedHexResult = String.Copy(hexResult);
 
                 byte[] fileBytes = client.DownloadData(patchInstructionFilePath);
-                var ini = new IniFile();
-                using (var ms = new MemoryStream(fileBytes))
+                IniFile ini = new IniFile();
+                using (MemoryStream ms = new MemoryStream(fileBytes))
                 {
                     ini.Load(ms);
                 }
@@ -335,9 +335,9 @@ namespace SWPatcher.Helpers
 
         internal static MemoryStream GetZippedFileStream(byte[] zipData, string fileName, string password)
         {
-            var result = new MemoryStream();
+            MemoryStream result = new MemoryStream();
 
-            using (var ms = new MemoryStream(zipData))
+            using (MemoryStream ms = new MemoryStream(zipData))
             using (var zip = ZipFile.Read(ms))
             {
                 zip.Password = password;
@@ -351,7 +351,7 @@ namespace SWPatcher.Helpers
 
         internal static MemoryStream GetZippedFileStream(ZipFile zip, string fileName, string password)
         {
-            var result = new MemoryStream();
+            MemoryStream result = new MemoryStream();
 
             zip.Password = password;
             zip.FlattenFoldersOnExtract = true;
@@ -473,7 +473,7 @@ namespace SWPatcher.Helpers
 
         internal static SecureString ToSecureString(string input)
         {
-            var secure = new SecureString();
+            SecureString secure = new SecureString();
             foreach (char c in input)
             {
                 secure.AppendChar(c);
@@ -565,7 +565,7 @@ namespace SWPatcher.Helpers
 
         private static string GetProcessPath(int processId)
         {
-            var buffer = new StringBuilder(1024);
+            StringBuilder buffer = new StringBuilder(1024);
             IntPtr hprocess = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryLimitedInformation, false, processId);
             if (hprocess != IntPtr.Zero)
             {
@@ -599,7 +599,7 @@ namespace SWPatcher.Helpers
             {
                 string securityExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Strings.FileName.SecurityExe);
 
-                var startInfo = new ProcessStartInfo
+                ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     UseShellExecute = true,
                     Verb = "runas",
@@ -607,7 +607,7 @@ namespace SWPatcher.Helpers
                     FileName = securityExePath
                 };
 
-                var process = Process.Start(startInfo);
+                Process process = Process.Start(startInfo);
                 process.WaitForExit();
 
                 int exitCode = process.ExitCode;
@@ -628,7 +628,7 @@ namespace SWPatcher.Helpers
 
         internal static bool DirectoryHasRights(string folderPath, FileSystemRights rights)
         {
-            var currentUserIdentity = WindowsIdentity.GetCurrent();
+            WindowsIdentity currentUserIdentity = WindowsIdentity.GetCurrent();
             SecurityIdentifier currentUserSID = currentUserIdentity.User;
             bool allow = false;
             bool deny = false;

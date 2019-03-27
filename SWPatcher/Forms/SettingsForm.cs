@@ -92,11 +92,11 @@ namespace SWPatcher.Forms
                 this.TextBoxPassword.Text = this.GameUserPassword = maskedGamePw;
             }
 
-            var def = new ResxLanguage(StringLoader.GetText("match_windows"), "default");
-            var en = new ResxLanguage("English", "en");
-            var ko = new ResxLanguage("한국어", "ko");
-            var vi = new ResxLanguage("Tiếng Việt", "vi");
-            var ru = new ResxLanguage("Русский", "ru");
+            ResxLanguage def = new ResxLanguage(StringLoader.GetText("match_windows"), "default");
+            ResxLanguage en = new ResxLanguage("English", "en");
+            ResxLanguage ko = new ResxLanguage("한국어", "ko");
+            ResxLanguage vi = new ResxLanguage("Tiếng Việt", "vi");
+            ResxLanguage ru = new ResxLanguage("Русский", "ru");
             this.ComboBoxUILanguage.DataSource = new ResxLanguage[] { def, en, ko, vi, ru };
             string savedCode = this.UILanguage = UserSettings.UILanguageCode;
             if (en.Code == savedCode)
@@ -157,7 +157,7 @@ namespace SWPatcher.Forms
 
         private void ButtonChangePatcherDirectory_Click(object sender, EventArgs e)
         {
-            using (var folderDialog = new FolderBrowserDialog
+            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog
             {
                 Description = StringLoader.GetText("dialog_folder_change_patcher_dir")
             })
@@ -227,7 +227,7 @@ namespace SWPatcher.Forms
         {
             string optionExePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Strings.FileName.OptionExe);
 
-            var startInfo = new ProcessStartInfo
+            ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 UseShellExecute = true,
                 Verb = "runas",
@@ -267,7 +267,7 @@ namespace SWPatcher.Forms
 
                 if (this.GameUserPassword != MaskPassword(UserSettings.GamePw))
                 {
-                    using (var secure = Methods.ToSecureString(this.GameUserPassword))
+                    using (SecureString secure = Methods.ToSecureString(this.GameUserPassword))
                     {
                         UserSettings.GamePw = Methods.EncryptString(secure);
                     }
@@ -304,7 +304,7 @@ namespace SWPatcher.Forms
             string rtpLogsDirectory = Path.Combine(oldPath, Strings.FolderName.RTPatchLogs);
             string logFilePath = Path.Combine(oldPath, Strings.FileName.Log);
 
-            foreach (var folder in movingFolders)
+            foreach (string folder in movingFolders)
                 MoveDirectory(Path.Combine(oldPath, folder), newPath);
 
             MoveDirectory(rtpLogsDirectory, newPath);
@@ -319,10 +319,10 @@ namespace SWPatcher.Forms
                 string destination = Path.Combine(newPath, Path.GetFileName(directory));
                 Directory.CreateDirectory(destination);
 
-                foreach (var dirPath in Directory.GetDirectories(directory, "*", SearchOption.AllDirectories))
+                foreach (string dirPath in Directory.GetDirectories(directory, "*", SearchOption.AllDirectories))
                     Directory.CreateDirectory(dirPath.Replace(directory, destination));
 
-                foreach (var filePath in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+                foreach (string filePath in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
                     MoveFile(filePath, filePath.Replace(directory, destination), true);
 
                 Directory.Delete(directory, true);
@@ -361,7 +361,7 @@ namespace SWPatcher.Forms
 
         private static string SHA256String(string str)
         {
-            using (var sha256 = SHA256.Create())
+            using (SHA256 sha256 = SHA256.Create())
             {
                 byte[] result = sha256.ComputeHash(Encoding.Unicode.GetBytes(str));
                 StringBuilder sb = new StringBuilder();

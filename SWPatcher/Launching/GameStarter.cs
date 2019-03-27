@@ -104,7 +104,7 @@ namespace SWPatcher.Launching
                         case "jp":
                             Methods.RegionDoesNotSupportLogin(); // TODO: jp login?
                             break;
-                            using (var client = new MyWebClient())
+                            using (MyWebClient client = new MyWebClient())
                             {
                                 HangameLogin(client);
                                 string[] gameStartArgs = GetGameStartArguments(client);
@@ -196,7 +196,7 @@ namespace SWPatcher.Launching
 
                 if (UserSettings.WantToLogin)
                 {
-                    var regionId = this.Language.ApplyingRegionId;
+                    string regionId = this.Language.ApplyingRegionId;
                     switch (regionId)
                     {
                         case "jp":
@@ -309,7 +309,7 @@ namespace SWPatcher.Launching
                 throw new Exception(StringLoader.GetText("exception_empty_id"));
             }
 
-            var values = new NameValueCollection(5)
+            NameValueCollection values = new NameValueCollection(5)
             {
                 [Strings.Web.PostEncodeId] = HttpUtility.UrlEncode(id),
                 [Strings.Web.PostEncodeFlag] = Strings.Web.PostEncodeFlagDefaultValue,
@@ -359,7 +359,7 @@ namespace SWPatcher.Launching
                 throw new Exception(StringLoader.GetText("exception_empty_id"));
             }
 
-            var values = new NameValueCollection(3)
+            NameValueCollection values = new NameValueCollection(3)
             {
                 [Strings.Web.KR.PostId] = id
             };
@@ -401,7 +401,7 @@ namespace SWPatcher.Launching
                 case "610":
                     throw new Exception(StringLoader.GetText("exception_account_to_be_deleted"));
                 case "550":
-                    var onlyIdValues = new NameValueCollection(1)
+                    NameValueCollection onlyIdValues = new NameValueCollection(1)
                     {
                         [Strings.Web.KR.PostId] = id
                     };
@@ -550,7 +550,7 @@ namespace SWPatcher.Launching
         private void StartRawJP()
         {
             ProcessStartInfo startInfo = null;
-            using (var client = new MyWebClient())
+            using (MyWebClient client = new MyWebClient())
             {
                 HangameLogin(client);
                 string[] gameStartArgs = GetGameStartArguments(client);
@@ -570,7 +570,7 @@ namespace SWPatcher.Launching
 
         private void LoginStartKR()
         {
-            using (var client = new MyWebClient())
+            using (MyWebClient client = new MyWebClient())
             {
                 StoveLogin(client);
                 string stoveProtocol = GetKRGameStartProtocol(client);
@@ -583,7 +583,7 @@ namespace SWPatcher.Launching
 
         private void StartRawKR()
         {
-            using (var client = new MyWebClient())
+            using (MyWebClient client = new MyWebClient())
             {
                 StoveLogin(client);
                 string stoveProtocol = GetKRGameStartProtocol(client);

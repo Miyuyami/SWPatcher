@@ -49,7 +49,7 @@ namespace SWPatcher.Helpers
         /// <exception cref="System.IO.IOException">An I/O error occurs.</exception>
         internal static string[] ToStringArray(this byte[] byteArray, Encoding encoding)
         {
-            using (var reader = new StreamReader(new MemoryStream(byteArray), encoding))
+            using (StreamReader reader = new StreamReader(new MemoryStream(byteArray), encoding))
             {
                 List<string> result = new List<string>();
                 string line;

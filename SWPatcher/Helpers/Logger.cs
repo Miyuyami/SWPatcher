@@ -106,7 +106,7 @@ namespace SWPatcher.Helpers
             byte[] messageBytes = System.Text.Encoding.Unicode.GetBytes(logEntry);
             ushort[] messageShorts = new ushort[messageBytes.Length / 2];
 
-            using (var bw = new BinaryWriter(File.Open(Strings.FileName.Log, FileMode.Append, FileAccess.Write)))
+            using (BinaryWriter bw = new BinaryWriter(File.Open(Strings.FileName.Log, FileMode.Append, FileAccess.Write)))
             {
                 for (int i = 0; i < messageBytes.Length; i += 2)
                 {
@@ -169,7 +169,7 @@ namespace SWPatcher.Helpers
                 _running = true;
             }
 
-            var thread = new Thread(ConsumeLogs)
+            Thread thread = new Thread(ConsumeLogs)
             {
                 IsBackground = true
             };

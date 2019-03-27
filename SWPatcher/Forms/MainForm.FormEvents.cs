@@ -278,7 +278,7 @@ namespace SWPatcher.Forms
             byte[] logBytes = File.ReadAllBytes(Strings.FileName.Log);
             logBytes = TrimArrayIfNecessary(logBytes);
             string logText = BitConverter.ToString(logBytes).Replace("-", "");
-            var pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "text");
+            string pasteUrl = UploadToPasteBin(logTitle, logText, PasteBinExpiration.OneHour, true, "text");
 
             if (!String.IsNullOrEmpty(pasteUrl))
             {

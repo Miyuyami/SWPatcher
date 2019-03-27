@@ -15,7 +15,7 @@
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>C:\Users\devbi\Documents\GitHub\SWPatcher\SWPatcher\SWPatcher\publish\</PublishUrl>
+    <PublishUrl>C:\Users\devbi\Documents\GitHub\SWPatcher\SWPatcher\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,14 +25,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/dev-iCEY/SWPatcher/master/SWPatcher/SWPatcher/publish/</InstallUrl>
+    <InstallUrl>https://raw.githubusercontent.com/dev-iCEY/SWPatcher/master/SWPatcher/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/dev-iCEY/SWPatcher/master/SWPatcher/publish/</UpdateUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>Soulworker Patcher</ProductName>
     <PublisherName>Miyu</PublisherName>
     <MinimumRequiredVersion>2.11.0.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>2.11.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

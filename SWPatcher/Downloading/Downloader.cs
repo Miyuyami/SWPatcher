@@ -62,7 +62,7 @@ namespace SWPatcher.Downloading
             }
             else
             {
-                throw new Exception(StringLoader.GetText("exception_already_latest_translation", Methods.DateToString(this.Language.LastUpdate)));
+                throw new Exception(StringLoader.GetText("exception_already_latest_translation", Methods.DateToLocalString(this.Language.LastUpdate)));
             }
         }
 

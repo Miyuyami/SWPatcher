@@ -122,7 +122,7 @@ namespace SWPatcher.Forms
 
                 if (Methods.HasNewTranslations(language))
                 {
-                    this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language, Methods.DateToString(language.LastUpdate));
+                    this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language, Methods.DateToLocalString(language.LastUpdate));
                 }
                 else
                 {

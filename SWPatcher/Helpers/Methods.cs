@@ -16,12 +16,6 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Ionic.Zip;
-using MadMilkman.Ini;
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using SWPatcher.General;
-using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -38,6 +32,12 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
+using Ionic.Zip;
+using MadMilkman.Ini;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using SWPatcher.General;
+using SWPatcher.Helpers.GlobalVariables;
 
 namespace SWPatcher.Helpers
 {
@@ -54,6 +54,14 @@ namespace SWPatcher.Helpers
         internal static string DateToString(DateTime date)
         {
             return date.ToString(DateFormat, CultureInfo.InvariantCulture);
+        }
+
+        internal static string DateToLocalString(DateTime date)
+        {
+            var source = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
+            var dst = TimeZoneInfo.Local;
+
+            return DateToString(TimeZoneInfo.ConvertTime(date, source, dst));
         }
 
         internal static string ExeptionParser(Exception ex)

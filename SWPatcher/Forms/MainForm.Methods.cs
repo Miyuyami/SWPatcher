@@ -239,7 +239,7 @@ namespace SWPatcher.Forms
         internal void ResetTranslation(Language language)
         {
             DeleteTranslationIni(language);
-            this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.ToString(), Methods.DateToString(language.LastUpdate));
+            this.LabelNewTranslations.Text = StringLoader.GetText("form_label_new_translation", language.ToString(), Methods.DateToLocalString(language.LastUpdate));
         }
 
         private static void DeleteTranslationIni(Language language)

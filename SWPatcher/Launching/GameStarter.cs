@@ -101,7 +101,7 @@ namespace SWPatcher.Launching
                     switch (regionId)
                     {
                         case "jp":
-                            StartHangameJP();
+                            StartHangameJP(() => BackupAndPlaceFiles(this.Language));
 
                             this.Worker.ReportProgress((int)State.WaitClient);
                             while (true)
@@ -126,7 +126,7 @@ namespace SWPatcher.Launching
 
                             break;
                         case "gjp":
-                            StartGamecomJP();
+                            StartGamecomJP(() => BackupAndPlaceFiles(this.Language));
 
                             this.Worker.ReportProgress((int)State.WaitClient);
                             while (true)
@@ -151,7 +151,7 @@ namespace SWPatcher.Launching
 
                             break;
                         case "kr":
-                            this.LoginStartKR();
+                            StartStoveKR(() => BackupAndPlaceFiles(this.Language));
 
                             this.Worker.ReportProgress((int)State.WaitClient);
                             while (true)
@@ -236,7 +236,7 @@ namespace SWPatcher.Launching
 
                             break;
                         case "kr":
-                            StartRawKR();
+                            StartStoveKR();
                             e.Cancel = true;
 
                             break;
@@ -580,45 +580,38 @@ namespace SWPatcher.Launching
             return result.Split(' ');
         }
 
-        private static Process StartHangameJP()
+        private static Process StartHangameJP(Action onSuccess = null)
         {
             using (var client = new MyWebClient())
             {
                 string gameStartArg = GetGameStartArgumentHangameJP(HangameLogin(client));
 
+                onSuccess?.Invoke();
+
                 return Process.Start(gameStartArg);
             }
         }
 
-        private static Process StartGamecomJP()
+        private static Process StartGamecomJP(Action onSuccess = null)
         {
             using (var client = new MyWebClient())
             {
                 string gameStartArg = GetGameStartArgumentGamecomJP(GamecomLogin(client));
 
+                onSuccess?.Invoke();
+
                 return Process.Start(gameStartArg);
             }
         }
 
-        private void LoginStartKR()
+        private static void StartStoveKR(Action onSuccess = null)
         {
             using (var client = new MyWebClient())
             {
                 StoveLogin(client);
                 string stoveProtocol = GetKRGameStartProtocol(client);
 
-                BackupAndPlaceFiles(this.Language);
-
-                Process.Start(stoveProtocol);
-            }
-        }
-
-        private static void StartRawKR()
-        {
-            using (var client = new MyWebClient())
-            {
-                StoveLogin(client);
-                string stoveProtocol = GetKRGameStartProtocol(client);
+                onSuccess?.Invoke();
 
                 Process.Start(stoveProtocol);
             }

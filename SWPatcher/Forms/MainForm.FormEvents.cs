@@ -165,6 +165,10 @@ namespace SWPatcher.Forms
                         newGamePath = GetJPSwPathFromRegistry();
 
                         break;
+                    case "gjp":
+                        newGamePath = GetJPSwPathFromRegistry();
+
+                        break;
                     case "kr":
                         newGamePath = GetKRSwPathFromRegistry();
 
@@ -195,7 +199,7 @@ namespace SWPatcher.Forms
                 {
                     if (newGamePath != UserSettings.GamePath)
                     {
-                        string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, region.Id, Methods.GetGameExeName(region.Id));
+                        string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, region.Folder, Methods.GetGameExeName(region.Id));
                         if (File.Exists(gameExePatchedPath))
                         {
                             File.Delete(gameExePatchedPath);
@@ -243,7 +247,11 @@ namespace SWPatcher.Forms
             switch (region.Id)
             {
                 case "jp":
-                    Process.Start("iexplore.exe", Urls.SoulworkerJPHome);
+                    Process.Start(Urls.SoulworkerJPHangameHome);
+
+                    break;
+                case "gjp":
+                    Process.Start(Urls.SoulworkerJPGamecomHome);
 
                     break;
                 case "kr":

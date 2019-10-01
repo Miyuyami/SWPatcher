@@ -752,7 +752,16 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nhật Bản.
+        ///   Looks up a localized string similar to Nhật Bản Gamecom.
+        /// </summary>
+        internal static string form_region_gjp {
+            get {
+                return ResourceManager.GetString("form_region_gjp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nhật Bản Hangame.
         /// </summary>
         internal static string form_region_jp {
             get {

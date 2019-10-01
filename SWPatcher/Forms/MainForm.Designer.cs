@@ -327,7 +327,7 @@ namespace SWPatcher.Forms
             this.ComboBoxRegions.FormattingEnabled = true;
             this.ComboBoxRegions.Location = new System.Drawing.Point(71, 129);
             this.ComboBoxRegions.Name = "ComboBoxRegions";
-            this.ComboBoxRegions.Size = new System.Drawing.Size(85, 21);
+            this.ComboBoxRegions.Size = new System.Drawing.Size(105, 21);
             this.ComboBoxRegions.TabIndex = 1;
             this.ComboBoxRegions.SelectionChangeCommitted += new System.EventHandler(this.ComboBoxRegions_SelectionChangeCommitted);
             // 

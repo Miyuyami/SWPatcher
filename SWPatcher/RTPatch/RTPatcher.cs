@@ -77,6 +77,7 @@ namespace SWPatcher.RTPatch
             switch (regionId)
             {
                 case "jp":
+                case "gjp":
                     LoadVersions();
                     Logger.Debug(Methods.MethodFullName("RTPatch", Thread.CurrentThread.ManagedThreadId.ToString(), this.ClientNextVersion.ToString()));
 

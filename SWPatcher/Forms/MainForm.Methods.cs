@@ -16,10 +16,6 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVariables;
-using SWPatcher.Helpers.Steam;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +23,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using System.Xml;
+using SWPatcher.General;
+using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVariables;
+using SWPatcher.Helpers.Steam;
 
 namespace SWPatcher.Forms
 {
@@ -78,11 +78,12 @@ namespace SWPatcher.Forms
             }
 
             string regionId = language.ApplyingRegionId;
+            string regionFolder = language.ApplyingRegionFolder;
             string backupFilePath = Path.Combine(language.BackupPath, Methods.GetGameExeName(regionId));
             if (File.Exists(backupFilePath))
             {
                 string gameExePath = Path.Combine(UserSettings.GamePath, Methods.GetGameExeName(regionId));
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionId, Methods.GetGameExeName(regionId));
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionFolder, Methods.GetGameExeName(regionId));
                 Logger.Info($"Restoring .exe original=[{gameExePath}] backup=[{gameExePatchedPath}]");
 
                 if (File.Exists(gameExePath))
@@ -214,7 +215,7 @@ namespace SWPatcher.Forms
             {
                 libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
             }
-            
+
             foreach (string libraryPath in libraryPaths)
             {
                 string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
@@ -270,23 +271,40 @@ namespace SWPatcher.Forms
 
                 string regionId = regionNode.Name;
                 string regionName = StringLoader.GetText(regionNode.Attributes[Strings.Xml.Attributes.Name].Value);
-                XmlElement xmlLanguages = regionNode[Strings.Xml.Languages];
-                int languageCount = xmlLanguages.ChildNodes.Count;
-                Language[] regionLanguages = new Language[languageCount];
+                string regionFolder = regionNode.Attributes[Strings.Xml.Attributes.Folder].Value;
+                string languagesLinkId = regionNode.Attributes[Strings.Xml.Attributes.LanguagesLinkId]?.Value;
 
-                for (int j = 0; j < languageCount; j++)
+                if (String.IsNullOrWhiteSpace(languagesLinkId))
                 {
-                    XmlNode languageNode = xmlLanguages.ChildNodes[j];
+                    XmlElement xmlLanguages = regionNode[Strings.Xml.Languages];
+                    int languageCount = xmlLanguages.ChildNodes.Count;
+                    Language[] regionLanguages = new Language[languageCount];
 
-                    string languageId = languageNode.Name;
-                    string languageName = languageNode.Attributes[Strings.Xml.Attributes.Name].Value;
-                    string languageDateString = languageNode[Strings.Xml.Value].InnerText;
-                    DateTime languageDate = Methods.ParseDate(languageDateString);
+                    for (int j = 0; j < languageCount; j++)
+                    {
+                        XmlNode languageNode = xmlLanguages.ChildNodes[j];
 
-                    regionLanguages[j] = new Language(languageId, languageName, languageDate, regionId);
+                        string languageId = languageNode.Name;
+                        string languageName = languageNode.Attributes[Strings.Xml.Attributes.Name].Value;
+                        string languageDateString = languageNode[Strings.Xml.Value].InnerText;
+                        DateTime languageDate = Methods.ParseDate(languageDateString);
+
+                        regionLanguages[j] = new Language(languageId, languageName, languageDate, regionId, regionFolder);
+                    }
+
+                    regions[i] = new Region(regionId, regionName, regionFolder, regionLanguages);
                 }
+                else
+                {
+                    Region linkedRegion = regions.Where(r => r.Id == languagesLinkId).First();
+                    var regionLanguages = new List<Language>();
+                    foreach (var l in linkedRegion.AppliedLanguages)
+                    {
+                        regionLanguages.Add(new Language(l.Id, l.Name, l.LastUpdate, regionId, regionFolder));
+                    }
 
-                regions[i] = new Region(regionId, regionName, regionLanguages);
+                    regions[i] = new Region(regionId, regionName, regionFolder, regionLanguages.ToArray());
+                }
             }
 
             this.ComboBoxRegions.DataSource = regions.Length > 0 ? regions : null;
@@ -372,12 +390,12 @@ namespace SWPatcher.Forms
 
         internal IEnumerable<string> GetTranslationFolders()
         {
-            return this.ComboBoxRegions.Items.Cast<Region>().Select(s => s.Id);
+            return this.ComboBoxRegions.Items.Cast<Region>().Select(s => s.Folder);
         }
 
-        internal string GetSelectedRegionId()
+        internal Region GetSelectedRegion()
         {
-            return (this.ComboBoxRegions.SelectedItem as Region).Id;
+            return this.ComboBoxRegions.SelectedItem as Region;
         }
     }
 }

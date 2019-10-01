@@ -697,6 +697,7 @@ namespace SWPatcher.Helpers
             switch (regionId)
             {
                 case "jp":
+                case "gjp":
                     return Strings.FileName.GameExeJP;
                 case "kr":
                 case "nkr":

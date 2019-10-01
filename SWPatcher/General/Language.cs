@@ -16,8 +16,8 @@
  * along with Closers Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using SWPatcher.Helpers.GlobalVariables;
 using System;
+using SWPatcher.Helpers.GlobalVariables;
 
 namespace SWPatcher.General
 {
@@ -27,32 +27,25 @@ namespace SWPatcher.General
         internal string Name { get; }
         internal DateTime LastUpdate { get; }
         internal string ApplyingRegionId { get; }
-        internal string Path => System.IO.Path.Combine(this.ApplyingRegionId, this.Name);
-        internal string BackupPath => System.IO.Path.Combine(this.ApplyingRegionId, Strings.FolderName.Backup);
+        internal string ApplyingRegionFolder { get; }
+        internal string Path => System.IO.Path.Combine(this.ApplyingRegionFolder, this.Name);
+        internal string BackupPath => System.IO.Path.Combine(this.ApplyingRegionFolder, Strings.FolderName.Backup);
 
         internal Language(string id)
         {
             this.Id = id;
         }
 
-        private Language(string id, string name, string applyingRegionId)
+        private Language(string id, string name, string applyingRegionId, string applyingRegionFolder) : this(id)
         {
-            this.Id = id;
             this.Name = name;
             this.ApplyingRegionId = applyingRegionId;
+            this.ApplyingRegionFolder = applyingRegionFolder;
         }
 
-        internal Language(string id, string name, DateTime lastUpdate, string applyingRegionId)
+        internal Language(string id, string name, DateTime lastUpdate, string applyingRegionId, string applyingRegionFolder) : this(id, name, applyingRegionId, applyingRegionFolder)
         {
-            this.Id = id;
-            this.Name = name;
             this.LastUpdate = lastUpdate;
-            this.ApplyingRegionId = applyingRegionId;
-        }
-
-        internal static Language BackupLanguage(string applyingRegionId)
-        {
-            return new Language("bak", Strings.FolderName.Backup, applyingRegionId);
         }
 
         public override bool Equals(object obj)
@@ -62,7 +55,7 @@ namespace SWPatcher.General
                 return false;
             }
 
-            Language language = obj as Language;
+            var language = obj as Language;
             return this.Id == language.Id;
         }
 

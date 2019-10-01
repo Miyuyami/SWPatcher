@@ -350,7 +350,7 @@
     <value>Gameforge</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
-    <value>Япония</value>
+    <value>Япония Hangame</value>
   </data>
   <data name="form_region_kr" xml:space="preserve">
     <value>Корея</value>
@@ -448,5 +448,8 @@ Soulworker Patcher был сделан, чтобы легко исправлят
   </data>
   <data name="tab_patcher" xml:space="preserve">
     <value>Патчер</value>
+  </data>
+  <data name="form_region_gjp" xml:space="preserve">
+    <value>Япония Gamecom</value>
   </data>
 </root>

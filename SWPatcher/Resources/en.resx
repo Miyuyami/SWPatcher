@@ -428,7 +428,7 @@ Checklist:
     <value>An error occured during login, follow the instructions on the webpage.</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
-    <value>Japan</value>
+    <value>Japan Hangame</value>
   </data>
   <data name="form_region_kr" xml:space="preserve">
     <value>Korea</value>
@@ -453,5 +453,8 @@ Checklist:
   </data>
   <data name="exception_region_unknown" xml:space="preserve">
     <value>Region "{0}" is unknown.</value>
+  </data>
+  <data name="form_region_gjp" xml:space="preserve">
+    <value>Japan Gamecom</value>
   </data>
 </root>

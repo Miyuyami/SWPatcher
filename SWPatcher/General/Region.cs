@@ -22,6 +22,7 @@ namespace SWPatcher.General
     {
         internal string Id { get; }
         internal string Name { get; }
+        internal string Folder { get; }
         internal Language[] AppliedLanguages { get; }
 
         internal Region(string id)
@@ -29,10 +30,10 @@ namespace SWPatcher.General
             this.Id = id;
         }
 
-        internal Region(string id, string name, Language[] appliedLanguages)
+        internal Region(string id, string name, string folder, Language[] appliedLanguages) : this(id)
         {
-            this.Id = id;
             this.Name = name;
+            this.Folder = folder;
             this.AppliedLanguages = appliedLanguages;
         }
 
@@ -43,7 +44,7 @@ namespace SWPatcher.General
                 return false;
             }
 
-            Region region = obj as Region;
+            var region = obj as Region;
             return this.Id == region.Id;
         }
 

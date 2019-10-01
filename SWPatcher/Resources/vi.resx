@@ -437,7 +437,7 @@ Danh sách đối chiếu:
     <value>Ngôn ngữ:</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
-    <value>Nhật Bản</value>
+    <value>Nhật Bản Hangame</value>
   </data>
   <data name="form_region_kr" xml:space="preserve">
     <value>Hàn Quốc</value>
@@ -453,5 +453,8 @@ Danh sách đối chiếu:
   </data>
   <data name="exception_region_unknown" xml:space="preserve">
     <value>Region "{0}" is unknown.</value>
+  </data>
+  <data name="form_region_gjp" xml:space="preserve">
+    <value>Nhật Bản Gamecom</value>
   </data>
 </root>

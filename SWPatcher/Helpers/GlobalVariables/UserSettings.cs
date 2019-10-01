@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    internal static class UserSettings
+    internal sealed class UserSettings
     {
         internal static string PatcherPath
         {
@@ -123,7 +123,7 @@ namespace SWPatcher.Helpers.GlobalVariables
                 Logger.Info($"Direct login choice set to [{value}]");
             }
         }
-
+        
         internal static string UILanguageCode
         {
             get

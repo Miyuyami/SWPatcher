@@ -438,7 +438,7 @@ This is free software, and you are welcome to redistribute it under certain cond
     <value>언어:</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
-    <value>일본</value>
+    <value>일본 Hangame</value>
   </data>
   <data name="form_region_kr" xml:space="preserve">
     <value>한국</value>
@@ -454,5 +454,8 @@ This is free software, and you are welcome to redistribute it under certain cond
   </data>
   <data name="exception_region_unknown" xml:space="preserve">
     <value>Region "{0}" is unknown.</value>
+  </data>
+  <data name="form_region_gjp" xml:space="preserve">
+    <value>일본 Gamecom</value>
   </data>
 </root>

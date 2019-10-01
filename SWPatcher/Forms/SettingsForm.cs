@@ -250,8 +250,8 @@ namespace SWPatcher.Forms
 
                 if (UserSettings.WantToPatchExe != this.WantToPatchSoulworkerExe)
                 {
-                    string regionId = (this.Owner as MainForm).GetSelectedRegionId();
-                    string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionId, Methods.GetGameExeName(regionId));
+                    Region region = (this.Owner as MainForm).GetSelectedRegion();
+                    string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, region.Folder, Methods.GetGameExeName(region.Id));
                     if (File.Exists(gameExePatchedPath))
                     {
                         File.Delete(gameExePatchedPath);

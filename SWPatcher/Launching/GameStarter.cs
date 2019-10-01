@@ -16,10 +16,6 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Newtonsoft.Json;
-using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVariables;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,7 +28,10 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Web;
-using System.Windows.Forms;
+using Newtonsoft.Json;
+using SWPatcher.General;
+using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVariables;
 using static SWPatcher.Forms.MainForm;
 
 namespace SWPatcher.Launching
@@ -80,6 +79,7 @@ namespace SWPatcher.Launching
                 if (UserSettings.WantToPatchExe)
                 {
                     string regionId = this.Language.ApplyingRegionId;
+                    string regionFolder = this.Language.ApplyingRegionFolder;
                     string gameExePath = Path.Combine(UserSettings.GamePath, Methods.GetGameExeName(regionId));
                     string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionId, Methods.GetGameExeName(regionId));
                     string backupFilePath = Path.Combine(this.Language.BackupPath, Methods.GetGameExeName(regionId));
@@ -88,44 +88,70 @@ namespace SWPatcher.Launching
                     {
                         byte[] gameExeBytes = File.ReadAllBytes(gameExePath);
 
-                        Methods.PatchExeFile(gameExeBytes, gameExePatchedPath, Urls.TranslationGitHubHome + regionId + '/' + Strings.IniName.BytesToPatch);
+                        Methods.PatchExeFile(gameExeBytes, gameExePatchedPath, Urls.TranslationGitHubHome + regionFolder + '/' + Strings.IniName.BytesToPatch);
                     }
 
                     BackupAndPlaceFile(gameExePath, gameExePatchedPath, backupFilePath);
                 }
 
                 Process clientProcess = null;
-                ProcessStartInfo startInfo = null;
                 if (UserSettings.WantToLogin)
                 {
                     string regionId = this.Language.ApplyingRegionId;
                     switch (regionId)
                     {
                         case "jp":
-                            Methods.RegionDoesNotSupportLogin(); // TODO: jp login?
-                            break;
-                            using (var client = new MyWebClient())
-                            {
-                                HangameLogin(client);
-                                string[] gameStartArgs = GetGameStartArguments(client);
+                            StartHangameJP();
 
-                                startInfo = new ProcessStartInfo
+                            this.Worker.ReportProgress((int)State.WaitClient);
+                            while (true)
+                            {
+                                if (this.Worker.CancellationPending)
                                 {
-                                    UseShellExecute = true,
-                                    Verb = "runas",
-                                    Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                                    WorkingDirectory = UserSettings.GamePath,
-                                    FileName = Methods.GetGameExeName(regionId)
-                                };
+                                    e.Cancel = true;
+                                    return;
+                                }
+
+                                clientProcess = GetProcess(Methods.GetGameExeName(regionId));
+
+                                if (clientProcess == null)
+                                {
+                                    Thread.Sleep(1000);
+                                }
+                                else
+                                {
+                                    break;
+                                }
                             }
 
-                            BackupAndPlaceFiles(this.Language);
+                            break;
+                        case "gjp":
+                            StartGamecomJP();
 
-                            clientProcess = Process.Start(startInfo);
+                            this.Worker.ReportProgress((int)State.WaitClient);
+                            while (true)
+                            {
+                                if (this.Worker.CancellationPending)
+                                {
+                                    e.Cancel = true;
+                                    return;
+                                }
+
+                                clientProcess = GetProcess(Methods.GetGameExeName(regionId));
+
+                                if (clientProcess == null)
+                                {
+                                    Thread.Sleep(1000);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
 
                             break;
                         case "kr":
-                            LoginStartKR();
+                            this.LoginStartKR();
 
                             this.Worker.ReportProgress((int)State.WaitClient);
                             while (true)
@@ -196,13 +222,16 @@ namespace SWPatcher.Launching
 
                 if (UserSettings.WantToLogin)
                 {
-                    var regionId = this.Language.ApplyingRegionId;
+                    string regionId = this.Language.ApplyingRegionId;
                     switch (regionId)
                     {
                         case "jp":
-                            Methods.RegionDoesNotSupportLogin(); // TODO: jp login?
+                            StartHangameJP();
+                            e.Cancel = true;
+
                             break;
-                            StartRawJP();
+                        case "gjp":
+                            StartGamecomJP();
                             e.Cancel = true;
 
                             break;
@@ -299,7 +328,7 @@ namespace SWPatcher.Launching
             File.Move(translationFilePath, originalFilePath);
         }
 
-        private static void HangameLogin(MyWebClient client)
+        private static MyWebClient HangameLogin(MyWebClient client)
         {
             string id = UserSettings.GameId;
             string pw = UserSettings.GamePw;
@@ -311,30 +340,30 @@ namespace SWPatcher.Launching
 
             var values = new NameValueCollection(5)
             {
-                [Strings.Web.PostEncodeId] = HttpUtility.UrlEncode(id),
-                [Strings.Web.PostEncodeFlag] = Strings.Web.PostEncodeFlagDefaultValue,
-                [Strings.Web.PostId] = id
+                [Strings.Web.JP.Hangame.PostEncodeId] = HttpUtility.UrlEncode(id),
+                [Strings.Web.JP.Hangame.PostEncodeFlag] = Strings.Web.JP.Hangame.PostEncodeFlagDefaultValue,
+                [Strings.Web.JP.Hangame.PostId] = id,
             };
             using (System.Security.SecureString secure = Methods.DecryptString(pw))
             {
-                if (String.IsNullOrEmpty(values[Strings.Web.PostPw] = Methods.ToInsecureString(secure)))
+                if (String.IsNullOrEmpty(values[Strings.Web.JP.Hangame.PostPw] = Methods.ToInsecureString(secure)))
                 {
                     throw new Exception(StringLoader.GetText("exception_empty_pw"));
                 }
             }
-            values[Strings.Web.PostClearFlag] = Strings.Web.PostClearFlagDefaultValue;
-            values[Strings.Web.PostNextUrl] = Strings.Web.PostNextUrlDefaultValue;
+            values[Strings.Web.JP.Hangame.PostClearFlag] = Strings.Web.JP.Hangame.PostClearFlagDefaultValue;
+            values[Strings.Web.JP.Hangame.PostNextUrl] = Strings.Web.JP.Hangame.PostNextUrlDefaultValue;
 
             byte[] byteResponse = client.UploadValues(Urls.HangameLogin, values);
             string loginResponse = Encoding.GetEncoding("shift-jis").GetString(byteResponse);
-            if (loginResponse.Contains(Strings.Web.CaptchaValidationText) || loginResponse.Contains(Strings.Web.CaptchaValidationText2))
+            if (loginResponse.Contains(Strings.Web.JP.Hangame.CaptchaValidationText) || loginResponse.Contains(Strings.Web.JP.Hangame.CaptchaValidationText2))
             {
-                Process.Start(Strings.Web.CaptchaUrl);
+                Process.Start(Strings.Web.JP.Hangame.CaptchaUrl);
                 throw new Exception(StringLoader.GetText("exception_captcha_validation"));
             }
             try
             {
-                string[] messages = GetVariableValue(loginResponse, Strings.Web.MessageVariable);
+                string[] messages = GetVariableValue(loginResponse, Strings.Web.JP.Hangame.MessageVariable);
 
                 if (messages[0].Length > 0)
                 {
@@ -345,6 +374,36 @@ namespace SWPatcher.Launching
             {
 
             }
+
+            return client;
+        }
+
+        private static MyWebClient GamecomLogin(MyWebClient client)
+        {
+            string id = UserSettings.GameId;
+            string pw = UserSettings.GamePw;
+
+            if (String.IsNullOrEmpty(id))
+            {
+                throw new Exception(StringLoader.GetText("exception_empty_id"));
+            }
+
+            var values = new NameValueCollection(2)
+            {
+                [Strings.Web.JP.Gamecom.PostId] = HttpUtility.UrlEncode(id),
+            };
+            using (System.Security.SecureString secure = Methods.DecryptString(pw))
+            {
+                if (String.IsNullOrEmpty(values[Strings.Web.JP.Gamecom.PostPw] = Methods.ToInsecureString(secure)))
+                {
+                    throw new Exception(StringLoader.GetText("exception_empty_pw"));
+                }
+            }
+            byte[] byteResponse = client.UploadValues(Urls.GamecomLogin, values);
+            string loginResponse = Encoding.GetEncoding("shift-jis").GetString(byteResponse);
+            client.DownloadString(Urls.SoulworkerJPGamecomHome);
+
+            return client;
         }
 
         private static void StoveLogin(MyWebClient client)
@@ -425,77 +484,51 @@ namespace SWPatcher.Launching
             }
         }
 
-        private static string[] GetGameStartArguments(MyWebClient client)
+        private static string GetGameStartArgumentHangameJP(MyWebClient client)
         {
-            var hangameJSON = new { ret = Int32.MaxValue, gs = "", errMsg = "", errCode = "" };
-            again:
-            try
+            client.DownloadString(Urls.SoulworkerJPHangameExternalGameStartMiddleware);
+            string response = client.DownloadString(Urls.SoulworkerJPHangameGameStart);
+
+            if (response.Length > 3)
             {
-                client.DownloadString(Urls.SoulworkerGameStart);
-                client.UploadData(Urls.SoulworkerRegistCheck, new byte[] { });
-
-                byte[] byteResponse = client.UploadData(Urls.SoulworkerReactorGameStart, new byte[] { });
-                string reactorStartResponse = Encoding.UTF8.GetString(byteResponse);
-                var jsonResponse = JsonConvert.DeserializeAnonymousType(reactorStartResponse, hangameJSON);
-
-                if (jsonResponse.ret == 0)
+                return response.Trim('"').Replace("\\", "");
+            }
+            else
+            {
+                switch (response)
                 {
-                    string[] gameStartArgs = new string[3];
-                    gameStartArgs[0] = jsonResponse.gs ?? throw new Exception("unexpected null gs");
-#if DEBUG
-                    string generalIniPath = Path.Combine(UserSettings.GamePath, "General.ini");
-                    if (!Methods.LoadIni(out MadMilkman.Ini.IniFile generalIni, generalIniPath))
-                    {
-                        throw new Exception(StringLoader.GetText("exception_generic_read_error", generalIniPath));
-                    }
-                    MadMilkman.Ini.IniKeyCollection networkSectionKeys = generalIni.Sections["Network Info"].Keys;
-                    gameStartArgs[1] = networkSectionKeys["IP"].Value;
-                    gameStartArgs[2] = networkSectionKeys["PORT"].Value;
-#else
-                    gameStartArgs[1] = Strings.Server.IP;
-                    gameStartArgs[2] = Strings.Server.Port;
-#endif
-
-                    return gameStartArgs;
-                }
-                else
-                {
-                    switch (jsonResponse.errCode ?? throw new Exception("unexpected null errCode"))
-                    {
-                        case "03":
-                            Process.Start("http://soulworker.hangame.co.jp/entry.nhn");
-                            throw new Exception(StringLoader.GetText("exception_not_tos"));
-                        case "06":
-                            throw new Exception($"error\n{jsonResponse.errMsg ?? throw new Exception("unexpected null errMsg")}");
-                        case "10":
-                            throw new Exception(StringLoader.GetText("exception_game_maintenance"));
-                        default:
-                            throw new Exception($"errCode=[{jsonResponse.errCode}]\n{jsonResponse.errMsg ?? "no error details"}");
-                    }
+                    case "110":
+                        throw new Exception("error login (110)");
+                    case "320":
+                        throw new Exception(StringLoader.GetText("exception_game_maintenance"));
+                    case "340":
+                        throw new Exception("error block (340)");
+                    default:
+                        throw new Exception($"errCode=[{response}");
                 }
             }
-            catch (WebException ex)
-            {
-                if (ex.Response is HttpWebResponse response)
-                {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        DialogResult dialog = MsgBox.ErrorRetry(StringLoader.GetText("exception_retry_validation_failed"));
-                        if (dialog == DialogResult.Retry)
-                        {
-                            goto again;
-                        }
+        }
 
-                        throw new Exception(StringLoader.GetText("exception_validation_failed"), ex);
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                else
+        private static string GetGameStartArgumentGamecomJP(MyWebClient client)
+        {
+            string response = client.DownloadString(Urls.SoulworkerJPGamecomGameStart);
+
+            if (response.Length > 3)
+            {
+                return response.Trim('"').Replace("\\", "");
+            }
+            else
+            {
+                switch (response)
                 {
-                    throw;
+                    case "110":
+                        throw new Exception("error login (110)");
+                    case "320":
+                        throw new Exception(StringLoader.GetText("exception_game_maintenance"));
+                    case "340":
+                        throw new Exception("error block (340)");
+                    default:
+                        throw new Exception($"errCode=[{response}");
                 }
             }
         }
@@ -547,25 +580,24 @@ namespace SWPatcher.Launching
             return result.Split(' ');
         }
 
-        private void StartRawJP()
+        private static Process StartHangameJP()
         {
-            ProcessStartInfo startInfo = null;
             using (var client = new MyWebClient())
             {
-                HangameLogin(client);
-                string[] gameStartArgs = GetGameStartArguments(client);
+                string gameStartArg = GetGameStartArgumentHangameJP(HangameLogin(client));
 
-                startInfo = new ProcessStartInfo
-                {
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    Arguments = String.Join(" ", gameStartArgs.Select(s => "\"" + s + "\"")),
-                    WorkingDirectory = UserSettings.GamePath,
-                    FileName = Methods.GetGameExeName(this.Language.ApplyingRegionId)
-                };
+                return Process.Start(gameStartArg);
             }
+        }
 
-            Process.Start(startInfo);
+        private static Process StartGamecomJP()
+        {
+            using (var client = new MyWebClient())
+            {
+                string gameStartArg = GetGameStartArgumentGamecomJP(GamecomLogin(client));
+
+                return Process.Start(gameStartArg);
+            }
         }
 
         private void LoginStartKR()
@@ -581,7 +613,7 @@ namespace SWPatcher.Launching
             }
         }
 
-        private void StartRawKR()
+        private static void StartRawKR()
         {
             using (var client = new MyWebClient())
             {

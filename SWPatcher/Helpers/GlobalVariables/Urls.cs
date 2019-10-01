@@ -18,7 +18,7 @@
 
 namespace SWPatcher.Helpers.GlobalVariables
 {
-    internal static class Urls
+    internal sealed class Urls
     {
         internal const string SoulworkerWebsite = "https://miyuyami.github.io/patcher.html";
 #if DEBUG
@@ -27,12 +27,16 @@ namespace SWPatcher.Helpers.GlobalVariables
         internal const string TranslationGitHubHome = "https://raw.githubusercontent.com/Miyuyami/SoulWorkerHQTranslations/master/";
 #endif
         internal const string SoulworkerSettingsHome = "http://patch-cdn.soulworker.gamecom.jp/SWK/update/";
-        internal const string SoulworkerJPHome = "http://soulworker.jp/";
+        internal const string SoulworkerJPHangameHome = "http://soulworker.hangame.co.jp/";
+        internal const string SoulworkerJPGamecomHome = "http://soulworker.gamecom.jp/";
         internal const string SoulworkerKRHome = "http://soulworker.co.kr/";
         internal const string SoulworkerNaverKRHome = "http://soulworker.game.naver.com/";
         internal const string SoulworkerGFHome = "https://store.steampowered.com/app/630100";
         internal const string HangameLogin = "https://id.hangame.co.jp/login.nhn";
-        internal const string SoulworkerGameStart = "http://soulworker.hangame.co.jp/gamestart.nhn";
+        internal static string GamecomLogin = $"http://customer.gamecom.jp/Login/Login.aspx?ReturnUrl={SoulworkerJPGamecomHome}";
+        internal const string SoulworkerJPHangameExternalGameStartMiddleware = "http://members-soulworker.hangame.co.jp/externalStartGame.nhn";
+        internal const string SoulworkerJPHangameGameStart = "http://hg-soulworker.gamecom.jp/game/start/";
+        internal const string SoulworkerJPGamecomGameStart = "http://soulworker.gamecom.jp/game/start/";
         internal const string SoulworkerReactorGameStart = "http://soulworker.hangame.co.jp/reactor/gameStart.nhn";
         internal const string SoulworkerReactor = "http://soulworker.hangame.co.jp/reactor/reactor.nhn";
         internal const string SoulworkerRegistCheck = "http://soulworker.hangame.co.jp/reactor/registCheck.nhn";

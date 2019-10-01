@@ -90,7 +90,7 @@ namespace SWPatcher.Patching
 
             this.CurrentState = State.Load;
             IEnumerable<ArchivedSWFile> archivedSWFiles = SWFileManager.GetFiles().OfType<ArchivedSWFile>();
-            string datasArchivesPath = Urls.TranslationGitHubHome + this.Language.ApplyingRegionId + '/' + Strings.IniName.DatasArchives;
+            string datasArchivesPath = Urls.TranslationGitHubHome + this.Language.ApplyingRegionFolder + '/' + Strings.IniName.DatasArchives;
             Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), datasArchivesPath));
             Dictionary<string, string> passwordDictionary = LoadPasswords(datasArchivesPath);
             int archivedSWFilesCount = archivedSWFiles.Count();
@@ -361,11 +361,12 @@ namespace SWPatcher.Patching
                 this.CurrentState = State.ExePatch;
 
                 string regionId = this.Language.ApplyingRegionId;
+                string regionFolder = this.Language.ApplyingRegionFolder;
                 string gameExePath = Path.Combine(UserSettings.GamePath, Methods.GetGameExeName(regionId));
                 byte[] gameExeBytes = File.ReadAllBytes(gameExePath);
-                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionId, Methods.GetGameExeName(regionId));
+                string gameExePatchedPath = Path.Combine(UserSettings.PatcherPath, regionFolder, Methods.GetGameExeName(regionId));
 
-                Methods.PatchExeFile(gameExeBytes, gameExePatchedPath, Urls.TranslationGitHubHome + regionId + '/' + Strings.IniName.BytesToPatch);
+                Methods.PatchExeFile(gameExeBytes, gameExePatchedPath, Urls.TranslationGitHubHome + regionFolder + '/' + Strings.IniName.BytesToPatch);
             }
         }
 

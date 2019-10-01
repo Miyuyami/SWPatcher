@@ -271,8 +271,13 @@ namespace SWPatcher.Forms
 
                 string regionId = regionNode.Name;
                 string regionName = StringLoader.GetText(regionNode.Attributes[Strings.Xml.Attributes.Name].Value);
-                string regionFolder = regionNode.Attributes[Strings.Xml.Attributes.Folder].Value;
+                string regionFolder = regionNode.Attributes[Strings.Xml.Attributes.Folder]?.Value;
                 string languagesLinkId = regionNode.Attributes[Strings.Xml.Attributes.LanguagesLinkId]?.Value;
+
+                if (String.IsNullOrWhiteSpace(regionFolder))
+                {
+                    regionFolder = regionId;
+                }
 
                 if (String.IsNullOrWhiteSpace(languagesLinkId))
                 {

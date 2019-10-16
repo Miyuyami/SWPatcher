@@ -101,7 +101,7 @@ namespace SWPatcher.Launching
                     switch (regionId)
                     {
                         case "jp":
-                            StartHangameJP(() => BackupAndPlaceFiles(this.Language));
+                            StartHangeJP(() => BackupAndPlaceFiles(this.Language));
 
                             this.Worker.ReportProgress((int)State.WaitClient);
                             while (true)
@@ -226,7 +226,7 @@ namespace SWPatcher.Launching
                     switch (regionId)
                     {
                         case "jp":
-                            StartHangameJP();
+                            StartHangeJP();
                             e.Cancel = true;
 
                             break;
@@ -328,7 +328,7 @@ namespace SWPatcher.Launching
             File.Move(translationFilePath, originalFilePath);
         }
 
-        private static MyWebClient HangameLogin(MyWebClient client)
+        private static MyWebClient HangeLogin(MyWebClient client)
         {
             string id = UserSettings.GameId;
             string pw = UserSettings.GamePw;
@@ -340,30 +340,30 @@ namespace SWPatcher.Launching
 
             var values = new NameValueCollection(5)
             {
-                [Strings.Web.JP.Hangame.PostEncodeId] = HttpUtility.UrlEncode(id),
-                [Strings.Web.JP.Hangame.PostEncodeFlag] = Strings.Web.JP.Hangame.PostEncodeFlagDefaultValue,
-                [Strings.Web.JP.Hangame.PostId] = id,
+                [Strings.Web.JP.Hange.PostEncodeId] = HttpUtility.UrlEncode(id),
+                [Strings.Web.JP.Hange.PostEncodeFlag] = Strings.Web.JP.Hange.PostEncodeFlagDefaultValue,
+                [Strings.Web.JP.Hange.PostId] = id,
             };
             using (System.Security.SecureString secure = Methods.DecryptString(pw))
             {
-                if (String.IsNullOrEmpty(values[Strings.Web.JP.Hangame.PostPw] = Methods.ToInsecureString(secure)))
+                if (String.IsNullOrEmpty(values[Strings.Web.JP.Hange.PostPw] = Methods.ToInsecureString(secure)))
                 {
                     throw new Exception(StringLoader.GetText("exception_empty_pw"));
                 }
             }
-            values[Strings.Web.JP.Hangame.PostClearFlag] = Strings.Web.JP.Hangame.PostClearFlagDefaultValue;
-            values[Strings.Web.JP.Hangame.PostNextUrl] = Strings.Web.JP.Hangame.PostNextUrlDefaultValue;
+            values[Strings.Web.JP.Hange.PostClearFlag] = Strings.Web.JP.Hange.PostClearFlagDefaultValue;
+            values[Strings.Web.JP.Hange.PostNextUrl] = Strings.Web.JP.Hange.PostNextUrlDefaultValue;
 
-            byte[] byteResponse = client.UploadValues(Urls.HangameLogin, values);
+            byte[] byteResponse = client.UploadValues(Urls.HangeLogin, values);
             string loginResponse = Encoding.GetEncoding("shift-jis").GetString(byteResponse);
-            if (loginResponse.Contains(Strings.Web.JP.Hangame.CaptchaValidationText) || loginResponse.Contains(Strings.Web.JP.Hangame.CaptchaValidationText2))
+            if (loginResponse.Contains(Strings.Web.JP.Hange.CaptchaValidationText) || loginResponse.Contains(Strings.Web.JP.Hange.CaptchaValidationText2))
             {
-                Process.Start(Strings.Web.JP.Hangame.CaptchaUrl);
+                Process.Start(Strings.Web.JP.Hange.CaptchaUrl);
                 throw new Exception(StringLoader.GetText("exception_captcha_validation"));
             }
             try
             {
-                string[] messages = GetVariableValue(loginResponse, Strings.Web.JP.Hangame.MessageVariable);
+                string[] messages = GetVariableValue(loginResponse, Strings.Web.JP.Hange.MessageVariable);
 
                 if (messages[0].Length > 0)
                 {
@@ -484,10 +484,10 @@ namespace SWPatcher.Launching
             }
         }
 
-        private static string GetGameStartArgumentHangameJP(MyWebClient client)
+        private static string GetGameStartArgumentHangeJP(MyWebClient client)
         {
-            client.DownloadString(Urls.SoulworkerJPHangameExternalGameStartMiddleware);
-            string response = client.DownloadString(Urls.SoulworkerJPHangameGameStart);
+            client.DownloadString(Urls.SoulworkerJPHangeExternalGameStartMiddleware);
+            string response = client.DownloadString(Urls.SoulworkerJPHangeGameStart);
 
             if (response.Length > 3)
             {
@@ -580,11 +580,11 @@ namespace SWPatcher.Launching
             return result.Split(' ');
         }
 
-        private static Process StartHangameJP(Action onSuccess = null)
+        private static Process StartHangeJP(Action onSuccess = null)
         {
             using (var client = new MyWebClient())
             {
-                string gameStartArg = GetGameStartArgumentHangameJP(HangameLogin(client));
+                string gameStartArg = GetGameStartArgumentHangeJP(HangeLogin(client));
 
                 onSuccess?.Invoke();
 

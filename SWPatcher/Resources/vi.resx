@@ -328,7 +328,7 @@ Bạn có chắc rằng bạn muốn chọn thư mục này?</value>
 "{1}" đã được đăng lên để cải thiện patcher.</value>
   </data>
   <data name="exception_captcha_validation" xml:space="preserve">
-    <value>Đăng nhập thất bại quá nhiều. Xin vui lòng đăng nhập và hoàn tất captcha tại trang chủ của Hangame</value>
+    <value>Đăng nhập thất bại quá nhiều. Xin vui lòng đăng nhập và hoàn tất captcha tại trang chủ của Hange.</value>
   </data>
   <data name="exception_game_already_open" xml:space="preserve">
     <value>Không thể tiếp tục vì {0} đang chạy.</value>
@@ -437,7 +437,7 @@ Danh sách đối chiếu:
     <value>Ngôn ngữ:</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
-    <value>Nhật Bản Hangame</value>
+    <value>Nhật Bản Hange</value>
   </data>
   <data name="form_region_kr" xml:space="preserve">
     <value>Hàn Quốc</value>

@@ -340,7 +340,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Слишком много неправильных входов.. Вы должны войти в систему и заполнить капчу на сайте Hangame..
+        ///   Looks up a localized string similar to Слишком много неправильных входов.. Вы должны войти в систему и заполнить капчу на сайте Hange..
         /// </summary>
         internal static string exception_captcha_validation {
             get {
@@ -758,7 +758,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Япония Hangame.
+        ///   Looks up a localized string similar to Япония Hange.
         /// </summary>
         internal static string form_region_jp {
             get {

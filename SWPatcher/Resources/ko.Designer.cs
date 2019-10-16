@@ -762,7 +762,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 일본 Hangame.
+        ///   Looks up a localized string similar to 일본 Hange.
         /// </summary>
         internal static string form_region_jp {
             get {

@@ -328,7 +328,7 @@ The link was copied to clipboard.</value>
 "{1}" was uploaded for improving the patcher in the future.</value>
   </data>
   <data name="exception_captcha_validation" xml:space="preserve">
-    <value>Too many invalid logins. You must login and complete the captcha on Hangame website.</value>
+    <value>Too many invalid logins. You must login and complete the captcha on Hange website.</value>
   </data>
   <data name="exception_server_refused_connection" xml:space="preserve">
     <value>Server has refused the connection. (server maintenance?)</value>
@@ -428,7 +428,7 @@ Checklist:
     <value>An error occured during login, follow the instructions on the webpage.</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
-    <value>Japan Hangame</value>
+    <value>Japan Hange</value>
   </data>
   <data name="form_region_kr" xml:space="preserve">
     <value>Korea</value>

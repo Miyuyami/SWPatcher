@@ -103,7 +103,7 @@ namespace SWPatcher.Helpers.GlobalVariables
 
         internal sealed class Server
         {
-            internal const string IP = "sw-auth.hangame.co.jp";
+            internal const string IP = "re-gs.soulworker.gamecom.jp";
             internal const string Port = "10000";
         }
 
@@ -111,7 +111,7 @@ namespace SWPatcher.Helpers.GlobalVariables
         {
             internal sealed class JP
             {
-                internal sealed class Hangame
+                internal sealed class Hange
                 {
                     internal const string PostEncodeId = "encodeId";
                     internal const string PostEncodeFlag = "encodeFlg";
@@ -121,11 +121,11 @@ namespace SWPatcher.Helpers.GlobalVariables
                     internal const string PostClearFlag = "clFlg";
                     internal const string PostClearFlagDefaultValue = "y";
                     internal const string PostNextUrl = "nxtURL";
-                    internal const string PostNextUrlDefaultValue = "http://www.hangame.co.jp";
+                    internal const string PostNextUrlDefaultValue = "http://www.hange.jp";
                     internal const string MessageVariable = "var msg = ";
                     internal const string CaptchaValidationText = "画像認証";
                     internal const string CaptchaValidationText2 = "認証に連続";
-                    internal const string CaptchaUrl = "http://top.hangame.co.jp/login/loginfailed.nhn?type=dlf";
+                    internal const string CaptchaUrl = "http://top.hange.jp/login/loginfailed?type=dlf";
                 }
 
                 internal sealed class Gamecom

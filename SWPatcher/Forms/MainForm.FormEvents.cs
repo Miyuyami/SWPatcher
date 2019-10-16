@@ -247,7 +247,7 @@ namespace SWPatcher.Forms
             switch (region.Id)
             {
                 case "jp":
-                    Process.Start(Urls.SoulworkerJPHangameHome);
+                    Process.Start(Urls.SoulworkerJPHangeHome);
 
                     break;
                 case "gjp":

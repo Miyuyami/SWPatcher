@@ -340,7 +340,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Đăng nhập thất bại quá nhiều. Xin vui lòng đăng nhập và hoàn tất captcha tại trang chủ của Hangame.
+        ///   Looks up a localized string similar to Đăng nhập thất bại quá nhiều. Xin vui lòng đăng nhập và hoàn tất captcha tại trang chủ của Hange..
         /// </summary>
         internal static string exception_captcha_validation {
             get {
@@ -761,7 +761,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nhật Bản Hangame.
+        ///   Looks up a localized string similar to Nhật Bản Hange.
         /// </summary>
         internal static string form_region_jp {
             get {

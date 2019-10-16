@@ -211,7 +211,7 @@
     <value>Не возможно авторизоваться с помощью патчера, требуется ввод кпчи.</value>
   </data>
   <data name="exception_captcha_validation" xml:space="preserve">
-    <value>Слишком много неправильных входов.. Вы должны войти в систему и заполнить капчу на сайте Hangame.</value>
+    <value>Слишком много неправильных входов.. Вы должны войти в систему и заполнить капчу на сайте Hange.</value>
   </data>
   <data name="exception_directory_not_exist" xml:space="preserve">
     <value>Папка игры не существует "{0}".</value>
@@ -350,7 +350,7 @@
     <value>Gameforge</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
-    <value>Япония Hangame</value>
+    <value>Япония Hange</value>
   </data>
   <data name="form_region_kr" xml:space="preserve">
     <value>Корея</value>

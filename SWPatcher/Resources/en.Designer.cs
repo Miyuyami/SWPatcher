@@ -340,7 +340,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Too many invalid logins. You must login and complete the captcha on Hangame website..
+        ///   Looks up a localized string similar to Too many invalid logins. You must login and complete the captcha on Hange website..
         /// </summary>
         internal static string exception_captcha_validation {
             get {
@@ -761,7 +761,7 @@ namespace SWPatcher.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Japan Hangame.
+        ///   Looks up a localized string similar to Japan Hange.
         /// </summary>
         internal static string form_region_jp {
             get {

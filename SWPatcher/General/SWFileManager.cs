@@ -37,12 +37,9 @@ namespace SWPatcher.General
 
         internal static void LoadFileConfiguration(Language language)
         {
-            if (SWFiles == null)
-            {
-                string packPath = Urls.TranslationGitHubHome + language.Path + '/' + Strings.IniName.TranslationPackData;
-                Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), packPath));
-                InternalLoadFileConfiguration(packPath);
-            }
+            string packPath = Urls.TranslationGitHubHome + language.Path + '/' + Strings.IniName.TranslationPackData;
+            Logger.Debug(Methods.MethodFullName(System.Reflection.MethodBase.GetCurrentMethod(), packPath));
+            InternalLoadFileConfiguration(packPath);
         }
 
         private static void InternalLoadFileConfiguration(string url)

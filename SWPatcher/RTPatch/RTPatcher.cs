@@ -330,32 +330,35 @@ namespace SWPatcher.RTPatch
             libraryPaths.Add(mainSteamLibrary);
             string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
 
-            var libraryManifest = SteamManifest.Load(libraryFoldersFile);
-            int i = 1;
-            while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
-            {
-                libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
-            }
-
             bool success = false;
-            foreach (string libraryPath in libraryPaths)
+            if (File.Exists(libraryFoldersFile))
             {
-                string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
-                if (File.Exists(acf))
+                var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+                int i = 1;
+                while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
                 {
-                    var smacf = SteamManifest.Load(acf);
-                    if (smacf.Elements.TryGetValue("StateFlags", out SteamManifestElement sme))
+                    libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
+                }
+
+                foreach (string libraryPath in libraryPaths)
+                {
+                    string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
+                    if (File.Exists(acf))
                     {
-                        if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
+                        var smacf = SteamManifest.Load(acf);
+                        if (smacf.Elements.TryGetValue("StateFlags", out SteamManifestElement sme))
                         {
-                            var appState = (AppState)stateFlagInt;
-                            if (appState == AppState.StateFullyInstalled)
+                            if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
                             {
-                                success = true;
-                            }
-                            else
-                            {
-                                success = false;
+                                var appState = (AppState)stateFlagInt;
+                                if (appState == AppState.StateFullyInstalled)
+                                {
+                                    success = true;
+                                }
+                                else
+                                {
+                                    success = false;
+                                }
                             }
                         }
                     }

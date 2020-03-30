@@ -209,26 +209,29 @@ namespace SWPatcher.Forms
             libraryPaths.Add(mainSteamLibrary);
             string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
 
-            var libraryManifest = SteamManifest.Load(libraryFoldersFile);
-            int i = 1;
-            while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
+            if (File.Exists(libraryFoldersFile))
             {
-                libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
-            }
-
-            foreach (string libraryPath in libraryPaths)
-            {
-                string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
-                if (File.Exists(acf))
+                var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+                int i = 1;
+                while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
                 {
-                    var smacf = SteamManifest.Load(acf);
-                    if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
+                    libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
+                }
+
+                foreach (string libraryPath in libraryPaths)
+                {
+                    string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
+                    if (File.Exists(acf))
                     {
-                        string swFolder = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
-                        if (Directory.Exists(swFolder) &&
-                            Directory.GetFiles(swFolder).Length > 0)
+                        var smacf = SteamManifest.Load(acf);
+                        if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
                         {
-                            return swFolder;
+                            string swFolder = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
+                            if (Directory.Exists(swFolder) &&
+                                Directory.GetFiles(swFolder).Length > 0)
+                            {
+                                return swFolder;
+                            }
                         }
                     }
                 }

@@ -185,6 +185,18 @@ namespace SWPatcher.Helpers.GlobalVariables
                 internal const string Key64Path = @"SOFTWARE\Wow6432Node\Valve\Steam";
                 internal const string InstallPath = "InstallPath";
             }
+
+            internal sealed class Gameforge
+            {
+                internal static Microsoft.Win32.RegistryKey RegistryKey = Microsoft.Win32.Registry.LocalMachine;
+                internal const string Key32Path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{e3ecbe04-49b0-40c8-9d1e-88c52f42813c}";
+                internal const string Key64Path = @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{e3ecbe04-49b0-40c8-9d1e-88c52f42813c}";
+                internal const string InstallPath = "InstallLocation";
+
+                internal const string Metadata32Path = @"Software\Gameforge4d\GameforgeClient\Metadata\Production\e3ecbe04-49b0-40c8-9d1e-88c52f42813c";
+                internal const string Metadata64Path = @"Software\WOW6432Node\Gameforge4d\GameforgeClient\Metadata\Production\e3ecbe04-49b0-40c8-9d1e-88c52f42813c";
+                internal const string GameState = "GameState";
+            }
         }
 
         internal sealed class Xml

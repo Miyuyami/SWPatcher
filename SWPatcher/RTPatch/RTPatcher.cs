@@ -306,6 +306,7 @@ namespace SWPatcher.RTPatch
         {
             const string SteamGameId = "630100";
             string steamInstallPath;
+            bool success = false;
             if (!Environment.Is64BitOperatingSystem)
             {
                 steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
@@ -320,44 +321,41 @@ namespace SWPatcher.RTPatch
                 }
             }
 
-            if (steamInstallPath == String.Empty)
+            if (steamInstallPath != String.Empty)
             {
-                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
-            }
+                List<string> libraryPaths = new List<string>();
+                string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
+                libraryPaths.Add(mainSteamLibrary);
+                string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
 
-            List<string> libraryPaths = new List<string>();
-            string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
-            libraryPaths.Add(mainSteamLibrary);
-            string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
-
-            bool success = false;
-            if (File.Exists(libraryFoldersFile))
-            {
-                var libraryManifest = SteamManifest.Load(libraryFoldersFile);
-                int i = 1;
-                while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
+                if (File.Exists(libraryFoldersFile))
                 {
-                    libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
-                }
-
-                foreach (string libraryPath in libraryPaths)
-                {
-                    string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
-                    if (File.Exists(acf))
+                    var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+                    int i = 1;
+                    while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
                     {
-                        var smacf = SteamManifest.Load(acf);
-                        if (smacf.Elements.TryGetValue("StateFlags", out SteamManifestElement sme))
+                        libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
+                    }
+
+                    foreach (string libraryPath in libraryPaths)
+                    {
+                        string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
+                        if (File.Exists(acf))
                         {
-                            if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
+                            var smacf = SteamManifest.Load(acf);
+                            if (smacf.Elements.TryGetValue("StateFlags", out SteamManifestElement sme))
                             {
-                                var appState = (AppState)stateFlagInt;
-                                if (appState == AppState.StateFullyInstalled)
+                                if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
                                 {
-                                    success = true;
-                                }
-                                else
-                                {
-                                    success = false;
+                                    var appState = (AppState)stateFlagInt;
+                                    if (appState == AppState.StateFullyInstalled)
+                                    {
+                                        success = true;
+                                    }
+                                    else
+                                    {
+                                        success = false;
+                                    }
                                 }
                             }
                         }
@@ -366,6 +364,44 @@ namespace SWPatcher.RTPatch
             }
 
             if (!success)
+            {
+                // if no valid soulworker found on steam, look on gameforge's launcher
+                this.CheckGFLauncherVersion();
+            }
+        }
+
+        private void CheckGFLauncherVersion()
+        {
+            string gameforgeInstallPath;
+            string metadataGameState;
+            if (!Environment.Is64BitOperatingSystem)
+            {
+                gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key32Path, Strings.Registry.Gameforge.InstallPath);
+                metadataGameState = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Metadata32Path, Strings.Registry.Gameforge.GameState);
+            }
+            else
+            {
+                gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key64Path, Strings.Registry.Gameforge.InstallPath);
+                metadataGameState = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Metadata64Path, Strings.Registry.Gameforge.GameState);
+
+                if (gameforgeInstallPath == String.Empty)
+                {
+                    gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key32Path, Strings.Registry.Gameforge.InstallPath);
+                    metadataGameState = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Metadata32Path, Strings.Registry.Gameforge.GameState);
+                }
+            }
+
+            if (gameforgeInstallPath == String.Empty)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
+            }
+
+            if (metadataGameState == String.Empty)
+            {
+                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
+            }
+
+            if (metadataGameState != "1")
             {
                 throw new Exception(StringLoader.GetText("exception_game_not_latest"));
             }

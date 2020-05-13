@@ -185,6 +185,7 @@ namespace SWPatcher.Forms
         {
             const string SteamGameId = "630100";
             string steamInstallPath;
+            string swPath = String.Empty;
             if (!Environment.Is64BitOperatingSystem)
             {
                 steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
@@ -199,45 +200,74 @@ namespace SWPatcher.Forms
                 }
             }
 
-            if (steamInstallPath == String.Empty)
+            if (steamInstallPath != String.Empty)
             {
-                return String.Empty;
-            }
+                List<string> libraryPaths = new List<string>();
+                string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
+                libraryPaths.Add(mainSteamLibrary);
+                string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
 
-            List<string> libraryPaths = new List<string>();
-            string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
-            libraryPaths.Add(mainSteamLibrary);
-            string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
-
-            if (File.Exists(libraryFoldersFile))
-            {
-                var libraryManifest = SteamManifest.Load(libraryFoldersFile);
-                int i = 1;
-                while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
+                if (File.Exists(libraryFoldersFile))
                 {
-                    libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
-                }
-
-                foreach (string libraryPath in libraryPaths)
-                {
-                    string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
-                    if (File.Exists(acf))
+                    var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+                    int i = 1;
+                    while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
                     {
-                        var smacf = SteamManifest.Load(acf);
-                        if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
+                        libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
+                    }
+
+                    foreach (string libraryPath in libraryPaths)
+                    {
+                        string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
+                        if (File.Exists(acf))
                         {
-                            string swFolder = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
-                            if (Directory.Exists(swFolder) &&
-                                Directory.GetFiles(swFolder).Length > 0)
+                            var smacf = SteamManifest.Load(acf);
+                            if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
                             {
-                                return swFolder;
+                                string path = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
+                                if (Directory.Exists(path) &&
+                                    Directory.GetFiles(path).Length > 0)
+                                {
+                                    swPath = path;
+                                    break;
+                                }
                             }
                         }
                     }
                 }
             }
 
-            return String.Empty;
+            if (swPath == String.Empty)
+            {
+                swPath = GetGameforgeLauncherSwPath();
+            }
+
+            return swPath;
+        }
+
+        private static string GetGameforgeLauncherSwPath()
+        {
+            string gameforgeInstallPath;
+            if (!Environment.Is64BitOperatingSystem)
+            {
+                gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key32Path, Strings.Registry.Gameforge.InstallPath);
+            }
+            else
+            {
+                gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key64Path, Strings.Registry.Gameforge.InstallPath);
+
+                if (gameforgeInstallPath == String.Empty)
+                {
+                    gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key32Path, Strings.Registry.Gameforge.InstallPath);
+                }
+            }
+
+            if (gameforgeInstallPath == String.Empty)
+            {
+                return String.Empty;
+            }
+
+            return Path.Combine(gameforgeInstallPath, "Client");
         }
 
         internal void ResetTranslation(Language language)

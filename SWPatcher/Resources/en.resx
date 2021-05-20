@@ -448,8 +448,8 @@ Checklist:
   <data name="form_region_nkr" xml:space="preserve">
     <value>Korea Naver</value>
   </data>
-  <data name="form_region_gf" xml:space="preserve">
-    <value>Gameforge</value>
+  <data name="form_region_gl" xml:space="preserve">
+    <value>Global</value>
   </data>
   <data name="exception_region_unknown" xml:space="preserve">
     <value>Region "{0}" is unknown.</value>

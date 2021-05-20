@@ -179,7 +179,7 @@ namespace SWPatcher.Launching
                             Methods.RegionDoesNotSupportLogin();
 
                             break;
-                        case "gf":
+                        case "gl":
                             Methods.RegionDoesNotSupportLogin();
 
                             break;
@@ -244,7 +244,7 @@ namespace SWPatcher.Launching
                             Methods.RegionDoesNotSupportLogin();
 
                             break;
-                        case "gf":
+                        case "gl":
                             Methods.RegionDoesNotSupportLogin();
 
                             break;

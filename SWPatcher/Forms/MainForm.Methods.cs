@@ -181,11 +181,11 @@ namespace SWPatcher.Forms
             return value;
         }
 
-        private static string GetGameforgeSwPath()
+        private static string GetGlobalSwPath()
         {
-            const string SteamGameId = "630100";
+            const string SteamGameId = "1377580";
             string steamInstallPath;
-            string swPath = String.Empty;
+
             if (!Environment.Is64BitOperatingSystem)
             {
                 steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
@@ -200,7 +200,7 @@ namespace SWPatcher.Forms
                 }
             }
 
-            if (steamInstallPath != String.Empty)
+            if (!String.IsNullOrEmpty(steamInstallPath))
             {
                 List<string> libraryPaths = new List<string>();
                 string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
@@ -225,11 +225,11 @@ namespace SWPatcher.Forms
                             if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
                             {
                                 string path = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
+
                                 if (Directory.Exists(path) &&
                                     Directory.GetFiles(path).Length > 0)
                                 {
-                                    swPath = path;
-                                    break;
+                                    return path;
                                 }
                             }
                         }
@@ -237,12 +237,7 @@ namespace SWPatcher.Forms
                 }
             }
 
-            if (swPath == String.Empty)
-            {
-                swPath = GetGameforgeLauncherSwPath();
-            }
-
-            return swPath;
+            return String.Empty;
         }
 
         private static string GetGameforgeLauncherSwPath()

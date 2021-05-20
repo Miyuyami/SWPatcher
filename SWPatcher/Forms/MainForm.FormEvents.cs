@@ -177,8 +177,8 @@ namespace SWPatcher.Forms
                         newGamePath = GetNaverKRSwPathFromRegistry();
 
                         break;
-                    case "gf":
-                        newGamePath = GetGameforgeSwPath();
+                    case "gl":
+                        newGamePath = GetGlobalSwPath();
 
                         break;
                     default:
@@ -262,8 +262,8 @@ namespace SWPatcher.Forms
                     Process.Start(Urls.SoulworkerNaverKRHome);
 
                     break;
-                case "gf":
-                    Process.Start(Urls.SoulworkerGFHome);
+                case "gl":
+                    Process.Start(Urls.SoulworkerGlobalHome);
 
                     break;
                 default:

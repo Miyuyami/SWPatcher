@@ -32,7 +32,7 @@ namespace SWPatcher.Helpers.GlobalVariables
         {
             internal const string GameExeJP = "SoulWorker100.exe";
             internal const string GameExeKR = "SoulWorker.exe";
-            internal const string GameExeGF = "SoulWorker.exe";
+            internal const string GameExeGL = "SoulWorker.exe";
             internal const string PurpleExe = "PLauncher.exe";
             internal const string ReactorExe = "reactor.exe";
             internal const string OutboundExe = "Outbound.exe";

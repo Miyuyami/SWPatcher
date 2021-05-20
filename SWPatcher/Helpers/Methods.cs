@@ -702,8 +702,8 @@ namespace SWPatcher.Helpers
                 case "kr":
                 case "nkr":
                     return Strings.FileName.GameExeKR;
-                case "gf":
-                    return Strings.FileName.GameExeGF;
+                case "gl":
+                    return Strings.FileName.GameExeGL;
                 default:
                     throw new Exception(StringLoader.GetText("exception_region_unknown", regionId));
             }

@@ -346,8 +346,8 @@
   <data name="form_refresh" xml:space="preserve">
     <value>Обновить</value>
   </data>
-  <data name="form_region_gf" xml:space="preserve">
-    <value>Gameforge</value>
+  <data name="form_region_gl" xml:space="preserve">
+    <value>Global</value>
   </data>
   <data name="form_region_jp" xml:space="preserve">
     <value>Япония Hange</value>

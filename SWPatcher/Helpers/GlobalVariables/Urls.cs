@@ -31,7 +31,7 @@ namespace SWPatcher.Helpers.GlobalVariables
         internal const string SoulworkerJPGamecomHome = "http://soulworker.gamecom.jp/";
         internal const string SoulworkerKRHome = "http://soulworker.co.kr/";
         internal const string SoulworkerNaverKRHome = "http://soulworker.game.naver.com/";
-        internal const string SoulworkerGFHome = "https://store.steampowered.com/app/630100";
+        internal const string SoulworkerGlobalHome = "https://store.steampowered.com/app/1377580";
         internal const string HangeLogin = "https://id.hange.jp/login";
         internal static string GamecomLogin = $"https://customer.gamecom.jp/Login/Login.aspx?ReturnUrl={SoulworkerJPGamecomHome}";
         internal const string SoulworkerJPHangeExternalGameStartMiddleware = "http://members-soulworker.hange.jp/externalStartGame";

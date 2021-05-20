@@ -16,13 +16,6 @@
  * along with Soulworker Patcher. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using MadMilkman.Ini;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SWPatcher.General;
-using SWPatcher.Helpers;
-using SWPatcher.Helpers.GlobalVariables;
-using SWPatcher.Helpers.Steam;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +24,13 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
+using MadMilkman.Ini;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SWPatcher.General;
+using SWPatcher.Helpers;
+using SWPatcher.Helpers.GlobalVariables;
+using SWPatcher.Helpers.Steam;
 
 namespace SWPatcher.RTPatch
 {
@@ -92,8 +92,8 @@ namespace SWPatcher.RTPatch
                     CheckNaverKRVersion();
 
                     return;
-                case "gf":
-                    CheckGFVersion();
+                case "gl":
+                    CheckGlobalVersion();
 
                     return;
                 default:
@@ -302,11 +302,11 @@ namespace SWPatcher.RTPatch
             }
         }
 
-        private void CheckGFVersion()
+        private void CheckGlobalVersion()
         {
-            const string SteamGameId = "630100";
+            const string SteamGameId = "1377580";
             string steamInstallPath;
-            bool success = false;
+
             if (!Environment.Is64BitOperatingSystem)
             {
                 steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
@@ -321,7 +321,7 @@ namespace SWPatcher.RTPatch
                 }
             }
 
-            if (steamInstallPath != String.Empty)
+            if (!String.IsNullOrEmpty(steamInstallPath))
             {
                 List<string> libraryPaths = new List<string>();
                 string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
@@ -348,62 +348,15 @@ namespace SWPatcher.RTPatch
                                 if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
                                 {
                                     var appState = (AppState)stateFlagInt;
-                                    if (appState == AppState.StateFullyInstalled)
+                                    if (appState != AppState.StateFullyInstalled)
                                     {
-                                        success = true;
-                                    }
-                                    else
-                                    {
-                                        success = false;
+                                        throw new Exception(StringLoader.GetText("exception_game_not_latest"));
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-
-            if (!success)
-            {
-                // if no valid soulworker found on steam, look on gameforge's launcher
-                this.CheckGFLauncherVersion();
-            }
-        }
-
-        private void CheckGFLauncherVersion()
-        {
-            string gameforgeInstallPath;
-            string metadataGameState;
-            if (!Environment.Is64BitOperatingSystem)
-            {
-                gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key32Path, Strings.Registry.Gameforge.InstallPath);
-                metadataGameState = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Metadata32Path, Strings.Registry.Gameforge.GameState);
-            }
-            else
-            {
-                gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key64Path, Strings.Registry.Gameforge.InstallPath);
-                metadataGameState = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Metadata64Path, Strings.Registry.Gameforge.GameState);
-
-                if (gameforgeInstallPath == String.Empty)
-                {
-                    gameforgeInstallPath = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Key32Path, Strings.Registry.Gameforge.InstallPath);
-                    metadataGameState = Methods.GetRegistryValue(Strings.Registry.Gameforge.RegistryKey, Strings.Registry.Gameforge.Metadata32Path, Strings.Registry.Gameforge.GameState);
-                }
-            }
-
-            if (gameforgeInstallPath == String.Empty)
-            {
-                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
-            }
-
-            if (metadataGameState == String.Empty)
-            {
-                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
-            }
-
-            if (metadataGameState != "1")
-            {
-                throw new Exception(StringLoader.GetText("exception_game_not_latest"));
             }
         }
 

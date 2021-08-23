@@ -1,0 +1,460 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="box_game_dir" xml:space="preserve">
+    <value>游戏位置</value>
+  </data>
+  <data name="box_id" xml:space="preserve">
+    <value>Soulworker ID</value>
+  </data>
+  <data name="box_language" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="box_patcher_dir" xml:space="preserve">
+    <value>修改器位置</value>
+  </data>
+  <data name="box_patch_exe" xml:space="preserve">
+    <value>修改 .exe 文件以支持其它 unicode 语言</value>
+  </data>
+  <data name="box_pw" xml:space="preserve">
+    <value>Soulworker 密码</value>
+  </data>
+  <data name="box_want_login" xml:space="preserve">
+    <value>不想从网页登陆了？</value>
+  </data>
+  <data name="button_apply" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="button_cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="button_cancelling" xml:space="preserve">
+    <value>正在取消...</value>
+  </data>
+  <data name="button_change" xml:space="preserve">
+    <value>更改</value>
+  </data>
+  <data name="button_download_translation" xml:space="preserve">
+    <value>下载翻译</value>
+  </data>
+  <data name="button_ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="button_play" xml:space="preserve">
+    <value>准备开玩！</value>
+  </data>
+  <data name="check_patch_exe" xml:space="preserve">
+    <value>是，我了解风险，决定修改</value>
+  </data>
+  <data name="check_want_login" xml:space="preserve">
+    <value>使用修改器登陆</value>
+  </data>
+  <data name="form_status_apply" xml:space="preserve">
+    <value>应用中...</value>
+  </data>
+  <data name="form_status_download" xml:space="preserve">
+    <value>正在下载...</value>
+  </data>
+  <data name="form_status_idle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="form_status_patch" xml:space="preserve">
+    <value>正在运行...</value>
+  </data>
+  <data name="form_status_patch_exe" xml:space="preserve">
+    <value>正在修改 .exe...</value>
+  </data>
+  <data name="form_status_prepare" xml:space="preserve">
+    <value>准备中...</value>
+  </data>
+  <data name="form_status_update_client" xml:space="preserve">
+    <value />
+  </data>
+  <data name="form_status_wait_client" xml:space="preserve">
+    <value>等待客户端...</value>
+  </data>
+  <data name="form_status_wait_close" xml:space="preserve">
+    <value>等待客户端结束...</value>
+  </data>
+  <data name="patcher_description" xml:space="preserve">
+    <value>This program comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it under certain conditions.
+
+Soulworker Patcher 可以轻松地将最新翻译修改到 Soulworker 客户端，而不会在更新时损坏原始文件。
+它还可以从SWHQ翻译团队下载最新的翻译，并随时应用。</value>
+  </data>
+  <data name="tab_credentials" xml:space="preserve">
+    <value>凭证</value>
+  </data>
+  <data name="tab_game" xml:space="preserve">
+    <value>Soulworker</value>
+  </data>
+  <data name="tab_patcher" xml:space="preserve">
+    <value>修改器</value>
+  </data>
+  <data name="button_exit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="button_play_raw" xml:space="preserve">
+    <value>直接启动原始游戏</value>
+  </data>
+  <data name="dialog_folder_change_game_dir" xml:space="preserve">
+    <value>选择 Soulworker 客户端文件夹。</value>
+  </data>
+  <data name="dialog_folder_change_patcher_dir" xml:space="preserve">
+    <value>选择新的修改器数据文件夹。</value>
+  </data>
+  <data name="exception_already_latest_translation" xml:space="preserve">
+    <value>您已有此语言的最新（日本时间 {0}）翻译！</value>
+  </data>
+  <data name="exception_cannot_close" xml:space="preserve">
+    <value>{0} 正忙，无法关闭。</value>
+  </data>
+  <data name="exception_cannot_restore_file" xml:space="preserve">
+    <value>包含文件 {0} 的目录不存在。无法还原此文件夹，它将被删除。</value>
+  </data>
+  <data name="exception_folder_not_game_folder" xml:space="preserve">
+    <value>选中的文件夹不是 SoulWorker 游戏文件夹。</value>
+  </data>
+  <data name="exception_folder_same_path_game" xml:space="preserve">
+    <value>修改器位于游戏同一文件夹或子文件夹下。
+这可能使游戏客户端故障或造成数据冲突。
+请移动修改器到其他位置，或无视警告继续，一切后果自负。</value>
+  </data>
+  <data name="exception_game_install_not_found" xml:space="preserve">
+    <value>未找到 Soulworker {0} 安装。</value>
+  </data>
+  <data name="exception_game_maintenance" xml:space="preserve">
+    <value>Soulworker 正在维护。</value>
+  </data>
+  <data name="exception_incorrect_id_pw" xml:space="preserve">
+    <value>ID 或密码错误。</value>
+  </data>
+  <data name="exception_log_file_failed" xml:space="preserve">
+    <value>上传日志失败。</value>
+  </data>
+  <data name="exception_log_not_exist" xml:space="preserve">
+    <value>日志文件不存在。</value>
+  </data>
+  <data name="exception_not_login_option" xml:space="preserve">
+    <value>直接登录未启用。</value>
+  </data>
+  <data name="exception_not_tos" xml:space="preserve">
+    <value>想要继续，您需要接受服务条款。</value>
+  </data>
+  <data name="exception_read_translation_ini" xml:space="preserve">
+    <value>读取翻译版本出错，请尝试 菜单 -&gt; 强制修改</value>
+  </data>
+  <data name="exception_retry_validation_failed" xml:space="preserve">
+    <value>验证失败。</value>
+  </data>
+  <data name="exception_validation_failed" xml:space="preserve">
+    <value>验证失败。也许您的 IP 或地区被禁？</value>
+  </data>
+  <data name="form_about" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="form_force_patch" xml:space="preserve">
+    <value>强制修改</value>
+  </data>
+  <data name="form_label_new_translation" xml:space="preserve">
+    <value>{0} 有新翻译 - ({1})</value>
+  </data>
+  <data name="form_menu" xml:space="preserve">
+    <value>菜单</value>
+  </data>
+  <data name="form_open_sw_webpage" xml:space="preserve">
+    <value>打开 SW 网站</value>
+  </data>
+  <data name="form_refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="form_settings" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="form_upload_log" xml:space="preserve">
+    <value>上传日志到 Pastebin</value>
+  </data>
+  <data name="notice_outdated_translation" xml:space="preserve">
+    <value>过时的翻译文件，现在将开始强制修改。</value>
+  </data>
+  <data name="notice_pending_restart" xml:space="preserve">
+    <value>某些更改仅会在重新启动应用程序后应用。</value>
+  </data>
+  <data name="notify_balloon_text" xml:space="preserve">
+    <value>双击以还原...</value>
+  </data>
+  <data name="notify_balloon_title" xml:space="preserve">
+    <value>修改器隐藏了</value>
+  </data>
+  <data name="notify_text" xml:space="preserve">
+    <value>Soulworker Patcher</value>
+  </data>
+  <data name="question_backup_files_found" xml:space="preserve">
+    <value>发现备份文件。您想现在将它们恢复到客户端中吗？
+来自客户端的现有版本将被替换为 {0} 翻译版本。
+选择“否”将删除这些备份文件。</value>
+  </data>
+  <data name="question_folder_same_path_game" xml:space="preserve">
+    <value>修改器位于游戏同一文件夹或子文件夹下。
+这可能使游戏客户端故障或造成数据冲突。
+您确定要设置到这个文件夹吗？</value>
+  </data>
+  <data name="success_log_file_upload" xml:space="preserve">
+    <value>日志上传到了 "{0}"
+链接已复制到剪切板。</value>
+  </data>
+  <data name="match_windows" xml:space="preserve">
+    <value>匹配系统</value>
+  </data>
+  <data name="exception_rtpatch_result" xml:space="preserve">
+    <value>更新 Soulworker 时发生未知错误，此视最佳的修复方法是重装 Soulworker。Code=[{0}]
+已上传“{1}”，以便将来改进修改器。</value>
+  </data>
+  <data name="exception_captcha_validation" xml:space="preserve">
+    <value>登陆失败过多。您必须登陆 Hange 网站完成人机验证。</value>
+  </data>
+  <data name="exception_server_refused_connection" xml:space="preserve">
+    <value>服务器拒绝连接。（服务器维护？）</value>
+  </data>
+  <data name="exception_game_already_open" xml:space="preserve">
+    <value>无法继续，因为 {0} 已在运行。</value>
+  </data>
+  <data name="exception_rtpatch_corrupt" xml:space="preserve">
+    <value>补丁文件 "{0}" 损坏</value>
+  </data>
+  <data name="exception_rtpatch_corrupt_file" xml:space="preserve">
+    <value>文件损坏 "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_missing_file" xml:space="preserve">
+    <value>文件不存在 "{0}"</value>
+  </data>
+  <data name="exception_rtpatch_not_exist_directory" xml:space="preserve">
+    <value>目录不存在，请检查游戏目录设置是否正确。</value>
+  </data>
+  <data name="exception_rtpatch_rename_fail" xml:space="preserve">
+    <value>重命名文件失败。请重试。</value>
+  </data>
+  <data name="exception_empty_id" xml:space="preserve">
+    <value>ID不能为空，请设置您的 Soulworker ID 或取消选择使用修改器登陆。</value>
+  </data>
+  <data name="exception_empty_pw" xml:space="preserve">
+    <value>密码不能为空，请设置您的 Soulworker 密码或取消选择使用修改器登陆。</value>
+  </data>
+  <data name="exception_rtpatch_administrator_required" xml:space="preserve">
+    <value>更新失败，因为文件需要管理员权限。也许该文件正在使用中？请重试。</value>
+  </data>
+  <data name="exception_rtpatch_insufficient_storage" xml:space="preserve">
+    <value>更新失败，因为设备存储空间不足。</value>
+  </data>
+  <data name="exception_rtpatch_open_patch_file_fail" xml:space="preserve">
+    <value>打开补丁文件失败。请重试。</value>
+  </data>
+  <data name="exception_rtpatch_time_date_fail" xml:space="preserve">
+    <value>设置文件时间戳失败。请重试。</value>
+  </data>
+  <data name="error_exe_patch_fail" xml:space="preserve">
+    <value>.exe 未应用修改，因为在最近一次更新后，客户端文件 "{0}" 未更新。客户端修改已禁用。游戏仍然可以运行，只不过一些文本无法显示。请在更新 "{0}" 后重试。</value>
+  </data>
+  <data name="exception_rtpatch_read_patch_file_fail" xml:space="preserve">
+    <value>拂去补丁文件失败。请重试。</value>
+  </data>
+  <data name="form_status_patch_load" xml:space="preserve">
+    <value>加载中...</value>
+  </data>
+  <data name="form_status_patch_patch" xml:space="preserve">
+    <value>正在修改...</value>
+  </data>
+  <data name="form_status_patch_save" xml:space="preserve">
+    <value>正在保存...</value>
+  </data>
+  <data name="box_game_options" xml:space="preserve">
+    <value>更改游戏内选项</value>
+  </data>
+  <data name="button_game_options" xml:space="preserve">
+    <value>游戏选项</value>
+  </data>
+  <data name="exception_directory_rights" xml:space="preserve">
+    <value>无法为游戏文件夹 "{0}" 设置正确权限。</value>
+  </data>
+  <data name="exception_rtpatch_error_open_patch_file" xml:space="preserve">
+    <value>打开补丁文件出错。请重试。</value>
+  </data>
+  <data name="exception_directory_not_exist" xml:space="preserve">
+    <value>游戏目录不存在 "{0}"。</value>
+  </data>
+  <data name="error_exe_region_not_supported" xml:space="preserve">
+    <value>您的 Soulworker 区服不支持 .exe 修改。客户端修改已禁用。游戏仍然可以运行，只不过一些文本无法显示。</value>
+  </data>
+  <data name="exception_login_option_not_supported" xml:space="preserve">
+    <value>您的 Soulworker 区服不支持直接登录。登陆选项已禁用。</value>
+  </data>
+  <data name="exception_game_not_latest" xml:space="preserve">
+    <value>Soulworker 没有更新至最新版本。请在更新后重试。</value>
+  </data>
+  <data name="exception_game_stove_maintenance" xml:space="preserve">
+    <value>Soulworker 维护 {0}
+{1}
+维护结束于 {2}。
+清单:
+{3}</value>
+  </data>
+  <data name="exception_account_not_validated" xml:space="preserve">
+    <value>您的 Soulworker 账号未验证。请在网页上认证账号。</value>
+  </data>
+  <data name="exception_account_to_be_deleted" xml:space="preserve">
+    <value>这个账号正在等待删除。如果你想取消，请与客服练习。</value>
+  </data>
+  <data name="exception_captcha_required" xml:space="preserve">
+    <value>无法使用修改器登陆，因为登陆需要人机验证。</value>
+  </data>
+  <data name="exception_follow_instruction_webpage" xml:space="preserve">
+    <value>登陆时遇到错误，请按照网站说明操作。</value>
+  </data>
+  <data name="form_region_jp" xml:space="preserve">
+    <value>Japan Hange</value>
+  </data>
+  <data name="form_region_kr" xml:space="preserve">
+    <value>Korea</value>
+  </data>
+  <data name="exception_generic_read_error" xml:space="preserve">
+    <value>读取 {0} 失败。</value>
+  </data>
+  <data name="button_open" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="form_language_pick" xml:space="preserve">
+    <value>语言：</value>
+  </data>
+  <data name="form_region_pick" xml:space="preserve">
+    <value>区服：</value>
+  </data>
+  <data name="form_region_nkr" xml:space="preserve">
+    <value>Korea Naver</value>
+  </data>
+  <data name="form_region_gl" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="exception_region_unknown" xml:space="preserve">
+    <value>区服 "{0}" 未知。</value>
+  </data>
+  <data name="form_region_gjp" xml:space="preserve">
+    <value>Japan Gamecom</value>
+  </data>
+</root>

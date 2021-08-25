@@ -199,16 +199,6 @@
     <Compile Include="Launching\GameStarterProgressChangedEventArgs.cs" />
     <Compile Include="Patching\XorFileStream.cs" />
     <Compile Include="Patching\XorMemoryStream.cs" />
-    <Compile Include="Resources\sch.Designer.cs">
-      <DependentUpon>sch.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Resources\ru.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ru.resx</DependentUpon>
-    </Compile>
     <Compile Include="RTPatch\ResultException.cs" />
     <Compile Include="RTPatch\RTPatcherCompletedEventArgs.cs" />
     <Compile Include="RTPatch\RTPatcherDownloadProgressChangedEventArgs.cs" />
@@ -275,10 +265,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ko.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resources\ru.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ru.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\vi.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>vi.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\zh.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>zh.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
@@ -304,10 +304,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Resources\sch.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>sch.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\en.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>en.Designer.cs</LastGenOutput>
@@ -323,6 +319,10 @@
     <EmbeddedResource Include="Resources\vi.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>vi.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\zh.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>zh.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest">

@@ -97,7 +97,8 @@ namespace SWPatcher.Forms
             var ko = new ResxLanguage("한국어", "ko");
             var vi = new ResxLanguage("Tiếng Việt", "vi");
             var ru = new ResxLanguage("Русский", "ru");
-            this.ComboBoxUILanguage.DataSource = new ResxLanguage[] { def, en, ko, vi, ru };
+            var zh = new ResxLanguage("简体中文", "zh");
+            this.ComboBoxUILanguage.DataSource = new ResxLanguage[] { def, en, ko, vi, ru, zh };
             string savedCode = this.UILanguage = UserSettings.UILanguageCode;
             if (en.Code == savedCode)
             {
@@ -114,6 +115,10 @@ namespace SWPatcher.Forms
             else if(ru.Code == savedCode)
             {
                 this.ComboBoxUILanguage.SelectedItem = ru;
+            }
+            else if(zh.Code == savedCode)
+            {
+                this.ComboBoxUILanguage.SelectedItem = zh;
             }
             else
             {

@@ -199,6 +199,11 @@
     <Compile Include="Launching\GameStarterProgressChangedEventArgs.cs" />
     <Compile Include="Patching\XorFileStream.cs" />
     <Compile Include="Patching\XorMemoryStream.cs" />
+    <Compile Include="Resources\sch.Designer.cs">
+      <DependentUpon>sch.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Resources\ru.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -299,6 +304,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Resources\sch.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>sch.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\en.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>en.Designer.cs</LastGenOutput>
@@ -353,7 +362,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.2 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.6.2 %28x86 和 x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

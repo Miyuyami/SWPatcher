@@ -185,6 +185,7 @@ namespace SWPatcher.Forms
             this.GroupBoxPatchExe.AutoSize = true;
             this.GroupBoxPatchExe.Controls.Add(this.CheckBoxPatchExe);
             this.GroupBoxPatchExe.Dock = System.Windows.Forms.DockStyle.Top;
+            this.GroupBoxPatchExe.Enabled = false;
             this.GroupBoxPatchExe.Location = new System.Drawing.Point(3, 64);
             this.GroupBoxPatchExe.Name = "GroupBoxPatchExe";
             this.GroupBoxPatchExe.Size = new System.Drawing.Size(300, 58);

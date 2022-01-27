@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -304,60 +303,19 @@ namespace SWPatcher.RTPatch
 
         private void CheckGlobalVersion()
         {
-            const string SteamGameId = "1377580";
-            string steamInstallPath;
-
-            if (!Environment.Is64BitOperatingSystem)
+            var manifest = Methods.GetSoulworkerSteamManifest();
+            if (manifest != null)
             {
-                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
-            }
-            else
-            {
-                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key64Path, Strings.Registry.Steam.InstallPath);
-
-                if (steamInstallPath == String.Empty)
+                if (manifest.Elements.TryGetValue("StateFlags", out SteamManifestElement sme) &&
+                    sme is SteamManifestEntry entry &&
+                    Int32.TryParse(entry.Value, out int stateFlagInt) &&
+                    (AppState)stateFlagInt == AppState.StateFullyInstalled)
                 {
-                    steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
+                    return;
                 }
             }
 
-            if (!String.IsNullOrEmpty(steamInstallPath))
-            {
-                List<string> libraryPaths = new List<string>();
-                string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
-                libraryPaths.Add(mainSteamLibrary);
-                string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
-
-                if (File.Exists(libraryFoldersFile))
-                {
-                    var libraryManifest = SteamManifest.Load(libraryFoldersFile);
-                    int i = 1;
-                    while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
-                    {
-                        libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
-                    }
-
-                    foreach (string libraryPath in libraryPaths)
-                    {
-                        string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
-                        if (File.Exists(acf))
-                        {
-                            var smacf = SteamManifest.Load(acf);
-                            if (smacf.Elements.TryGetValue("StateFlags", out SteamManifestElement sme))
-                            {
-                                if (Int32.TryParse(((SteamManifestEntry)sme).Value, out int stateFlagInt))
-                                {
-                                    var appState = (AppState)stateFlagInt;
-                                    if (appState != AppState.StateFullyInstalled)
-                                    {
-                                        throw new Exception(StringLoader.GetText("exception_game_not_latest"));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            throw new Exception(StringLoader.GetText("exception_game_not_latest"));
         }
 
         private static bool WebFileExists(string uri)

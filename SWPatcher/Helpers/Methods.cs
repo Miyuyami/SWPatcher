@@ -38,6 +38,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using SWPatcher.General;
 using SWPatcher.Helpers.GlobalVariables;
+using SWPatcher.Helpers.Steam;
 
 namespace SWPatcher.Helpers
 {
@@ -719,6 +720,47 @@ namespace SWPatcher.Helpers
         {
             UserSettings.WantToPatchExe = false;
             throw new Exception(StringLoader.GetText("error_exe_region_not_supported"));
+        }
+
+        internal static SteamManifest GetSoulworkerSteamManifest()
+        {
+            const string SteamGameId = "1377580";
+            string steamInstallPath;
+
+            if (!Environment.Is64BitOperatingSystem)
+            {
+                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
+            }
+            else
+            {
+                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key64Path, Strings.Registry.Steam.InstallPath);
+
+                if (steamInstallPath == String.Empty)
+                {
+                    steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
+                }
+            }
+
+            if (!String.IsNullOrEmpty(steamInstallPath))
+            {
+                string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
+                string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
+
+                if (File.Exists(libraryFoldersFile))
+                {
+                    var libraryManifest = SteamManifest.Load(libraryFoldersFile);
+                    var libraryPaths = libraryManifest.EnumerateEntries().Select(entry => Path.Combine(entry.Value, "steamapps"));
+                    string acfToFind = $"appmanifest_{SteamGameId}.acf";
+
+                    var acf = libraryPaths.Select(path => Path.Combine(path, acfToFind)).FirstOrDefault(path => File.Exists(path));
+                    if (acf != null)
+                    {
+                        return SteamManifest.Load(acf);
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

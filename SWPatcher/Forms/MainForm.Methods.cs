@@ -183,56 +183,18 @@ namespace SWPatcher.Forms
 
         private static string GetGlobalSwPath()
         {
-            const string SteamGameId = "1377580";
-            string steamInstallPath;
-
-            if (!Environment.Is64BitOperatingSystem)
+            var manifest = Methods.GetSoulworkerSteamManifest();
+            if (manifest != null)
             {
-                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
-            }
-            else
-            {
-                steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key64Path, Strings.Registry.Steam.InstallPath);
-
-                if (steamInstallPath == String.Empty)
+                if (manifest.Elements.TryGetValue("installdir", out SteamManifestElement sme))
                 {
-                    steamInstallPath = Methods.GetRegistryValue(Strings.Registry.Steam.RegistryKey, Strings.Registry.Steam.Key32Path, Strings.Registry.Steam.InstallPath);
-                }
-            }
+                    string libraryPath = Path.GetDirectoryName(manifest.Path);
+                    string path = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
 
-            if (!String.IsNullOrEmpty(steamInstallPath))
-            {
-                List<string> libraryPaths = new List<string>();
-                string mainSteamLibrary = Path.Combine(steamInstallPath, "steamapps");
-                libraryPaths.Add(mainSteamLibrary);
-                string libraryFoldersFile = Path.Combine(mainSteamLibrary, "libraryfolders.vdf");
-
-                if (File.Exists(libraryFoldersFile))
-                {
-                    var libraryManifest = SteamManifest.Load(libraryFoldersFile);
-                    int i = 1;
-                    while (libraryManifest.Elements.TryGetValue((i++).ToString(), out SteamManifestElement sme))
+                    if (Directory.Exists(path) &&
+                        Directory.GetFiles(path).Length > 0)
                     {
-                        libraryPaths.Add(Path.Combine(((SteamManifestEntry)sme).Value, "steamapps"));
-                    }
-
-                    foreach (string libraryPath in libraryPaths)
-                    {
-                        string acf = Path.Combine(libraryPath, $"appmanifest_{SteamGameId}.acf");
-                        if (File.Exists(acf))
-                        {
-                            var smacf = SteamManifest.Load(acf);
-                            if (smacf.Elements.TryGetValue("installdir", out SteamManifestElement sme))
-                            {
-                                string path = Path.Combine(libraryPath, "common", ((SteamManifestEntry)sme).Value);
-
-                                if (Directory.Exists(path) &&
-                                    Directory.GetFiles(path).Length > 0)
-                                {
-                                    return path;
-                                }
-                            }
-                        }
+                        return path;
                     }
                 }
             }

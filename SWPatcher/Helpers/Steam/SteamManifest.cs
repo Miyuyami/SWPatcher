@@ -10,9 +10,11 @@ namespace SWPatcher.Helpers.Steam
         private const string SectionStart = "{";
         private const string SectionEnd = "}";
 
-        public SteamManifest(string name, Dictionary<string, SteamManifestElement> elements = null) : base(name, elements)
-        {
+        public string Path { get; }
 
+        public SteamManifest(string path, string name, Dictionary<string, SteamManifestElement> elements = null) : base(name, elements)
+        {
+            this.Path = path;
         }
 
         public static SteamManifest Load(string path)
@@ -22,7 +24,7 @@ namespace SWPatcher.Helpers.Steam
                 string nameLine = sr.ReadLine();
                 SteamManifestSection mainSection = ReadSection(nameLine, sr);
 
-                return new SteamManifest(mainSection.Name, mainSection.Elements);
+                return new SteamManifest(path, mainSection.Name, mainSection.Elements);
             }
         }
 
@@ -80,7 +82,7 @@ namespace SWPatcher.Helpers.Steam
                 string nameLine = await sr.ReadLineAsync().ConfigureAwait(false);
                 SteamManifestSection mainSection = await ReadSectionAsync(nameLine, sr);
 
-                return new SteamManifest(mainSection.Name, mainSection.Elements);
+                return new SteamManifest(path, mainSection.Name, mainSection.Elements);
             }
         }
 

@@ -238,3 +238,6 @@ _Pvt_Extensions
 
 # Certificate
 Certificate
+
+# Libs
+!**/lib/**/*
